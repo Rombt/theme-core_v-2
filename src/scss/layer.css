@@ -4,4 +4,75 @@
     @import "../../src/scss/layer.css";
 */
 
-@layer reset, bases, layout, components, blocks, utilities;
+/*
+wp
+    То, что навязывает WordPress
+        global-styles-inline-css
+        базовые Gutenberg-стили
+        .wp-block-* дефолты
+
+
+tokens
+    CSS variables
+    цвета, шрифты, отступы, z-index
+    sync с theme.json
+
+    @layer tokens {
+        :root {
+            --color-primary: #0057ff;
+        }
+    }
+
+base
+    HTML и типографика
+    body, p, h1–h6
+    ссылки
+    формы (без layout)
+
+layout
+    Структура страниц
+    контейнеры
+    grid / flex
+    header / footer / sidebar
+
+components
+    Переиспользуемые UI-элементы
+        buttons
+        cards
+        modals
+        nav
+        ❗ Не Gutenberg-блоки
+blocks
+    Gutenberg-блоки
+        каждый блок живёт ТОЛЬКО здесь
+        блоки не знают о layout
+        блоки не трогают tokens
+
+utilities
+    Утилитарные классы
+    .mt-2
+    .text-center
+    .hidden
+    ❌ не используются внутри блоков по умолчанию
+
+overrides
+    Единственное место для хака
+    hotfix
+    совместимость плагинов
+    временные патчи
+    🚨 В продакшене слой должен быть пустым или минимальным.
+
+✅ Разрешено
+    добавлять новые файлы, но не новые слои
+    переопределять WP — только через порядок слоёв
+    использовать scoped-стили внутри блоков
+
+❌ Запрещено
+    писать CSS без @layer
+    использовать !important вне overrides
+    блокам писать в components или layout
+    теме менять порядок слоёв
+
+*/
+
+@layer reset, wp, tokens, base, layout, components, blocks, utilities, overrides;

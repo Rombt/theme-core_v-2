@@ -41,6 +41,7 @@ final class MyTheme_Core {
 		require_once MYTHEME_CORE_PATH . '/helpers.php';
 		require_once MYTHEME_CORE_PATH . '/assets.php';
 		require_once MYTHEME_CORE_PATH . '/blocks.php';
+		require_once MYTHEME_CORE_PATH . '/wp-global-styles.php';
 	}
 
 	/**
