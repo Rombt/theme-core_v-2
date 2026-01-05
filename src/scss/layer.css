@@ -1,0 +1,7 @@
+/*
+т.к. Vite не гарантирует порядок инжекции css файлов при динамическое подключение то в каждом файле стилей нужно импортировать layer.css
+пример для блоков:
+    @import "../../src/scss/layer.css";
+*/
+
+@layer reset, bases, layout, components, blocks, utilities;

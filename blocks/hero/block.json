@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+
+	"name": "mytheme/hero",
+	"title": "Hero Section",
+	"description": "Hero block with title, text and background image",
+
+	"category": "layout",
+	"icon": "cover-image",
+	"keywords": ["hero", "banner", "header"],
+
+	"supports": {
+		"align": ["full"],
+		"html": false
+	},
+
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"text": {
+			"type": "string",
+			"default": ""
+		},
+		"backgroundImage": {
+			"type": "number"
+		}
+	},
+
+	"editorScript": "mytheme-editor",
+	"editorStyle": "mytheme-editor",
+	"style": "mytheme-front",
+
+	"render": "render.php"
+}

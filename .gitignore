@@ -1,0 +1,37 @@
+# Node / Vite
+node_modules/
+dist/
+
+# Composer
+vendor/
+composer.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Log / Temp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+*.tmp
+*.temp
+
+# Windows
+Desktop.ini
+$RECYCLE.BIN/
+
+# WordPress / темы
+.env
+*.sql
+*.zip
+*.bak
+*.backup
+
+# Build artifacts
+*.min.js
+*.min.css
+
+# Other
+.vite/

@@ -1,0 +1,13 @@
+{
+    "phpcs.executablePath": "vendor/bin/phpcs.bat",
+    "phpcs.standard": "WordPress-Extra",
+    "phpcs.autoConfigSearch": true,
+
+    "phpsab.standard": "WordPress-Extra",
+    "phpsab.executablePathCS": "vendor/bin/phpcs",
+    "phpsab.executablePathCBF": "vendor/bin/phpcbf",
+    "cSpell.words": [
+        "ABSPATH",
+        "kses"
+    ],
+}
