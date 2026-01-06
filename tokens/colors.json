@@ -1,0 +1,32 @@
+{
+    "brand": {
+      "primary": "#2563eb",
+      "secondary": "#0f172a",
+      "accent": "#22c55e"
+    },
+
+    "text": {
+      "primary": "#0f172a",
+      "secondary": "#475569",
+      "muted": "#64748b",
+      "inverse": "#ffffff"
+    },
+
+    "background": {
+      "body": "#ffffff",
+      "surface": "#f8fafc",
+      "surfaceAlt": "#f1f5f9"
+    },
+
+    "border": {
+      "default": "#e2e8f0",
+      "strong": "#cbd5f5"
+    },
+
+    "state": {
+      "success": "#22c55e",
+      "warning": "#f59e0b",
+      "error": "#ef4444",
+      "info": "#3b82f6"
+    }
+  }

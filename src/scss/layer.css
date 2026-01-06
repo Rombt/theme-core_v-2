@@ -13,9 +13,27 @@ wp
 
 
 tokens
-    CSS variables
-    цвета, шрифты, отступы, z-index
-    sync с theme.json
+    это дизайн-система
+        CSS variables
+            colors
+            fonts
+            font-sizes
+            spacing
+            radius
+            z-index
+            shadows
+            transitions
+    sync с theme.json           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        theme.json — это экспорт токенов в формат WordPress.
+        theme.json — никогда не является источником значений.
+        в theme.json — нет реальных значений
+        только ссылки на tokens
+            var(--token-name)
+        theme.json нельзя писать вручную только генерация
+        WP использует theme.json для:
+            Генерации CSS variables --wp--preset--*
+            Ограничения UI редактора
+            ❗ Не все токены экспортируются в WP.
 
     @layer tokens {
         :root {
