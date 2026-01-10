@@ -1,10 +1,71 @@
 @import "layer.css";
 @import "normalize.css" layer(reset);
+@import "layout.scss" layer(layout);
+
+/**
+//!!!!!!
+
+Ключевая модель
+    Уровень 1 — Gutenberg (Layout)
+        ширины
+        выравнивание
+        вертикальный поток
+        вложенность блоков
+        отвечает на вопрос «ГДЕ?»
+            Где заканчивается контент
+            Где можно выйти за границы
+            Где поток блоков
+        Gutenberg НЕ задаёт ширину страницы
+        Он задаёт границы контента - границы смысла!!
+        В Gutenberg нет «страницы», есть только ПОТОК КОНТЕНТА.
+        contentSize и wideSize — это две допустимые ширины этого потока.
+
+        contentSize	комфортная ширина чтения
+        wideSize	допустимое расширение контента
+        alignfull	выход из потока вообще
+
+        или другими словами:
+
+        contentSize — для чтения
+        wideSize — для показа
+        alignfull — для сцены
+
+        если в theme.json нет wideSize:
+            alignwide НЕ появляется в редакторе
+        Если тема не поддерживает full:
+            alignfull не появится
+
+
+    Уровень 2 — Theme (Structure)
+        контейнеры
+        inner wrappers
+        grid / flex / columns
+        breakpoints
+        Тема отвечает на вопрос «КАК?»
+            как устроена сетка
+            как выглядят компоненты
+            как они реагируют
+
+    Уровень 3 — Design system
+        цвета
+        типографика
+        ритм
+        компоненты
+
+
+
+
+
+
+*/
+
+
+
 
 
 @layer base {
 body{
 
-    background-color: #e98c22;
+    // background-color: #e98c22;
 }
 }
