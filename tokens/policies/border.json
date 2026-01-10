@@ -1,0 +1,12 @@
+{
+    "color": true,
+    "radius": true,
+    "width": false,
+    "style": false,
+    "defaultControls": {
+      "color": true,
+      "radius": true,
+      "width": false,
+      "style": false
+    }
+  }
