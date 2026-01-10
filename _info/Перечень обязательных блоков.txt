@@ -1,0 +1,102 @@
+1. Базовые
+    1. Paragraph
+        Тип: Core block
+        Зачем: основной текст
+        Envato: must-have, без вариантов
+    2. Heading
+        Тип: Core block
+        Зачем: H1–H6, SEO, структура
+        Envato: обязательно
+    3. Image
+        Тип: Core block
+        Зачем: контент, hero, галереи
+        Envato: обязательно
+    4. Button / Buttons
+        Тип: Core block
+        Зачем: CTA, продажи
+        Envato: обязательно
+    5. List
+        Тип: Core block
+        Зачем: списки, преимущества
+        Envato: обязательно
+2. Layout-блоки (критичны для дизайна темы)
+    6. Group
+        Тип: Core block
+        Зачем: контейнер, отступы, фон
+        Envato: обязательно для кастомных секций
+    7. Columns
+        Тип: Core block
+        Зачем: сетка (2–4 колонки)
+        Envato: must-have
+        Важно: тема должна выглядеть хорошо без кастомных блоков
+    8. Cover
+        Тип: Core block
+        Зачем: hero-блок, фон + текст
+        Envato: почти всегда используется
+    9. Spacer
+        Тип: Core block
+        Зачем: вертикальные отступы
+        Envato: обязательно (часто проверяют)
+3. Медиа и визуал
+    10. Gallery
+        Тип: Core block
+        Зачем: портфолио, кейсы
+        Envato: обязательно
+    11. Video
+        Тип: Core block
+        Зачем: hero-видео, промо
+        Envato: желательно
+    12. Media & Text
+        Тип: Core block
+        Зачем: текст + изображение
+        Envato: используется почти в каждой демке
+4. Контент и маркетинг (очень любят покупатели)
+    13. Quote
+        Тип: Core block
+        Зачем: отзывы
+        Envato: must-have
+    14. Table
+        Тип: Core block
+        Зачем: прайс-таблицы
+        Envato: обязательно для бизнес-тем
+    15. Separator
+        Тип: Core block
+        Зачем: визуальное разделение
+        Envato: обязательно
+    16. Icons (обычно кастомный)
+        Тип: Custom block
+        Зачем: фичи, преимущества
+        Envato: ожидают, даже если core не даёт
+5. Динамические блоки (если тема не FSE-only)
+    17. Latest Posts
+        Тип: Core block
+        Зачем: блог, новости
+        Envato: обязательно
+    18. Categories / Tags
+        Тип: Core block
+        Зачем: навигация
+        Envato: желательно
+6. WooCommerce (если тема под магазин — почти обязательно)
+    19. Products
+    20. Product Grid
+    21. Add to Cart
+    Тип: Woo blocks
+    Envato: если заявлена WooCommerce-поддержка — без этого не примут
+7. Кастомные блоки, которые есть почти во всех Envato-темах, не core, но ожидаются рынком
+    22. Hero Section
+        фон, заголовок, кнопка
+    23. Features / Services
+        иконка + заголовок + текст
+    24. Testimonials
+        отзывы
+    25. Pricing Table
+        тарифы
+    26. Team Members
+        команда
+    27. Call To Action (CTA)
+        продающий блок
+
+Минимум для прохождения Envato:
+    Core блоки + хорошая стилизация
+Отсутствие зависимости от page builder’ов
+    Блоки должны выглядеть красиво сразу
