@@ -16,7 +16,7 @@ define( 'THEME_URI', get_template_directory_uri() );
 /**
  * Theme setup
  */
-function my_theme_setup() {
+function theme_setup() {
 
 	load_theme_textdomain(
 		'my_theme',
@@ -44,7 +44,7 @@ function my_theme_setup() {
 		)
 	);
 }
-add_action( 'after_setup_theme', 'my_theme_setup' );
+add_action( 'after_setup_theme', 'theme_setup' );
 
 /**
  * Theme core bootstrap
