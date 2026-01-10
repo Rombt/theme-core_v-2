@@ -21,3 +21,4 @@ defined( 'ABSPATH' ) || exit;
 
 <body <?php body_class(); ?>>
 	<?php wp_body_open(); ?>
+	<div class="wrap-main">

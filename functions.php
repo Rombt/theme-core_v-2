@@ -1,53 +1,52 @@
 <?php
-
 /**
  * Theme bootstrap
  *
- * @package MyTheme
+ * @package my_theme
  */
 
-if (! defined('ABSPATH')) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Theme constants
  */
-define('THEME_PATH', get_template_directory());
-define('THEME_URI', get_template_directory_uri());
-
-/**
- * Core files
- */
-require_once THEME_PATH . '/core/core.php';
+define( 'THEME_PATH', get_template_directory() );
+define( 'THEME_URI', get_template_directory_uri() );
 
 /**
  * Theme setup
  */
-add_action('after_setup_theme', function () {
+function my_theme_setup() {
 
-    // Поддержка Gutenberg
-    add_theme_support('editor-styles');
-    add_theme_support('wp-block-styles');
-    add_theme_support('align-wide');
+	load_theme_textdomain(
+		'my_theme',
+		THEME_PATH . '/languages'
+	);
 
-    // Title tag
-    add_theme_support('title-tag');
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
 
-    // Thumbnails
-    add_theme_support('post-thumbnails');
+	add_theme_support( 'editor-styles' );
+	add_theme_support( 'wp-block-styles' );
+	add_theme_support( 'align-wide' );
+	add_theme_support( 'block-templates' );
 
-    // HTML5
-    add_theme_support(
-        'html5',
-        [
-            'search-form',
-            'comment-form',
-            'comment-list',
-            'gallery',
-            'caption',
-            'style',
-            'script',
-        ]
-    );
-});
+	add_theme_support(
+		'html5',
+		array(
+			'search-form',
+			'comment-form',
+			'comment-list',
+			'gallery',
+			'caption',
+			'style',
+			'script',
+		)
+	);
+}
+add_action( 'after_setup_theme', 'my_theme_setup' );
+
+/**
+ * Theme core bootstrap
+ */
+require_once THEME_PATH . '/core/core.php';
