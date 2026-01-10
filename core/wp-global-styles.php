@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Overrides WordPress global styles.
+ *
+ * Removes default global styles and adds custom global styles for front-end and editor.
+ *
+ * @package ThemeCore
+ */
 
 add_action(
 	'init',

@@ -6,10 +6,11 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "theme_json": "node core/theme-json-generator/index.js"
     },
     "devDependencies": {
-        "sass": "^1.69.0",
+        "sass": "^1.66.1",
         "vite": "^5.0.0"
     },
     "dependencies": {

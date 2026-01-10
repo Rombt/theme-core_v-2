@@ -49,4 +49,4 @@ add_action( 'after_setup_theme', 'my_theme_setup' );
 /**
  * Theme core bootstrap
  */
-require_once THEME_PATH . '/core/core.php';
+require_once THEME_PATH . '/core/class-core.php';
