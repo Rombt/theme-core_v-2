@@ -1,0 +1,162 @@
+Анатомия идеальной block-темы (Gutenberg)
+
+1. Основа: theme.json
+    1.1 Что это такое
+        Главный файл настройки темы
+        Определяет глобальные стили и поведение блоков
+        WordPress считывает этот файл автоматически
+
+    1.2 Что туда входит
+        Layout
+            {
+                "settings": {
+                    "layout": {
+                    "contentSize": "720px",
+                    "wideSize": "1200px"
+                    }
+                }
+            }
+        contentSize → ширина обычного контента
+        wideSize → ширина для блоков wide
+        alignfull → не нужен отдельно, класс всегда есть
+        Цвета
+            "color": {
+                "palette": [
+                    { "name": "Primary", "slug": "primary", "color": "#0055ff" },
+                    { "name": "Secondary", "slug": "secondary", "color": "#ff5500" }
+                ]
+            }
+            Определяет доступные цвета в редакторе
+            Позволяет блокам быть в консистентном дизайне
+        Типографика
+            "typography": {
+                "fontSizes": [
+                    { "name": "Small", "size": "14px" },
+                    { "name": "Normal", "size": "16px" },
+                    { "name": "Large", "size": "24px" }
+                ]
+            }
+        Spacing, Border, Radius
+            Управляет отступами, границами, скруглениями
+        Можно задавать переменные типа --wp--custom--spacing-10
+
+2. Основной HTML-скелет темы
+    2.1 Файл: index.php / page.php
+        <?php get_header(); ?>
+        <main id="primary" class="site-main">
+        <div class="wp-site-blocks">
+            <?php
+            if ( have_posts() ) :
+                while ( have_posts() ) : the_post();
+                the_content();
+                endwhile;
+            endif;
+            ?>
+        </div>
+        </main>
+        <?php get_footer(); ?>
+
+    2.2 Что важно
+        wp-site-blocks — root всех блоков, без max-width и padding
+            Gutenberg контролирует ширину блоков, не тема
+            Контейнер темы (например .site-main) нужен только для semantics / фон
+
+3. Header / Footer / Parts
+    3.1 Header (header.php)
+            <header class="site-header">
+            <?php wp_nav_menu(['theme_location'=>'primary']); ?>
+            </header>
+        Семантика
+        Навигация
+        Логотип
+    3.2 Footer (footer.php)
+        Контактная информация
+        Социальные ссылки
+        Пространство для виджетов / блоков
+
+4. Templates / Template Parts
+    4.1 Templates
+        HTML-файлы (templates/page.html, templates/single.html)
+        Определяют каркас страницы
+        Не управляют layout блоков
+    4.2 Template Parts
+        Повторяющиеся элементы (header.html, footer.html, hero.html)
+        Можно использовать get_template_part()
+5. Patterns (готовые композиции блоков)
+    Предопределённые наборы блоков
+        Пример:
+            {
+                "title": "Hero Section",
+                "categories": ["featured"],
+                "content": "<!-- wp:cover {\"align\":\"full\"} -->..."
+            }
+
+    Редактор вставляет готовую секцию
+    Позволяет без page builder’а создавать сложные макеты
+
+6. Блоки темы (опционально)
+    Custom blocks: hero, grid, card, pricing
+    Поддерживают:
+        InnerBlocks
+        alignwide / alignfull
+        span (если grid)
+        Реализуют контроль дизайна внутри темы
+
+7. CSS / JS
+    7.1 CSS
+        Минимальные стили для alignwide, alignfull, typography, colors
+        Grid для блоков темы
+        Переменные из theme.json
+
+    7.2 JS
+        Навигация, аккордеоны, слайдеры
+        Gutenberg не управляет интерактивностью, но тема может подключить
+
+8. Assets
+    style.css — главный стиль темы
+    editor-style.css — стили редактора (можно не дублировать, если используешь theme.json)
+    script.js — JS для фронта
+
+9. Контроль над Gutenberg
+    Тема может ограничивать блоки:
+    add_theme_support('block-templates');
+    add_theme_support('align-wide');
+    Theme.json управляет шрифтами, цветами, spacing, layout
+    Patterns управляют готовыми макетами
+
+10. Идеальная структура папок
+    my-theme/
+    ├─ theme.json
+    ├─ style.css
+    ├─ functions.php
+    ├─ index.php
+    ├─ header.php
+    ├─ footer.php
+    ├─ templates/
+    │   ├─ page.html
+    │   └─ single.html
+    ├─ parts/
+    │   ├─ header.html
+    │   └─ footer.html
+    ├─ patterns/
+    │   └─ hero.json
+    ├─ blocks/          (опционально)
+    │   └─ custom-grid/
+    └─ assets/
+        ├─ css/
+        └─ js/
+
+11. Основная логика (золотой стандарт)
+    theme.json → глобальные правила
+    HTML → контейнер для блоков
+    Header/Footer/Parts → семантика
+    Patterns/Blocks → готовые layout и компоненты
+    CSS/JS → поведение и внешний вид
+    📌 Контейнер темы не ограничивает блоки → alignfull / alignwide работают корректно
+
+12. Главная мысль
+    Block-тема = правила + каркас + визуальные паттерны.
+    Контент создаёт страницу, тема контролирует как контент выглядит.
+
+
+Где то здесь должен быть демо контент вот только где?

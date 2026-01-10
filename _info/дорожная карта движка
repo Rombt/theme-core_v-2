@@ -1,0 +1,13 @@
+v1 (архитектура):
+   ++  theme.json — зафиксирован
+    +- tokens → theme.json
+    tokens → css vars
+    3 эталонных блока
+v2 (удобство):
+    пресеты
+    dark mode
+    layout variants
+v3 (продукт):
+    демо-контент
+    темплейты
+    child-theme / overrides
