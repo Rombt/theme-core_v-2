@@ -21,7 +21,7 @@ final class Blocks {
 	 */
 	public static function init() {
 
-		$file_categories = __DIR__ . '/../BlockCategories.json';
+		$file_categories = THEME_PATH . '/src/blocks/block-categories.json';
 		if ( ! file_exists( $file_categories ) ) {
 			trigger_error(
 				sprintf(
@@ -108,11 +108,12 @@ final class Blocks {
 	 */
 	public static function register_blocks() {
 
+		// $blocks_dir = THEME_PATH . '/src/blocks';
 		$blocks_dir = THEME_PATH . '/blocks';
 
-		if ( ! is_dir( $blocks_dir ) ) {
-			return;
-		}
+		// if ( ! is_dir( $blocks_dir ) ) {
+		// return;
+		// }
 
 		$dirs = array_filter(
 			scandir( $blocks_dir ),
@@ -122,8 +123,6 @@ final class Blocks {
 		);
 
 		sort( $dirs );
-
-		error_log( '$dirs = ' . print_r( $dirs, true ) );        // !!--!!
 
 		foreach ( $dirs as $block ) {
 
@@ -149,6 +148,15 @@ final class Blocks {
 				continue;
 			}
 
+			if ( isset( $block_data['category'] ) ) {
+
+				// TODO придумать что то лучше!!
+				$block_category = strtolower( str_replace( THEME_NAME . '-', '', $block_data['category'] ) );
+
+				$block_data['category'] = THEME_NAME . '-' . $block_category;
+
+			}
+
 			// Добавляем namespace темы к slug.
 			// не вручную для того что бы блоки переносились бы в другие темы простым копированием папок.
 			if ( isset( $block_data['name'] ) ) {
@@ -162,9 +170,9 @@ final class Blocks {
 				file_put_contents( $block_json, wp_json_encode( $block_data, JSON_PRETTY_PRINT ) );
 			}
 
-			if ( ! self::validate_block_category( $block_data ) ) {
-				continue;
-			}
+			// if ( ! self::validate_block_category( $block_data ) ) {
+			// continue;
+			// }
 
 			error_log( '$block_path = ' . print_r( $block_path, true ) );        // !!--!!
 

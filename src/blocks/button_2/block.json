@@ -1,0 +1,20 @@
+{
+    "name": "tc-1\/button-2",
+    "title": "Button number two",
+    "category": "tc-1-controls",
+    "icon": "button",
+    "description": "Второй вариант файловой структуры блоков button styles",
+    "attributes": {
+    "title": {
+            "type": "string",
+            "default": "Hello World"
+        }
+    },
+    "supports": {
+        "html": false
+    },
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./editor.css",
+    "style": "file:./style.css",
+    "render": "file:./render.php"
+}

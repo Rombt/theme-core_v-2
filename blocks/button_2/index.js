@@ -1,0 +1,1 @@
+const{registerBlockType:n}=wp.blocks,{RichText:l,useBlockProps:r}=wp.blockEditor;n("tc-1/button",{attributes:{content:{type:"string",default:"Button block"}},edit:({attributes:t,setAttributes:e})=>{const o=r();return React.createElement(l,{...o,tagName:"div",className:"tc-1-button",value:t.content,onChange:c=>e({content:c}),placeholder:"Текст кнопки…"})},save:()=>null});

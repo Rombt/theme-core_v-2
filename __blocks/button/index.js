@@ -1,0 +1,1 @@
+import{registerBlockType as e}from"@wordpress/blocks";import{useBlockProps as o}from"@wordpress/block-editor";e("tc-1/button",{edit(){const t=o();return React.createElement("div",{...t},"Button block")},save(){return null}});

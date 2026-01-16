@@ -1,0 +1,78 @@
+Правило №1:
+    Корень темы содержит только то, что нужно WordPress.
+Правило №2:
+    Всё, что требует Node.js, живёт в src/.
+Правило №3:
+    src нужно удалить из готовой темы.
+
+
+
+
+theme-name/
+├─ style.css
+├─ functions.php
+├─ index.php
+├─ screenshot.png
+├─ REDME.md
+├─ theme.json           (генерируется движком)
+├─ 404.php
+├─ archive.php
+├─ footer.php
+├─ header.php
+├─ page.php
+├─ search.php
+├─ single.php
+├─ templates
+│
+├─ assets/              ← PROD-результат сборки
+│   ├─ js/
+│   ├─ css/
+│   └─ images/
+│
+├─ blocks/              ← PROD-блоки (block.json + build)
+│   └─ button/
+│       ├─ block.json
+│       ├─ index.php (опц.)
+│       └─ build/
+│           ├─ index.js
+│           └─ style.css
+│
+├─ core/
+│   ├─ enqueue.php
+│   ├─ blocks.php
+│   ├─ theme-json.php
+│   └─ helpers.php
+│
+└─ src/
+    ├─ blocks/
+    │   ├─ block-categories.json
+    │   └─ button/
+    │       ├─ index.jsx
+    │       ├─ edit.jsx
+    │       ├─ render.php
+    │       ├─ style.scss
+    │       └─ editor.scss
+    │
+    ├─ js/
+    │   ├─ front.js
+    │   └─ editor.js
+    │
+    ├─ scss/
+    │   ├─ base.scss
+    │   ├─ editor.scss
+    │   ├─ front.scss
+    │   ├─ layout.scss
+    │   └─ layers.css
+    │
+    ├─ tokens/
+    │   ├─ colors.json
+    │   ├─ spacing.json
+    │   └─ typography.json
+    │
+    └─ build/
+        ├─ theme-json-generator/
+        ├─ block-manifest.js
+        ├─ paths.js
+        ├─ vite.config.js       ← DEV / BUILD
+        ├─ package.json
+        └─ .gitignore
