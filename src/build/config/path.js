@@ -4,27 +4,65 @@ import plugins from './plugins.js';
 const themeRoot = plugins.nodePath.resolve(__dirname, '../../../');
 const srcRoot = plugins.nodePath.resolve(themeRoot, 'src');
 const blocksDist = 'blocks';
+const assetsDist = 'assets';
+
 const assetsSrs =  plugins.nodePath.resolve(srcRoot, 'assets');
-const blocksSrc = plugins.nodePath.resolve(srcRoot, blocksDist);
+const blocksSrc = plugins.nodePath.resolve(srcRoot, 'blocks');
 
 const globalEntries = getAssetEntries(assetsSrs);
 const blockEntries = getBlockEntries(blocksSrc);
 
 
-const path = {
+const path = normalizePaths({
   Entries: {
     ...globalEntries,
     ...blockEntries,
   },
   themeRoot: themeRoot,
-  srcRoot:srcRoot,
+  srcRoot: srcRoot,
+  assetsSrs: assetsSrs,
+  blocksSrc: blocksSrc,
+  blocksDist: blocksDist,
 
-}
+  dist: [
+    blocksDist,
+    assetsDist
+  ]
+});
+
+
+
 
 export default path;
 
 
 //----------------------------  helpers -------------------------
+
+// Нормализации путей
+/**
+ * Рекурсивно нормализует все строковые пути в объекте
+ * @param {object} obj — исходный объект с путями
+ * @returns {object} — объект с нормализованными путями
+ */
+function normalizePaths(obj) {
+  if (typeof obj === 'string') {
+    return plugins.normalizePath(obj);
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(normalizePaths);
+  }
+
+  if (obj && typeof obj === 'object') {
+    return Object.fromEntries(
+      Object.entries(obj).map(([key, value]) => [key, normalizePaths(value)])
+    );
+  }
+
+  // если не строка и не объект — возвращаем как есть
+  return obj;
+}
+
 
 //TODO объединить getAssetEntries() и getBlockEntries() в одну функцию
 function getBlockEntries(blocksSrc) {

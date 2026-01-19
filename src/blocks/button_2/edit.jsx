@@ -1,17 +1,17 @@
 import { useBlockProps, RichText } from '@wordpress/block-editor';
-import { registerBlockType } from '@wordpress/blocks';
 
-export default function Edit( { attributes, setAttributes } ) {
-    // Хук useBlockProps автоматически вешает нужные обертки и ID блока
-    const blockProps = useBlockProps();
+export default function Edit({ attributes, setAttributes }) {
+    const blockProps = useBlockProps({
+        className: 'tc-1-button'
+    });
 
     return (
-        <div { ...blockProps }>
+        <div {...blockProps}>
             <RichText
-                tagName="button_2"
-                value={ attributes.content }
-                onChange={ ( val ) => setAttributes( { content: val } ) }
-                placeholder="Заголовок блока..."
+                tagName="div"
+                value={attributes.content}
+                onChange={(content) => setAttributes({ content })}
+                placeholder="Текст кнопки…"
             />
         </div>
     );
