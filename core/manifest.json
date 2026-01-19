@@ -1,0 +1,76 @@
+{
+  "assets/fronts/Biryani-Black.woff2": {
+    "file": "Biryani-Black-B8-nYY6Z.woff2",
+    "src": "assets/fronts/Biryani-Black.woff2"
+  },
+  "assets/fronts/Biryani-Bold.woff": {
+    "file": "Biryani-Bold-9HLNECv7.woff",
+    "src": "assets/fronts/Biryani-Bold.woff"
+  },
+  "assets/images/photo coming soon 1.webp": {
+    "file": "photo coming soon 1-CdPVKBmG.webp",
+    "src": "assets/images/photo coming soon 1.webp"
+  },
+  "assets/js/editor.js": {
+    "file": "assets\\js\\editor-BHO4wk-m.js",
+    "name": "assets\\js\\editor",
+    "src": "assets/js/editor.js",
+    "isEntry": true,
+    "css": [
+      "assets/scss/editor-BbL1HCDS.css"
+    ]
+  },
+  "assets/js/front.js": {
+    "file": "assets\\js\\front-DzzIfDOv.js",
+    "name": "assets\\js\\front",
+    "src": "assets/js/front.js",
+    "isEntry": true,
+    "css": [
+      "assets/scss/front-BnwUWR7c.css"
+    ]
+  },
+  "assets/scss/editor.scss": {
+    "file": "assets/scss/editor-BbL1HCDS.css",
+    "src": "assets/scss/editor.scss",
+    "isEntry": true
+  },
+  "assets/scss/front.scss": {
+    "file": "assets/scss/front-BnwUWR7c.css",
+    "src": "assets/scss/front.scss",
+    "isEntry": true
+  },
+  "assets/scss/layer.css": {
+    "file": "assets/scss/editor-BbL1HCDS.css",
+    "src": "assets/scss/editor.scss",
+    "isEntry": true
+  },
+  "assets/scss/layout.scss": {
+    "file": "assets/scss/layout-6kl5sh9U.css",
+    "src": "assets/scss/layout.scss",
+    "isEntry": true
+  },
+  "blocks/button/index.jsx": {
+    "file": "blocks\\button\\index-k7q5hugb.js",
+    "name": "blocks\\button\\index",
+    "src": "blocks/button/index.jsx",
+    "isEntry": true
+  },
+  "blocks/button_2/index.jsx": {
+    "file": "blocks\\button_2\\index-BVS0ND4n.js",
+    "name": "blocks\\button_2\\index",
+    "src": "blocks/button_2/index.jsx",
+    "isEntry": true
+  },
+  "blocks/heading/index.jsx": {
+    "file": "blocks\\heading\\index-Bj9GftTH.js",
+    "name": "blocks\\heading\\index",
+    "src": "blocks/heading/index.jsx",
+    "isEntry": true
+  },
+  "blocks/paragraph/index.jsx": {
+    "file": "blocks\\paragraph\\index-BK2O5HRV.js",
+    "name": "blocks\\paragraph\\index",
+    "src": "blocks/paragraph/index.jsx",
+    "isEntry": true
+  }
+}

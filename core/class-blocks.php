@@ -14,12 +14,20 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Blocks {
 
+	private static $manifest_file_path = 'core/manifest.json';
+
+	private static $manifest        = array();
 	private static $categories_data = array();
+
 
 	/**
 	 * Инициализация
 	 */
 	public static function init() {
+
+		// self::manifest_resolve();
+		self::get_manifest();
+		// error_log( 'self::$manifest = ' . print_r( self::$manifest, true ) );        // !!--!!
 
 		$file_categories = THEME_PATH . '/src/blocks/block-categories.json';
 		if ( ! file_exists( $file_categories ) ) {
@@ -108,12 +116,11 @@ final class Blocks {
 	 */
 	public static function register_blocks() {
 
-		// $blocks_dir = THEME_PATH . '/src/blocks';
 		$blocks_dir = THEME_PATH . '/blocks';
 
-		// if ( ! is_dir( $blocks_dir ) ) {
-		// return;
-		// }
+		if ( ! is_dir( $blocks_dir ) ) {
+			return;
+		}
 
 		$dirs = array_filter(
 			scandir( $blocks_dir ),
@@ -174,11 +181,102 @@ final class Blocks {
 			// continue;
 			// }
 
-			error_log( '$block_path = ' . print_r( $block_path, true ) );        // !!--!!
+			// error_log( '$block_path = ' . print_r( $block_path, true ) );        // !!--!!
+
+			add_filter(
+				'block_type_metadata',
+				function ( $metadata ) {
+
+					error_log( '00 $metadata = ' . print_r( $metadata, true ) );        // !!--!!
+
+					if ( empty( $metadata['editorScript'] ) || empty( $metadata['editorStyle'] ) ) {
+						return $metadata;
+					}
+
+					$metadata['editorScript'] = self::get_block_asset( $metadata['editorScript'], $metadata['file'] );
+					$metadata['editorStyle']  = self::get_block_asset( $metadata['editorStyle'], $metadata['file'] );
+
+					error_log( '55 $metadata = ' . print_r( $metadata, true ) );        // !!--!!
+
+					return $metadata;
+				}
+			);
 
 			register_block_type( $block_path );
 		}
 	}
+
+
+	public static function get_block_asset( string $editor, string $file ): string {
+
+		$pathinfo_editor = pathinfo( str_replace( 'file:./', '', $editor ) );
+		$ext_editor      = $pathinfo_editor['extension'];
+
+		if ( 'js' === $ext_editor ) {
+			$ext = 'jsx';
+		} elseif ( 'css' === $ext_editor ) {
+			$ext = 'scss';
+		}
+
+		$filename       = $pathinfo_editor['filename'];
+		$dir_block_name = basename( dirname( $file ) );
+		$key            = 'blocks/' . $dir_block_name . '/' . $filename . '.' . $ext;
+
+		if ( ! isset( self::$manifest[ $key ]['file'] ) ) {
+			return $editor;
+		}
+		$pathinfo_file = pathinfo( self::$manifest[ $key ]['file'] );
+
+		return 'file:./' . $pathinfo_file['filename'] . '.' . $pathinfo_file['extension'];
+	}
+
+
+	public static function get_manifest() {
+
+		if ( ! self::$manifest ) {
+			$path           = get_theme_file_path( self::$manifest_file_path );
+			self::$manifest = file_exists( $path )
+			? json_decode( file_get_contents( $path ), true )
+			: array();
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// public static function manifest_resolve() {
+
+	// if ( ! self::$manifest ) {
+	// self::$manifest = json_decode(
+	// file_get_contents( get_theme_file_path( self::$manifest_file_path ) ),
+	// true
+	// );
+	// }
+
+	// self::$manifest_file_path = str_replace( 'file:./', '', self::$manifest_file_path );
+
+	// return get_theme_file_uri(
+	// self::$manifest[ self::$manifest_file_path ]['file'] ?? self::$manifest_file_path
+	// );
+	// }
 }
 
 Blocks::init();
