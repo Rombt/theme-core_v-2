@@ -11,6 +11,9 @@ defined( 'ABSPATH' ) || exit;
 <?php get_header(); ?>
 <main id="primary" class="site-main">
 	<div class="wp-site-blocks">
+
+	page.php
+
 	<?php
 	if ( have_posts() ) :
 		while ( have_posts() ) :
