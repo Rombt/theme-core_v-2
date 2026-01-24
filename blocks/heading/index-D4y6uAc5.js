@@ -1,0 +1,1 @@
+(function(){const{registerBlockType:e}=wp.blocks,{RichText:t}=wp.blockEditor;e("tc-1/heading",{attributes:{content:{type:"string",default:"Заголовок H2"}},edit:({attributes:n,setAttributes:c})=>React.createElement(t,{tagName:"h2",className:"tc-1-heading",value:n.content,onChange:a=>c({content:a}),placeholder:"Введите заголовок..."}),save:()=>null})})();

@@ -25,9 +25,7 @@ final class Blocks {
 	 */
 	public static function init() {
 
-		// self::manifest_resolve();
 		self::get_manifest();
-		// error_log( 'self::$manifest = ' . print_r( self::$manifest, true ) );        // !!--!!
 
 		$file_categories = THEME_PATH . '/src/blocks/block-categories.json';
 		if ( ! file_exists( $file_categories ) ) {
@@ -181,28 +179,25 @@ final class Blocks {
 			// continue;
 			// }
 
-			// error_log( '$block_path = ' . print_r( $block_path, true ) );        // !!--!!
-
 			add_filter(
 				'block_type_metadata',
-				function ( $metadata ) {
+				function ( $metadata ) use ( $block_data ) {
 
-					error_log( '00 $metadata = ' . print_r( $metadata, true ) );        // !!--!!
-
-					if ( empty( $metadata['editorScript'] ) || empty( $metadata['editorStyle'] ) ) {
-						return $metadata;
+					if ( isset( $metadata['name'] ) && $block_data['name'] === $metadata['name'] ) {
+						if ( isset( $metadata['editorScript'] ) ) {
+							$metadata['editorScript'] = self::get_block_asset( $metadata['editorScript'], $metadata['file'] );
+						}
+						if ( isset( $metadata['editorStyle'] ) ) {
+							$metadata['editorStyle'] = self::get_block_asset( $metadata['editorStyle'], $metadata['file'] );
+						}
 					}
-
-					$metadata['editorScript'] = self::get_block_asset( $metadata['editorScript'], $metadata['file'] );
-					$metadata['editorStyle']  = self::get_block_asset( $metadata['editorStyle'], $metadata['file'] );
-
-					error_log( '55 $metadata = ' . print_r( $metadata, true ) );        // !!--!!
 
 					return $metadata;
 				}
 			);
 
 			register_block_type( $block_path );
+
 		}
 	}
 
@@ -223,6 +218,7 @@ final class Blocks {
 		$key            = 'blocks/' . $dir_block_name . '/' . $filename . '.' . $ext;
 
 		if ( ! isset( self::$manifest[ $key ]['file'] ) ) {
+
 			return $editor;
 		}
 		$pathinfo_file = pathinfo( self::$manifest[ $key ]['file'] );

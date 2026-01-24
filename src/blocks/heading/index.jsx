@@ -2,6 +2,15 @@ const { registerBlockType } = wp.blocks;
 const { RichText } = wp.blockEditor;
 
 registerBlockType('tc-1/heading', {
+    attributes: {
+        content: {
+            type: 'string',
+            default: 'Заголовок H2'
+        }
+    },
+
+
+
     edit: ({ attributes, setAttributes }) => {
         return (
             <RichText
@@ -13,13 +22,9 @@ registerBlockType('tc-1/heading', {
             />
         );
     },
-    save: ({ attributes }) => {
-        return <RichText.Content tagName="h2" value={attributes.content} className="tc-1-heading" />;
+
+
+    save: () => {
+        return null; // dynamic block
     },
-    attributes: {
-        content: {
-            type: 'string',
-            default: 'Заголовок H2'
-        }
-    }
 });

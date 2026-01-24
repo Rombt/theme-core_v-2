@@ -27,28 +27,40 @@ import plugins from './plugins.js';
 
 */
 
-console.log("path = ", path);
-// console.log("cleanupByManifest()");
-// console.log("cleanBeforeBuild()");
+
+function wrapBlocks() {
+  return {
+    name: 'wrap-blocks',
+    renderChunk(code, chunk) {
+
+      if (!chunk.facadeModuleId) return null
+
+      if (chunk.facadeModuleId.includes('/blocks/')) {
+        return {
+          code: `(function(){\n${code}\n})();`,
+          map: null
+        }
+      }
+
+      return null
+    }
+  }
+}
 
 function cleanAllDestinationDirs(dirs = []) {
 
-  console.log("**********************cleanAllDestinationDirs*********************");
-  console.log("dirs = ", dirs);
-
   dirs.forEach(dir => {
     const absPath = plugins.nodePath.resolve(process.cwd(), dir);
-    console.log("absPath = ", absPath);
 
     if (plugins.fs.existsSync(absPath)) {
       plugins.fs.rmSync(absPath, { recursive: true, force: true });
-      console.log(`✅ Cleared: ${absPath}`);
+      // console.log(`✅ Cleared: ${absPath}`);
     }
   });
 }
 
 
-
+console.log("path.Entries = ", path.Entries);
 
 export default defineConfig({
   root: path.srcRoot,
@@ -57,34 +69,33 @@ export default defineConfig({
     outDir: path.themeRoot,
     emptyOutDir: false,
     assetsDir: '',
-    // manifest: true,
     manifest: 'core/manifest.json',
 
-    rollupOptions: {
-        input: path.Entries,
-      output: {
+      rollupOptions: {
+          input: path.Entries,
+        output: {
 
-        globals: {
-          '@wordpress/blocks': 'wp.blocks',
-          '@wordpress/element': 'wp.element',
-          '@wordpress/block-editor': 'wp.blockEditor',
-          '@wordpress/components': 'wp.components',
-          '@wordpress/i18n': 'wp.i18n',
-          'react': 'React',
-          'react-dom': 'ReactDOM'
+          globals: {
+            '@wordpress/blocks': 'wp.blocks',
+            '@wordpress/element': 'wp.element',
+            '@wordpress/block-editor': 'wp.blockEditor',
+            '@wordpress/components': 'wp.components',
+            '@wordpress/i18n': 'wp.i18n',
+            'react': 'React',
+            'react-dom': 'ReactDOM'
+          },
         },
-      },
 
-    external: [
-      '@wordpress/blocks',
-      '@wordpress/element',
-      '@wordpress/block-editor',
-      '@wordpress/components',
-      '@wordpress/i18n',
-      'react', // React в WP тоже внешний
-      'react-dom'
-    ],
-    },
+      external: [
+        '@wordpress/blocks',
+        '@wordpress/element',
+        '@wordpress/block-editor',
+        '@wordpress/components',
+        '@wordpress/i18n',
+        'react',
+        'react-dom'
+      ],
+      },
   },
 
   server: {
@@ -104,6 +115,8 @@ export default defineConfig({
   },
 
   plugins: [
+
+    wrapBlocks(),
 
     viteStaticCopy({
       targets: [
@@ -127,23 +140,9 @@ export default defineConfig({
       name: 'clean-before-build',
 
       buildStart() {
-        cleanAllDestinationDirs(path.dist); // заглушка
+        cleanAllDestinationDirs(path.dist);
       },
     },
-
-    // wordpress({
-    //   // 1. Где искать входные файлы (JS/CSS)
-    //   input: path.assetsSrs,
-
-    //   // 2. URL вашего локального сайта (для работы Hot Module Replacement)
-    //   url: 'http://tc-1.multisite/',
-
-    //   // 3. Куда сохранять PHP-файл с зависимостями
-    //   output: 'core/assets.php',
-
-    //   // 4. Пространство имен (префикс для скриптов в WP)
-    //   bundleName: 'tc-1'
-    // })
 
   ],
 });
