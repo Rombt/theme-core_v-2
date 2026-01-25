@@ -54,9 +54,7 @@ final class Assets {
 		global $template;
 		self::$resolved_template = $template;
 
-		error_log( 'self::$resolved_template = ' . print_r( self::$resolved_template, true ) );        // !!--!!
-
-		if ( defined( 'THEME_DEV_MODE' ) && THEME_DEV_MODE ) {
+		if ( defined( 'THEME_DEV_MODE' ) && THEME_DEV_MODE ) {      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  <==========
 			// $vite_url = 'http://localhost:5173';
 			// $file     = str_replace( 'src/', '', $key ); // front.js / editor.js.
 			// wp_enqueue_script( $handle, $vite_url . '/' . $file, array(), null, true );
@@ -76,7 +74,18 @@ final class Assets {
 
 			// return;
 		} else {
-			self::enqueue_asset_by_template();
+
+			if ( is_admin() ) {
+				$manifest_keys_glob_style = self::find_manifest_entries( 'editor' );
+				self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
+			} else {
+				$manifest_keys_glob_style = self::find_manifest_entries( 'front' );
+				self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
+			}
+
+			$name          = basename( self::$resolved_template, '.php' );
+			$manifest_keys = self::find_manifest_entries( $name );
+			self::enqueue_assets_from_manifest( $manifest_keys );
 		}
 	}
 
@@ -98,25 +107,36 @@ final class Assets {
 		self::enqueue_asset();
 	}
 
-	public static function enqueue_asset_by_template() {
-
-		$name          = basename( self::$resolved_template, '.php' );
-		$manifest_keys = self::find_manifest_entries( $name );
+	/**
+	 * Enqueue theme assets described in build manifest.
+	 *
+	 * Accepts an array of manifest entries and enqueues all supported assets
+	 * (currently CSS and JS) that exist in the theme directory.
+	 *
+	 * @param array $manifest_keys Array of manifest entries. Each entry must contain 'file' key.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_assets_from_manifest( $manifest_keys ) {
 
 		foreach ( $manifest_keys as $i => $asset ) {
-			$asset_ext = '';
-			if ( isset( $asset['file'] ) ) {
-				$asset_ext    = pathinfo( $asset['file'], PATHINFO_EXTENSION );
-				$name         = basename( $asset['file'], '.' . $asset_ext );
-				$handle_asset = THEME_NAME . '-' . sanitize_title( $name );
-				$path_asset   = '/assets/' . $asset_ext . '/pages/' . $name . '.' . $asset_ext;
 
-				if ( file_exists( get_theme_file_path( $path_asset ) ) ) {
-					if ( $asset_ext === 'css' ) {
-						wp_enqueue_style( $handle_asset, get_theme_file_uri( $path_asset ) );
-					} elseif ( $asset_ext === 'js' ) {
-						wp_enqueue_script( $handle_asset, get_theme_file_uri( $path_asset ) );
-					}
+			if ( empty( $asset['file'] ) || ! is_string( $asset['file'] ) ) {
+				continue;
+			}
+
+			$path_info_asset = pathinfo( $asset['file'] );
+			$path_asset      = str_replace( '\\', '/', $asset['file'] );
+			$handle_asset    = THEME_NAME . '-' . sanitize_title( str_replace( '/', '-', $path_asset ) );
+			if ( str_contains( $path_asset, '..' ) ) {
+				continue;
+			}
+
+			if ( file_exists( get_theme_file_path( $path_asset ) ) ) {
+				if ( $path_info_asset['extension'] === 'css' ) {
+					wp_enqueue_style( $handle_asset, get_theme_file_uri( $path_asset ) );
+				} elseif ( $path_info_asset['extension'] === 'js' ) {
+					wp_enqueue_script( $handle_asset, get_theme_file_uri( $path_asset ) );
 				}
 			}
 		}
