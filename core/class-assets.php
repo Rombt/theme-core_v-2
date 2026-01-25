@@ -41,11 +41,9 @@ final class Assets {
 				if ( is_array( $decoded ) ) {
 					self::$manifest_json = $decoded;
 				}
+			} else {
+				throw new \InvalidArgumentException( 'Проблемы с файлом манифеста  ' . self::$manifest_path );
 			}
-		}
-
-		if ( empty( self::$manifest_json ) ) {
-			throw new \InvalidArgumentException( 'Проблемы с файлом манифеста  ' . self::$manifest_path );
 		}
 
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_front_assets' ) );
@@ -53,9 +51,10 @@ final class Assets {
 	}
 
 	private static function enqueue_asset() {
-
 		global $template;
 		self::$resolved_template = $template;
+
+		error_log( 'self::$resolved_template = ' . print_r( self::$resolved_template, true ) );        // !!--!!
 
 		if ( defined( 'THEME_DEV_MODE' ) && THEME_DEV_MODE ) {
 			// $vite_url = 'http://localhost:5173';
@@ -77,15 +76,7 @@ final class Assets {
 
 			// return;
 		} else {
-			$name         = basename( self::$resolved_template, '.php' );
-			$manifest_key = self::find_manifest_entry( self::$manifest_json, $name );
-			$name_style   = basename( $manifest_key['file'], '.css' );
-			$handle_style = THEME_NAME . '-' . sanitize_title( $name );
-			$path_style   = '/assets/styles/pages/' . $name_style . '.css';
-
-			if ( file_exists( get_theme_file_path( $path_style ) ) ) {
-				wp_enqueue_style( $handle_style, get_theme_file_uri( $path_style ) );
-			}
+			self::enqueue_asset_by_template();
 		}
 	}
 
@@ -107,6 +98,30 @@ final class Assets {
 		self::enqueue_asset();
 	}
 
+	public static function enqueue_asset_by_template() {
+
+		$name          = basename( self::$resolved_template, '.php' );
+		$manifest_keys = self::find_manifest_entries( $name );
+
+		foreach ( $manifest_keys as $i => $asset ) {
+			$asset_ext = '';
+			if ( isset( $asset['file'] ) ) {
+				$asset_ext    = pathinfo( $asset['file'], PATHINFO_EXTENSION );
+				$name         = basename( $asset['file'], '.' . $asset_ext );
+				$handle_asset = THEME_NAME . '-' . sanitize_title( $name );
+				$path_asset   = '/assets/' . $asset_ext . '/pages/' . $name . '.' . $asset_ext;
+
+				if ( file_exists( get_theme_file_path( $path_asset ) ) ) {
+					if ( $asset_ext === 'css' ) {
+						wp_enqueue_style( $handle_asset, get_theme_file_uri( $path_asset ) );
+					} elseif ( $asset_ext === 'js' ) {
+						wp_enqueue_script( $handle_asset, get_theme_file_uri( $path_asset ) );
+					}
+				}
+			}
+		}
+	}
+
 	/**
 	 * Find first manifest entry whose key contains a given substring.
 	 *
@@ -115,14 +130,17 @@ final class Assets {
 	 *
 	 * @return array|null Manifest entry if found, null otherwise.
 	 */
-	public static function find_manifest_entry( array $manifest_json, string $contains ): ?array {
+	public static function find_manifest_entries( string $contains ): ?array {
 
-		foreach ( $manifest_json as $key => $value ) {
-			if ( strpos( $key, $contains ) !== false ) {
-				return $value;
+		$result = array();
+
+		foreach ( self::$manifest_json as $key => $value ) {
+			if ( pathinfo( $key, PATHINFO_FILENAME ) === $contains ) {
+				$result[] = $value;
 			}
 		}
-		return null;
+
+		return $result;
 	}
 }
 

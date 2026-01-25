@@ -1,4 +1,29 @@
 {
+  "assets/css/editor.scss": {
+    "file": "assets/css/editor-BbL1HCDS.css",
+    "src": "assets/css/editor.scss",
+    "isEntry": true
+  },
+  "assets/css/front.scss": {
+    "file": "assets/css/front-BnwUWR7c.css",
+    "src": "assets/css/front.scss",
+    "isEntry": true
+  },
+  "assets/css/layer.css": {
+    "file": "assets/css/editor-BbL1HCDS.css",
+    "src": "assets/css/editor.scss",
+    "isEntry": true
+  },
+  "assets/css/layout.scss": {
+    "file": "assets/css/layout-6kl5sh9U.css",
+    "src": "assets/css/layout.scss",
+    "isEntry": true
+  },
+  "assets/css/pages/single.scss": {
+    "file": "assets/css/pages/single-Cx6swmYj.css",
+    "src": "assets/css/pages/single.scss",
+    "isEntry": true
+  },
   "assets/fronts/Biryani-Black.woff2": {
     "file": "Biryani-Black-B8-nYY6Z.woff2",
     "src": "assets/fronts/Biryani-Black.woff2"
@@ -12,46 +37,21 @@
     "src": "assets/images/photo coming soon 1.webp"
   },
   "assets/js/editor.js": {
-    "file": "assets\\js\\editor-DPUPsYG8.js",
+    "file": "assets\\js\\editor-VAEsWGZl.js",
     "name": "assets\\js\\editor",
     "src": "assets/js/editor.js",
-    "isEntry": true,
-    "css": [
-      "assets/styles/editor-BbL1HCDS.css"
-    ]
+    "isEntry": true
   },
   "assets/js/front.js": {
-    "file": "assets\\js\\front-Sn211Ibx.js",
+    "file": "assets\\js\\front-CXaIQOl5.js",
     "name": "assets\\js\\front",
     "src": "assets/js/front.js",
-    "isEntry": true,
-    "css": [
-      "assets/styles/front-BnwUWR7c.css"
-    ]
-  },
-  "assets/styles/editor.scss": {
-    "file": "assets/styles/editor-BbL1HCDS.css",
-    "src": "assets/styles/editor.scss",
     "isEntry": true
   },
-  "assets/styles/front.scss": {
-    "file": "assets/styles/front-BnwUWR7c.css",
-    "src": "assets/styles/front.scss",
-    "isEntry": true
-  },
-  "assets/styles/layer.css": {
-    "file": "assets/styles/editor-BbL1HCDS.css",
-    "src": "assets/styles/editor.scss",
-    "isEntry": true
-  },
-  "assets/styles/layout.scss": {
-    "file": "assets/styles/layout-6kl5sh9U.css",
-    "src": "assets/styles/layout.scss",
-    "isEntry": true
-  },
-  "assets/styles/pages/single.scss": {
-    "file": "assets/styles/pages/single-D8lrnLHf.css",
-    "src": "assets/styles/pages/single.scss",
+  "assets/js/pages/single.js": {
+    "file": "assets\\js\\pages\\single-CLwandJ2.js",
+    "name": "assets\\js\\pages\\single",
+    "src": "assets/js/pages/single.js",
     "isEntry": true
   },
   "blocks/button/index.jsx": {

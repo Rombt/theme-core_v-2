@@ -1,5 +1,5 @@
 // Глобальные стили редактора темы
-import '../styles/editor.scss';
+// import '../styles/editor.scss';
 
 // Глобальные JS скрипты редактора темы (если есть)
 // import './some-editor-global.js';
