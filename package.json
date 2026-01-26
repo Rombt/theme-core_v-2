@@ -4,12 +4,13 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite --config src/build/config/vite.config.js",
-        "build": "vite build --config src/build/config/vite.config.js",
+        "dev": "node src/build/dev-runner.js",
+        "build": "vite build --watch --config src/build/config/vite.config.js",
         "preview": "vite preview",
         "theme_json": "node core/theme-json-generator/index.js"
     },
     "devDependencies": {
+        "browser-sync": "^3.0.4",
         "fast-glob": "^3.3.3",
         "sass": "^1.66.1",
         "vite": "^5.0.0",

@@ -5,27 +5,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import path  from './path.js';
 import plugins from './plugins.js';
 
-/**
- *
- * что такое режим Library Mode
- *
- * Как это работает
- *  Условные фичи (Feature Flags): В темах для Envato часто бывают разные версии: "Lite" и "Pro". Через define можно создать флаг __IS_PRO__: true.
- *  При сборке Vite просто удалит недоступный код (Tree-shaking), уменьшая вес файла.
- *  Нужны подробности об этом:  Manifest.json — мост между Vite и PHP. Как именно это используется в WP и насколько это необходимо
 
-  !!!
-  $script_asset = require( get_template_directory() . '/build/index.asset.php' );
-
-  wp_enqueue_script(
-      'my-theme-script',
-      get_template_directory_uri() . '/build/index.js',
-      $script_asset['dependencies'], // Автоматический список зависимостей
-      $script_asset['version'],      // Автоматическая версия для кэша
-      true
-  );
-
-*/
 
 
 function wrapBlocks() {
@@ -58,9 +38,6 @@ function cleanAllDestinationDirs(dirs = []) {
     }
   });
 }
-
-
-console.log("path.Entries = ", path.Entries);
 
 export default defineConfig({
   root: path.srcRoot,

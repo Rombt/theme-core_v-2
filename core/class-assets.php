@@ -54,39 +54,17 @@ final class Assets {
 		global $template;
 		self::$resolved_template = $template;
 
-		if ( defined( 'THEME_DEV_MODE' ) && THEME_DEV_MODE ) {      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  <==========
-			// $vite_url = 'http://localhost:5173';
-			// $file     = str_replace( 'src/', '', $key ); // front.js / editor.js.
-			// wp_enqueue_script( $handle, $vite_url . '/' . $file, array(), null, true );
-
-			// // Важно: чтобы работали import.meta.glob и ESM.
-			// add_filter(
-			// 'script_loader_tag',
-			// function ( $tag, $handle_name ) use ( $handle ) {
-			// if ( $handle_name === $handle ) {
-			// $tag = str_replace( '<script ', '<script type="module" ', $tag );
-			// }
-			// return $tag;
-			// },
-			// 10,
-			// 2
-			// );
-
-			// return;
+		if ( is_admin() ) {
+			$manifest_keys_glob_style = self::find_manifest_entries( 'editor' );
+			self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
 		} else {
-
-			if ( is_admin() ) {
-				$manifest_keys_glob_style = self::find_manifest_entries( 'editor' );
-				self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
-			} else {
-				$manifest_keys_glob_style = self::find_manifest_entries( 'front' );
-				self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
-			}
+			$manifest_keys_glob_style = self::find_manifest_entries( 'front' );
+			self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
+		}
 
 			$name          = basename( self::$resolved_template, '.php' );
 			$manifest_keys = self::find_manifest_entries( $name );
 			self::enqueue_assets_from_manifest( $manifest_keys );
-		}
 	}
 
 	/**
@@ -145,7 +123,6 @@ final class Assets {
 	/**
 	 * Find first manifest entry whose key contains a given substring.
 	 *
-	 * @param array  $manifest_json Manifest array (e.g. Vite build manifest).
 	 * @param string $contains Substring to search for in manifest keys.
 	 *
 	 * @return array|null Manifest entry if found, null otherwise.
