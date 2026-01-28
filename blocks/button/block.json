@@ -7,8 +7,8 @@
     "supports": {
         "html": false
     },
-    "editorScript": "file:.\/index.js",
-    "editorStyle": "file:.\/editor.css",
-    "style": "file:.\/style.css",
+    "editorScript": "file:./index.js",
+    "editorStyle": "file:./editor.css",
+    "style": "file:./style.css",
     "render": "render.php"
 }

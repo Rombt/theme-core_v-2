@@ -1,40 +1,32 @@
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-// import wordpress from 'vite-plugin-wordpress';   // разобраться!!
 
 import path  from './path.js';
 import plugins from './plugins.js';
-
-
 
 
 function wrapBlocks() {
   return {
     name: 'wrap-blocks',
     renderChunk(code, chunk) {
-
       if (!chunk.facadeModuleId) return null
-
-      if (chunk.facadeModuleId.includes('/blocks/')) {
-        return {
-          code: `(function(){\n${code}\n})();`,
-          map: null
+        if (chunk.facadeModuleId.includes('/blocks/')) {
+          return {
+            code: `(function(){\n${code}\n})();`,
+            map: null
+          }
         }
-      }
-
       return null
     }
   }
 }
 
 function cleanAllDestinationDirs(dirs = []) {
-
   dirs.forEach(dir => {
     const absPath = plugins.nodePath.resolve(process.cwd(), dir);
 
     if (plugins.fs.existsSync(absPath)) {
       plugins.fs.rmSync(absPath, { recursive: true, force: true });
-      // console.log(`✅ Cleared: ${absPath}`);
     }
   });
 }
@@ -75,26 +67,9 @@ export default defineConfig({
       },
   },
 
-  server: {
-    strictPort: true,
-    port: 5173,
-
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': '*',
-    },
-
-    hmr: {
-      host: 'localhost',
-    },
-
-  },
-
   plugins: [
-
+    cleanAllDestinationDirs(path.dist),
     wrapBlocks(),
-
     viteStaticCopy({
       targets: [
         {
@@ -113,13 +88,7 @@ export default defineConfig({
         }
       ]
     }),
-    {
-      name: 'clean-before-build',
 
-      buildStart() {
-        cleanAllDestinationDirs(path.dist);
-      },
-    },
 
   ],
 });

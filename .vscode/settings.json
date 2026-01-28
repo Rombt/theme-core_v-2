@@ -8,6 +8,7 @@
     "phpsab.executablePathCBF": "vendor/bin/phpcbf",
     "cSpell.words": [
         "ABSPATH",
+        "fantasticon",
         "kses"
     ],
 }
