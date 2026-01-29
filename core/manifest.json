@@ -5,7 +5,7 @@
     "isEntry": true
   },
   "assets/css/front.scss": {
-    "file": "assets/css/front-BnwUWR7c.css",
+    "file": "assets/css/front-Cb5EuP-W.css",
     "src": "assets/css/front.scss",
     "isEntry": true
   },
@@ -23,18 +23,6 @@
     "file": "assets/css/pages/single-DbL53JWD.css",
     "src": "assets/css/pages/single.scss",
     "isEntry": true
-  },
-  "assets/fronts/Biryani-Black.woff2": {
-    "file": "Biryani-Black-B8-nYY6Z.woff2",
-    "src": "assets/fronts/Biryani-Black.woff2"
-  },
-  "assets/fronts/Biryani-Bold.woff": {
-    "file": "Biryani-Bold-9HLNECv7.woff",
-    "src": "assets/fronts/Biryani-Bold.woff"
-  },
-  "assets/images/photo coming soon 1.webp": {
-    "file": "photo coming soon 1-CdPVKBmG.webp",
-    "src": "assets/images/photo coming soon 1.webp"
   },
   "assets/js/editor.js": {
     "file": "assets\\js\\editor-VAEsWGZl.js",

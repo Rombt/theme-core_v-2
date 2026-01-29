@@ -26,6 +26,43 @@ final class Assets {
 	private static $manifest_json     = array();
 	private static $resolved_template = '';
 
+
+	protected static array $static_assets = array(
+		'styles'  => array(
+			'fonts' => '/assets/css/fonts.css',
+		),
+		'scripts' => array(),
+	);
+
+	public static function enqueue_static_assets() {
+
+		// Styles
+		foreach ( self::$static_assets['styles'] ?? array() as $handle => $path ) {
+			if ( file_exists( get_theme_file_path( $path ) ) ) {
+				wp_enqueue_style(
+					THEME_NAME . '-static-' . $handle,
+					get_theme_file_uri( $path ),
+					array(),
+					null
+				);
+			}
+		}
+
+		// Scripts
+		foreach ( self::$static_assets['scripts'] ?? array() as $handle => $path ) {
+			if ( file_exists( get_theme_file_path( $path ) ) ) {
+				wp_enqueue_script(
+					THEME_NAME . '-static-' . $handle,
+					get_theme_file_uri( $path ),
+					array(),
+					null,
+					true
+				);
+			}
+		}
+	}
+
+
 	/**
 	 * Initializes the assets by hooking into WordPress actions.
 	 *
@@ -46,8 +83,9 @@ final class Assets {
 			}
 		}
 
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_front_assets' ) );
-		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_editor_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_static_assets' ), 5 );
+		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_front_assets' ) );
+		add_action( 'enqueue_block_editor_assets', array( self::class, 'enqueue_editor_assets' ) );
 	}
 
 	private static function enqueue_asset() {

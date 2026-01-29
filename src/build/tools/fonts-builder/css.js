@@ -23,7 +23,8 @@ export function generateCSS(fonts) {
   });
 
   const blocks = unique.map(f => {
-    const rel = path.posix.join("..", "fonts", f.familyDir, f.fileName);
+    // const rel = path.posix.join("..", "fonts", f.familyDir, f.fileName);
+    const rel = path.posix.join("..", "fonts", f.fileName);
 
     // если variable font — пишем диапазон
     const weight =

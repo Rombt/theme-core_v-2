@@ -3,11 +3,15 @@ import plugins from './plugins.js';
 
 const themeRoot = plugins.nodePath.resolve(__dirname, '../../../');
 const srcRoot = plugins.nodePath.resolve(themeRoot, 'src');
-const blocksDist = 'blocks';
-const assetsDist = 'assets';
+const blocksDest = 'blocks';
+const assetsDest = 'assets';
+const fontsDest = 'assets/fonts';
+const staticCssDest = 'assets/css';
 
 const assetsSrs =  plugins.nodePath.resolve(srcRoot, 'assets');
 const blocksSrc = plugins.nodePath.resolve(srcRoot, 'blocks');
+const fontsSrc = plugins.nodePath.resolve(srcRoot, 'static/fonts/build');
+const staticCssSrc = plugins.nodePath.resolve(srcRoot, 'static/css');
 
 const globalEntries = getAssetEntries(assetsSrs);
 const blockEntries = getBlockEntries(blocksSrc);
@@ -22,11 +26,16 @@ const path = normalizePaths({
   srcRoot: srcRoot,
   assetsSrs: assetsSrs,
   blocksSrc: blocksSrc,
-  blocksDist: blocksDist,
+  blocksDest: blocksDest,
 
-  dist: [
-    blocksDist,
-    assetsDist
+  fontsDest: fontsDest,
+  staticCssDest: staticCssDest ,
+  fontsSrc: fontsSrc,
+  staticCssSrc: staticCssSrc,
+
+  dest: [
+    blocksDest,
+    assetsDest
   ]
 });
 
@@ -70,7 +79,7 @@ function getBlockEntries(blocksSrc) {
 
   plugins.fs.readdirSync(blocksSrc).forEach((block) => {
     const jsFile = plugins.nodePath.join(blocksSrc, block, 'index.jsx');
-    const blockFolder = plugins.nodePath.join(blocksDist, block, 'index');
+    const blockFolder = plugins.nodePath.join(blocksDest, block, 'index');
 
     if (plugins.fs.existsSync(jsFile)) {
       blockEntries[blockFolder] = jsFile;

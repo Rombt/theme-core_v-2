@@ -68,23 +68,31 @@ export default defineConfig({
   },
 
   plugins: [
-    cleanAllDestinationDirs(path.dist),
+    cleanAllDestinationDirs(path.dest),
     wrapBlocks(),
     viteStaticCopy({
       targets: [
         {
           src: `${path.blocksSrc}/**/*.php`,
-          dest: `${path.blocksDist}`,
+          dest: `${path.blocksDest}`,
           rename: (name, extension, fullPath) => {
              return plugins.nodePath.relative(path.blocksSrc, fullPath);
           }
         },
         {
           src: `${path.blocksSrc}/**/*.json`,
-          dest: `${path.blocksDist}`,
+          dest: `${path.blocksDest}`,
           rename: (name, extension, fullPath) => {
              return plugins.nodePath.relative(path.blocksSrc, fullPath);
           }
+        },
+        {
+          src: `${path.fontsSrc}/**/*.woff2`,
+          dest: `${path.fontsDest}`,
+        },
+        {
+          src: `${path.staticCssSrc}/**/*.css`,
+          dest: `${path.staticCssDest}`,
         }
       ]
     }),
