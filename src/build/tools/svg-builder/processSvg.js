@@ -3,7 +3,7 @@ import { normalizeSvg } from './normalizeSvg.js';
 import { optimizeSvg } from './optimizeSvg.js';
 import { validateSvg } from './validateSvg.js';
 
-export function processSvg(items, config, type) {
+export function processSvg(items, config, type='') {
 
   return items.map(({ id, content }) => {
 
@@ -18,14 +18,31 @@ export function processSvg(items, config, type) {
     $('metadata, title, desc').remove();
 
     if (type === 'mono') {
-      if (config.mono.removeFill) $('[fill]').removeAttr('fill');
-      if (config.mono.removeStroke) $('[stroke]').removeAttr('stroke');
+      const normalizeColor = (attr) => {
+        $(`[${attr}]`).each((_, el) => {
+          const $el = $(el);
+          const value = $el.attr(attr);
+
+          if (!value) return;
+
+          if (
+            value === 'none' ||
+            value === 'currentColor' ||
+            value.startsWith('url(')
+          ) {
+            return;
+          }
+
+          $el.attr(attr, 'currentColor');
+        });
+      };
+
+      normalizeColor('fill');
+      normalizeColor('stroke');
     }
 
+
     svg = optimizeSvg($.xml(), config.svgo);
-
-    console.log("svg = ", svg);
-
 
     return { id, svg };
   });

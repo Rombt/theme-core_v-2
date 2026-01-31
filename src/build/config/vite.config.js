@@ -99,7 +99,7 @@ export default defineConfig({
           dest: `${path.fontsDest}`,
         },
         {
-          src: `${path.staticSvgSrc}/**/*.svg`,
+          src: `${path.staticSvgSrc}/**/*.{svg,html}`,
           dest: `${path.staticSvgDest}`,
         },
       ]

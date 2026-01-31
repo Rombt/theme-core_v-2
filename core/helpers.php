@@ -16,17 +16,11 @@ defined( 'ABSPATH' ) || exit;
  * @param string $classes Optional. Additional CSS classes to add to the <svg> tag. Default empty string.
  * @return string SVG markup for the requested icon.
  */
-function get_icon_svg( $id, $color = false, $classes = '' ) {
-	$sprite_name = $color ? 'sprite-colored.svg' : 'sprite-mono.svg';
-	$sprite_rel  = '/assets/icons/svg/';
-	$file_path   = get_theme_file_path( $sprite_rel . $sprite_name );
-	$base_url    = get_theme_file_uri( $sprite_rel . $sprite_name );
+function get_icon_svg( $id, $classes = '' ) {
+	$sprite_rel = '/assets/icons/svg/sprite.svg';
+	$file_path  = get_theme_file_path( $sprite_rel );
+	$base_url   = get_theme_file_uri( $sprite_rel );
 
-	error_log( '$file_path = ' . print_r( $file_path, true ) );        // !!--!!
-	error_log( '$base_url = ' . print_r( $base_url, true ) );        // !!--!!
-
-	// D:\web\multisite/wp-content/themes/tc-1/assets/icons/svgsprite-mono.svg
-	// D:\web\multisite\wp-content\themes\tc-1\assets\icons\svg\sprite-mono.svg
 	if ( ! file_exists( $file_path ) ) {
 		return '';
 	}
@@ -36,10 +30,7 @@ function get_icon_svg( $id, $color = false, $classes = '' ) {
 	$id   = sanitize_key( $id );
 	$href = esc_url( $url . '#' . $id );
 
-	$class_attr = '';
-	if ( ! empty( $classes ) ) {
-		$class_attr = ' class="' . esc_attr( $classes ) . '"';
-	}
+	$class_attr = $classes ? ' class="' . esc_attr( $classes ) . '"' : '';
 
 	return sprintf(
 		'<svg%s role="img" aria-hidden="true">

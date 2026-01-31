@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 
-export async function buildPreview(icons, outFile, type) {
+export async function buildPreview(icons, outFile) {
 
   const items = icons.map(i => `
     <div class="item"> ${i.svg}

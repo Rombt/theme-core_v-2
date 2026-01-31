@@ -10,10 +10,7 @@ export function resolvePaths(config) {
     monoSrc: path.join(ROOT, config.src, 'mono'),
     coloredSrc: path.join(ROOT, config.src, 'colored'),
 
-    spriteMono: path.join(ROOT, config.spriteMono),
-    spriteColored: path.join(ROOT, config.spriteColored),
-
-    previewMono: path.join(ROOT, config.previewMono),
-    previewColored: path.join(ROOT, config.previewColored)
+    sprite: path.join(ROOT, config.sprite),
+    preview: path.join(ROOT, config.preview),
   };
 }

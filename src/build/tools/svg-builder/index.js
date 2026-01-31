@@ -16,13 +16,11 @@ async function run() {
   const colored = await readSvgFiles(paths.coloredSrc);
 
   const monoProcessed = processSvg(mono, config, 'mono');
-  const coloredProcessed = processSvg(colored, config, 'colored');
+  const coloredProcessed = processSvg(colored, config);
 
-  await buildSprite(monoProcessed, paths.spriteMono);
-  await buildSprite(coloredProcessed, paths.spriteColored);
-
-  await buildPreview(monoProcessed, paths.previewMono, 'mono');
-  await buildPreview(coloredProcessed, paths.previewColored, 'colored');
+  const icons = [...monoProcessed, ...coloredProcessed];
+  await buildSprite(icons, paths.sprite);
+  await buildPreview(icons, paths.preview);
 
   console.log('✔ SVG build completed');
 }
