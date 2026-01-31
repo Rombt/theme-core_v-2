@@ -7,11 +7,13 @@ const blocksDest = 'blocks';
 const assetsDest = 'assets';
 const fontsDest = 'assets/fonts';
 const staticCssDest = 'assets/css';
+const staticImgDest = 'assets/images';
 
 const assetsSrs =  plugins.nodePath.resolve(srcRoot, 'assets');
 const blocksSrc = plugins.nodePath.resolve(srcRoot, 'blocks');
 const fontsSrc = plugins.nodePath.resolve(srcRoot, 'static/fonts/build');
 const staticCssSrc = plugins.nodePath.resolve(srcRoot, 'static/css');
+const staticCssImg = plugins.nodePath.resolve(srcRoot, 'static/images');
 
 const globalEntries = getAssetEntries(assetsSrs);
 const blockEntries = getBlockEntries(blocksSrc);
@@ -32,6 +34,8 @@ const path = normalizePaths({
   staticCssDest: staticCssDest ,
   fontsSrc: fontsSrc,
   staticCssSrc: staticCssSrc,
+  staticImgDest:staticImgDest,
+  staticCssImg:staticCssImg,
 
   dest: [
     blocksDest,

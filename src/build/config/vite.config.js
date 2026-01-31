@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import  imagesPlugin    from '../tools/images';
 
 import path  from './path.js';
 import plugins from './plugins.js';
@@ -30,6 +31,9 @@ function cleanAllDestinationDirs(dirs = []) {
     }
   });
 }
+
+console.log("path.staticCssImg = ", path.staticCssImg);
+
 
 export default defineConfig({
   root: path.srcRoot,
@@ -96,7 +100,7 @@ export default defineConfig({
         }
       ]
     }),
-
+    imagesPlugin(),
 
   ],
 });
