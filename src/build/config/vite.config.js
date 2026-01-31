@@ -91,13 +91,17 @@ export default defineConfig({
           }
         },
         {
+          src: `${path.staticCssSrc}/**/*.css`,
+          dest: `${path.staticCssDest}`,
+        },
+        {
           src: `${path.fontsSrc}/**/*.woff2`,
           dest: `${path.fontsDest}`,
         },
         {
-          src: `${path.staticCssSrc}/**/*.css`,
-          dest: `${path.staticCssDest}`,
-        }
+          src: `${path.staticSvgSrc}/**/*.svg`,
+          dest: `${path.staticSvgDest}`,
+        },
       ]
     }),
     imagesPlugin(),

@@ -24,6 +24,9 @@ export function processSvg(items, config, type) {
 
     svg = optimizeSvg($.xml(), config.svgo);
 
+    console.log("svg = ", svg);
+
+
     return { id, svg };
   });
 }

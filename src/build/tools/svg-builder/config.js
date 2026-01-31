@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 const src = 'src/static/svg/src';
-const out = 'src/static/svg/dist';
+const out = 'src/static/svg/build';
 export default {
 
     src,
@@ -30,5 +30,22 @@ export default {
     preserveColors: true
   },
 
-  svgo: {}
+  svgo: {
+    plugins: [
+      'preset-default',
+
+      // ВАЖНО: явно отключаем удаление viewBox
+      {
+        name: 'removeViewBox',
+        active: false,
+      },
+
+      // Убираем width / height
+      'removeDimensions',
+
+      // Чистка id (безопасно для sprite)
+      'cleanupIds',
+    ],
+  },
+
 };

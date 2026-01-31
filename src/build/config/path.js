@@ -3,17 +3,12 @@ import plugins from './plugins.js';
 
 const themeRoot = plugins.nodePath.resolve(__dirname, '../../../');
 const srcRoot = plugins.nodePath.resolve(themeRoot, 'src');
+
 const blocksDest = 'blocks';
 const assetsDest = 'assets';
-const fontsDest = 'assets/fonts';
-const staticCssDest = 'assets/css';
-const staticImgDest = 'assets/images';
 
 const assetsSrs =  plugins.nodePath.resolve(srcRoot, 'assets');
 const blocksSrc = plugins.nodePath.resolve(srcRoot, 'blocks');
-const fontsSrc = plugins.nodePath.resolve(srcRoot, 'static/fonts/build');
-const staticCssSrc = plugins.nodePath.resolve(srcRoot, 'static/css');
-const staticCssImg = plugins.nodePath.resolve(srcRoot, 'static/images');
 
 const globalEntries = getAssetEntries(assetsSrs);
 const blockEntries = getBlockEntries(blocksSrc);
@@ -30,12 +25,14 @@ const path = normalizePaths({
   blocksSrc: blocksSrc,
   blocksDest: blocksDest,
 
-  fontsDest: fontsDest,
-  staticCssDest: staticCssDest ,
-  fontsSrc: fontsSrc,
-  staticCssSrc: staticCssSrc,
-  staticImgDest:staticImgDest,
-  staticCssImg:staticCssImg,
+  fontsDest: plugins.nodePath.resolve(assetsDest, 'fonts'),
+  fontsSrc: plugins.nodePath.resolve(srcRoot, 'static/fonts/build'),
+  staticCssDest: plugins.nodePath.resolve(assetsDest, 'css'),
+  staticCssSrc: plugins.nodePath.resolve(srcRoot, 'static/css'),
+  staticImgDest: plugins.nodePath.resolve(assetsDest,'images'),
+  staticImgSrc: plugins.nodePath.resolve(srcRoot, 'static/images'),
+  staticSvgSrc: plugins.nodePath.resolve(srcRoot,'static/svg/build'),
+  staticSvgDest: plugins.nodePath.resolve(assetsDest,'icons/svg'),
 
   dest: [
     blocksDest,
