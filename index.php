@@ -13,6 +13,12 @@ defined( 'ABSPATH' ) || exit; ?>
 
 <main id="primary" class="site-main">
 	<div class="wp-site-blocks">
+
+	******************************************************************************
+		<?php echo get_icon_svg( '7x24h-svgrepo-com', true ); ?>
+
+
+
 		<?php
 		if ( have_posts() ) :
 			while ( have_posts() ) :
