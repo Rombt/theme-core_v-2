@@ -66,10 +66,10 @@ function startBrowserSync() {
 
   bs.init(
     {
-      proxy: "http://tc-1.multisite", // ← поменяй на свой домен
+      proxy: "http://tc-1.multisite",
       files: [
-        "D:/web/multisite/wp-content/themes/tc-1/assets/**/*",
-        "D:/web/multisite/wp-content/themes/tc-1/**/*.php",
+        // "D:/web/multisite/wp-content/themes/tc-1/assets/**/*",
+        "D:/web/multisite/wp-content/themes/tc-1/**/*.*",
       ],
       open: false,
       notify: false

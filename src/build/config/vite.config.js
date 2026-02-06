@@ -32,8 +32,7 @@ function cleanAllDestinationDirs(dirs = []) {
   });
 }
 
-console.log("path.staticCssImg = ", path.staticCssImg);
-
+console.log("path.Entries = ", path.Entries);
 
 export default defineConfig({
   root: path.srcRoot,

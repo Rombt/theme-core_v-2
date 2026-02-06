@@ -143,7 +143,8 @@ final class Blocks {
 				error_log( "Cannot read block.json: $block_json" );
 				continue;
 			}
-			$block_data = json_decode( $file_contents, true );
+			// $block_data = json_decode( $file_contents, true );
+			$block_data = json_decode( $file_contents, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
 			if ( json_last_error() !== JSON_ERROR_NONE ) {
 				error_log( "JSON error in $block_json: " . json_last_error_msg() );
 				continue;
@@ -172,7 +173,13 @@ final class Blocks {
 				$block_name = trim( $block_name, '-' );
 
 				$block_data['name'] = THEME_NAME . '/' . $block_name;
-				file_put_contents( $block_json, wp_json_encode( $block_data, JSON_PRETTY_PRINT ) );
+
+				$json = wp_json_encode( $block_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
+
+				// убираем BOM на всякий случай.
+				$json = preg_replace( '/^\xEF\xBB\xBF/', '', $json );
+
+				file_put_contents( $block_json, $json );
 			}
 
 			// if ( ! self::validate_block_category( $block_data ) ) {

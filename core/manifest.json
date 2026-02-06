@@ -1,6 +1,6 @@
 {
   "assets/css/editor.scss": {
-    "file": "assets/css/editor-3qTJIm7y.css",
+    "file": "assets/css/editor-BbL1HCDS.css",
     "src": "assets/css/editor.scss",
     "isEntry": true
   },
@@ -10,8 +10,8 @@
     "isEntry": true
   },
   "assets/css/layer.css": {
-    "file": "assets/css/layer-BbL1HCDS.css",
-    "src": "assets/css/layer.css",
+    "file": "assets/css/editor-BbL1HCDS.css",
+    "src": "assets/css/editor.scss",
     "isEntry": true
   },
   "assets/css/layout.scss": {
@@ -43,9 +43,14 @@
     "isEntry": true
   },
   "blocks/button/index.jsx": {
-    "file": "blocks\\button\\index-BkzuGM9W.js",
+    "file": "blocks\\button\\index-tYv-gwT0.js",
     "name": "blocks\\button\\index",
     "src": "blocks/button/index.jsx",
+    "isEntry": true
+  },
+  "blocks/button/style.scss": {
+    "file": "blocks/button/style-Brm67mZ5.css",
+    "src": "blocks/button/style.scss",
     "isEntry": true
   },
   "blocks/heading/index.jsx": {
@@ -54,10 +59,20 @@
     "src": "blocks/heading/index.jsx",
     "isEntry": true
   },
+  "blocks/heading/style.scss": {
+    "file": "blocks/heading/style-Cw9EUNq4.css",
+    "src": "blocks/heading/style.scss",
+    "isEntry": true
+  },
   "blocks/paragraph/index.jsx": {
     "file": "blocks\\paragraph\\index-CUS7q54o.js",
     "name": "blocks\\paragraph\\index",
     "src": "blocks/paragraph/index.jsx",
+    "isEntry": true
+  },
+  "blocks/paragraph/style.scss": {
+    "file": "blocks/paragraph/style-CaIZwPp5.css",
+    "src": "blocks/paragraph/style.scss",
     "isEntry": true
   }
 }

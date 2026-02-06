@@ -7,8 +7,16 @@
     "supports": {
         "html": false
     },
+    "attributes": {
+        "text":   { "type": "string", "default": "Button" },
+        "url":    { "type": "string", "default": "" },
+        "target": { "type": "string", "default": "_self" },
+        "rel":    { "type": "string", "default": "" },
+        "style":  { "type": "string", "default": "primary" },
+        "align":  { "type": "string", "default": "" }
+      },
     "editorScript": "file:./index.js",
     "editorStyle": "file:./editor.css",
-    "style": "file:./style.css",
-    "render": "render.php"
+    "style": "file:./style-Brm67mZ5.css",
+    "render": "file:./render.php"
 }

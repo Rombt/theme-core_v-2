@@ -50,3 +50,12 @@ add_action( 'after_setup_theme', 'theme_setup' );
  * Theme core bootstrap
  */
 require_once THEME_PATH . '/core/class-core.php';
+
+// todo перенести в core как часть dev режима
+// !!!!  только на время разработки!!!
+add_action(
+	'admin_init',
+	function () {
+		wp_deregister_script( 'autosave' );
+	}
+);

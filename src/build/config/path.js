@@ -75,20 +75,47 @@ function normalizePaths(obj) {
 
 
 //TODO объединить getAssetEntries() и getBlockEntries() в одну функцию
+
 function getBlockEntries(blocksSrc) {
-  const blockEntries = [];
+  const blockEntries = {};
 
   plugins.fs.readdirSync(blocksSrc).forEach((block) => {
-    const jsFile = plugins.nodePath.join(blocksSrc, block, 'index.jsx');
-    const blockFolder = plugins.nodePath.join(blocksDest, block, 'index');
+    const blockSrcDir = plugins.nodePath.join(blocksSrc, block);
+
+    const jsFile = plugins.nodePath.join(blockSrcDir, 'index.jsx');
+    const scssFile = plugins.nodePath.join(blockSrcDir, 'style.scss');
+
+    const jsOut = plugins.nodePath.join(blocksDest, block, 'index');
+    const cssOut = plugins.nodePath.join(blocksDest, block, 'style');
 
     if (plugins.fs.existsSync(jsFile)) {
-      blockEntries[blockFolder] = jsFile;
+      blockEntries[jsOut] = jsFile;
+    }
+
+    if (plugins.fs.existsSync(scssFile)) {
+      blockEntries[cssOut] = scssFile;
     }
   });
 
   return blockEntries;
 }
+
+
+
+// function getBlockEntries(blocksSrc) {
+//   const blockEntries = [];
+
+//   plugins.fs.readdirSync(blocksSrc).forEach((block) => {
+//     const jsFile = plugins.nodePath.join(blocksSrc, block, 'index.jsx');
+//     const blockFolder = plugins.nodePath.join(blocksDest, block, 'index');
+
+//     if (plugins.fs.existsSync(jsFile)) {
+//       blockEntries[blockFolder] = jsFile;
+//     }
+//   });
+
+//   return blockEntries;
+// }
 
 function getAssetEntries(targetDir) {
   const root = plugins.nodePath.resolve(targetDir); // Фиксируем корень для каждой папки отдельно

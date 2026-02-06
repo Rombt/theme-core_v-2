@@ -5,7 +5,8 @@ registerBlockType('tc-1/button', {
     attributes: {
         content: {
             type: 'string',
-            default: 'Button block',
+            source: 'text',
+            selector: 'div',
         },
     },
 
@@ -24,7 +25,7 @@ registerBlockType('tc-1/button', {
         );
     },
 
-    save: () => {
-        return null; // dynamic block
+    save: ({ attributes }) => {
+        return <div>{attributes.content}</div>;
     },
 });

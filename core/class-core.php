@@ -61,7 +61,7 @@ final class Core {
 		require_once THEME_CORE_PATH . '/helpers.php';
 		require_once THEME_CORE_PATH . '/class-assets.php';
 		require_once THEME_CORE_PATH . '/class-blocks.php';
-		require_once THEME_CORE_PATH . '/wp-global-styles.php';
+		require_once THEME_CORE_PATH . '/wp-global-styles.php';     // todo что за стили, почему не через class-assets?
 	}
 
 
