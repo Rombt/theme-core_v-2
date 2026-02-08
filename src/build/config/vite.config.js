@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import  imagesPlugin    from '../tools/images';
 import { watchAndCopy } from '../tools/watchAndCopy.js';
 
@@ -73,37 +72,6 @@ export default defineConfig({
   plugins: [
     cleanAllDestinationDirs(path.dest),
     wrapBlocks(),
-    viteStaticCopy({
-      targets: [
-        // {
-        //   src: `${path.blocksSrc}/**/*.php`,
-        //   dest: `${path.blocksDest}`,
-        //   rename: (name, extension, fullPath) => {
-        //      return plugins.nodePath.relative(path.blocksSrc, fullPath);
-        //   }
-        // },
-        // {
-        //   src: `${path.blocksSrc}/**/*.json`,
-        //   dest: `${path.blocksDest}`,
-        //   rename: (name, extension, fullPath) => {
-        //      return plugins.nodePath.relative(path.blocksSrc, fullPath);
-        //   }
-        // },
-        // {
-        //   src: `${path.staticCssSrc}/**/*.css`,
-        //   dest: `${path.staticCssDest}`,
-        // },
-        // {
-        //   src: `${path.fontsSrc}/**/*.woff2`,
-        //   dest: `${path.fontsDest}`,
-        // },
-        // {
-        //   src: `${path.staticSvgSrc}/**/*.{svg,html}`,
-        //   dest: `${path.staticSvgDest}`,
-        // },
-      ]
-    }),
-
     watchAndCopy({
       rules: [
         {
@@ -116,7 +84,7 @@ export default defineConfig({
         },
         {
           src: `${path.staticCssSrc}/**/*.css`,
-          dest: `${path.staticCssDest}`,    //!!!!!!!!!!!!!!!   Переносит не в указанную папку а копирует путь src!!!
+          dest: `${path.staticCssDest}`,
         },
         {
           src: `${path.fontsSrc}/**/*.woff2`,
