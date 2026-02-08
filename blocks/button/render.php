@@ -24,6 +24,7 @@ $align  = $attributes['align'] ?? '';
 // return '';
 // }
 
+
 // 3. Классы блока (через WP API)
 $wrapper_attributes = get_block_wrapper_attributes(
 	array(

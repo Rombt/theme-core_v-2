@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import  imagesPlugin    from '../tools/images';
+import { watchAndCopy } from '../tools/watchAndCopy.js';
 
 import path  from './path.js';
 import plugins from './plugins.js';
@@ -32,7 +33,6 @@ function cleanAllDestinationDirs(dirs = []) {
   });
 }
 
-console.log("path.Entries = ", path.Entries);
 
 export default defineConfig({
   root: path.srcRoot,
@@ -75,34 +75,63 @@ export default defineConfig({
     wrapBlocks(),
     viteStaticCopy({
       targets: [
+        // {
+        //   src: `${path.blocksSrc}/**/*.php`,
+        //   dest: `${path.blocksDest}`,
+        //   rename: (name, extension, fullPath) => {
+        //      return plugins.nodePath.relative(path.blocksSrc, fullPath);
+        //   }
+        // },
+        // {
+        //   src: `${path.blocksSrc}/**/*.json`,
+        //   dest: `${path.blocksDest}`,
+        //   rename: (name, extension, fullPath) => {
+        //      return plugins.nodePath.relative(path.blocksSrc, fullPath);
+        //   }
+        // },
+        // {
+        //   src: `${path.staticCssSrc}/**/*.css`,
+        //   dest: `${path.staticCssDest}`,
+        // },
+        // {
+        //   src: `${path.fontsSrc}/**/*.woff2`,
+        //   dest: `${path.fontsDest}`,
+        // },
+        // {
+        //   src: `${path.staticSvgSrc}/**/*.{svg,html}`,
+        //   dest: `${path.staticSvgDest}`,
+        // },
+      ]
+    }),
+
+    watchAndCopy({
+      rules: [
         {
-          src: `${path.blocksSrc}/**/*.php`,
-          dest: `${path.blocksDest}`,
-          rename: (name, extension, fullPath) => {
-             return plugins.nodePath.relative(path.blocksSrc, fullPath);
-          }
+          src: 'src/blocks/**/*.php',
+          dest: 'blocks',
         },
         {
-          src: `${path.blocksSrc}/**/*.json`,
-          dest: `${path.blocksDest}`,
-          rename: (name, extension, fullPath) => {
-             return plugins.nodePath.relative(path.blocksSrc, fullPath);
-          }
+          src: 'src/blocks/**/*.json',
+          dest: 'blocks',
         },
         {
           src: `${path.staticCssSrc}/**/*.css`,
-          dest: `${path.staticCssDest}`,
+          dest: `${path.staticCssDest}`,    //!!!!!!!!!!!!!!!   Переносит не в указанную папку а копирует путь src!!!
         },
         {
           src: `${path.fontsSrc}/**/*.woff2`,
           dest: `${path.fontsDest}`,
+          mirror: false,
         },
         {
           src: `${path.staticSvgSrc}/**/*.{svg,html}`,
           dest: `${path.staticSvgDest}`,
         },
-      ]
+      ],
+      debounce: 100,
     }),
+
+
     imagesPlugin(),
 
   ],
