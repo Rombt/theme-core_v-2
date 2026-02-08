@@ -14,9 +14,6 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Blocks {
 
-	private static $manifest_file_path = 'core/manifest.json';
-
-	private static $manifest        = array();
 	private static $categories_data = array();
 
 
@@ -24,8 +21,6 @@ final class Blocks {
 	 * Инициализация
 	 */
 	public static function init() {
-
-		self::get_manifest();
 
 		$file_categories = THEME_PATH . '/src/blocks/block-categories.json';
 		if ( ! file_exists( $file_categories ) ) {
@@ -185,35 +180,36 @@ final class Blocks {
 			// continue;
 			// }
 
-			add_filter(
-				'block_type_metadata',
-				function ( $metadata ) use ( $block_data ) {
+			if ( null !== MANIFEST_JSON ) {
 
-					if ( isset( $metadata['name'] ) && $block_data['name'] === $metadata['name'] ) {
-						if ( isset( $metadata['editorScript'] ) ) {
-							$metadata['editorScript'] = self::get_block_asset( $metadata['editorScript'], $metadata['file'] );
+				add_filter(
+					'block_type_metadata',
+					function ( $metadata ) use ( $block_data ) {
+
+						if ( isset( $metadata['name'] ) && $block_data['name'] === $metadata['name'] ) {
+							if ( isset( $metadata['editorScript'] ) ) {
+								$metadata['editorScript'] = self::get_block_asset( $metadata['editorScript'], $metadata['file'] );
+							}
+							if ( isset( $metadata['script'] ) ) {
+								$metadata['script'] = self::get_block_asset( $metadata['script'], $metadata['file'] );
+							}
+							if ( isset( $metadata['viewScript'] ) ) {
+								$metadata['viewScript'] = self::get_block_asset( $metadata['viewScript'], $metadata['file'] );
+							}
+							if ( isset( $metadata['editorStyle'] ) ) {
+								$metadata['editorStyle'] = self::get_block_asset( $metadata['editorStyle'], $metadata['file'] );
+							}
+							if ( isset( $metadata['style'] ) ) {
+								$metadata['style'] = self::get_block_asset( $metadata['style'], $metadata['file'] );
+							}
+							if ( isset( $metadata['viewStyle'] ) ) {
+								$metadata['viewStyle'] = self::get_block_asset( $metadata['viewStyle'], $metadata['file'] );
+							}
 						}
-						if ( isset( $metadata['script'] ) ) {
-							$metadata['script'] = self::get_block_asset( $metadata['script'], $metadata['file'] );
-						}
-						if ( isset( $metadata['viewScript'] ) ) {
-							$metadata['viewScript'] = self::get_block_asset( $metadata['viewScript'], $metadata['file'] );
-						}
-						if ( isset( $metadata['editorStyle'] ) ) {
-							$metadata['editorStyle'] = self::get_block_asset( $metadata['editorStyle'], $metadata['file'] );
-						}
-						if ( isset( $metadata['style'] ) ) {
-							$metadata['style'] = self::get_block_asset( $metadata['style'], $metadata['file'] );
-						}
-						if ( isset( $metadata['viewStyle'] ) ) {
-							$metadata['viewStyle'] = self::get_block_asset( $metadata['viewStyle'], $metadata['file'] );
-						}
+						return $metadata;
 					}
-
-					return $metadata;
-				}
-			);
-
+				);
+			}
 			register_block_type( $block_path );
 
 		}
@@ -235,62 +231,14 @@ final class Blocks {
 		$dir_block_name = basename( dirname( $file ) );
 		$key            = 'blocks/' . $dir_block_name . '/' . $filename . '.' . $ext;
 
-		if ( ! isset( self::$manifest[ $key ]['file'] ) ) {
+		if ( ! isset( MANIFEST_JSON[ $key ]['file'] ) ) {
 
 			return $editor;
 		}
-		$pathinfo_file = pathinfo( self::$manifest[ $key ]['file'] );
+		$pathinfo_file = pathinfo( MANIFEST_JSON[ $key ]['file'] );
 
 		return 'file:./' . $pathinfo_file['filename'] . '.' . $pathinfo_file['extension'];
 	}
-
-
-	public static function get_manifest() {
-
-		if ( ! self::$manifest ) {
-			$path           = get_theme_file_path( self::$manifest_file_path );
-			self::$manifest = file_exists( $path )
-			? json_decode( file_get_contents( $path ), true )
-			: array();
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// public static function manifest_resolve() {
-
-	// if ( ! self::$manifest ) {
-	// self::$manifest = json_decode(
-	// file_get_contents( get_theme_file_path( self::$manifest_file_path ) ),
-	// true
-	// );
-	// }
-
-	// self::$manifest_file_path = str_replace( 'file:./', '', self::$manifest_file_path );
-
-	// return get_theme_file_uri(
-	// self::$manifest[ self::$manifest_file_path ]['file'] ?? self::$manifest_file_path
-	// );
-	// }
 }
 
 Blocks::init();

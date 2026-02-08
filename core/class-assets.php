@@ -18,12 +18,9 @@ defined( 'ABSPATH' ) || exit;
 final class Assets {
 
 	/**
-	 * Path to Vite manifest file.
 	 *
 	 * @var string
 	 */
-	private static $manifest_path     = THEME_PATH . '/core/manifest.json';
-	private static $manifest_json     = array();
 	private static $resolved_template = '';
 
 
@@ -70,19 +67,6 @@ final class Assets {
 	 */
 	public static function init() {
 
-		if ( is_readable( self::$manifest_path ) ) {
-			$manifest_content = file_get_contents( self::$manifest_path );
-
-			if ( false !== $manifest_content ) {
-				$decoded = json_decode( $manifest_content, true );
-				if ( is_array( $decoded ) ) {
-					self::$manifest_json = $decoded;
-				}
-			} else {
-				throw new \InvalidArgumentException( 'Проблемы с файлом манифеста  ' . self::$manifest_path );
-			}
-		}
-
 		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_static_assets' ), 5 );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_front_assets' ) );
 		add_action( 'enqueue_block_editor_assets', array( self::class, 'enqueue_editor_assets' ) );
@@ -90,20 +74,32 @@ final class Assets {
 
 	private static function enqueue_asset() {
 		global $template;
-		self::$resolved_template = $template;
 
-		if ( is_admin() ) {
-			$manifest_keys_glob_style = self::find_manifest_entries( 'editor' );
-			self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
+		self::$resolved_template = $template;
+		$is_admin                = is_admin();
+		$has_manifest            = null !== MANIFEST_JSON;
+
+		// === 1. Global assets (front / editor) ===
+		if ( $has_manifest ) {
+			$context = $is_admin ? 'editor' : 'front';
+			$entries = self::find_manifest_entries( $context );
+			self::enqueue_assets_from_manifest( $entries );
 		} else {
-			$manifest_keys_glob_style = self::find_manifest_entries( 'front' );
-			self::enqueue_assets_from_manifest( $manifest_keys_glob_style );
+			self::enqueue_fallback_global_assets( $is_admin );
 		}
 
-			$name          = basename( self::$resolved_template, '.php' );
-			$manifest_keys = self::find_manifest_entries( $name );
-			self::enqueue_assets_from_manifest( $manifest_keys );
+		// === 2. Template-specific assets (front only) ===
+		if ( ! $is_admin ) {
+			if ( $has_manifest ) {
+				$template_name = basename( self::$resolved_template, '.php' );
+				$entries       = self::find_manifest_entries( $template_name );
+				self::enqueue_assets_from_manifest( $entries );
+			} else {
+				self::enqueue_fallback_template_assets();
+			}
+		}
 	}
+
 
 	/**
 	 * Enqueues front-end assets for the theme.
@@ -143,8 +139,8 @@ final class Assets {
 
 			$path_info_asset = pathinfo( $asset['file'] );
 			$path_asset      = str_replace( '\\', '/', $asset['file'] );
-			$handle_asset    = THEME_NAME . '-' . sanitize_title( str_replace( '/', '-', $path_asset ) );
-			if ( str_contains( $path_asset, '..' ) ) {
+			$handle_asset    = THEME_NAME . ' - ' . sanitize_title( str_replace( ' / ', ' - ', $path_asset ) );
+			if ( str_contains( $path_asset, ' . . ' ) ) {
 				continue;
 			}
 
@@ -169,13 +165,59 @@ final class Assets {
 
 		$result = array();
 
-		foreach ( self::$manifest_json as $key => $value ) {
+		foreach ( MANIFEST_JSON as $key => $value ) {
 			if ( pathinfo( $key, PATHINFO_FILENAME ) === $contains ) {
 				$result[] = $value;
 			}
 		}
 
 		return $result;
+	}
+
+	private static function enqueue_fallback_global_assets( $is_admin ) {
+		$context = $is_admin ? 'editor' : 'front';
+
+		wp_enqueue_style(
+			THEME_NAME . "-{$context}-style",
+			get_theme_file_uri( "assets/css/{$context}.css" ),
+			array(),
+			null
+		);
+
+		wp_enqueue_script(
+			THEME_NAME . "-{$context}-script",
+			get_theme_file_uri( "assets/js/{$context}.js" ),
+			array(),
+			null,
+			true
+		);
+	}
+
+	private static function enqueue_fallback_template_assets(): void {
+		$template_name = basename( self::$resolved_template, '.php' );
+		$handle        = THEME_NAME . '-' . sanitize_title( $template_name );
+
+		$css = "assets/css/pages/{$template_name}.css";
+		$js  = "assets/js/pages/{$template_name}.js";
+
+		if ( file_exists( get_theme_file_path( $css ) ) ) {
+			wp_enqueue_style(
+				$handle . '-style',
+				get_theme_file_uri( $css ),
+				array(),
+				null
+			);
+		}
+
+		if ( file_exists( get_theme_file_path( $js ) ) ) {
+			wp_enqueue_script(
+				$handle . '-script',
+				get_theme_file_uri( $js ),
+				array(),
+				null,
+				true
+			);
+		}
 	}
 }
 

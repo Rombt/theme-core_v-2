@@ -18,6 +18,8 @@ final class Core {
 
 	private static $theme_name;
 
+	// private static $manifest_file_path = 'core/manifest.json';       // отключил потому что не нужен.
+
 	/**
 	 * Инициализация ядра
 	 */
@@ -50,6 +52,10 @@ final class Core {
 
 		if ( ! defined( 'THEME_NAME' ) ) {
 			define( 'THEME_NAME', self::$theme_name );
+		}
+
+		if ( ! defined( 'MANIFEST_JSON' ) ) {
+			define( 'MANIFEST_JSON', self::get_manifest() );
 		}
 	}
 
@@ -88,6 +94,23 @@ final class Core {
 		}
 
 		return null;
+	}
+
+
+	private static function get_manifest() {
+
+		$path = get_theme_file_path( self::$manifest_file_path );
+
+		if ( ! is_file( $path ) || ! is_readable( $path ) ) {
+			return null;
+		}
+
+		$json = file_get_contents( $path );
+		$data = json_decode( $json, true );
+
+		return json_last_error() === JSON_ERROR_NONE
+			? $data
+			: null;
 	}
 }
 
