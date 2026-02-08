@@ -18,9 +18,9 @@ defined( 'ABSPATH' ) || exit;
 <?php
 
 
-global $post;
-error_log( 'POST ID: ' . $post->ID );
-error_log( $post->post_content );
+// global $post;
+// error_log( 'POST ID: ' . $post->ID );
+// error_log( $post->post_content );
 
 ?>
 

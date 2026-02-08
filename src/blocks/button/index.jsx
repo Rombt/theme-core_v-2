@@ -17,7 +17,7 @@ registerBlockType('tc-1/button', {
             <RichText
                 {...blockProps}
                 tagName="div"
-                className="tc-1-button"
+                className="tc-1-button tes"
                 value={attributes.content}
                 onChange={(content) => setAttributes({ content })}
                 placeholder="Текст кнопки…"

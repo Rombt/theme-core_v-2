@@ -143,7 +143,6 @@ final class Blocks {
 				error_log( "Cannot read block.json: $block_json" );
 				continue;
 			}
-			// $block_data = json_decode( $file_contents, true );
 			$block_data = json_decode( $file_contents, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE );
 			if ( json_last_error() !== JSON_ERROR_NONE ) {
 				error_log( "JSON error in $block_json: " . json_last_error_msg() );
@@ -194,8 +193,20 @@ final class Blocks {
 						if ( isset( $metadata['editorScript'] ) ) {
 							$metadata['editorScript'] = self::get_block_asset( $metadata['editorScript'], $metadata['file'] );
 						}
+						if ( isset( $metadata['script'] ) ) {
+							$metadata['script'] = self::get_block_asset( $metadata['script'], $metadata['file'] );
+						}
+						if ( isset( $metadata['viewScript'] ) ) {
+							$metadata['viewScript'] = self::get_block_asset( $metadata['viewScript'], $metadata['file'] );
+						}
 						if ( isset( $metadata['editorStyle'] ) ) {
 							$metadata['editorStyle'] = self::get_block_asset( $metadata['editorStyle'], $metadata['file'] );
+						}
+						if ( isset( $metadata['style'] ) ) {
+							$metadata['style'] = self::get_block_asset( $metadata['style'], $metadata['file'] );
+						}
+						if ( isset( $metadata['viewStyle'] ) ) {
+							$metadata['viewStyle'] = self::get_block_asset( $metadata['viewStyle'], $metadata['file'] );
 						}
 					}
 

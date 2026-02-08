@@ -1,77 +1,77 @@
 {
   "assets/css/editor.scss": {
-    "file": "assets/css/editor-BbL1HCDS.css",
+    "file": "assets/css/editor.css",
     "src": "assets/css/editor.scss",
     "isEntry": true
   },
   "assets/css/front.scss": {
-    "file": "assets/css/front-Cb5EuP-W.css",
+    "file": "assets/css/front.css",
     "src": "assets/css/front.scss",
     "isEntry": true
   },
   "assets/css/layer.css": {
-    "file": "assets/css/editor-BbL1HCDS.css",
+    "file": "assets/css/editor.css",
     "src": "assets/css/editor.scss",
     "isEntry": true
   },
   "assets/css/layout.scss": {
-    "file": "assets/css/layout-6kl5sh9U.css",
+    "file": "assets/css/layout.css",
     "src": "assets/css/layout.scss",
     "isEntry": true
   },
   "assets/css/pages/single.scss": {
-    "file": "assets/css/pages/single-Ci_gB6rq.css",
+    "file": "assets/css/pages/single.css",
     "src": "assets/css/pages/single.scss",
     "isEntry": true
   },
   "assets/js/editor.js": {
-    "file": "assets\\js\\editor-VAEsWGZl.js",
+    "file": "assets\\js\\editor.js",
     "name": "assets\\js\\editor",
     "src": "assets/js/editor.js",
     "isEntry": true
   },
   "assets/js/front.js": {
-    "file": "assets\\js\\front-CXaIQOl5.js",
+    "file": "assets\\js\\front.js",
     "name": "assets\\js\\front",
     "src": "assets/js/front.js",
     "isEntry": true
   },
   "assets/js/pages/single.js": {
-    "file": "assets\\js\\pages\\single-CLwandJ2.js",
+    "file": "assets\\js\\pages\\single.js",
     "name": "assets\\js\\pages\\single",
     "src": "assets/js/pages/single.js",
     "isEntry": true
   },
   "blocks/button/index.jsx": {
-    "file": "blocks\\button\\index-tYv-gwT0.js",
+    "file": "blocks\\button\\index.js",
     "name": "blocks\\button\\index",
     "src": "blocks/button/index.jsx",
     "isEntry": true
   },
   "blocks/button/style.scss": {
-    "file": "blocks/button/style-Brm67mZ5.css",
+    "file": "blocks/button/style.css",
     "src": "blocks/button/style.scss",
     "isEntry": true
   },
   "blocks/heading/index.jsx": {
-    "file": "blocks\\heading\\index-D4y6uAc5.js",
+    "file": "blocks\\heading\\index.js",
     "name": "blocks\\heading\\index",
     "src": "blocks/heading/index.jsx",
     "isEntry": true
   },
   "blocks/heading/style.scss": {
-    "file": "blocks/heading/style-Cw9EUNq4.css",
+    "file": "blocks/heading/style.css",
     "src": "blocks/heading/style.scss",
     "isEntry": true
   },
   "blocks/paragraph/index.jsx": {
-    "file": "blocks\\paragraph\\index-CUS7q54o.js",
+    "file": "blocks\\paragraph\\index.js",
     "name": "blocks\\paragraph\\index",
     "src": "blocks/paragraph/index.jsx",
     "isEntry": true
   },
   "blocks/paragraph/style.scss": {
-    "file": "blocks/paragraph/style-CaIZwPp5.css",
+    "file": "blocks/paragraph/style.css",
     "src": "blocks/paragraph/style.scss",
     "isEntry": true
   }

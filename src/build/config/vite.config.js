@@ -45,7 +45,9 @@ export default defineConfig({
       rollupOptions: {
           input: path.Entries,
         output: {
-
+          entryFileNames: `[name].js`,
+          chunkFileNames: `[name].js`,
+          assetFileNames: `[name][extname]`,
           globals: {
             '@wordpress/blocks': 'wp.blocks',
             '@wordpress/element': 'wp.element',
