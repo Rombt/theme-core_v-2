@@ -10,8 +10,8 @@
     "isEntry": true
   },
   "assets/css/layer.css": {
-    "file": "assets/css/layer.css",
-    "src": "assets/css/layer.css",
+    "file": "assets/css/editor.css",
+    "src": "assets/css/editor.scss",
     "isEntry": true
   },
   "assets/css/layout.scss": {

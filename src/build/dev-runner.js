@@ -6,39 +6,38 @@ const bs = browserSync.create();
 let viteProcess = null;
 let isFirstBuildDone = false;
 let shuttingDown = false;
-
+let reloadTimer = null;
 
 function startVite() {
   console.log("[engine] Starting Vite (build --watch)...");
 
-  viteProcess = spawn("npx", ["vite", "build", "--watch","--config src/build/config/vite.config.js"], {
-    stdio: ["inherit", "pipe", "pipe"],
-    shell: true
-  });
-
-  viteProcess.stdout.on("data", (data) => {
-    const text = data.toString();
-    process.stdout.write(text);
-
-    if (!isFirstBuildDone && /built in|Build complete|build finished/i.test(text)) {
-      isFirstBuildDone = true;
-      console.log("[engine] First build done.");
-
-      startBrowserSync();
+  viteProcess = spawn(
+    "npx",
+    ["vite", "build", "--watch", "--config", "src/build/config/vite.config.js"],
+    {
+      stdio: ["inherit", "pipe", "pipe"],
+      shell: true,
     }
-  });
+  );
 
   viteProcess.stdout.on("data", (data) => {
     const text = data.toString();
     process.stdout.write(text);
 
-    if (/built in/i.test(text)) {
-      if (!isFirstBuildDone) {
-        isFirstBuildDone = true;
-        startBrowserSync();
-      } else {
-        bs.reload();
-      }
+    // триггер только на завершение билда
+    if (/built in|build finished|Build complete/i.test(text)) {
+      clearTimeout(reloadTimer);
+
+      reloadTimer = setTimeout(() => {
+        if (!isFirstBuildDone) {
+          isFirstBuildDone = true;
+          console.log("[engine] First build done.");
+          startBrowserSync();
+        } else if (bs.active) {
+          console.log("[engine] Reload browser");
+          bs.reload();
+        }
+      }, 200); // debounce
     }
   });
 
@@ -48,8 +47,7 @@ function startVite() {
 
   viteProcess.on("exit", (code) => {
     if (shuttingDown) return;
-
-    console.error(`[engine] Vite exited with code ${code}. Shutting down.`);
+    console.error(`[engine] Vite exited with code ${code}`);
     shutdown(1);
   });
 
@@ -67,16 +65,14 @@ function startBrowserSync() {
   bs.init(
     {
       proxy: "http://tc-1.multisite",
-      files: [
-        // "D:/web/multisite/wp-content/themes/tc-1/assets/**/*",
-        "D:/web/multisite/wp-content/themes/tc-1/**/*.*",
-      ],
       open: false,
-      notify: false
+      notify: false,
+      ui: false,
+      ghostMode: false,
     },
-    (err, bsInstance) => {
+    (err) => {
       if (err) {
-        console.error("[engine] BrowserSync failed to start:", err);
+        console.error("[engine] BrowserSync failed:", err);
         shutdown(1);
         return;
       }
@@ -96,7 +92,7 @@ function shutdown(code = 0) {
     viteProcess.kill("SIGINT");
   }
 
-  if (bs && bs.active) {
+  if (bs.active) {
     bs.exit();
   }
 

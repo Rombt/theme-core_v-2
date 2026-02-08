@@ -99,7 +99,10 @@ final class Core {
 
 	private static function get_manifest() {
 
-		$path = get_theme_file_path( self::$manifest_file_path );
+		$path = '';
+		if ( ! empty( self::$manifest_file_path ) ) {
+			$path = get_theme_file_path( self::$manifest_file_path );
+		}
 
 		if ( ! is_file( $path ) || ! is_readable( $path ) ) {
 			return null;
