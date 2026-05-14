@@ -1,0 +1,219 @@
+
+ENGINEERING ROADMAP (ARCHITECTURE-FIRST VERSION)
+==================================================
+PHASE 0 — ARCHITECTURAL CONTRACT LAYER
+==================================================
+Цель
+
+Зафиксировать систему как набор неизменяемых правил.
+
+Что появляется
+glossary (source of truth)
+layer definitions
+responsibility boundaries
+data flow rules
+naming rules
+dependency rules
+Главный результат
+Система получает строгую архитектурную модель,
+в которой каждый слой знает свои границы.
+Запрещено после этой фазы
+смешивание rendering и composition
+прямой доступ UI к configuration
+template-driven logic
+==================================================
+PHASE 1 — CORE EXECUTION LAYER (SYSTEM KERNEL)
+==================================================
+Цель
+
+Создать “ядро исполнения системы”.
+
+Что появляется
+runtime core
+registry engine
+dependency container (lightweight)
+configuration loader
+context resolver
+Слой ответственности
+УПРАВЛЯЕТ ДАННЫМИ И СОСТОЯНИЕМ,
+НО НЕ ЗНАЕТ НИЧЕГО О UI
+==================================================
+PHASE 2 — DOMAIN MODEL LAYER (COMPOSITION MODEL)
+==================================================
+Цель
+
+Описать структуру сайта как систему объектов.
+
+Что появляется
+Section model
+Layout model
+Page composition tree
+hierarchy rules
+composition schema
+Слой ответственности
+ОПРЕДЕЛЯЕТ КАК САЙТ СОБРАН,
+НО НЕ РИСУЕТ ЕГО
+==================================================
+PHASE 3 — DESIGN SYSTEM LAYER
+==================================================
+Цель
+
+Ввести единый визуальный язык.
+
+Что появляется
+design tokens
+typography rules
+spacing rules
+color system
+UI constraints
+Слой ответственности
+ОПРЕДЕЛЯЕТ КАК ВЫГЛЯДИТ,
+НО НЕ ОПРЕДЕЛЯЕТ СТРУКТУРУ
+==================================================
+PHASE 4 — COMPOSITION ENGINE LAYER
+==================================================
+Цель
+
+Собрать систему из структурных блоков.
+
+Что появляется
+section registry
+layout engine
+composition builder
+page assembly rules
+Слой ответственности
+СОБИРАЕТ СТРАНИЦУ ИЗ СЕКЦИЙ
+НО НЕ РЕНДЕРИТ HTML
+==================================================
+PHASE 5 — RENDERING ABSTRACTION LAYER
+==================================================
+Цель
+
+Отделить структуру от способа отображения.
+
+Что появляется
+renderer interface
+renderer adapters
+mapping system
+rendering pipeline
+Слой ответственности
+ПРЕВРАЩАЕТ COMPOSITION В UI
+ЧЕРЕЗ ЛЮБОЙ RENDERER
+==================================================
+PHASE 6 — CONFIGURATION LAYER (DECLARATIVE SYSTEM)
+==================================================
+Цель
+
+Сделать систему полностью конфигурационной.
+
+Что появляется
+site configuration schema
+presets
+validation rules
+resolver system
+Слой ответственности
+ОПИСЫВАЕТ САЙТ КАК ДАННЫЕ
+==================================================
+PHASE 7 — PROVISIONING LAYER (SITE FACTORY)
+==================================================
+Цель
+
+Автоматизировать создание сайтов.
+
+Что появляется
+site generator
+provisioning pipeline
+preset application engine
+assembly orchestrator
+Слой ответственности
+ПРЕВРАЩАЕТ КОНФИГУРАЦИЮ В ГОТОВЫЙ САЙТ
+==================================================
+PHASE 8 — WORDPRESS INTEGRATION LAYER
+==================================================
+Цель
+
+Стабилизировать связь с WP ecosystem.
+
+Что появляется
+WP lifecycle adapters
+Gutenberg bridge
+WooCommerce bridge
+plugin compatibility layer
+Слой ответственности
+СВЯЗЫВАЕТ СИСТЕМУ С WORDPRESS
+БЕЗ ВЛИЯНИЯ НА ЯДРО АРХИТЕКТУРЫ
+==================================================
+PHASE 9 — MULTISITE ORCHESTRATION LAYER
+==================================================
+Цель
+
+Поддержка множественных сайтов.
+
+Что появляется
+site isolation model
+shared design system
+centralized provisioning
+multi-site registry
+ВАЖНО
+
+multisite:
+
+НЕ ОБЯЗАТЕЛЕН
+А КАК ОПЦИОНАЛЬНЫЙ DEPLOYMENT MODE
+==================================================
+PHASE 10 — ECOSYSTEM LAYER
+==================================================
+Цель
+
+Подготовить систему к расширению.
+
+Что появляется
+plugin API
+extension points
+SDK
+package system
+external integrations
+Слой ответственности
+РАСШИРЕНИЕ СИСТЕМЫ,
+НЕ ИЗМЕНЕНИЕ ЯДРА
+==================================================
+КЛЮЧЕВАЯ ИДЕЯ ВСЕЙ МОДЕЛИ
+==================================================
+
+Система строится не как список функций.
+
+А как изолированные слои:
+
+CONFIGURATION
+    ↓
+CORE
+    ↓
+COMPOSITION
+    ↓
+DESIGN
+    ↓
+RENDERING
+    ↓
+PROVISIONING
+    ↓
+WORDPRESS ADAPTER
+    ↓
+MULTISITE (optional)
+    ↓
+ECOSYSTEM
+Главное отличие от твоего черновика
+Было:
+фазы = фичи
+Стало:
+фазы = архитектурные слои с границами ответственности
+Итоговая мысль
+
+Ты сейчас переходишь от:
+
+product roadmap
+
+к:
+
+system architecture roadmap
+
+И это критически важный переход для theme-core v-2.
