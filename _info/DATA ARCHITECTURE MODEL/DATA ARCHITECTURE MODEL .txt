@@ -1,0 +1,244 @@
+theme-core v-2 DATA ARCHITECTURE MODEL
+
+
+==================================================
+FOUNDATION DATA
+==================================================
+
+    Базовые архитектурные данные системы.
+
+    Это:
+        фундаментальные правила, контракты и визуальные примитивы, на которых строятся все остальные слои.
+
+    Примеры
+        - design tokens
+        - typography scales
+        - spacing rules
+        - color systems
+        - breakpoints
+        - component contracts
+        - section schemas
+        - slot definitions
+        - layout rules
+    Особенности
+        - глобальный
+        - централизованный
+        - многоразовый
+        - renderer-agnostic
+        - platform-wide
+    Ключевая идея
+        Foundation Data определяют: что именно может существовать в системе.
+
+==================================================
+2. COMPOSITION DATA
+==================================================
+
+    Структурные данные сайта.
+
+    Composition описывает: как устроен сайт, но не как он рендерится.
+
+    Примеры
+        - composition trees
+        - section hierarchy
+        - region placement
+        - slot assignments
+        - layout structure
+        - page composition maps
+        - nested compositions
+    Особенности
+        - структурный
+        - иерархический
+        - декларативный
+        - renderer-independent
+        - reusable
+    Ключевая идея
+        Composition — это отдельный слой данных, а не HTML, template или renderer output.
+
+
+==================================================
+3. CONFIGURATION DATA
+==================================================
+
+    Данные site assembly и architectural orchestration.
+
+    Configuration координирует: какие composition, design rules, renderers и presets используются сайтом.
+
+    Примеры
+        - site configuration
+        - page assignments
+        - layout bindings
+        - renderer assignments
+        - active presets
+        - theme settings
+        - design preset selection
+        - feature toggles
+        - site-wide options
+    Особенности
+        - декларативный
+        - детерминированный
+        - сериализуемый
+        - версионируемый
+        - reusable
+    Ключевая идея
+        Configuration — orchestrates system assembly, но не хранит: composition logic rendering logic design definitions.
+
+==================================================
+4. CONTENT DATA
+
+    Пользовательский контент.
+
+    Примеры
+        - texts
+        - images
+        - products
+        - posts
+        - metadata
+        - taxonomy content
+        - media library entities
+    Особенности
+        - dynamic
+        - user-managed
+        - CMS-native
+        - mutable
+    Ключевая идея
+        Content Data: наполняют систему, но не определяют architecture.
+
+    Content должен: оставаться внутри WordPress ecosystem использовать WordPress-native workflows не заменяться custom CMS architecture.
+
+==================================================
+5. RUNTIME DATA
+==================================================
+
+Runtime execution data системы.
+
+    Примеры
+        - rendering context
+        - execution context
+        - active renderer
+        - runtime cache
+        - environment state
+        - temporary render state
+        - hydration state
+        - runtime mappings
+
+    Особенности
+        - temporary
+        - mutable
+        - execution-scoped
+        - non-persistent
+    Ключевая идея
+        Runtime Data — это execution layer, а не configuration source.
+
+==================================================
+6. PROVISIONING DATA
+==================================================
+
+    Данные site provisioning и initialization orchestration.
+
+    Provisioning отвечает: за сборку, импорт и подготовку сайта.
+
+    Примеры
+        - demo manifests
+        - installation presets
+        - import pipelines
+        - setup queues
+        - provisioning manifests
+        - initialization state
+        - onboarding flows
+    Особенности
+        - procedural
+        - orchestration-oriented
+        - initialization-scoped
+        - partially transient
+    Ключевая идея
+        Provisioning — это процесс сборки сайта, а не постоянное состояние системы.
+
+==================================================
+7. REGISTRY SYSTEM
+==================================================
+
+    Архитектурная система регистрации и discovery mechanism.
+
+    Registry — это coordination layer, а не content layer.
+
+    Примеры
+        - registered sections
+        - registered layouts
+        - registered renderers
+        - registered adapters
+        - registered presets
+        - renderer capabilities
+        - integration providers
+    Особенности
+        - centralized
+        - discoverable
+        - extensible
+        - plugin-friendly
+    Ключевая идея 
+        Registry System: координирует архитектуру, обеспечивает discovery, decouples implementation.
+
+==================================================
+8. INTEGRATION DATA
+==================================================
+
+    Данные внешних integrations и platform adapters.
+
+    Примеры
+        - Elementor mappings
+        - Gutenberg bindings
+        - WooCommerce bindings
+        - external adapter configs
+        - integration-specific metadata
+    Особенности
+        - adapter-scoped
+        - isolated
+        - integration-specific
+        - externally bounded
+    Ключевая идея
+        Integration Data: не должны заражать core architecture системы.
+
+==================================================
+9. INFRASTRUCTURE DATA
+==================================================
+
+Данные infrastructure layer и build/deployment systems.
+
+Примеры
+    - asset manifests
+    - dependency graphs
+    - build artifacts
+    - asset maps
+    - cache manifests
+    - deployment metadata
+    - bundle metadata
+Особенности
+    - build-oriented
+    - deployment-oriented
+    - infrastructure-scoped
+    - environment-aware
+Ключевая идея
+    Infrastructure — это infrastructural execution layer, а не composition architecture.
+
+
+==================================================
+ПРИМЕР ПОЛНОГО РАЗДЕЛЕНИЯ
+==================================================
+
+    FOUNDATION:
+        HeroSection существует
+        HeroSection принимает:
+            title
+            subtitle
+            image
+
+    COMPOSITION:
+        Homepage использует HeroSection
+
+    CONTENT:
+        title = "AI Platform"
+
+    CONFIGURATION:
+        используется dark preset
+
+    RUNTIME:
+        renderer генерирует финальный HTML
