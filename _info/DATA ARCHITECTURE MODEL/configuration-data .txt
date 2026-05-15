@@ -1,0 +1,340 @@
+==================================================
+CONFIGURATION DATA
+==================================================
+
+    Configuration Data — это слой данных, который определяет какие именно 
+            возможности,
+            варианты,
+            настройки
+            и architectural choices
+        активны для конкретного сайта.
+
+    Проще говоря:
+        Configuration — это слой, который собирает сайт из уже существующих building blocks системы.
+
+--------------------------------------------------
+ГЛАВНАЯ ИДЕЯ CONFIGURATION
+--------------------------------------------------
+
+    Configuration отвечает не на вопрос:
+        "Что умеет система?"
+
+    и не на вопрос:
+        "Как устроена структура страницы?"
+
+    Configuration отвечает на вопрос:
+        "Какие именно варианты системы используются сейчас?"
+
+--------------------------------------------------
+ОЧЕНЬ ВАЖНОЕ ПОНИМАНИЕ
+--------------------------------------------------
+
+    Configuration — это НЕ content.
+    Configuration — это НЕ composition.
+    Configuration — это НЕ design system.
+    Configuration — это layer architectural choices.
+
+--------------------------------------------------
+ПРОСТАЯ АНАЛОГИЯ
+--------------------------------------------------
+
+    Если Foundation — это набор строительных правил,
+    а Composition — это structural схема сборки,
+    то Configuration — это выбор конкретных вариантов для текущего сайта.
+
+    Например:
+
+        какой preset активен
+        какой renderer используется
+        какой layout выбран
+        какие features включены
+        какая theme variation активна
+
+--------------------------------------------------
+ПРОСТОЙ ПРИМЕР
+--------------------------------------------------
+
+    Допустим, в системе существуют:
+        3 layout системы
+        5 header variants
+        4 typography presets
+        2 renderer modes
+
+    Configuration определяет:
+        что именно используется на текущем сайте.
+
+--------------------------------------------------
+НАПРИМЕР
+--------------------------------------------------
+
+    Configuration может содержать:
+
+        active_header = modern-header
+        active_design_preset = dark-business
+        product_card_renderer = compact
+        sidebar_enabled = false
+
+--------------------------------------------------
+ЧТО ВАЖНО ПОНЯТЬ
+--------------------------------------------------
+
+    Configuration — не создаёт новые architectural blocks.
+
+    Configuration:
+        только выбирает,
+        связывает
+        и активирует
+        уже существующие возможности системы.
+
+--------------------------------------------------
+CONFIGURATION — ЭТО LAYER ASSEMBLY DECISIONS
+--------------------------------------------------
+
+    То есть:
+
+        Configuration —
+        это набор решений о том,
+        как именно собрать конкретный сайт
+        из available system capabilities.
+
+--------------------------------------------------
+ЧТО ИМЕННО ВХОДИТ В CONFIGURATION DATA
+--------------------------------------------------
+
+    1. ACTIVE PRESETS
+    --------------------------------------------------
+
+        Например:
+            active_design_preset = modern-dark
+            active_spacing_preset = compact
+            active_typography_preset = startup-ui
+
+        Configuration определяет:
+            какие preset variations активны.
+
+    2. LAYOUT ASSIGNMENTS
+    --------------------------------------------------
+
+        Например:
+            homepage_layout = landing-v3
+            product_layout = shop-modern
+            blog_layout = editorial
+
+        Configuration определяет:
+            какие compositions/layouts
+            используются для конкретных view.
+
+    3. RENDERER ASSIGNMENTS
+    --------------------------------------------------
+
+        Например:
+            product_card_renderer = compact
+            gallery_renderer = masonry
+            navigation_renderer = mega-menu
+
+        Configuration определяет:
+            какой renderer используется
+            для конкретной architectural role.
+
+    4. FEATURE TOGGLES
+    --------------------------------------------------
+
+        Например:
+            sticky_header = true
+            dark_mode = enabled
+            animations = reduced
+
+        Configuration управляет:
+            включением и отключением возможностей.
+
+    5. SITE-WIDE SETTINGS
+    --------------------------------------------------
+
+        Например:
+            default_container = wide
+            default_button_style = rounded
+            default_spacing = relaxed
+
+    6. THEME VARIATIONS
+    --------------------------------------------------
+
+        Например:
+            active_theme_variant = startup
+            active_brand_mode = minimal
+
+    7. PAGE-LEVEL ASSIGNMENTS
+    --------------------------------------------------
+
+        Например:
+            homepage uses:
+                landing-homepage-v2
+            pricing-page uses:
+                saas-pricing-layout
+
+--------------------------------------------------
+ЧТО CONFIGURATION НЕ СОДЕРЖИТ
+--------------------------------------------------
+
+    Configuration НЕ содержит:
+
+        actual content
+        тексты
+        изображения
+        продукты
+        posts
+
+    Это Content Data.
+
+--------------------------------------------------
+
+    Configuration НЕ содержит:
+
+        section schemas
+        typography definitions
+        spacing scales
+        color token definitions
+
+    Это Foundation Data.
+
+--------------------------------------------------
+
+    Configuration НЕ содержит:
+
+        structural trees
+        section hierarchy
+        nested composition structure
+
+    Это Composition Data.
+
+--------------------------------------------------
+
+    Configuration НЕ содержит:
+
+        runtime execution state
+        cache
+        active rendering context
+
+    Это Runtime Data.
+
+--------------------------------------------------
+САМОЕ ВАЖНОЕ РАЗДЕЛЕНИЕ
+--------------------------------------------------
+
+    Foundation говорит:
+        какие возможности существуют.
+
+    Composition говорит:
+        как устроена структура.
+
+    Configuration говорит:
+        какие варианты системы используются для текущего сайта.
+
+--------------------------------------------------
+КРИТИЧЕСКИ ВАЖНЫЙ ПРИМЕР
+--------------------------------------------------
+
+    FOUNDATION:
+
+        HeroSection supports:
+            themes
+            alignment
+            spacing
+
+    COMPOSITION:
+
+        Homepage:
+            Header
+            Hero
+            CTA
+
+    CONFIGURATION:
+
+        homepage uses:
+            landing-v2
+
+        hero theme:
+            dark
+
+        active spacing preset:
+            compact
+
+    CONTENT:
+
+        Hero title:
+            "Modern AI Platform"
+
+--------------------------------------------------
+ПОЧЕМУ CONFIGURATION ВАЖЕН
+--------------------------------------------------
+
+    Без Configuration
+        каждый сайт пришлось бы:
+            программировать отдельно,
+            вручную менять templates,
+            создавать новые themes,
+            дублировать layouts.
+
+        Configuration позволяет:
+            быстро переключать presets
+            переиспользовать layouts
+            изменять rendering behaviour
+            собирать разные demo
+            делать composable assembly
+
+--------------------------------------------------
+CONFIGURATION И WORDPRESS
+--------------------------------------------------
+
+    В обычной WordPress теме:
+        configuration часто размазана:
+            по Customizer,
+            ACF,
+            PHP constants,
+            theme options,
+            template conditions.
+
+    В результате:  architecture становится хаотичной.
+
+--------------------------------------------------
+theme-core v-2 mindset
+--------------------------------------------------
+
+    Configuration — это отдельный централизованный архитектурный слой данных.
+
+--------------------------------------------------
+ВАЖНОЕ АРХИТЕКТУРНОЕ ПРАВИЛО
+--------------------------------------------------
+
+    Configuration НЕ должна:
+        содержать business logic,
+        хранить renderer implementation,
+        дублировать composition,
+        хранить design definitions.
+
+    Configuration должна:
+        только orchestrate assembly.
+
+--------------------------------------------------
+ПРОСТАЯ МЕНТАЛЬНАЯ МОДЕЛЬ
+--------------------------------------------------
+
+    Foundation:
+        определяет, какие детали Lego существуют.
+
+    Composition:
+        определяет, как из них строится структура.
+
+    Configuration:
+        определяет, какой именно набор деталей и вариантов используется сейчас.
+
+--------------------------------------------------
+КЛЮЧЕВОЙ ВЫВОД
+--------------------------------------------------
+
+Configuration Data — это architectural orchestration layer, который определяет:
+    какие system capabilities,
+    compositions,
+    renderers
+    presets
+    и variations
+    данной конкретной сборки сайта.
