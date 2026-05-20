@@ -1,0 +1,63 @@
+==================================================
+REGISTRIES.components
+==================================================
+
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.components — registry atomic UI primitives.
+
+    Раздел отвечает за:
+        - регистрацию component definitions
+        - описание component props
+        - описание component capabilities
+        - описание reusable UI primitives
+
+
+Главная идея
+--------------------------------------------------
+
+    Components являются: минимальными reusable UI units.
+
+    Components НЕ являются:
+        - page sections
+        - layouts
+        - page templates
+
+    Components используются: внутри sections и composition structures.
+
+
+Типичные components
+--------------------------------------------------
+
+    Например:
+        - button
+        - heading
+        - text
+        - image
+        - icon
+        - input
+        - card
+        - badge
+
+
+Architectural роль
+--------------------------------------------------
+
+    Components формируют: reusable UI layer.
+
+    Component definition может содержать:
+        - props
+        - variants
+        - states
+        - capabilities
+        - renderer mappings
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    component definition = описание reusable UI primitive.
+
+    component instance = конкретное использование component внутри composition tree.
