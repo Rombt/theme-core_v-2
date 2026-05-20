@@ -1,0 +1,24 @@
+REGISTRIES
+│
+├── layouts
+│   Реестр layout-систем.
+│
+├── sections
+│   Реестр section-типов.
+│
+├── components
+│   Реестр UI-компонентов.
+│
+├── renderers
+│   Реестр renderer-движков и mappings.
+│
+├── templates
+│   Реестр template-конфигураций.
+│
+├── tokens
+│   Реестр design tokens.
+│
+├── presets
+│   Реестр готовых configuration presets.
+│
+└── capabilities
