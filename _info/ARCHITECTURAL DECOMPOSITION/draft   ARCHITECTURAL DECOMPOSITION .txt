@@ -1,0 +1,777 @@
+theme-core v-2
+APPLICATION LAYERS
+ARCHITECTURAL DECOMPOSITION
+
+==================================================
+1. FOUNDATION LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Фундаментальный системный слой.
+
+Foundation Layer предоставляет:
+- базовые архитектурные механизмы
+- системные контракты
+- инфраструктуру выполнения
+- механизмы композиции модулей
+
+Это самый нижний слой platform architecture.
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+Когда система становится:
+- modular
+- extensible
+- composition-oriented
+- pipeline-driven
+
+появляется необходимость в:
+- единых контрактах
+- единых lifecycle правилах
+- стабильной orchestration infrastructure
+
+Без Foundation Layer:
+- модули начинают зависеть друг от друга напрямую
+- нарушаются архитектурные границы
+- система теряет предсказуемость
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- module contracts
+- lifecycle bootstrapping
+- dependency container
+- event system
+- hook system
+- pipeline engine
+- shared interfaces
+- system abstractions
+- execution coordination primitives
+- common architectural utilities
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- domain logic
+- rendering logic
+- site composition
+- provisioning logic
+- WordPress-specific business behavior
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- Container
+- EventBus
+- HookDispatcher
+- PipelineManager
+- ModuleKernel
+- ContractRegistry
+- SharedInterfaces
+- LifecycleManager
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Foundation Layer обеспечивает:
+- стабильность платформы
+- единые правила взаимодействия
+- управляемую модульность
+- предсказуемую orchestration model
+
+
+==================================================
+2. CORE SERVICES LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Общий инфраструктурный сервисный слой.
+
+Содержит reusable services,
+которые используются всеми остальными слоями,
+но не принадлежат конкретному домену.
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+В platform-oriented systems быстро появляются:
+- повторяющиеся инфраструктурные задачи
+- shared technical services
+- cross-cutting concerns
+
+Если их не централизовать:
+- возникает дублирование
+- модули становятся нестабильными
+- orchestration усложняется
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- configuration loading
+- schema validation
+- filesystem abstraction
+- caching
+- serialization
+- diagnostics
+- logging
+- asset management
+- resolver services
+- path resolution
+- metadata services
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- domain entities
+- rendering orchestration
+- composition logic
+- UI semantics
+- renderer adapters
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- ConfigLoader
+- SchemaValidator
+- CacheManager
+- AssetManager
+- FileResolver
+- MetadataResolver
+- DiagnosticsCenter
+- Logger
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Core Services Layer:
+- устраняет инфраструктурное дублирование
+- стабилизирует execution environment
+- предоставляет reusable technical capabilities
+
+
+==================================================
+3. CONFIGURATION LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой описания архитектуры сайта.
+
+Configuration Layer хранит и обрабатывает:
+- правила сборки сайта
+- structural definitions
+- orchestration configuration
+
+Главный принцип:
+Site = Configuration-defined Architecture.
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+theme-core v-2 строится как:
+configuration-driven platform.
+
+Следовательно:
+конфигурация становится главным источником истины.
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- site configuration
+- demo configuration
+- preset configuration
+- layout mappings
+- renderer mappings
+- composition rules
+- configuration inheritance
+- overrides
+- normalization
+- schema-driven configuration
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- готовый HTML
+- rendering execution
+- runtime state
+- visual rendering implementation
+- WordPress lifecycle logic
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- SiteConfig
+- DemoConfig
+- PresetConfig
+- LayoutMapping
+- RendererMapping
+- ConfigNormalizer
+- ConfigResolver
+- ConfigSchemaRegistry
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Configuration Layer:
+- определяет архитектуру сайта
+- управляет assembly rules
+- делает систему declarative
+
+
+==================================================
+4. DESIGN SYSTEM LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Глобальный visual contract layer.
+
+Design System Layer определяет:
+единые визуальные правила платформы.
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+Visual consistency —
+отдельная архитектурная ответственность.
+
+Design System не должен зависеть:
+- от renderer
+- от layout implementation
+- от WordPress templates
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- design tokens
+- typography system
+- spacing system
+- color system
+- responsive rules
+- visual rhythm
+- component visual contracts
+- style primitives
+- theme.json generation
+- visual consistency orchestration
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- HTML templates
+- section rendering
+- content structure
+- page composition
+- renderer implementation
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- TokenRegistry
+- TypographySystem
+- ColorSystem
+- SpacingScale
+- ResponsiveRules
+- ThemeJsonBuilder
+- StyleContractResolver
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Design System Layer:
+- обеспечивает единый visual language
+- управляет visual consistency
+- делает визуальную архитектуру reusable
+
+
+==================================================
+5. COMPOSITION LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой структурной сборки сайта.
+
+Composition Layer отвечает за:
+- организацию структуры страниц
+- композицию sections
+- structural assembly
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+Главная идея системы:
+
+Website = Composed Architecture.
+
+Следовательно:
+композиция становится центральным architectural mechanism.
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- page composition
+- section graphs
+- layout graphs
+- slot systems
+- composition rules
+- structural hierarchy
+- reusable architecture composition
+- page assembly orchestration
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- rendering execution
+- visual styling implementation
+- renderer-specific logic
+- runtime rendering state
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- PageComposer
+- SectionGraph
+- LayoutComposer
+- SlotResolver
+- StructureAssembler
+- CompositionPipeline
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Composition Layer:
+- превращает конфигурацию в структуру сайта
+- управляет архитектурной композицией
+- обеспечивает reusable assembly model
+
+
+==================================================
+6. REGISTRY LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой discoverability и extensibility.
+
+Registry Layer управляет:
+- регистрацией архитектурных элементов
+- поиском capabilities
+- metadata discovery
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+Platform-oriented systems требуют:
+- расширяемости
+- discoverability
+- динамической регистрации компонентов
+
+Без Registry Layer:
+система становится hardcoded.
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- section registry
+- renderer registry
+- layout registry
+- preset registry
+- token registry
+- metadata discovery
+- capability lookup
+- component manifests
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- rendering execution
+- business workflows
+- runtime orchestration
+- configuration assembly
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- SectionRegistry
+- RendererRegistry
+- LayoutRegistry
+- PresetRegistry
+- CapabilityResolver
+- ManifestLoader
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Registry Layer:
+- делает систему extensible
+- поддерживает dynamic discovery
+- устраняет hardcoded dependencies
+
+
+==================================================
+7. RENDERING LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой orchestration rendering-процессов.
+
+Rendering Layer отвечает за:
+- координацию рендеринга
+- renderer abstraction
+- orchestration rendering pipelines
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+theme-core v-2 строится вокруг идеи:
+
+Architecture != Renderer.
+
+Следовательно:
+рендеринг должен быть абстрагирован.
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- rendering orchestration
+- rendering pipelines
+- renderer adapters
+- renderer coordination
+- render contracts
+- rendering context
+- template resolution
+- renderer abstraction
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- business configuration
+- design tokens ownership
+- provisioning workflows
+- WordPress content storage
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- RenderPipeline
+- RendererResolver
+- RenderContext
+- RendererAdapter
+- TemplateResolver
+- RenderCoordinator
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Rendering Layer:
+- изолирует rendering implementation
+- обеспечивает renderer independence
+- управляет rendering orchestration
+
+
+==================================================
+8. PROVISIONING LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой автоматической подготовки и assembly сайта.
+
+Provisioning Layer отвечает за:
+- orchestration создания сайта
+- automated setup
+- environment preparation
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+theme-core v-2 не импортирует сайты.
+
+Система:
+- provisioned
+- assembled
+- orchestrated
+
+Следовательно:
+Provisioning становится отдельной architectural responsibility.
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- demo provisioning
+- site assembly
+- automated setup
+- environment preparation
+- preset installation
+- resource coordination
+- installation orchestration
+- provisioning pipelines
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- rendering implementation
+- section rendering
+- visual design ownership
+- runtime request handling
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- SiteProvisioner
+- DemoInstaller
+- PresetInstaller
+- EnvironmentSetup
+- ProvisioningPipeline
+- ResourceAssembler
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Provisioning Layer:
+- автоматизирует сборку сайта
+- превращает configuration в assembled website
+- обеспечивает reproducible setup model
+
+
+==================================================
+9. RUNTIME LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой координации выполнения системы.
+
+Runtime Layer отвечает за:
+- execution context
+- runtime state
+- request lifecycle coordination
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+Assembled architecture должна:
+- стабильно исполняться
+- управляться как единая runtime system
+- сохранять deterministic execution
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- runtime state
+- request context
+- execution coordination
+- rendering state
+- runtime caches
+- active site context
+- runtime orchestration
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- configuration ownership
+- provisioning workflows
+- design system definitions
+- section registration
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- RuntimeContext
+- RequestState
+- RuntimeCache
+- ExecutionCoordinator
+- ActiveSiteContext
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Runtime Layer:
+- управляет execution environment
+- координирует lifecycle выполнения
+- обеспечивает coherent runtime model
+
+
+==================================================
+10. INTEGRATION LAYER
+==================================================
+
+НАЗНАЧЕНИЕ
+--------------------------------------------------
+Слой внешних интеграций и adapters.
+
+Integration Layer изолирует:
+- WordPress
+- внешние renderer systems
+- внешние APIs
+- plugin ecosystem
+
+
+ПОЧЕМУ СЛОЙ ВОЗНИК
+--------------------------------------------------
+theme-core v-2 использует:
+Selective Hexagonal Boundaries.
+
+Следовательно:
+ядро системы должно быть изолировано
+от нестабильности внешней среды.
+
+
+ОТВЕТСТВЕННОСТЬ СЛОЯ
+--------------------------------------------------
+
+- WordPress adapters
+- Gutenberg adapters
+- Elementor adapters
+- WooCommerce adapters
+- REST integrations
+- external APIs
+- platform bridges
+- infrastructure adapters
+
+
+ЧТО НЕ ДОЛЖНО НАХОДИТЬСЯ В СЛОЕ
+--------------------------------------------------
+
+- core orchestration
+- business rules
+- composition ownership
+- design system ownership
+
+
+ПРИМЕРЫ ПОДСИСТЕМ
+--------------------------------------------------
+
+- WordPressAdapter
+- GutenbergBridge
+- ElementorBridge
+- WooCommerceBridge
+- RestApiBridge
+- ExternalContentAdapter
+
+
+АРХИТЕКТУРНАЯ РОЛЬ
+--------------------------------------------------
+Integration Layer:
+- защищает core architecture
+- изолирует внешние зависимости
+- обеспечивает extensible integration model
+
+
+==================================================
+11. ОБЩИЙ ПОТОК СИСТЕМЫ
+==================================================
+
+Верхнеуровневый orchestration flow:
+
+    Configuration
+            ↓
+
+    Composition
+            ↓
+
+    Resolution
+            ↓
+
+    Rendering
+            ↓
+
+    Runtime Execution
+
+
+--------------------------------------------------
+
+Служебные слои:
+
+- Foundation Layer
+- Core Services Layer
+- Registry Layer
+- Design System Layer
+
+поддерживают всю архитектуру платформы.
+
+
+--------------------------------------------------
+
+Внешние взаимодействия:
+
+Integration Layer
+изолирует:
+- WordPress
+- renderers
+- plugins
+- external systems
+
+
+==================================================
+12. ГЛАВНЫЙ ПРИНЦИП АРХИТЕКТУРЫ
+==================================================
+
+theme-core v-2 строится как:
+
+configuration-driven
+composition-oriented
+platform architecture.
+
+--------------------------------------------------
+
+Слои системы существуют НЕ ради:
+- технической формальности
+- enterprise-сложности
+- абстракций ради абстракций
+
+--------------------------------------------------
+
+Слои существуют для:
+- orchestration
+- isolation
+- scalability
+- deterministic assembly
+- renderer independence
+- reusable architecture
+- platform extensibility
+
+--------------------------------------------------
+
+Главная идея:
+
+Сайт является:
+не набором templates,
+а assembled architecture,
+которая собирается из:
+- configuration
+- composition
+- design system
+- rendering orchestration
+- provisioning pipelines
