@@ -1,0 +1,58 @@
+==================================================
+REGISTRIES.templates
+==================================================
+
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.templates — registry composition blueprints.
+
+    Раздел отвечает за:
+        - регистрацию template definitions
+        - описание high-level page structures
+        - предоставление reusable composition patterns
+
+
+Главная идея
+--------------------------------------------------
+
+    Template — это composition blueprint.
+
+    Template описывает:
+        - high-level structure
+        - composition arrangement
+        - page organization
+
+    Templates НЕ являются:
+        - renderer template engines
+        - HTML templates
+        - runtime rendering systems
+
+
+Типичные templates
+--------------------------------------------------
+
+    Например:
+        - landing-page
+        - product-page
+        - blog-page
+        - docs-page
+        - archive-page
+
+
+Architectural роль
+--------------------------------------------------
+
+    Templates позволяют:
+        - стандартизировать page assembly
+        - ускорять composition
+        - переиспользовать structure patterns
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    template definition =  описание composition blueprint.
+
+    template instance = конкретное использование template внутри composition tree.
