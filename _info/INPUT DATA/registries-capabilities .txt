@@ -1,0 +1,61 @@
+==================================================
+REGISTRIES.capabilities
+==================================================
+
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.capabilities — registry normalized feature capabilities.
+
+    Раздел отвечает за:
+        - регистрацию system capabilities
+        - стандартизацию feature flags
+        - описание supported features
+        - обеспечение compatibility checks
+
+
+Главная идея
+--------------------------------------------------
+
+    Capability — это standardized system feature.
+
+    Capabilities позволяют системе понимать: какие возможности поддерживаются конкретными entities.
+
+
+Типичные capabilities
+--------------------------------------------------
+
+    Например:
+        - responsive
+        - slots
+        - nesting
+        - animations
+        - conditions
+        - interactivity
+        - server-rendering
+        - client-rendering
+
+
+Architectural роль
+--------------------------------------------------
+
+    Capabilities используются:
+        - layouts
+        - sections
+        - components
+        - renderers
+        - pipeline systems
+
+    Для:
+        - compatibility validation
+        - feature resolution
+        - pipeline decisions
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    capability definition = standardized feature description.
+
+    capability usage = указание support level конкретной system entity.
