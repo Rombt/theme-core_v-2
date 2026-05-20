@@ -1,0 +1,182 @@
+==================================================
+REGISTRIES.layouts
+==================================================
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.layouts — registry layout-механик системы.
+
+    Раздел отвечает за:
+        - регистрацию доступных layouts
+        - описание layout capabilities
+        - предоставление layout definitions для pipeline
+        - предоставление layout definitions renderer'ам
+        - формирование compositional capabilities системы
+
+    Layouts являются platform-agnostic abstraction.
+
+
+Главная идея
+--------------------------------------------------
+
+        Layouts НЕ являются:
+            - HTML шаблонами
+            - page templates
+            - renderer'ами
+            - готовой разметкой
+
+        Layouts описывают:
+            - правила композиции
+            - правила размещения children
+            - compositional mechanics
+
+        Например:
+            - stack
+            - grid
+            - sidebar
+            - split
+            - container
+
+
+Историческая причина появления abstraction
+--------------------------------------------------
+
+    Исторически layout, HTML и CSS были жёстко связаны внутри template-файлов.
+
+    Это приводило к проблемам:
+        - слабая переиспользуемость
+        - platform coupling
+        - сложность visual builders
+        - невозможность compositional abstraction
+        - невозможность intelligent assembly
+
+    Современные architecture patterns разделяют:
+        - composition
+        - layouts
+        - rendering
+        - content
+
+    REGISTRIES.layouts является реализацией этого architectural separation.
+
+
+Роль layouts в architecture
+--------------------------------------------------
+
+    Layouts определяют:
+        - как элементы компонуются
+        - какие compositional rules существуют
+        - какие layout mechanics поддерживаются системой
+
+    Renderer НЕ создаёт layout.
+
+    Renderer:
+        - адаптирует layout definition
+        - генерирует platform-specific implementation
+        - формирует HTML/CSS/classes/wrappers
+
+    Layout definition остаётся platform-independent.
+
+
+Pipeline model
+--------------------------------------------------
+
+    REGISTRIES.layouts
+        ↓
+    layout definitions
+
+    COMPOSITION tree
+        ↓
+    layout instances
+
+    PIPELINE
+        ↓
+    layout resolution
+
+    RENDERERS
+        ↓
+    platform implementation
+
+    OUTPUT
+        ↓
+    HTML / CSS / React / WP / Gutenberg / etc
+
+
+Minimal implementation scope
+--------------------------------------------------
+
+    На текущем этапе реализуется только
+        минимально необходимый уровень abstraction.
+
+    Цель текущей реализации:
+        - стабилизировать input data model
+        - предоставить базовые layout mechanics
+        - обеспечить работу pipeline
+        - обеспечить работу renderer'ов
+        - обеспечить compositional abstraction
+
+    Сложные layout systems пока НЕ реализуются:
+        - adaptive orchestration
+        - advanced constraints
+        - responsive graphs
+        - layout state systems
+        - intelligent auto-layout
+        - dynamic composition engines
+
+    Эти механики рассматриваются как
+        будущие evolutionary extensions architecture.
+
+
+Minimal layout definition example
+--------------------------------------------------
+
+    registries/layouts/stack.json
+
+        {
+            "id": "stack",
+
+            "engine": "flex",
+
+            "supports": {
+                "gap": true,
+                "align": true
+            }
+        }
+
+
+Registry configuration example
+--------------------------------------------------
+
+    {
+        "REGISTRIES": {
+            "layouts": {
+
+                "source": "@theme-core/layouts",
+
+                "enabled": [
+                    "stack",
+                    "grid",
+                    "sidebar"
+                ]
+
+            }
+        }
+    }
+
+
+Ключевое architectural distinction
+--------------------------------------------------
+
+    layout definition  = описание layout mechanics
+
+    layout instance  = конкретное использование layout в composition tree
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    REGISTRIES.layouts описывает:
+        "какие compositional mechanics существуют в системе"
+
+    Но НЕ описывает:
+        "как именно renderer реализует их на платформе"
