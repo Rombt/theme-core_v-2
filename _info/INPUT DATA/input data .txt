@@ -1,0 +1,336 @@
+==================================================
+REGISTRIES
+(Conceptual Summary)
+==================================================
+
+
+Главная идея
+--------------------------------------------------
+
+    REGISTRIES —
+    это каталог доступных system definitions.
+
+    REGISTRIES НЕ содержат:
+        - runtime state
+        - page instances
+        - content instances
+        - конкретные элементы сайта
+
+    REGISTRIES содержат:
+        - описания типов сущностей
+        - compositional mechanics
+        - visual definitions
+        - renderer capabilities
+        - system vocabulary
+
+    REGISTRIES определяют:
+        "что вообще существует в системе
+            и что система умеет использовать"
+
+
+Главная architectural роль
+--------------------------------------------------
+
+    REGISTRIES являются foundation layer definition-driven architecture.
+
+    Они формируют:
+        - vocabulary системы
+        - доступные compositional mechanics
+        - доступные UI primitives
+        - доступные renderer capabilities
+        - доступные visual rules
+
+    REGISTRIES — это не "склад объектов".
+
+    REGISTRIES — это: catalog of available definitions.
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    REGISTRIES отвечают за: WHAT CAN EXIST
+
+    COMPOSITION отвечает за: WHAT IS ACTUALLY USED
+
+
+Ключевое distinction
+--------------------------------------------------
+
+    REGISTRIES: definitions
+
+    COMPOSITION: instances
+
+
+Пример distinction
+--------------------------------------------------
+
+    REGISTRIES.components:
+        "В системе существует component type button"
+
+    COMPOSITION:
+        "На homepage используется button с variant=primary"
+
+
+Ментальная модель
+--------------------------------------------------
+
+    theme-core v-2 НЕ создаёт:
+        - business entities
+        - content
+        - products
+        - posts
+        - images
+        - design assets
+
+    theme-core v-2:
+        - orchestrates
+        - composes
+        - normalizes
+        - validates
+        - assembles
+        - renders
+
+    Главная задача системы:
+        собрать полностью работоспособный сайт из предоставленных definitions и data.
+
+
+REGISTRIES как system vocabulary
+--------------------------------------------------
+
+    После загрузки REGISTRIES система начинает понимать:
+        - какие layouts существуют
+        - какие sections существуют
+        - какие components существуют
+        - какие renderer'ы существуют
+        - какие capabilities поддерживаются
+        - какие visual tokens существуют
+
+    REGISTRIES формируют: available system vocabulary.
+
+
+Minimal runtime model
+--------------------------------------------------
+
+    1. LOAD INPUT DATA
+        Загрузка входных данных проекта.
+
+    2. LOAD REGISTRIES
+        Загрузка definitions и capabilities.
+
+    3. BUILD SYSTEM CONTEXT
+        Формирование system vocabulary.
+
+    4. VALIDATE DEFINITIONS
+        Проверка доступности definitions и корректности references.
+
+    5. BUILD COMPOSITION TREE
+        Формирование instance graph сайта.
+
+    6. RESOLVE DEPENDENCIES
+        Разрешение связей и mappings.
+
+    7. RUN PIPELINE
+        Подготовка renderer-ready structures.
+
+    8. RENDER OUTPUT
+        Генерация platform-specific output.
+
+
+REGISTRIES structure
+--------------------------------------------------
+
+    REGISTRIES
+    │
+    ├── layouts
+    │   compositional mechanics
+    │
+    ├── sections
+    │   semantic composition units
+    │
+    ├── components
+    │   atomic UI primitives
+    │
+    ├── templates
+    │   composition blueprints
+    │
+    ├── tokens
+    │   design system primitives
+    │
+    ├── presets
+    │   reusable configuration packages
+    │
+    ├── renderers
+    │   platform adaptation engines
+    │
+    └── capabilities
+        normalized feature capabilities
+
+
+REGISTRIES.layouts
+--------------------------------------------------
+
+    Layouts описывают:
+        - compositional mechanics
+        - placement rules
+        - children arrangement rules
+
+    Layouts НЕ являются:
+        - HTML templates
+        - renderer implementations
+        - готовой разметкой
+
+    Layout definition = описание layout mechanics.
+
+    Layout instance = конкретное использование layout внутри composition tree.
+
+
+REGISTRIES.sections
+--------------------------------------------------
+
+    Sections являются: semantic composition units.
+
+    Например:
+        - hero
+        - features
+        - faq
+        - gallery
+        - footer
+
+    Section может описывать:
+        - semantic role
+        - allowed structure
+        - slots
+        - default composition
+        - recommended layouts
+
+    Но section НЕ содержит platform-specific rendering.
+
+
+REGISTRIES.components
+--------------------------------------------------
+
+    Components являются: atomic UI primitives.
+
+    Например:
+        - button
+        - heading
+        - text
+        - image
+        - input
+        - icon
+
+    Components НЕ являются page-level structures.
+
+
+REGISTRIES.templates
+--------------------------------------------------
+
+    Templates являются: high-level composition blueprints.
+
+    Например:
+        - landing-page
+        - product-page
+        - blog-page
+        - docs-page
+
+    Templates НЕ являются renderer template engines.
+
+
+REGISTRIES.tokens
+--------------------------------------------------
+
+    Tokens являются: semantic visual definitions.
+
+    Например:
+        - colors
+        - spacing
+        - typography
+        - radius
+        - shadows
+        - breakpoints
+
+    Tokens ≠ CSS.
+
+    Tokens — platform-independent visual primitives.
+
+
+REGISTRIES.presets
+--------------------------------------------------
+
+    Presets являются: reusable configuration packages.
+
+    Например:
+        - compact-spacing
+        - dark-theme
+        - minimal-buttons
+
+    Presets предназначены для:
+        ускорения configuration и стандартизации setup.
+
+
+REGISTRIES.renderers
+--------------------------------------------------
+
+    Renderers отвечают за: platform adaptation.
+
+    Renderer: адаптирует definitions под конкретную платформу.
+
+    Renderer НЕ определяет: compositional mechanics.
+
+    Renderer реализует: platform-specific output.
+
+
+REGISTRIES.capabilities
+--------------------------------------------------
+
+    Capabilities являются: normalized feature flags system.
+
+    Например:
+        - responsive
+        - slots
+        - nesting
+        - conditions
+        - animations
+        - interactivity
+
+    Capabilities позволяют системе понимать:
+        что поддерживается
+            конкретным renderer'ом,
+            layout'ом,
+            section'ом
+            component'ом.
+
+
+Minimal implementation scope
+--------------------------------------------------
+
+    На текущем этапе реализуется: минимально необходимый уровень abstraction.
+
+    Цель:
+        - стабилизировать input model
+        - обеспечить extensibility
+        - обеспечить pipeline foundation
+        - обеспечить renderer foundation
+        - избежать architectural chaos
+
+    НЕ реализуются:
+        - dynamic plugin systems
+        - runtime registry mutation
+        - smart orchestration engines
+        - advanced dependency graphs
+        - complex inheritance systems
+        - intelligent auto-layout
+        - adaptive runtime systems
+
+    Эти механики рассматриваются
+        как future evolutionary extensions.
+
+
+Главная цель текущего этапа
+--------------------------------------------------
+
+    Сейчас задача НЕ в том, чтобы создать идеальную architecture.
+
+    Сейчас задача:
+        сформировать стабильный conceptual foundation 
+        и комфортный minimum abstraction layer для дальнейшего развития системы.
