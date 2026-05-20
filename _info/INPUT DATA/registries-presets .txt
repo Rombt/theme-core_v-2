@@ -1,0 +1,51 @@
+==================================================
+REGISTRIES.presets
+==================================================
+
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.presets — registry reusable configuration packages.
+
+    Раздел отвечает за:
+        - регистрацию reusable presets
+        - предоставление ready-made configurations
+        - ускорение system setup
+        - стандартизацию configurations
+
+
+Главная идея
+--------------------------------------------------
+
+    Preset — это reusable configuration package.
+
+    Presets позволяют: быстро применять готовые configuration sets.
+
+
+Типичные presets
+--------------------------------------------------
+
+    Например:
+        - compact-spacing
+        - dark-theme
+        - modern-typography
+        - marketing-layouts
+        - ecommerce-setup
+
+
+Architectural роль
+--------------------------------------------------
+
+    Presets позволяют:
+        - ускорять setup
+        - переиспользовать configuration patterns
+        - уменьшать configuration duplication
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    preset definition = reusable configuration package.
+
+    preset application = применение preset к конкретному project context.
