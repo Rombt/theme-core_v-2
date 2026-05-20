@@ -1,0 +1,139 @@
+FUNDAMENTAL ENTITIES
+(SOURCE ENTITIES)
+
+Это сущности,
+которые напрямую описывают сайт
+и являются source of truth.
+
+1. SITE
+
+Главная сущность системы.
+
+Описывает:
+
+сайт целиком
+глобальные правила
+общую конфигурацию
+2. PAGE
+
+Описание отдельной страницы сайта.
+
+3. SECTION
+
+Структурный блок страницы.
+
+4. LAYOUT
+
+Правила компоновки sections
+и структуры страницы.
+
+5. DESIGN SYSTEM
+
+Глобальные visual rules:
+
+typography
+colors
+spacing
+tokens
+presets
+
+6. CONTENT SOURCE
+
+Источники данных:
+
+posts
+products
+collections
+custom entities
+
+7. INTEGRATION
+
+Описание внешних integrations:
+
+WooCommerce
+Gutenberg
+Elementor
+APIs
+DERIVED ENTITIES
+(MATERIALIZED ENTITIES)
+
+Это сущности,
+которые возникают
+из фундаментальных сущностей.
+
+1. NAVIGATION
+
+Производная от:
+
+page structure
+hierarchy
+visibility rules
+2. TEMPLATE
+
+Производная от:
+
+page
+layout
+rendering rules
+3. RENDER TREE
+
+Производная от:
+
+pages
+sections
+layouts
+renderer mappings
+4. THEME.JSON
+
+Производная от:
+
+design system
+visual tokens
+global styles
+5. GENERATED CSS
+
+Производная от:
+
+design tokens
+responsive rules
+presets
+6. GUTENBERG STRUCTURES
+
+Производная от:
+
+sections
+layouts
+render mappings
+7. ELEMENTOR STRUCTURES
+
+Производная от:
+
+sections
+layouts
+render mappings
+8. WOOCOMMERCE CONFIGURATION
+
+Производная от:
+
+ecommerce rules
+integrations
+content architecture
+
+6. САМОЕ ВАЖНОЕ ЧТО НУЖНО УДЕРЖИВАТЬ СЕЙЧАС
+
+Пока это:
+
+НЕ финальная taxonomy.
+
+Это:
+
+evolving conceptual model.
+
+И это нормально.
+
+Сейчас цель:
+не создать идеальную систему терминов.
+
+А:
+постепенно обнаружить
+реальную природу приложения.
