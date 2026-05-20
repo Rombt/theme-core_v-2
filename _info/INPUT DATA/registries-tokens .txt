@@ -1,0 +1,59 @@
+==================================================
+REGISTRIES.tokens
+==================================================
+
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.tokens — registry design system primitives.
+
+    Раздел отвечает за:
+        - регистрацию design tokens
+        - описание visual primitives
+        - стандартизацию visual language
+        - обеспечение visual consistency
+
+
+Главная идея
+--------------------------------------------------
+
+    Tokens являются: semantic visual definitions.
+
+    Tokens НЕ являются:
+        - CSS classes
+        - готовыми stylesheets
+        - renderer-specific styles
+
+
+Типичные tokens
+--------------------------------------------------
+
+    Например:
+        - colors
+        - spacing
+        - typography
+        - radius
+        - shadows
+        - breakpoints
+        - z-index layers
+
+
+Architectural роль
+--------------------------------------------------
+
+    Tokens формируют: foundation visual system.
+
+    Tokens используются:
+        renderer'ами,
+        components,
+        presets
+        и pipeline systems.
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    token definition = platform-independent visual primitive.
+
+    token usage = конкретное применение внутри visual system.
