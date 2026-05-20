@@ -1,0 +1,56 @@
+==================================================
+REGISTRIES.renderers
+==================================================
+
+
+Назначение
+--------------------------------------------------
+
+    REGISTRIES.renderers — registry platform adaptation engines.
+
+    Раздел отвечает за:
+        - регистрацию renderer systems
+        - описание renderer capabilities
+        - описание supported targets
+        - описание platform mappings
+
+
+Главная идея
+--------------------------------------------------
+
+    Renderer отвечает за: adaptation definitions к platform-specific output.
+
+    Renderer НЕ определяет: compositional mechanics.
+
+    Renderer реализует: platform adaptation.
+
+
+Типичные renderers
+--------------------------------------------------
+
+    Например:
+        - wordpress
+        - gutenberg
+        - react
+        - elementor
+        - static-html
+
+
+Architectural роль
+--------------------------------------------------
+
+    Renderer: получает normalized definitions и генерирует:
+            - HTML
+            - CSS
+            - blocks
+            - templates
+            - configuration files
+            - platform structures
+
+
+Главный architectural принцип
+--------------------------------------------------
+
+    renderer definition = описание platform adaptation engine.
+
+    renderer execution = генерация platform-specific output.
