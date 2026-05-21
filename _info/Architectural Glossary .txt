@@ -1,230 +1,676 @@
 theme-core v-2
-GLOSSARY (MINIMUM ENGINEERING VERSION)
-==================================================
-
-ЦЕЛЬ ГЛОССАРИЯ
---------------------------------------------------
-Глоссарий фиксирует точные значения ключевых понятий системы.
-
-Он нужен для того, чтобы:
-- все части системы работали с одинаковыми понятиями
-- не возникало путаницы между слоями
-- архитектура оставалась стабильной и расширяемой
-
-Глоссарий — это часть архитектуры, а не документация.
-
+ARCHITECTURAL GLOSSARY
+(EVOLUTIONARY PLATFORM VERSION)
 
 ==================================================
-ОСНОВНЫЕ ПОНЯТИЯ СИСТЕМЫ
+1. PURPOSE OF THE GLOSSARY
 ==================================================
 
-
-1. СИСТЕМА (theme-core v-2)
---------------------------------------------------
-Надстройка над WordPress, которая управляет созданием сайтов.
-
-Задачи:
-- сборка сайтов из конфигураций
-- управление структурой страниц
-- управление дизайном через единые правила
-- организация демо и шаблонов сборки
-
-НЕ является:
-- темой WordPress в классическом смысле
-- визуальным редактором
-- CMS
-
+    Glossary фиксирует:
+        - архитектурные понятия системы
+        - semantic boundaries
+        - execution terminology
+        - stable conceptual vocabulary
 
 --------------------------------------------------
 
-
-2. САЙТ
---------------------------------------------------
-Конкретный результат работы системы.
-
-Сайт — это:
-- набор страниц
-- набор секций на страницах
-- применённый дизайн
-- применённая конфигурация
-
-Сайт НЕ является:
-- статическим демо
-- набором файлов темы
-
+    Glossary является:
+        частью architecture, а не вспомогательной документацией.
 
 --------------------------------------------------
 
+    Цель glossary:
 
-3. КОНФИГУРАЦИЯ САЙТА
---------------------------------------------------
-Описывает, как должен быть собран сайт.
-
-Содержит:
-- какие страницы существуют
-- какие секции используются
-- какие настройки дизайна применены
-
-Конфигурация НЕ содержит HTML и не содержит шаблонов.
-
+        - стабилизировать архитектурное мышление
+        - предотвращать semantic drift
+        - удерживать единые execution concepts
+        - обеспечивать consistency между layers
+        - поддерживать predictable architecture evolution
 
 --------------------------------------------------
 
+    Glossary является: evolving conceptual model.
 
-4. СЕКЦИЯ
---------------------------------------------------
-Базовый строительный блок страницы.
+    Термины могут уточняться по мере развития architecture.
 
-Секция — это:
-- блок контента (например: hero, pricing, faq)
-- переиспользуемый элемент интерфейса
-
-Секция НЕ является:
-- страницей
-- шаблоном страницы
-- контейнером дизайна
-
-
---------------------------------------------------
-
-
-5. РАСКЛАДКА (LAYOUT)
---------------------------------------------------
-Правила размещения секции на странице.
-
-Определяет:
-- ширину
-- отступы
-- позиционирование
-- поведение на адаптиве
-
-Layout НЕ содержит контент.
-
-
---------------------------------------------------
-
-
-6. ДИЗАЙН-СИСТЕМА
---------------------------------------------------
-Набор единых правил визуального оформления.
-
-Содержит:
-- цвета
-- типографику
-- отступы
-- радиусы
-- общие визуальные правила
-
-Используется всеми частями системы.
-
-
---------------------------------------------------
-
-
-7. ПРЕСЕТ (PRESET)
---------------------------------------------------
-Готовый набор настроек дизайна и структуры.
-
-Используется для:
-- быстрого создания сайтов
-- переключения стилей сайта
-- создания демо-версий
-
-Пример: "Agency", "Shop", "SaaS"
-
-
---------------------------------------------------
-
-
-8. РЕНДЕРЕР
---------------------------------------------------
-Механизм, который выводит секцию на экран.
-
-Рендерер может быть:
-- PHP шаблон
-- Gutenberg блок
-- Elementor элемент
-
-Рендерер НЕ определяет структуру сайта.
-
-
---------------------------------------------------
-
-
-9. МАППИНГ РЕНДЕРЕРА
---------------------------------------------------
-Связь между секцией и тем, как она отображается.
-
-Пример:
-секция "hero"
-→ Elementor шаблон №12
-
-
---------------------------------------------------
-
-
-10. СБОРКА САЙТА (ASSEMBLY)
---------------------------------------------------
-Процесс создания сайта из конфигурации.
-
-Включает:
-- чтение конфигурации
-- выбор секций
-- применение layout
-- применение дизайна
-- вызов рендереров
-
-
---------------------------------------------------
-
-
-11. ДЕМО
---------------------------------------------------
-Предустановленный набор конфигурации сайта.
-
-Демо — это НЕ сайт.
-
-Демо — это:
-- готовая конфигурация
-- набор секций
-- дизайн-пресет
-
-
---------------------------------------------------
-
-
-12. Provisioning (процесс автоматической подготовки и сборки системы (сайта) из конфигурации)
---------------------------------------------------
-Процесс создания нового сайта системой.
-
-Включает:
-- применение демо-конфигурации
-- создание структуры сайта
-- настройку дизайна
-- сборку страниц
-
-НЕ является импортом XML.
-
-
---------------------------------------------------
-
-
-13. MULTISITE-CAPABLE (ОПЦИОНАЛЬНО)
---------------------------------------------------
-Система может работать поверх WordPress Multisite.
-
-Это означает:
-- один WordPress → много сайтов
-- каждый сайт имеет свою конфигурацию
-- система управляет созданием сайтов
-
-Но Multisite НЕ является обязательной частью системы.
 
 
 ==================================================
-КЛЮЧЕВОЙ ПРИНЦИП СИСТЕМЫ
+2. SYSTEM IDENTITY
 ==================================================
 
-Система не хранит готовые сайты.
 
-Система хранит правила их сборки.
+2.1 SYSTEM (theme-core v-2)
+--------------------------------------------------
+
+    theme-core v-2 —
+        ориентированная на конфигурацию
+        ориентированная на композицию
+        платформа оркестровки для WordPress.
+
+--------------------------------------------------
+
+    Система отвечает за:
+
+        - Архитектурная композиция
+        - Оркестрация рендеринга
+        - Координация системы проектирования
+        - Оркестрация предоставления ресурсов
+        - Конвейеры выполнения
+        - Сборка платформы
+
+--------------------------------------------------
+
+    System НЕ является:
+
+        - классической WordPress theme
+        - visual page builder
+        - standalone CMS
+        - template collection
+
+--------------------------------------------------
+
+    Главная architectural идея:
+
+        Website =  assembled architecture.
+
+
+
+==================================================
+3. STRUCTURAL DOMAIN
+==================================================
+
+
+    3.1 SITE
+    --------------------------------------------------
+
+        Site — assembled architectural system,
+            сформированная из:
+                - configuration
+                - composition
+                - design system
+                - rendering rules
+                - orchestration pipelines
+
+        Site является: runtime-capable architecture.
+
+        Site НЕ является:
+            - static template set
+            - imported demo snapshot
+            - fixed HTML structure
+
+    --------------------------------------------------
+
+
+    3.2 PAGE
+    --------------------------------------------------
+
+        Page — compositional architectural unit сайта.
+
+        Page определяет:
+            - структура композиции
+            - организация разделов
+            - иерархия компоновки
+            - участие в рендеринге
+
+        Page состоит из: reusable composition entities.
+
+    --------------------------------------------------
+
+
+    3.3 SECTION
+    --------------------------------------------------
+
+        Section — reusable semantic composition unit.
+
+        Section участвует в:
+            - графы композиции
+            - композиция компоновки
+            - отображение рендерера
+            - структурная сборка
+
+        Section является: renderer-independent architectural entity.
+
+        Section НЕ является:
+            - page template
+            - rendering implementation
+            - standalone page
+
+    --------------------------------------------------
+
+
+    3.4 LAYOUT
+    --------------------------------------------------
+
+        Layout — structural composition mechanics.
+
+        Layout определяет:
+            - spatial organization
+            - structural positioning
+            - responsive composition behavior
+            - alignment rules
+            - sizing rules
+            - structural flow
+
+        Layout НЕ содержит:
+            - business content
+            - renderer implementation
+            - visual identity ownership
+
+    --------------------------------------------------
+
+
+3.5 COMPOSITION
+--------------------------------------------------
+
+    Composition — процесс структурной организации архитектурных сущностей.
+
+        Composition отвечает за:
+            - assembly hierarchy
+            - section organization
+            - layout orchestration
+            - structural relationships
+            - reusable architecture formation
+
+        Composition является: центральным architectural mechanism системы.
+ 
+
+==================================================
+4. DESIGN SYSTEM DOMAIN
+==================================================
+
+    4.1 DESIGN SYSTEM
+    --------------------------------------------------
+
+        Design System — global visual contract layer платформы.
+
+        Design System управляет:
+            - typography
+            - spacing
+            - colors
+            - visual rhythm
+            - responsive rules
+            - visual consistency
+            - component styling contracts
+
+        Design System НЕ является:
+            - CSS framework
+            - renderer implementation
+            - page composition system
+
+
+    4.2 DESIGN TOKENS
+    --------------------------------------------------
+
+        Design Tokens — canonical visual definitions системы.
+
+        Tokens описывают:
+            - colors
+            - spacing
+            - typography
+            - radii
+            - shadows
+            - breakpoints
+            - visual scales
+
+        Tokens являются: source of truth для visual architecture.
+
+==================================================
+5. CONFIGURATION DOMAIN
+==================================================
+
+
+    5.1 CONFIGURATION
+    --------------------------------------------------
+
+        Configuration — declarative architectural definition сайта.
+
+        Configuration описывает:
+            - pages
+            - sections
+            - composition rules
+            - renderer bindings
+            - layout mappings
+            - design rules
+            - orchestration settings
+
+        Configuration НЕ содержит:
+            - final HTML
+            - rendering output
+            - runtime state
+            - renderer implementation
+
+
+    5.2 PRESET
+    --------------------------------------------------
+
+        Preset — reusable architectural configuration package.
+
+        Preset может включать:
+            - design rules
+            - composition rules
+            - layout mappings
+            - rendering bindings
+            - provisioning defaults
+
+        Preset используется для:
+            - site initialization
+            - demo assembly
+            - reusable architecture distribution
+
+
+    5.3 DEMO
+    --------------------------------------------------
+
+        Demo — predefined architectural assembly definition.
+
+        Demo содержит:
+            - configuration packages
+            - composition presets
+            - visual presets
+            - provisioning instructions
+
+        Demo НЕ является:
+            - site snapshot
+            - XML export
+            - static content dump
+
+==================================================
+6. EXECUTION DOMAIN
+==================================================
+
+
+    6.1 PIPELINE
+    --------------------------------------------------
+
+        Pipeline — controlled architectural transformation system.
+
+        Pipeline координирует:
+            - architectural state evolution
+            - lifecycle execution
+            - stage orchestration
+            - transformation flow
+            - rendering preparation
+            - provisioning preparation
+
+        Pipeline является: central execution model системы.
+
+
+    6.2 ARCHITECTURAL STATE
+    --------------------------------------------------
+
+        Architectural State — текущее состояние архитектуры на определённой стадии execution lifecycle.
+
+        Architectural State может представлять:
+            - raw configuration
+            - normalized configuration
+            - composition graph
+            - resolved architecture
+            - render model
+            - provisioned state
+            - runtime state
+
+        Pipeline выполняет: transformation of architectural state.
+
+
+    6.3 STAGE
+    --------------------------------------------------
+
+        Stage — orchestration boundary pipeline.
+
+        Stage объединяет:
+            - related transformations
+            - execution responsibilities
+            - lifecycle coordination
+            - execution contracts
+
+        Stage является: execution coordination layer, а не business entity.
+
+
+    6.4 HANDLER
+    --------------------------------------------------
+
+        Handler — минимальная execution unit pipeline.
+
+        Handler выполняет: одну deterministic transformation.
+
+        Handler должен быть:
+            - isolated
+            - predictable
+            - composable
+            - explicit
+
+        Handler НЕ должен:
+            - скрыто изменять execution flow
+            - нарушать orchestration boundaries
+            - выполнять uncontrolled side effects
+
+
+    6.5 ORCHESTRATION
+    --------------------------------------------------
+
+        Orchestration — centralized execution coordination system.
+
+        Orchestration отвечает за:
+            - lifecycle coordination
+            - execution ordering
+            - stage coordination
+            - handler coordination
+            - execution policies
+            - extension integration
+
+        Orchestration НЕ является:
+            - business workflow
+            - rendering logic
+            - composition ownership
+
+
+    6.6 TRANSFORMATION
+    --------------------------------------------------
+
+        Transformation — controlled conversion одного architectural state в другое.
+
+        Transformation должна быть:
+            - deterministic
+            - predictable
+            - explicit
+            - observable
+
+
+==================================================
+7. COMPOSITION GRAPH DOMAIN
+==================================================
+
+
+    7.1 COMPOSITION GRAPH
+    --------------------------------------------------
+
+        Composition Graph — canonical structural representation сайта.
+
+        Composition Graph описывает:
+            - composition hierarchy
+            - section relationships
+            - layout relationships
+            - slot organization
+            - structural dependencies
+
+        Composition Graph является: central intermediate representation composition system.
+
+
+    7.2 SLOT
+    --------------------------------------------------
+
+        Slot — controlled composition insertion point.
+
+        Slot используется для:
+            - structural composition
+            - dynamic placement
+            - reusable assembly
+            - renderer-independent insertion
+
+
+    7.3 STRUCTURED ARCHITECTURE
+    --------------------------------------------------
+
+        Structured Architecture — compositionally assembled architectural structure сайта до rendering resolution.
+
+
+==================================================
+8. RESOLUTION DOMAIN
+==================================================
+
+
+    8.1 RESOLUTION
+    --------------------------------------------------
+
+        Resolution — процесс связывания architectural abstractions с executable capabilities.
+
+        Resolution может включать:
+            - renderer resolution
+            - layout resolution
+            - capability resolution
+            - integration resolution
+            - resource resolution
+
+        Resolution НЕ является: rendering execution.
+
+
+    8.2 CAPABILITY
+    --------------------------------------------------
+
+        Capability — executable architectural ability системы.
+
+        Capability может представлять:
+            - renderer support
+            - layout mechanics
+            - provisioning support
+            - integration support
+            - composition support
+
+
+    8.3 REGISTRY
+    --------------------------------------------------
+
+        Registry — discoverability and capability coordination system.
+
+        Registry отвечает за:
+            - entity registration
+            - capability discovery
+            - metadata lookup
+            - extensibility coordination
+            - architectural discovery
+
+    --------------------------------------------------
+
+        Registry устраняет: hardcoded architectural dependencies.
+
+
+==================================================
+9. RENDERING DOMAIN
+==================================================
+
+
+    9.1 RENDERER
+    --------------------------------------------------
+
+        Renderer — architectural execution adapter, преобразующий architecture в target rendering representation.
+
+        Renderer может быть:
+            - PHP renderer
+            - Gutenberg renderer
+            - Elementor renderer
+            - WooCommerce renderer
+
+        Renderer НЕ определяет: architecture сайта.
+
+
+    9.2 RENDER MODEL
+    --------------------------------------------------
+
+        Render Model — renderer-ready architectural representation.
+
+        Render Model содержит:
+            - resolved renderer bindings
+            - rendering context
+            - rendering instructions
+            - executable rendering structure
+
+
+    9.3 RENDER TREE
+    --------------------------------------------------
+
+        Render Tree — materialized rendering structure, подготовленная для renderer execution.
+
+
+    9.4 RENDERER MAPPING
+    --------------------------------------------------
+
+        Renderer Mapping — binding между:
+                - architectural entity и
+                - rendering implementation.
+
+
+==================================================
+10. MATERIALIZATION DOMAIN
+==================================================
+
+
+    10.1 MATERIALIZATION
+    --------------------------------------------------
+
+        Materialization — процесс генерации executable architectural artifacts.
+
+        Materialization может создавать:
+            - theme.json
+            - generated CSS
+            - render trees
+            - Gutenberg structures
+            - Elementor structures
+            - runtime assets
+
+
+    10.2 MATERIALIZED ARTIFACT
+    --------------------------------------------------
+
+        Materialized Artifact — generated executable output, сформированный из architecture definitions.
+
+
+    10.3 INTERMEDIATE REPRESENTATION (IR)
+    --------------------------------------------------
+
+        Intermediate Representation — canonical execution representation, используемая между pipeline stages.
+
+        IR обеспечивает:
+            - deterministic transformations
+            - stable execution flow
+            - predictable orchestration
+            - renderer independence
+
+
+
+==================================================
+11. PROVISIONING DOMAIN
+==================================================
+
+
+    11.1 PROVISIONING
+    --------------------------------------------------
+
+        Provisioning — orchestration процесса автоматической assembly и environment preparation.
+
+        Provisioning включает:
+            - environment setup
+            - site assembly
+            - resource coordination
+            - installation orchestration
+            - preset application
+            - runtime preparation
+
+        Provisioning НЕ является: XML import system.
+
+
+    11.2 ASSEMBLY
+    --------------------------------------------------
+
+        Assembly — transformation architectural definitions в executable website architecture.
+
+
+    11.3 INSTALLATION
+    --------------------------------------------------
+
+        Installation — применение assembled architecture к target execution environment.
+
+
+==================================================
+12. RUNTIME DOMAIN
+==================================================
+
+
+    12.1 RUNTIME
+    --------------------------------------------------
+
+        Runtime — live execution environment assembled architecture.
+
+
+    12.2 RUNTIME CONTEXT
+    --------------------------------------------------
+
+        Runtime Context — active execution state текущего lifecycle execution.
+
+
+    12.3 EXECUTION CONTEXT
+    --------------------------------------------------
+
+        Execution Context — shared orchestration coordination context pipeline execution.
+
+        Context может содержать:
+            - active configuration
+            - execution metadata
+            - diagnostics
+            - registry access
+            - environment information
+            - execution flags
+
+        Context НЕ является: uncontrolled global storage.
+
+
+==================================================
+13. INTEGRATION DOMAIN
+==================================================
+
+
+    13.1 INTEGRATION
+    --------------------------------------------------
+
+        Integration — controlled connection между core architecture и external systems.
+
+        Integrations могут включать:
+            - WordPress
+            - Gutenberg
+            - Elementor
+            - WooCommerce
+            - REST APIs
+            - external platforms
+
+
+    13.2 ADAPTER
+    --------------------------------------------------
+
+        Adapter — boundary isolation mechanism
+            между:
+                - platform architecture и
+                - external execution systems.
+
+
+    13.3 WORDPRESS
+    --------------------------------------------------
+
+        WordPress — foundational execution platform системы.
+
+        WordPress предоставляет:
+            - CMS capabilities
+            - data storage
+            - plugin ecosystem
+            - runtime environment
+            - user management
+            - native lifecycle
+
+        theme-core v-2 НЕ заменяет: WordPress architecture.
+
+
+==================================================
+14. CORE ARCHITECTURAL PRINCIPLES
+==================================================
+
+    Веб-сайт = собранная архитектура.
+
+    Выполнение = детерминированная архитектурная эволюция.
+
+    Конвейер = система управляемых преобразований.
+
+    Конфигурация = архитектурный источник истины.
+
+    Визуализация = детали реализации, а не архитектурная собственность.
+
+    Композиция = центральный структурный механизм.
+
