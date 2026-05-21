@@ -1,0 +1,986 @@
+theme-core v-2
+IDEAL PIPELINE ARCHITECTURE MODEL
+(HYBRID ORCHESTRATED ARCHITECTURE COMPILATION MODEL)
+
+==================================================
+1. ЦЕЛЬ МОДЕЛИ
+==================================================
+
+        Данная модель определяет: фундаментальную execution architecture  platform system theme-core v-2.
+
+        Pipeline Architecture отвечает за:
+                - Архитектурное исполнение
+                - Поток оркестровки
+                - Эволюция состояний
+                - Композиция и сборка
+                - Подготовка рендеринга
+                - Координация материализации
+                - Координация предоставления ресурсов
+                - Детерминированное выполнение жизненного цикла
+
+        Pipeline является: НЕ utility mechanism,
+                а central execution foundation всей platform architecture.
+
+        Главная architectural идея:
+
+                Website =
+                continuously assembled architecture.
+
+        Система рассматривает сайт:
+                не как набор templates,
+                а как evolving architectural system,
+                проходящую через controlled transformations.
+
+
+
+==================================================
+2. ОСНОВНОЙ ПРИНЦИП ВЫПОЛНЕНИЯ
+==================================================
+
+        Pipeline выполняет: детерминированное преобразование архитектурных представлений.
+
+        Главный execution flow:
+
+                ARCHITECTURAL DEFINITIONS
+                        ↓
+                normalized representations
+                        ↓
+                composition representations
+                        ↓
+                resolved representations
+                        ↓
+                render representations
+                        ↓
+                materialized artifacts
+                        ↓
+                runtime-capable architecture
+
+        Каждая стадия:
+                - получает representation
+                - выполняет controlled transformation
+                - возвращает новую representation
+
+        Execution principle: ПОТОКИ ДАННЫХ ЧЕРЕЗ УПРАВЛЯЕМЫЕ ОРКЕСТРОВАННЫЕ ПРЕОБРАЗОВАНИЯ.
+
+
+
+==================================================
+3. PIPELINE ONTOLOGY
+==================================================
+
+    Pipeline является: architectural compilation system.
+
+        Pipeline НЕ является:
+                - middleware chain
+                - event-driven runtime
+                - reactive execution engine
+                - enterprise workflow framework
+
+        Pipeline ближе к:
+                - compiler architecture
+                - orchestration system
+                - transformation engine
+                - architecture assembly system
+
+        Pipeline компилирует:
+                configuration-defined architecture в:
+                executable website system.
+
+
+==================================================
+4. ОСНОВНОЙ ОБЪЕКТ ВЫПОЛНЕНИЯ
+==================================================
+
+    Главным execution object является: ARCHITECTURAL STATE.
+
+        Architectural State — representation текущего состояния
+                website architecture внутри execution lifecycle.
+
+        Architectural State может представлять:
+                - Исходные определения
+                - Нормализованная конфигурация
+                - Граф композиции
+                - Разрешенная архитектура
+                - Модель рендеринга
+                - План материализации
+                - Выделенная архитектура
+                - Состояние во время выполнения
+
+        Pipeline существует для:
+
+                controlled evolution
+                architectural state.
+
+
+
+==================================================
+5. EXECUTION REPRESENTATIONS
+==================================================
+
+    Pipeline использует: ПРОМЕЖУТОЧНЫЕ ПРЕДСТАВЛЕНИЯ (IR).
+
+        IR являются: канонические представления исполнения,
+                проходящими между pipeline stages.
+
+        Главные цели IR:
+                - детерминированное выполнение
+                - предсказуемые преобразования
+                - независимость от рендерера
+                - стабильность оркестровки
+                - отлаживаемое выполнение
+                - стабильные границы эволюции
+
+        Примеры IR:
+                RawConfigurationIR
+                NormalizedConfigurationIR
+                CompositionGraphIR
+                ResolvedArchitectureIR
+                RenderModelIR
+                MaterializationPlanIR
+                RuntimeArchitectureIR
+
+        IR являются: canonical execution language pipeline.
+
+
+
+==================================================
+6. EXECUTION TOPOLOGY
+==================================================
+
+    Pipeline использует: orchestrated graph-oriented execution model.
+
+        Execution НЕ является: purely linear chain.
+
+        Pipeline orchestrates:
+                - графы композиции
+                - графы зависимостей
+                - графы возможностей
+                - графы рендеринга
+                - графы материализации
+
+        Главный execution principle: управление остается централизованным,
+                в то время как архитектурные взаимосвязи могут образовывать структурированные графы.
+
+        Pipeline сохраняет: детерминированная оркестровка с использованием архитектуры на основе графов.
+
+
+
+==================================================
+7. PIPELINE STAGES
+==================================================
+
+    Pipeline состоит из: ordered orchestration stages.
+
+    Stages являются: execution coordination boundaries.
+
+    Главные pipeline stages:
+
+        CONFIGURATION STAGE
+                    ↓
+        COMPOSITION STAGE
+                    ↓
+        RESOLUTION STAGE
+                    ↓
+        RENDER PREPARATION STAGE
+                    ↓
+        MATERIALIZATION STAGE
+                    ↓
+        PROVISIONING STAGE
+
+--------------------------------------------------
+
+    Runtime НЕ является:
+        pipeline stage.
+
+--------------------------------------------------
+
+    Runtime является:
+
+        execution environment,
+        consuming pipeline outputs.
+
+
+
+==================================================
+8. CONFIGURATION STAGE
+==================================================
+
+    Отвечает за:
+
+        - configuration loading
+        - schema validation
+        - inheritance resolution
+        - overrides
+        - normalization
+        - configuration expansion
+        - configuration diagnostics
+
+--------------------------------------------------
+
+    Transformation example:
+
+        RawConfigurationIR
+                    ↓
+        NormalizedConfigurationIR
+
+--------------------------------------------------
+
+    Главная задача стадии:
+
+        сформировать:
+            stable architectural definitions.
+
+
+
+==================================================
+9. COMPOSITION STAGE
+==================================================
+
+    Отвечает за:
+
+        - composition assembly
+        - page composition
+        - section composition
+        - layout orchestration
+        - slot coordination
+        - structural hierarchy formation
+        - composition graph generation
+
+--------------------------------------------------
+
+    Transformation example:
+
+        NormalizedConfigurationIR
+                    ↓
+        CompositionGraphIR
+
+--------------------------------------------------
+
+    Composition Graph является:
+
+        canonical structural representation
+        сайта.
+
+--------------------------------------------------
+
+    Главная задача стадии:
+
+        сформировать:
+            structural architecture system.
+
+
+
+==================================================
+10. RESOLUTION STAGE
+==================================================
+
+    Отвечает за:
+
+        - renderer resolution
+        - capability resolution
+        - integration resolution
+        - resource resolution
+        - dependency resolution
+        - mapping coordination
+
+--------------------------------------------------
+
+    Resolution выполняет:
+
+        binding architectural abstractions
+        к executable capabilities.
+
+--------------------------------------------------
+
+    Transformation example:
+
+        CompositionGraphIR
+                    ↓
+        ResolvedArchitectureIR
+
+--------------------------------------------------
+
+    Resolution НЕ выполняет:
+
+        rendering execution.
+
+--------------------------------------------------
+
+    Главная задача стадии:
+
+        связать architecture
+        с executable platform capabilities.
+
+
+
+==================================================
+11. RENDER PREPARATION STAGE
+==================================================
+
+    Отвечает за:
+
+        - render context preparation
+        - renderer orchestration
+        - template coordination
+        - rendering preparation
+        - render tree generation
+        - render model generation
+
+--------------------------------------------------
+
+    Transformation example:
+
+        ResolvedArchitectureIR
+                    ↓
+        RenderModelIR
+
+--------------------------------------------------
+
+    Render Model является:
+
+        renderer-ready architectural representation.
+
+--------------------------------------------------
+
+    Главная задача стадии:
+
+        подготовить architecture
+        к renderer execution.
+
+
+
+==================================================
+12. MATERIALIZATION STAGE
+==================================================
+
+    Отвечает за:
+
+        - artifact generation
+        - theme.json generation
+        - CSS generation
+        - render tree materialization
+        - Gutenberg structure generation
+        - Elementor structure generation
+        - asset preparation
+
+--------------------------------------------------
+
+    Transformation example:
+
+        RenderModelIR
+                    ↓
+        MaterializationPlanIR
+                    ↓
+        MaterializedArtifacts
+
+--------------------------------------------------
+
+    Materialization является:
+
+        boundary between:
+            abstract architecture
+            and
+            executable outputs.
+
+--------------------------------------------------
+
+    Главная задача стадии:
+
+        сформировать:
+            executable architectural artifacts.
+
+
+
+==================================================
+13. PROVISIONING STAGE
+==================================================
+
+    Отвечает за:
+
+        - environment preparation
+        - installation orchestration
+        - preset application
+        - resource coordination
+        - assembled architecture deployment
+        - runtime preparation
+
+--------------------------------------------------
+
+    Provisioning применяет:
+
+        materialized architecture
+        к target environment.
+
+--------------------------------------------------
+
+    Transformation example:
+
+        MaterializedArtifacts
+                    ↓
+        ProvisionedArchitecture
+
+--------------------------------------------------
+
+    Provisioning НЕ является:
+
+        architecture definition stage.
+
+--------------------------------------------------
+
+    Главная задача стадии:
+
+        создать:
+            runtime-capable website environment.
+
+
+
+==================================================
+14. RUNTIME MODEL
+==================================================
+
+    Runtime является:
+
+        live execution environment
+        assembled architecture.
+
+--------------------------------------------------
+
+    Runtime использует:
+
+        outputs pipeline execution.
+
+--------------------------------------------------
+
+    Runtime отвечает за:
+
+        - request execution
+        - runtime coordination
+        - runtime state
+        - runtime caches
+        - rendering lifecycle
+        - active site execution
+
+--------------------------------------------------
+
+    Runtime НЕ управляет:
+
+        architecture compilation lifecycle.
+
+
+
+==================================================
+15. HANDLER MODEL
+==================================================
+
+    Каждая stage состоит из:
+
+        ordered handlers.
+
+--------------------------------------------------
+
+    Handler —
+        минимальная deterministic execution unit.
+
+--------------------------------------------------
+
+    Handler выполняет:
+
+        одну explicit transformation.
+
+--------------------------------------------------
+
+    Handler должен быть:
+
+        - isolated
+        - predictable
+        - composable
+        - observable
+        - deterministic
+
+--------------------------------------------------
+
+    Handler НЕ должен:
+
+        - скрыто изменять execution flow
+        - выполнять uncontrolled orchestration
+        - создавать hidden dependencies
+        - мутировать foreign state
+
+
+--------------------------------------------------
+
+    Handler example:
+
+        ConfigNormalizerHandler
+        LayoutResolverHandler
+        RendererBindingHandler
+        SlotCompositionHandler
+        RenderContextBuilderHandler
+
+
+
+==================================================
+16. EXECUTION CONTRACT MODEL
+==================================================
+
+    Каждая stage имеет:
+
+        explicit execution contract.
+
+--------------------------------------------------
+
+    Stage contract определяет:
+
+        - accepted representations
+        - produced representations
+        - allowed transformations
+        - mutation boundaries
+        - side-effect permissions
+        - diagnostics guarantees
+
+--------------------------------------------------
+
+    Contract обеспечивает:
+
+        - predictable execution
+        - debuggable orchestration
+        - stable extensibility
+        - deterministic evolution
+
+
+
+==================================================
+17. EXECUTION CONTEXT MODEL
+==================================================
+
+    Pipeline execution использует:
+
+        SHARED EXECUTION CONTEXT.
+
+--------------------------------------------------
+
+    Execution Context содержит:
+
+        - active representations
+        - execution metadata
+        - diagnostics
+        - registry access
+        - environment information
+        - orchestration metadata
+        - execution policies
+
+--------------------------------------------------
+
+    Context используется для:
+
+        execution coordination.
+
+--------------------------------------------------
+
+    Context НЕ является:
+
+        global mutable storage.
+
+
+
+==================================================
+18. STATE OWNERSHIP MODEL
+==================================================
+
+    Pipeline использует:
+
+        controlled state evolution model.
+
+--------------------------------------------------
+
+    Stages НЕ владеют:
+        всей architectural state.
+
+--------------------------------------------------
+
+    Stage может:
+
+        - enrich representation
+        - derive representation
+        - transform representation
+        - materialize representation
+
+--------------------------------------------------
+
+    Stage НЕ должна:
+
+        - произвольно мутировать
+          foreign architectural state.
+
+--------------------------------------------------
+
+    Главный principle:
+
+        transformations must remain explicit.
+
+
+
+==================================================
+19. REGISTRY PARTICIPATION MODEL
+==================================================
+
+    Registries участвуют:
+
+        как capability discovery infrastructure.
+
+--------------------------------------------------
+
+    Registries используются для:
+
+        - capability lookup
+        - renderer discovery
+        - layout discovery
+        - metadata resolution
+        - extension registration
+        - integration discovery
+
+--------------------------------------------------
+
+    Pipeline orchestrates:
+
+        registry-driven capability binding.
+
+--------------------------------------------------
+
+    Registry НЕ управляет:
+        orchestration execution.
+
+
+
+==================================================
+20. EXTENSIBILITY MODEL
+==================================================
+
+    Pipeline поддерживает:
+
+        controlled extensibility.
+
+--------------------------------------------------
+
+    Extensions могут:
+
+        - добавлять handlers
+        - расширять capabilities
+        - регистрировать integrations
+        - участвовать в resolution
+        - расширять materialization
+
+--------------------------------------------------
+
+    Extensions НЕ должны:
+
+        - ломать deterministic execution
+        - изменять orchestration topology
+        - создавать hidden execution
+        - владеть lifecycle orchestration
+
+--------------------------------------------------
+
+    Главный principle:
+
+        extensions integrate
+        into orchestration,
+        but do not control orchestration.
+
+
+
+==================================================
+21. EVENT MODEL
+==================================================
+
+    Event System существует:
+
+        как auxiliary coordination mechanism.
+
+--------------------------------------------------
+
+    Events используются для:
+
+        - diagnostics
+        - lifecycle observation
+        - notifications
+        - extension hooks
+        - monitoring
+
+--------------------------------------------------
+
+    Events НЕ являются:
+
+        primary execution mechanism.
+
+--------------------------------------------------
+
+    Pipeline НЕ является:
+
+        fully event-driven architecture.
+
+--------------------------------------------------
+
+    Главный principle:
+
+        events support execution,
+        but execution remains deterministic.
+
+
+
+==================================================
+22. SIDE EFFECT MODEL
+==================================================
+
+    Pipeline разделяет:
+
+        pure transformations
+        и
+        side-effect execution.
+
+--------------------------------------------------
+
+    Pure transformations:
+
+        - normalization
+        - composition
+        - resolution
+        - render preparation
+
+--------------------------------------------------
+
+    Side-effect stages:
+
+        - materialization
+        - provisioning
+        - runtime execution
+
+--------------------------------------------------
+
+    Главный principle:
+
+        side effects must remain explicit
+        and isolated.
+
+
+
+==================================================
+23. TEMPORAL EXECUTION MODEL
+==================================================
+
+    Pipeline различает:
+
+        - design-time
+        - build-time
+        - provisioning-time
+        - runtime
+        - request-time
+
+--------------------------------------------------
+
+    Разные transformations
+    принадлежат разным execution times.
+
+--------------------------------------------------
+
+    Example:
+
+        normalization
+            → build-time
+
+        CSS generation
+            → materialization-time
+
+        provisioning
+            → installation-time
+
+        rendering
+            → runtime/request-time
+
+--------------------------------------------------
+
+    Temporal isolation помогает:
+
+        - deterministic execution
+        - cache stability
+        - orchestration clarity
+        - runtime predictability
+
+
+
+==================================================
+24. FAILURE MODEL
+==================================================
+
+    Pipeline поддерживает:
+
+        controlled failure boundaries.
+
+--------------------------------------------------
+
+    Failure handling включает:
+
+        - validation failures
+        - resolution failures
+        - materialization failures
+        - provisioning failures
+        - diagnostics propagation
+
+--------------------------------------------------
+
+    Failures должны быть:
+
+        - observable
+        - explicit
+        - isolated
+        - diagnosable
+
+--------------------------------------------------
+
+    Hidden execution failures
+    считаются architectural violation.
+
+
+
+==================================================
+25. RELATIONSHIP TO APPLICATION LAYERS
+==================================================
+
+    Pipeline Architecture
+    и
+    Application Layers
+
+    являются:
+        разными architectural dimensions.
+
+--------------------------------------------------
+
+    Layers определяют:
+
+        WHERE responsibilities live.
+
+--------------------------------------------------
+
+    Pipeline определяет:
+
+        HOW execution evolves.
+
+--------------------------------------------------
+
+    Example:
+
+        CONFIGURATION LAYER
+                    ↓
+        participates in
+        CONFIGURATION STAGE
+
+--------------------------------------------------
+
+        COMPOSITION LAYER
+                    ↓
+        participates in
+        COMPOSITION STAGE
+
+--------------------------------------------------
+
+        RENDERING LAYER
+                    ↓
+        participates in
+        RENDER PREPARATION STAGE
+
+
+
+==================================================
+26. CORE ARCHITECTURAL CONSTRAINTS
+==================================================
+
+    Pipeline Architecture
+    НЕ должна превращаться в:
+
+        - enterprise orchestration framework
+        - reactive runtime engine
+        - dynamic execution fabric
+        - self-modifying execution system
+        - hidden abstraction network
+
+--------------------------------------------------
+
+    Главный architectural constraint:
+
+        simplicity
+            >
+        theoretical flexibility.
+
+--------------------------------------------------
+
+    Predictability
+        MUST remain
+            higher priority
+        than dynamic extensibility.
+
+
+
+==================================================
+27. RECOMMENDED IDEAL EXECUTION PRINCIPLES
+==================================================
+
+    Pipeline должен стремиться к:
+
+        - deterministic execution
+        - explicit orchestration
+        - stable representations
+        - observable transformations
+        - predictable state evolution
+        - renderer independence
+        - reusable composition
+        - explicit materialization
+        - controlled extensibility
+
+--------------------------------------------------
+
+    Pipeline НЕ должен стремиться к:
+
+        - execution magic
+        - hidden orchestration
+        - uncontrolled dynamics
+        - runtime mutation chaos
+        - abstraction for abstraction sake
+
+
+
+==================================================
+28. FINAL EXECUTION DEFINITION
+==================================================
+
+    theme-core v-2 рассматривает website assembly как:
+
+        orchestration
+            of
+        architectural compilation.
+
+--------------------------------------------------
+
+    Website =
+        evolving architecture.
+
+--------------------------------------------------
+
+    Pipeline =
+        controlled architecture compilation system.
+
+--------------------------------------------------
+
+    Execution =
+        deterministic architectural evolution.
+
+--------------------------------------------------
+
+    Architecture =
+        continuously transformed representations.
+
+--------------------------------------------------
+
+    System stores:
+
+        architectural definitions,
+        not rendered implementations.
