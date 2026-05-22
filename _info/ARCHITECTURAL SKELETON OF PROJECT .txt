@@ -1,0 +1,798 @@
+theme-core v-2
+ARCHITECTURAL SKELETON
+(v2.1.0 IMPLEMENTATION FOUNDATION)
+
+==================================================
+1. PURPOSE OF THE SKELETON
+==================================================
+
+    Architectural Skeleton определяет: physical implementation architecture
+        platform system theme-core v-2.
+
+    Skeleton является: implementation foundation
+        всей system architecture.
+
+    Skeleton определяет:
+        - physical layer topology
+        - responsibility ownership
+        - module placement
+        - execution organization
+        - dependency direction
+        - orchestration boundaries
+        - implementation structure
+
+    Skeleton НЕ является:
+        - domain model
+        - execution pipeline
+        - runtime architecture
+        - business workflow model
+
+    Главная задача skeleton: 
+        превратить conceptual architecture в stable implementation structure.
+
+
+==================================================
+2. CORE ARCHITECTURAL PRINCIPLE
+==================================================
+
+    theme-core v-2 использует: layered modular monolith architecture.
+
+    Architecture является:
+        - layer-oriented
+        - composition-oriented
+        - pipeline-oriented
+        - registry-driven
+        - configuration-driven
+
+    System intentionally НЕ использует:
+        - microservices
+        - distributed execution
+        - plugin chaos architecture
+        - runtime package discovery
+        - dynamic module topology
+
+    Главный architectural principle:
+        predictable modular simplicity предпочтительней  infrastructure complexity.
+
+
+==================================================
+3. HIGH LEVEL STRUCTURE
+==================================================
+
+    Minimal implementation topology:
+
+        /theme-core
+            /bootstrap
+            /foundation
+            /core-services
+            /configuration
+            /design-system
+            /composition
+            /registries
+            /rendering
+            /materialization
+            /provisioning
+            /runtime
+            /integrations
+
+    Данная структура отражает: physical ownership model platform architecture.
+
+
+
+==================================================
+4. PHYSICAL OWNERSHIP MODEL
+==================================================
+
+    Каждый top-level module является: explicit architectural ownership boundary.
+
+    Module владеет своей:
+        - responsibility domain
+        - contracts
+        - orchestration participation
+        - implementation details
+        - internal structures
+        - lifecycle ownership
+        - capability ownership
+
+    Modules НЕ должны:
+        - нарушать ownership boundaries
+        - напрямую мутировать foreign state
+        - реализовывать чужие responsibilities
+        - создавать cyclic architectural dependencies
+
+    Главный principle: responsibility ownership must remain explicit.
+
+
+==================================================
+5. PIPELINE RELATIONSHIP MODEL
+==================================================
+
+    Pipeline Architecture и Layered Module Architecture
+        являются: orthogonal architectural dimensions.
+
+    Modules определяют:
+        - responsibility ownership
+        - capability ownership
+        - implementation ownership
+        - lifecycle ownership
+
+    Pipeline определяет:
+        - execution coordination
+        - transformation ordering
+        - architectural state evolution
+        - stage participation
+
+    Pipeline stages НЕ владеют:
+        - business ownership
+        - domain ownership
+        - capability ownership
+        - architectural ownership
+
+    Stages являются:  orchestration boundaries,
+        а НЕ ownership boundaries.
+
+    Главный principle:
+        modules own capabilities, pipeline orchestrates participation.
+
+    Architectural authority должна оставаться:
+        module-centric, а НЕ stage-centric.
+
+
+==================================================
+6. BOOTSTRAP MODULE
+==================================================
+
+    /bootstrap
+
+    Назначение:
+        system startup и lifecycle initialization.
+
+    Bootstrap отвечает за:
+        - system initialization
+        - module boot registration
+        - lifecycle startup
+        - container initialization
+        - registry initialization
+        - pipeline initialization
+        - environment startup
+        - execution entrypoints
+
+    Bootstrap НЕ содержит:
+        - business logic
+        - rendering logic
+        - composition logic
+        - configuration ownership
+
+    Bootstrap является:
+        startup coordination layer.
+
+
+==================================================
+7. FOUNDATION MODULE
+==================================================
+
+    /foundation
+
+    Назначение: execution infrastructure foundation.
+
+    Foundation содержит:
+        - contracts
+        - interfaces
+        - orchestration primitives
+        - pipeline engine
+        - lifecycle primitives
+        - event system
+        - hook system
+        - dependency container
+        - coordination infrastructure
+
+    Foundation предоставляет: architectural execution mechanics.
+
+    Foundation НЕ владеет:
+        - configuration
+        - composition
+        - rendering
+        - provisioning
+        - runtime behavior
+        - business orchestration
+        - application coordination
+
+    Foundation НЕ должен становиться:
+        - application orchestration center
+        - universal infrastructure kernel
+        - hidden dependency authority
+        - domain coordination layer
+
+    Главный principle:
+        foundation remains primitive, stable, and infrastructure-oriented.
+
+
+==================================================
+8. CORE SERVICES MODULE
+==================================================
+
+    /core-services
+
+    Назначение: shared operational infrastructure.
+
+    Core Services содержит:
+        - filesystem services
+        - diagnostics services
+        - logging services
+        - metadata services
+        - serialization services
+        - configuration loading utilities
+        - cache services
+        - environment services
+        - path resolution
+        - resource access services
+
+    Core Services предоставляет: reusable operational capabilities.
+
+    Core Services НЕ содержит:
+        - orchestration ownership
+        - rendering execution
+        - composition ownership
+        - domain architecture
+
+    Core Services является:
+        operational nervous system platform architecture.
+
+
+==================================================
+9. CONFIGURATION MODULE
+==================================================
+
+    /configuration
+
+    Назначение:
+        architectural definition management.
+
+    Configuration module содержит:
+        - configuration definitions
+        - schemas
+        - config loaders
+        - normalizers
+        - inheritance resolution
+        - override resolution
+        - validation
+        - diagnostics
+
+    Configuration module владеет: configuration lifecycle.
+
+
+    Configuration module НЕ содержит:
+        - rendering execution
+        - runtime state
+        - visual rendering logic
+
+    Главный principle:
+        configuration is architectural source of truth.
+
+
+==================================================
+10. DESIGN SYSTEM MODULE
+==================================================
+
+    /design-system
+
+    Назначение: visual architecture coordination.
+
+    Design System module содержит:
+        - design tokens
+        - typography systems
+        - spacing systems
+        - color systems
+        - responsive rules
+        - visual contracts
+        - theme.json generation coordination
+
+    Design System module владеет: visual consistency architecture.
+
+    Design System module НЕ содержит:
+        - page composition
+        - rendering execution
+        - section orchestration
+
+    Главный principle:
+        visual architecture must remain renderer-independent.
+
+
+==================================================
+11. COMPOSITION MODULE
+==================================================
+
+    /composition
+
+    Назначение:
+        structural architecture assembly.
+
+    Composition module содержит:
+        - composition graph logic
+        - page composition
+        - section assembly
+        - layout coordination
+        - slot systems
+        - structure assembly
+        - composition orchestration
+
+    Composition module владеет:
+        structural architecture evolution.
+
+    Composition module НЕ содержит:
+        - rendering execution
+        - visual styling ownership
+        - runtime rendering logic
+        - orchestration scheduling
+
+    Главный principle:
+        website structure is composed architecture.
+
+
+==================================================
+12. REGISTRIES MODULE
+==================================================
+
+    /registries
+
+    Назначение:
+        discoverability и capability coordination.
+
+    Registries module содержит:
+        - section registries
+        - renderer registries
+        - layout registries
+        - preset registries
+        - capability lookup
+        - metadata discovery
+        - manifest loading
+
+    Registries module предоставляет:
+        architectural discovery infrastructure.
+
+    Registries НЕ владеют:
+        - orchestration lifecycle
+        - execution coordination
+        - transformation planning
+
+    Главный principle:
+        registries discover, pipeline orchestrates.
+
+
+==================================================
+13. RENDERING MODULE
+==================================================
+
+    /rendering
+
+    Назначение:
+        renderer orchestration coordination.
+
+    Rendering module содержит:
+        - render preparation
+        - render models
+        - render contexts
+        - renderer adapters
+        - template coordination
+        - rendering contracts
+
+    Rendering module владеет:
+        rendering orchestration lifecycle.
+
+    Rendering module НЕ владеет:
+        - website architecture
+        - runtime execution lifecycle
+
+    Главный principle:
+        architecture must remain renderer-independent.
+
+
+==================================================
+14. MATERIALIZATION MODULE
+==================================================
+
+    /materialization
+
+    Назначение:
+        executable artifact generation.
+
+    Materialization module содержит:
+        - theme.json generation
+        - CSS generation
+        - render tree materialization
+        - generated structure outputs
+        - executable artifacts
+
+    Materialization module отвечает за: architecture-to-artifact transformation.
+
+    Materialization является:
+        boundary between:
+            abstract architecture and
+            executable outputs.
+
+    Materialization НЕ должен:
+        - принимать architectural decisions
+        - изменять composition structure
+        - выполнять orchestration planning
+        - изменять execution topology
+
+    Главный principle:
+        materialization remains dumb,
+        explicit,
+        and transformation-oriented.
+
+
+==================================================
+15. PROVISIONING MODULE
+==================================================
+
+    /provisioning
+
+    Назначение:
+        assembled architecture deployment и environment preparation.
+
+    Provisioning module содержит:
+        - demo installation
+        - preset installation
+        - site assembly application
+        - environment preparation
+        - installation orchestration
+        - runtime preparation
+
+    Provisioning module использует:
+        outputs materialization stage.
+
+    Provisioning НЕ определяет:
+        architecture ownership.
+
+    Главный principle:
+        provisioning applies architecture,
+        but does not define architecture.
+
+
+==================================================
+16. RUNTIME MODULE
+==================================================
+
+    /runtime
+
+    Назначение: live execution coordination.
+
+    Runtime module содержит:
+        - runtime context
+        - request coordination
+        - execution state
+        - runtime caches
+        - active site context
+        - runtime orchestration
+
+    Runtime module использует:
+        assembled architecture outputs.
+
+    Runtime НЕ участвует:
+        в architectural compilation lifecycle.
+
+    Runtime НЕ должен:
+        мутировать architectural compilation model.
+
+    Главный principle:
+        runtime consumes architecture, but does not redefine architecture.
+
+
+==================================================
+17. INTEGRATIONS MODULE
+==================================================
+
+    /integrations
+
+    Назначение: platform-dependent execution adaptation.
+
+    Integrations module содержит:
+        - WordPress adapters
+        - Gutenberg bridges
+        - Elementor bridges
+        - WooCommerce bridges
+        - REST integrations
+        - external platform adapters
+
+    External platforms являются:
+        execution hosts, а НЕ просто external integrations.
+
+    Integrations module изолирует:
+        external lifecycle instability from core architecture.
+
+    Core architecture НЕ должна:
+        directly depend on platform lifecycle implementation details.
+
+    Главный principle:
+        execution hosts remain isolated through adaptation boundaries.
+
+
+==================================================
+18. MODULE BOUNDARIES
+==================================================
+
+    Modules являются: explicit architectural boundaries.
+
+    Modules взаимодействуют через:
+        - contracts
+        - interfaces
+        - orchestration participation
+        - registry discovery
+
+    Direct internal coupling между modules: discouraged.
+
+    Главный principle:
+        modules collaborate, but do not merge responsibilities.
+
+
+==================================================
+19. DEPENDENCY DIRECTION
+==================================================
+
+    High-level dependency direction:
+        bootstrap
+            ↓
+        foundation
+            ↓
+        core-services
+            ↓
+        domain modules
+
+    Domain modules:
+        - configuration
+        - composition
+        - rendering
+        - provisioning
+        - runtime
+
+    Integrations находятся:
+        на outer boundary architecture.
+
+    Runtime НЕ должен становиться:
+        dependency root platform system.
+
+    Главный principle:
+        dependencies must flow toward stable foundations.
+
+
+==================================================
+20. ARCHITECTURAL DEPENDENCY RULES
+==================================================
+
+    Modules должны использовать:
+        explicit dependency discipline.
+
+    Example dependency rules:
+        composition MAY depend on:
+            - foundation
+            - core-services
+            - configuration
+            - registries
+
+        composition MUST NOT depend on:
+            - runtime internals
+            - integrations internals
+            - provisioning internals
+
+        rendering  MAY depend on:
+            - composition
+            - registries
+            - design-system
+
+        runtime MUST NOT redefine:
+            - composition architecture
+            - configuration ownership
+            - pipeline topology
+
+    Главный principle:
+        dependency rules must remain explicit and enforceable.
+
+
+
+==================================================
+21. COMPILE-TIME VS RUNTIME MODEL
+==================================================
+
+    theme-core v-2 intentionally разделяет:
+        compile-time architecture and runtime execution.
+
+    Pipeline выполняет:
+        architectural compilation and render preparation.
+
+    Runtime выполняет:
+        live execution using compiled architectural outputs.
+
+    Pipeline может:
+        prepare rendering structures.
+
+    Runtime владеет:
+        final execution context.
+
+    Главный principle:
+        compile-time architecture must remain separated from runtime adaptation.
+
+
+==================================================
+22. EXECUTION OWNERSHIP RULES
+==================================================
+
+    Execution authority должна оставаться explicit.
+
+
+    Pipeline orchestrates:
+        - stage execution
+        - handler coordination
+        - architectural state evolution
+
+    Modules владеют:
+        - capability execution
+        - transformation logic
+        - implementation behavior
+
+    Handlers могут:
+        - transform representations
+        - enrich execution context
+        - emit diagnostics
+
+    Handlers НЕ должны:
+        - изменять orchestration topology
+        - инициировать hidden execution
+        - bypass execution contracts
+
+    Главный principle:
+        orchestration authority must remain centralized and observable.
+
+
+==================================================
+23. MODULE PUBLIC API MODEL
+==================================================
+
+    Каждый module должен постепенно разделяться на:
+        /public
+        /internal
+        /contracts
+
+    /public 
+        содержит stable integration surface.
+
+    /internal 
+        содержит implementation details.
+
+    /contracts 
+        содержит explicit collaboration boundaries.
+
+    Modules НЕ должны:
+        напрямую импортировать foreign internal structures.
+
+    Главный principle:
+        implementation details must remain isolated.
+
+
+==================================================
+24. DIAGNOSTICS MODEL
+==================================================
+
+    Diagnostics является: mandatory architectural capability.
+
+    Diagnostics должны поддерживать:
+        - execution tracing
+        - transformation visibility
+        - failure propagation
+        - pipeline observability
+        - orchestration diagnostics
+        - runtime diagnostics
+
+    Failures должны быть:
+        - observable
+        - diagnosable
+        - explicit
+        - traceable
+
+    Hidden failures считаются: architectural violations.
+
+    Главный principle:
+        deterministic systems require observable execution.
+
+
+==================================================
+25. INTERNAL MODULE STRUCTURE
+==================================================
+
+    Каждый module может содержать:
+
+        /contracts
+        /services
+        /handlers
+        /registries
+        /models
+        /contexts
+        /pipelines
+        /diagnostics
+        /support
+
+
+    Internal structure может уточняться:
+        по мере эволюции architecture.
+
+    Но:
+        ownership boundaries должны оставаться стабильными.
+
+
+==================================================
+26. IMPLEMENTATION STRATEGY
+==================================================
+
+    v2.1.0 intentionally использует:
+        stable modular monolith strategy.
+
+    System initially развивается как:
+        - centralized codebase
+        - deterministic execution system
+        - explicitly organized architecture
+
+    Главная цель:
+        stabilizing architecture before scaling complexity.
+
+
+==================================================
+27. EXCLUDED ARCHITECTURAL COMPLEXITY
+==================================================
+
+    v2.1.0 сознательно НЕ использует:
+        - distributed architecture
+        - microservices
+        - runtime package discovery
+        - dynamic execution fabrics
+        - plugin-driven orchestration
+        - autonomous subsystems
+        - self-modifying execution topology
+
+    Причина:
+        complexity > practical architectural value.
+
+
+
+==================================================
+28. CORE ARCHITECTURAL CONSTRAINTS
+==================================================
+
+    Architectural Skeleton НЕ должен превращаться в:
+        - filesystem chaos
+        - utility-driven architecture
+        - plugin spaghetti
+        - uncontrolled modularity
+        - helper-based organization
+
+    Следующие directories считаются architectural violation zones:
+        /helpers
+        /utils
+        /misc
+        /common
+        /shared-random
+
+    Главный principle:
+        all implementation must have explicit ownership.
+
+
+==================================================
+29. FINAL SKELETON DEFINITION
+==================================================
+
+    theme-core v-2 использует:
+        layered modular monolith как implementation foundation.
+
+    Architecture организуется вокруг:
+        - ownership boundaries
+        - orchestration boundaries
+        - execution coordination
+        - architectural responsibilities
+
+    Physical structure отражает:
+        conceptual architecture.
+
+    System развивается через:
+        explicit modules and deterministic architectural organization.
+
+    Главная architectural идея:
+        implementation structure must reinforce conceptual architecture.
