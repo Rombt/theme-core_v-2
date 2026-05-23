@@ -1,0 +1,394 @@
+theme-core v-2
+LOGGING SERVICE
+ARCHITECTURAL DESCRIPTION
+(v2.1.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Logging Service является:
+        passive structured persistence infrastructure,
+        отвечающей за устойчивость и вывод структурированных записей журнала.
+
+    Logging НЕ отвечает за:
+        - diagnostics analysis
+        - orchestration visibility
+        - execution coordination
+        - business logic
+        - pipeline control
+        - diagnostics interpretation
+
+    Logging отвечает только за:
+        - structured log persistence
+        - log formatting
+        - log serialization
+        - log routing
+        - output delivery
+        - output abstraction
+
+
+==================================================
+2. CORE ARCHITECTURAL PRINCIPLE
+==================================================
+
+    Logging является:
+        passive infrastructure subsystem.
+
+    Logging НЕ участвует:
+        в execution orchestration.
+
+    Logging НЕ принимает:
+        architectural decisions.
+
+    Logging НЕ влияет:
+        на execution flow.
+
+    Главный principle:
+        logs are persisted, not interpreted.
+
+
+==================================================
+3. ARCHITECTURAL ROLE
+==================================================
+
+    Logging располагается: после Diagnostics layer.
+
+    Execution flow:
+        Build Execution
+            ↓
+        Diagnostics
+            ↓
+        Logging
+            ↓
+        Outputs
+
+    Diagnostics производит: semantic diagnostic information.
+
+    Logging сохраняет и выводит: structured diagnostic records.
+
+
+==================================================
+4. LOGGING RESPONSIBILITIES
+==================================================
+
+    Logging subsystem отвечает за:
+        - Прием структурированных записей
+        - Координация потока логирования
+        - Форматирование записей логов
+        - Сериализация записей
+        - Маршрутизация выходных данных
+        - Запись выходных данных
+        - persistence abstraction
+        - Абстракция выходных данных
+
+    Logging subsystem НЕ отвечает за:
+        - diagnostics creation
+        - execution tracing
+        - context propagation
+        - failure recovery
+        - orchestration coordination
+        - state mutation
+
+
+==================================================
+5. INPUT MODEL
+==================================================
+
+    Logging принимает только: structured records.
+
+    Logging НЕ принимает:
+        - arbitrary strings
+        - raw exceptions
+        - execution state
+        - business payloads
+        - freeform debug messages
+
+    Primary input entity: DiagnosticEntry
+
+
+==================================================
+6. DIAGNOSTIC ENTRY
+==================================================
+
+    DiagnosticEntry является: immutable structured diagnostic record.
+
+    Минимальная структура:
+        - level
+        - timestamp
+        - message
+        - context
+        - metadata
+
+    Example:
+        {
+            "level": "warning",
+            "timestamp": "2026-05-22T12:00:00Z",
+            "message": "Missing optional token",
+            "context": {
+                "execution_id": "build_001",
+                "stage": "layout_generation"
+            },
+            "metadata": {
+                "token": "sidebar-gap"
+            }
+        }
+
+
+==================================================
+7. LOGGING FLOW
+==================================================
+
+    Logging flow:
+
+        DiagnosticEntry
+            ↓
+        LoggerInterface
+            ↓
+        Formatter
+            ↓
+        Writer
+            ↓
+        Output Target
+
+    Example:
+
+        DiagnosticEntry
+            ↓
+        StructuredLogger
+            ↓
+        JsonFormatter
+            ↓
+        FilesystemWriter
+            ↓
+        build.log
+
+
+==================================================
+8. LOGGER INTERFACE
+==================================================
+
+    LoggerInterface определяет:
+        structured persistence contract.
+
+    Responsibilities:
+        - принять DiagnosticEntry
+        - координировать поток регистрации
+        - делегировать форматирование
+        - делегировать доставку выходных данных
+
+    Logger НЕ должен:
+        - Изменять записи
+        - Обогащать контекст
+        - Создавать диагностические данные
+        - Анализировать выполнение
+        - Изменять метаданные
+
+    Minimal contract:
+        write( DiagnosticEntry $entry ): void
+
+
+==================================================
+9. FORMATTERS
+==================================================
+
+    Formatter отвечает за: serialization format.
+
+    Responsibilities:
+        - normalize output structure
+        - serialize log records
+        - produce deterministic output
+
+    Supported examples:
+        - JsonFormatter
+        - TextFormatter
+
+    Formatter НЕ отвечает за:
+        - writing
+        - filesystem access
+        - routing
+        - diagnostics logic
+        - orchestration
+
+
+==================================================
+10. WRITERS
+==================================================
+
+    Writer отвечает за: physical output delivery.
+
+    Responsibilities:
+        - filesystem writing
+        - console output
+        - output persistence
+
+    Supported examples:
+        - FilesystemWriter
+        - ConsoleWriter
+
+    Writer НЕ отвечает за:
+        - formatting
+        - diagnostics
+        - orchestration
+        - lifecycle management
+
+
+==================================================
+11. OUTPUT TARGETS
+==================================================
+
+    v2.1.0 minimally supports:
+        - filesystem logs
+        - development console output
+
+    Future versions may support:
+        - remote outputs
+        - telemetry integrations
+        - monitoring adapters
+
+
+==================================================
+12. STRUCTURED LOGGING
+==================================================
+
+    Logging MUST remain:
+        - structured
+        - deterministic
+        - machine-readable
+        - normalized
+        - context-aware
+
+    Logging MUST NOT become:
+        - arbitrary text dumping
+        - unstructured debug output
+        - freeform console spam
+
+
+==================================================
+13. CONTEXT HANDLING
+==================================================
+
+    Logging НЕ создаёт: execution context.
+
+    Logging only persists: provided context.
+
+    Context typically includes:
+        - execution_id
+        - build_id
+        - stage
+        - handler
+        - environment
+
+    Context attachment responsibility belongs to:
+        Diagnostics layer.
+
+
+==================================================
+14. ERROR HANDLING
+==================================================
+
+    Logging failures MUST remain:
+        isolated.
+
+    Logging MUST NOT:
+        - terminate build execution
+        - mutate orchestration state
+        - affect pipeline execution
+
+    Logging errors should remain:
+        - observable
+        - explicit
+        - isolated
+
+
+==================================================
+15. IMMUTABILITY PRINCIPLE
+==================================================
+
+    DiagnosticEntry MUST remain:
+        immutable.
+
+    Logging subsystem MUST NOT:
+        - mutate entries
+        - rewrite metadata
+        - alter timestamps
+        - modify context
+
+
+==================================================
+16. DEVELOPMENT PRINCIPLES
+==================================================
+
+    Logging architecture должна оставаться:
+        - simple
+        - explicit
+        - deterministic
+        - composable
+        - infrastructure-oriented
+
+    v2.1.0 intentionally НЕ строит:
+        - enterprise logging platform
+        - distributed logging system
+        - reactive telemetry infrastructure
+        - observability cloud
+
+
+==================================================
+17. MINIMAL REQUIRED COMPONENTS
+==================================================
+
+    Минимально необходимы:
+        - LoggerInterface
+        - LogFormatterInterface
+        - LogWriterInterface
+        - DiagnosticEntry
+        - DiagnosticLevel
+        - StructuredLogger
+        - JsonFormatter
+        - FilesystemWriter
+
+
+==================================================
+18. ARCHITECTURAL BOUNDARIES
+==================================================
+
+    Logging НЕ должен:
+        - управлять execution
+        - анализировать orchestration
+        - принимать business decisions
+        - изменять payloads
+        - распространять state
+        - владеть diagnostics lifecycle
+
+    Logging является:
+        passive infrastructure subsystem.
+
+
+==================================================
+19. RELATIONSHIP TO PIPELINE
+==================================================
+
+    Pipeline orchestrates: execution lifecycle.
+
+    Diagnostics observes: execution semantics.
+
+    Logging persists: structured execution records.
+
+    Главный principle:
+        pipeline orchestrates,
+        diagnostics observes,
+        logging persists.
+
+
+==================================================
+20. FINAL PRINCIPLE
+==================================================
+
+    Logging subsystem существует для:
+        deterministic structured persistence of execution diagnostics.
+
+    Logging architecture должна оставаться:
+        infrastructure-focused,
+        predictable,
+        non-invasive,
+        and build-oriented.
