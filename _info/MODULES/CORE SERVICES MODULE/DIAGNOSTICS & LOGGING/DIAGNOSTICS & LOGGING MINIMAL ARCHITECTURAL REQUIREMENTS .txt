@@ -1,0 +1,290 @@
+theme-core v-2
+DIAGNOSTICS & LOGGING
+MINIMAL ARCHITECTURAL REQUIREMENTS
+(v2.1.0 OBSERVABILITY FOUNDATION)
+
+==================================================
+1. PURPOSE
+==================================================
+
+Diagnostics и Logging существуют для:
+
+    - execution visibility
+    - orchestration observability
+    - deterministic debugging
+    - failure tracing
+    - pipeline introspection
+    - architectural diagnostics
+
+Система должна уметь:
+
+    - объяснить:
+        что происходит
+    - объяснить:
+        где происходит
+    - объяснить:
+        почему произошло
+    - объяснить:
+        что сломалось
+
+
+==================================================
+2. CORE ARCHITECTURAL PRINCIPLE
+==================================================
+
+Diagnostics и Logging являются:
+
+    architectural observability system,
+    а НЕ utility helpers.
+
+Главный principle:
+
+    execution must remain observable.
+
+
+==================================================
+3. DIAGNOSTICS RESPONSIBILITIES
+==================================================
+
+Diagnostics отвечает за:
+
+    - execution diagnostics
+    - pipeline diagnostics
+    - stage diagnostics
+    - handler diagnostics
+    - validation diagnostics
+    - resolution diagnostics
+    - failure diagnostics
+    - orchestration tracing
+    - diagnostics aggregation
+
+
+==================================================
+4. LOGGING RESPONSIBILITIES
+==================================================
+
+Logging отвечает за:
+
+    - structured log writing
+    - diagnostics persistence
+    - log formatting
+    - log routing
+    - output targets
+    - execution event recording
+
+
+==================================================
+5. REQUIRED DIAGNOSTIC CAPABILITIES
+==================================================
+
+Система должна поддерживать:
+
+    - info diagnostics
+    - warning diagnostics
+    - error diagnostics
+    - critical diagnostics
+    - debug diagnostics
+
+Каждая diagnostics entry должна содержать:
+
+    - level
+    - timestamp
+    - source
+    - execution context
+    - message
+    - optional metadata
+
+
+==================================================
+6. EXECUTION TRACE REQUIREMENTS
+==================================================
+
+Pipeline execution должен быть traceable.
+
+Минимально необходимо:
+
+    - active stage
+    - active handler
+    - execution duration
+    - execution result
+    - failure boundary
+
+Pipeline должен позволять:
+
+    reconstruct execution flow.
+
+
+==================================================
+7. FAILURE REQUIREMENTS
+==================================================
+
+Failures должны быть:
+
+    - explicit
+    - structured
+    - observable
+    - diagnosable
+
+Hidden failures считаются:
+
+    architectural violation.
+
+Diagnostics должны поддерживать:
+
+    - exception diagnostics
+    - validation diagnostics
+    - orchestration diagnostics
+    - dependency diagnostics
+
+
+==================================================
+8. STRUCTURED LOGGING REQUIREMENTS
+==================================================
+
+Logging должен быть:
+
+    - structured
+    - machine-readable
+    - deterministic
+    - context-aware
+
+Logging НЕ должен быть:
+
+    random string dumping.
+
+
+==================================================
+9. CONTEXT REQUIREMENTS
+==================================================
+
+Diagnostics должны поддерживать:
+
+    execution context attachment.
+
+Минимальный context:
+
+    - stage
+    - handler
+    - module
+    - execution id
+    - environment
+
+
+==================================================
+10. OUTPUT REQUIREMENTS
+==================================================
+
+v2.1.0 minimally поддерживает:
+
+    - filesystem logs
+    - development console output
+
+Будущие версии могут добавить:
+
+    - remote logging
+    - telemetry
+    - monitoring integrations
+
+
+==================================================
+11. ARCHITECTURAL BOUNDARIES
+==================================================
+
+Diagnostics НЕ должны:
+
+    - владеть orchestration
+    - изменять execution flow
+    - мутировать pipeline state
+    - выполнять business logic
+
+Logging НЕ должен:
+
+    - принимать architectural decisions
+    - управлять lifecycle
+
+
+==================================================
+12. FOUNDATION VS IMPLEMENTATION
+==================================================
+
+/foundation содержит:
+
+    - contracts
+    - interfaces
+    - diagnostic abstractions
+    - logging abstractions
+
+/core-services содержит:
+
+    - logger implementations
+    - filesystem writers
+    - formatters
+    - diagnostics managers
+
+
+==================================================
+13. MINIMAL REQUIRED COMPONENTS
+==================================================
+
+Минимально необходимы:
+
+    - LoggerInterface
+    - DiagnosticsManagerInterface
+    - DiagnosticEntry
+    - DiagnosticLevel
+    - ExecutionContext
+    - FileLogger
+    - DiagnosticsManager
+    - ExceptionDiagnosticBuilder
+
+
+==================================================
+14. PIPELINE PARTICIPATION
+==================================================
+
+Каждый pipeline stage должен иметь возможность:
+
+    - emit diagnostics
+    - emit warnings
+    - emit failures
+    - emit execution traces
+
+Каждый handler должен иметь возможность:
+
+    - report execution state
+    - report transformation result
+    - report failures
+
+
+==================================================
+15. DEVELOPMENT PRINCIPLE
+==================================================
+
+Diagnostics architecture должна оставаться:
+
+    - simple
+    - explicit
+    - deterministic
+    - composable
+
+v2.1.0 intentionally НЕ строит:
+
+    - enterprise telemetry platform
+    - distributed tracing system
+    - observability cloud
+    - reactive monitoring infrastructure
+
+
+==================================================
+16. FINAL REQUIREMENT
+==================================================
+
+theme-core v-2 должен развиваться как:
+
+    observable architecture.
+
+Execution lifecycle должен быть:
+
+    inspectable,
+    traceable,
+    and diagnosable.
