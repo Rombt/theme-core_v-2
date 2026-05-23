@@ -1,102 +1,12 @@
-!!!
-В концепции Gutenberg Тема — это “система правил”, по которым редактор собирает сайт.
-!!!
-это значит что
-Тема не строит страницу —
-    она описывает, как блоки должны выглядеть и себя вести.
-
-В Gutenberg тему сегодня входит:
-    1 Design System (обязательное)  -- Это основа темы.
-        Через theme.json:
-        цвета
-        типографика
-        отступы
-        радиусы
-        границы
-        layout (contentSize, wideSize)
-
-    2 Layout-интерпретация (критично) -- Это архитектура, а не стилизация.
-        Тема решает:
-        как работают alignwide
-        как работает alignfull
-        где фон
-        где контент
-
-    3 Блоки --  Тема МОЖЕТ но не обязана!!:
-        добавлять свои блоки
-        добавлять grid-блоки
-        добавлять hero / card / pricing
-
-    4 Patterns (очень важно)    --  Современная тема без patterns — слабая тема.
-        Patterns — это:
-        готовые композиции блоков
-        реальный “макет” страницы
-        замена page builder’ов
-
-    5 Templates (но не как раньше)
-        В block-темах:
-            templates/*.html
-            parts/*.html
-        Они:
-            задают зоны (header / main / footer)
-            НЕ управляют layout контента
-
-
-
-🔹Описание к theme.json для tc-1
-    version - Указывает версию формата JSON (для WordPress 5.8+ использовать 2).
-    settings – глобальные настройки темы и блоков
-    color.palette – палитра цветов, доступная в редакторе блоков:
-    primary – основной цвет бренда
-    secondary – второстепенный цвет
-    accent – акцентные элементы
-    background – фон сайта
-    text – цвет текста
-    typography.fontFamilies – доступные шрифты:
-    system – системный шрифт
-    arial – Arial, для совместимости
-    typography.customFontSize – разрешает задавать кастомные размеры шрифтов в блоках
-    spacing.customPadding – разрешает редактировать паддинги блоков
-    spacing.customMargin – разрешает редактировать маргины блоков
-    blocks.core/paragraph.typography.lineHeight – высота строки для параграфов
-    blocks.core/heading.typography.lineHeight – высота строки для заголовков
-    styles – глобальные стили темы, применяемые на фронтенде
-    color.background – фон сайта
-    color.text – цвет текста по умолчанию
-    typography.fontFamily – шрифт по умолчанию для сайта
-    typography.lineHeight – базовая высота строки
-    spacing.padding – базовый padding для всех блоков
-    spacing.margin – базовый margin для всех блоков
-
-🔹Алгоритм работы ThemeCore (Bootstrapping)
-    Инициализация ядра (Bootstrap)
-    ThemeCore подключается первым в functions.php.
-    Загружает базовые хелперы (core/helpers.php).
-    Определяет константы и пути к папкам (src/, dist/, blocks/).
-    Чтение конфигураций
-    ThemeCore читает theme.json.
-    Извлекает:
-    Цвета и шрифты
-    Настройки блоков
-    Глобальные стили
-    Подключение ассетов (CSS/JS)
-    Генерирует пути к Vite-сборке (dist/front.css, dist/editor.css и JS).
-    Подключает фронтальные стили и скрипты в wp_enqueue_scripts.
-    Подключает редакторские стили и скрипты в enqueue_block_editor_assets.
-    Регистрация Gutenberg-блоков
-    ThemeCore сканирует blocks/ и регистрирует все блоки через register_block_type.
-    Каждый блок получает свои рендер-файлы (render.php) и конфиги (block.json).
-    Применение стилей из theme.json
-    Движок формирует CSS для фронта и редактора на основе конфигурации.
-    Можно подключать как отдельный файл или вставлять инлайн.
-    Регистрация хуков и фильтров (минимально)
-    ThemeCore добавляет только базовые хуки, например:
-    after_setup_theme для инициализации темы
-    init для регистрации блоков
-    Все остальные хуки для конкретной темы можно подключать отдельно.
-    Тема-специфичная логика
-    В ThemeCore нет кастомного PHP для конкретного сайта.
-    Все специфические шаблоны, блоки, стили, скрипты лежат в теме и подключаются через ядро.
-    CI / тестирование (опционально)
-    ThemeCore может содержать unit-тесты для блоков и функций ядра.
-    Visual regression проверяет фронт и редактор.
+[✓] Composer
+[✓] PSR-4
+[✓] Namespace structure
+[✓] Project skeleton
+[ ] Kernel
+[ ] Bootstrap
+[ ] Exception hierarchy
+[ ] Logging foundation
+[ ] PHPStan
+[ ] PHPUnit
+[ ] Deptrac
+[ ] First architectural rules
