@@ -1,10 +1,17 @@
 {
-    "require-dev": {
-        "wp-coding-standards/wpcs": "3.3"
-    },
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+    "name": "rombt/theme-core",
+    "description": "Configuration-driven orchestration framework for WordPress themes",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Rombt\\ThemeCore\\": "core/"
         }
-    }
+    },
+    "authors": [
+        {
+            "name": "Rombt",
+            "email": "rombtnet@gmail.com"
+        }
+    ],
+    "require": {}
 }
