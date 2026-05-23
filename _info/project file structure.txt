@@ -1,0 +1,420 @@
+theme-core v-2
+PROJECT STRUCTURE
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+Project Structure определяет:
+
+- физическую организацию проекта
+- разделение архитектурных слоёв
+- boundaries между subsystem categories
+- правила размещения source files
+- runtime storage organization
+- build infrastructure layout
+
+Структура проекта НЕ является
+доменной архитектурой приложения.
+
+Структура проекта является
+organizational foundation layer.
+
+==================================================
+2. ROOT STRUCTURE
+==================================================
+
+tc-1/
+│
+├── composer.json
+├── composer.lock
+├── vendor/
+│
+├── core/
+├── config/
+├── storage/
+├── bin/
+├── tests/
+└── build/
+
+
+
+==================================================
+3. ROOT FILES
+==================================================
+
+--------------------------------------------------
+3.1 composer.json
+--------------------------------------------------
+
+Главный Composer manifest.
+
+Содержит:
+
+- package metadata
+- dependencies
+- autoload rules
+- scripts
+- development tooling configuration
+
+--------------------------------------------------
+3.2 composer.lock
+--------------------------------------------------
+
+Dependency lock file.
+
+Фиксирует exact versions
+всех установленных packages.
+
+Обеспечивает deterministic installs.
+
+--------------------------------------------------
+3.3 test.php
+--------------------------------------------------
+
+Temporary bootstrap validation file.
+
+Используется на раннем этапе
+разработки для проверки:
+
+- autoload
+- bootstrap
+- namespace resolution
+- runtime initialization
+
+В production architecture
+обычно удаляется.
+
+==================================================
+4. VENDOR DIRECTORY
+==================================================
+
+--------------------------------------------------
+4.1 vendor/
+--------------------------------------------------
+
+Composer-managed dependencies.
+
+Содержит:
+
+- third-party libraries
+- Composer autoloader
+- generated autoload metadata
+
+НЕ является частью
+application source code.
+
+НЕ редактируется вручную.
+
+==================================================
+5. CORE DIRECTORY
+==================================================
+
+--------------------------------------------------
+5.1 PURPOSE
+--------------------------------------------------
+
+core/ является главным
+source code root directory.
+
+Содержит весь application code.
+
+==================================================
+6. CORE/APPLICATION
+==================================================
+
+--------------------------------------------------
+6.1 PURPOSE
+--------------------------------------------------
+
+Application orchestration layer.
+
+Отвечает за:
+
+- application lifecycle
+- orchestration
+- boot process
+- execution coordination
+- high-level workflow management
+
+==================================================
+7. CORE/CONTRACTS
+==================================================
+
+--------------------------------------------------
+7.1 PURPOSE
+--------------------------------------------------
+
+Contracts layer.
+
+Содержит:
+
+- interfaces
+- abstract contracts
+- behavioral definitions
+
+НЕ содержит implementations.
+
+Используется для:
+
+- decoupling
+- dependency inversion
+- architectural boundaries
+
+==================================================
+8. CORE/SUPPORT
+==================================================
+
+--------------------------------------------------
+8.1 PURPOSE
+--------------------------------------------------
+
+Support utilities layer.
+
+Содержит:
+
+- helper utilities
+- low-level reusable tools
+- stateless helper logic
+- generic utility abstractions
+
+НЕ содержит domain orchestration.
+
+==================================================
+9. CORE/INFRASTRUCTURE
+==================================================
+
+--------------------------------------------------
+9.1 PURPOSE
+--------------------------------------------------
+
+Infrastructure implementation layer.
+
+Содержит:
+
+- filesystem implementations
+- logging implementations
+- cache implementations
+- serialization implementations
+- external integrations
+
+Infrastructure реализует
+contracts higher layers.
+
+==================================================
+10. CORE/EXCEPTIONS
+==================================================
+
+--------------------------------------------------
+10.1 PURPOSE
+--------------------------------------------------
+
+Application exception hierarchy.
+
+Содержит:
+
+- base exceptions
+- infrastructure exceptions
+- runtime exceptions
+- domain-independent exception types
+
+Используется для:
+
+- unified error handling
+- predictable failure model
+- structured exception architecture
+
+==================================================
+11. CORE/BOOTSTRAP
+==================================================
+
+--------------------------------------------------
+11.1 PURPOSE
+--------------------------------------------------
+
+Bootstrap initialization layer.
+
+Отвечает за:
+
+- environment initialization
+- path initialization
+- runtime initialization
+- early boot procedures
+
+Bootstrap выполняется
+до запуска application lifecycle.
+
+==================================================
+12. CONFIG DIRECTORY
+==================================================
+
+--------------------------------------------------
+12.1 PURPOSE
+--------------------------------------------------
+
+Configuration storage directory.
+
+Содержит:
+
+- application configuration
+- environment-independent settings
+- system configuration files
+- build configuration
+
+Configuration НЕ содержит runtime state.
+
+==================================================
+13. STORAGE DIRECTORY
+==================================================
+
+--------------------------------------------------
+13.1 PURPOSE
+--------------------------------------------------
+
+Runtime-generated data storage.
+
+Содержит:
+
+- logs
+- cache
+- temporary files
+- generated transient artifacts
+
+Storage НЕ содержит source code.
+
+==================================================
+14. STORAGE/LOGS
+==================================================
+
+--------------------------------------------------
+14.1 PURPOSE
+--------------------------------------------------
+
+Structured log storage.
+
+Содержит:
+
+- runtime logs
+- build logs
+- debug logs
+- exception logs
+
+==================================================
+15. STORAGE/CACHE
+==================================================
+
+--------------------------------------------------
+15.1 PURPOSE
+--------------------------------------------------
+
+Cache storage.
+
+Содержит:
+
+- temporary cache artifacts
+- compiled cache
+- transient generated data
+
+Cache должен быть
+safe-to-delete.
+
+==================================================
+16. STORAGE/TMP
+==================================================
+
+--------------------------------------------------
+16.1 PURPOSE
+--------------------------------------------------
+
+Temporary runtime workspace.
+
+Используется для:
+
+- transient processing
+- temporary artifacts
+- intermediate build state
+
+==================================================
+17. BIN DIRECTORY
+==================================================
+
+--------------------------------------------------
+17.1 PURPOSE
+--------------------------------------------------
+
+Executable scripts directory.
+
+Содержит:
+
+- CLI entrypoints
+- utility executables
+- development scripts
+- build scripts
+
+==================================================
+18. TESTS DIRECTORY
+==================================================
+
+--------------------------------------------------
+18.1 PURPOSE
+--------------------------------------------------
+
+Automated testing directory.
+
+Содержит:
+
+- unit tests
+- integration tests
+- architecture tests
+- fixture data
+
+==================================================
+19. BUILD DIRECTORY
+==================================================
+
+--------------------------------------------------
+19.1 PURPOSE
+--------------------------------------------------
+
+Build artifact workspace.
+
+Используется для:
+
+- generated themes
+- compiled artifacts
+- distributable packages
+- export builds
+
+==================================================
+20. ARCHITECTURAL PRINCIPLES
+==================================================
+
+Project Structure строится
+на следующих принципах:
+
+- separation of concerns
+- deterministic organization
+- layer isolation
+- infrastructure separation
+- source/runtime separation
+- scalable growth model
+
+==================================================
+21. DESIGN PHILOSOPHY
+==================================================
+
+Структура проекта intentionally
+минимальна на раннем этапе.
+
+Architecture-first development
+НЕ означает premature complexity.
+
+Текущая структура представляет:
+
+- minimal scalable foundation
+- controlled growth architecture
+- extensible organizational model
+
+без избыточной ранней декомпозиции.
