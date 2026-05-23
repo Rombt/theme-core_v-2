@@ -1,0 +1,661 @@
+theme-core v-2
+TECHNOLOGY STACK
+ARCHITECTURAL DESCRIPTION
+(v2.0.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Данный документ определяет:
+        технологический стек проекта theme-core v-2.
+
+    Главная цель выбора стека:
+        минимизация architectural complexity
+        при сохранении:
+            - deterministic generation
+            - filesystem-oriented architecture
+            - composition-oriented pipeline
+            - WordPress compatibility
+            - long-term maintainability
+
+    Stack должен:
+        - соответствовать реальной природе системы
+        - поддерживать build-oriented execution model
+        - минимизировать ecosystem fragmentation
+        - сохранять architectural clarity
+        - избегать unnecessary abstraction layers
+        - поддерживать gradual evolution
+
+    Stack НЕ должен:
+        - превращать build system в runtime platform
+        - вводить distributed architecture mindset
+        - навязывать frontend application architecture
+        - создавать enterprise-oriented complexity
+        - разделять систему на artificial domains
+
+
+==================================================
+2. CORE ARCHITECTURAL OBSERVATION
+==================================================
+
+    theme-core v-2 НЕ является:
+        - web application
+        - SaaS platform
+        - runtime framework
+        - CMS
+        - distributed system
+        - frontend platform
+
+    theme-core v-2 является:
+        - deterministic build system
+        - composition-oriented compiler
+        - filesystem generator
+        - WordPress theme assembler
+        - configuration-driven generation pipeline
+
+    Main architectural principle:
+        theme-core v-2 generates themes,
+        but does not participate in WordPress runtime lifecycle.
+
+    Generated theme:
+        - fully independent
+        - runtime autonomous
+        - does not require theme-core v-2
+
+
+==================================================
+3. PRIMARY EXECUTION MODEL
+==================================================
+
+    theme-core v-2 executes as:
+
+        CLI build pipeline
+            ↓
+        configuration loading
+            ↓
+        registry loading
+            ↓
+        normalization
+            ↓
+        composition assembly
+            ↓
+        generation pipeline
+            ↓
+        filesystem output
+
+    Main principle:
+        build execution, not runtime serving.
+
+
+==================================================
+4. CORE TECHNOLOGY DECISION
+==================================================
+
+    Main architectural decision:
+        theme-core v-2 core system is implemented in PHP.
+
+    Потому что основная ответственность системы:
+        - composition orchestration
+        - template assembly
+        - filesystem generation
+        - WordPress runtime generation
+        - build pipeline execution
+
+        естественно соответствует:
+            - PHP ecosystem
+            - filesystem-oriented execution
+            - WordPress-native output model
+
+    Main principle:
+        WordPress theme generation remains PHP-oriented.
+
+
+==================================================
+5. PHP RESPONSIBILITY DOMAIN
+==================================================
+
+    PHP side is responsible for:
+        - build orchestration
+        - configuration loading
+        - registry loading
+        - registry normalization
+        - composition resolution
+        - layout assembly
+        - template assembly
+        - PHP runtime generation
+        - filesystem output
+        - final theme assembly
+
+    Typical generated artifacts:
+        - templates
+        - template parts
+        - patterns
+        - theme runtime files
+        - manifests
+        - generated assets
+        - final theme structure
+
+
+==================================================
+6. NODE.JS / TYPESCRIPT RESPONSIBILITY DOMAIN
+==================================================
+
+    Node.js ecosystem используется как external tooling layer.
+
+    Main responsibilities:
+        - asset processing
+        - CSS tooling
+        - JS tooling
+        - bundling
+        - minification
+        - optional external tooling integration
+
+    Typical tools:
+        - Vite
+        - PostCSS
+        - Sass
+        - esbuild
+
+    Important principle:
+        Node.js tooling supports build infrastructure,
+        but does not become architectural core of theme-core v-2.
+
+
+==================================================
+7. TOKVEX INTEGRATION MODEL
+==================================================
+
+    Tokvex рассматривается как: independent external compiler.
+
+    Tokvex responsibilities:
+        - design token processing
+        - token normalization
+        - theme.json generation
+
+    Integration model:
+
+        theme-core v-2
+            ↓
+        invokes Tokvex
+            ↓
+        receives generated theme.json
+            ↓
+        integrates artifact into final theme
+
+    Main principle:
+        theme-core v-2 does not manage internal Tokvex architecture.
+
+    Systems interact through:
+        deterministic generated artifacts.
+
+
+==================================================
+8. PIPELINE STAGE MODEL
+==================================================
+
+    Recommended pipeline model:
+
+        Stage 1
+            Configuration Loading - PHP
+
+        Stage 2
+            Registry Loading - PHP
+
+        Stage 3
+            Registry Normalization - PHP
+
+        Stage 4
+            Composition Resolution - PHP
+
+        Stage 5
+            Layout Assembly - PHP
+
+        Stage 6
+            Template Assembly - PHP
+
+        Stage 7
+            Runtime Generation - PHP
+
+        Stage 8
+            Asset Processing - Node.js tooling
+
+        Stage 9
+            Theme.json Acquisition - Tokvex
+
+        Stage 10
+            Final Theme Assembly - PHP
+
+        Stage 11
+            Filesystem Output -  PHP
+
+
+==================================================
+9. WHY NOT PURE TYPESCRIPT
+==================================================
+
+    Pure TypeScript architecture initially appears:
+        - modern
+        - unified
+        - tooling-friendly
+
+    However theme-core v-2 is NOT:
+        - frontend application platform
+        - browser runtime
+        - editor platform
+        - interactive tooling environment
+
+    Core system responsibilities remain:
+        - composition-oriented
+        - filesystem-oriented
+        - generation-oriented
+
+    Therefore rewriting entire architecture into TS would create:
+        - ecosystem overreach
+        - frontend mindset leakage
+        - unnecessary runtime abstraction
+        - architectural drift
+
+
+==================================================
+10. WHY NOT FULL FRAMEWORKS
+==================================================
+
+    theme-core v-2 intentionally avoids:
+        - Laravel architecture
+        - Symfony full-stack architecture
+        - NestJS architecture
+        - enterprise application platforms
+
+    Потому что these frameworks optimize for:
+        - HTTP lifecycle
+        - runtime applications
+        - service-oriented execution
+        - web platform architecture
+
+    theme-core v-2 instead optimizes for:
+        - deterministic compilation
+        - filesystem generation
+        - composition assembly
+        - declarative build pipelines
+
+    Main principle build systems should remain:
+        lightweight,
+        deterministic,
+        infrastructure-oriented.
+
+
+==================================================
+11. TESTING STRATEGY
+==================================================
+
+    Testing architecture follows execution responsibility boundaries.
+
+    PHP testing responsibilities:
+        - registry tests
+        - normalization tests
+        - composition tests
+        - generation tests
+        - filesystem tests
+        - snapshot tests
+
+    Recommended tools:
+        - Pest
+        - PHPUnit
+
+    Node.js testing responsibilities:
+        - asset tooling tests
+        - Vite integrations
+        - CSS processing tests
+        - JS tooling tests
+
+    Recommended tools:
+        - Vitest
+
+    Main principle:
+        testing runtime follows execution runtime.
+
+
+==================================================
+12. ARCHITECTURAL PRINCIPLE
+==================================================
+
+    theme-core v-2 is ONE build-oriented system
+        with multiple execution environments.
+
+    NOT multiple independent platforms.
+
+    Main principle:
+        architecture remains unified, even if different tooling ecosystems
+        are used internally.
+
+
+==================================================
+13. FINAL STACK
+==================================================
+
+    CORE BUILD SYSTEM
+    ==================================================
+
+        - PHP 8.3+
+        - Composer
+        - optional isolated Symfony components
+
+    ASSET TOOLING
+    ==================================================
+
+        - Node.js
+        - Vite
+        - PostCSS
+        - Sass
+        - esbuild
+
+    TOKEN TOOLING
+    ==================================================
+
+        - Tokvex
+        - optional TypeScript internals
+
+    TESTING
+    ==================================================
+
+        PHP side:
+            - Pest
+            - PHPUnit
+
+        Node.js tooling:
+            - Vitest
+
+    OUTPUT
+    ==================================================
+
+        - generated WordPress theme
+        - generated theme.json
+        - generated assets
+        - generated PHP runtime
+        - filesystem-ready theme structure
+
+
+==================================================
+14. INFRASTRUCTURE COMPONENT STRATEGY
+==================================================
+
+    theme-core v-2 допускает использование:
+        isolated infrastructure components из external ecosystems.
+
+    Primary example: standalone Symfony components.
+
+    Important principle:
+        использование отдельных components
+        НЕ означает adoption of full framework architecture.
+
+    theme-core v-2 НЕ становится:
+        - Symfony application
+        - Laravel application
+        - enterprise framework platform
+
+    Components используются только как reusable infrastructure utilities.
+
+
+    CONSOLE COMPONENT
+    ==================================================
+
+        Recommended component:
+            Symfony Console
+
+        Responsibility:
+            CLI execution infrastructure.
+
+        Typical responsibilities:
+            - command registration
+            - arguments/options parsing
+            - CLI routing
+            - structured terminal output
+            - progress reporting
+            - execution interaction
+
+        Example commands:
+            - build
+            - generate
+            - validate
+            - inspect
+            - diagnostics
+
+        Main principle:
+            Console component provides CLI infrastructure,
+
+            but does NOT control application architecture.
+
+
+        FILESYSTEM COMPONENT
+        ==================================================
+
+        Recommended component:
+            Symfony Filesystem
+
+        Responsibility:
+            deterministic filesystem operations.
+
+        Typical responsibilities:
+            - directory creation
+            - file copying
+            - filesystem cleanup
+            - recursive removal
+            - filesystem synchronization
+
+        Main principle:
+            filesystem behavior should remain:
+                explicit,
+                predictable,
+                infrastructure-oriented.
+
+
+        FINDER COMPONENT
+        ==================================================
+
+        Recommended component:
+            Symfony Finder
+
+        Responsibility:
+            filesystem traversal and discovery.
+
+        Typical responsibilities:
+            - template discovery
+            - registry discovery
+            - asset discovery
+            - manifest lookup
+            - configuration scanning
+
+        Main principle:
+            filesystem traversal should remain:
+                declarative,
+                readable,
+                deterministic.
+
+
+    ==================================================
+    WHY THIS STRATEGY IS USED
+    ==================================================
+
+        theme-core v-2 intentionally reuses:
+            battle-tested infrastructure utilities.
+
+        Потому что задачи:
+                - CLI parsing
+                - filesystem traversal
+                - filesystem operations
+            уже решены в зрелых экосистемах.
+
+        Therefore project focuses on:
+            build architecture,
+            generation logic,
+            composition system,
+            orchestration model,
+
+            instead of rebuilding generic infrastructure tooling.
+
+
+    ==================================================
+    ARCHITECTURAL BOUNDARY
+    ==================================================
+
+        External infrastructure components:
+            support the system,
+            but do NOT define system architecture.
+
+        Main principle:
+            theme-core v-2 architecture remains internally owned,
+            even when external utilities are reused.
+
+
+
+
+==================================================
+17. STATIC ANALYSIS AND ARCHITECTURAL VALIDATION
+==================================================
+
+    theme-core v-2 допускает использование:
+        static analysis and architectural validation tooling.
+
+    Main purpose preservation of:
+        - architectural boundaries
+        - deterministic behavior
+        - type consistency
+        - dependency correctness
+
+    Main principle:
+        tooling supports architecture,
+        but does NOT dictate architecture.
+
+
+    PHPSTAN
+    ==================================================
+
+        Recommended tool:
+            PHPStan
+
+        Responsibility:
+            static code analysis.
+
+        Primary responsibilities:
+            - type validation
+            - nullability analysis
+            - contract validation
+            - unreachable code detection
+            - incorrect dependency usage detection
+
+        Particularly important for:
+            - registries
+            - normalization pipelines
+            - generators
+            - DTO contracts
+            - transformation stages
+
+        Recommended adoption strategy:
+            early integration with moderate strictness.
+
+        Initial recommendation:
+            balanced analysis level
+            without extreme strict-mode enforcement.
+
+        Main principle:
+            static analysis should improve:
+                reliability and clarity,
+
+            without creating:
+                annotation-heavy bureaucracy.
+
+
+    DEPTRAC
+    ==================================================
+
+        Recommended tool:
+            Deptrac
+
+        Responsibility:
+            architectural dependency validation.
+
+        Primary responsibilities:
+            - layer dependency validation
+            - subsystem boundary enforcement
+            - forbidden dependency detection
+            - architectural drift prevention
+
+        Example architectural rules:
+
+            - Logging must not depend on Pipeline
+            - Generators must not control Runtime
+            - Registries must remain isolated
+            - Diagnostics must remain passive
+
+        Recommended adoption strategy:
+            gradual integration
+            after stabilization of:
+                - namespaces
+                - subsystem boundaries
+                - dependency directions
+
+        Main principle:
+            architecture rules should remain:
+                explicit,
+                intentional,
+                understandable.
+
+
+    ==================================================
+    WHY THIS STRATEGY IS USED
+    ==================================================
+
+        theme-core v-2 is:
+            architecture-oriented build system.
+
+        Therefore:
+            long-term maintainability depends on:
+                - boundary preservation
+                - dependency discipline
+                - predictable execution model
+
+        Static analysis tools help:
+            detect architectural erosion
+            before it becomes systemic.
+
+
+    ==================================================
+    ARCHITECTURAL BOUNDARY
+    ==================================================
+
+        Analysis tools:
+            validate architecture,
+
+        but do NOT replace:
+            architectural thinking.
+
+        Main principle:
+
+            architecture is designed by humans.
+
+            Tooling only verifies
+            architectural consistency.
+
+
+==================================================
+16. FINAL PRINCIPLE
+==================================================
+
+    Правильная архитектура theme-core v-2:
+        НЕ пытается превратить весь pipeline
+        в TypeScript ecosystem.
+
+        НЕ пытается: перенести frontend tooling
+        в PHP ecosystem.
+
+    Вместо этого:
+        каждый runtime используется только там,
+        где он естественен.
+
+    Main architectural principle:
+        PHP assembles WordPress themes.
+        Node.js processes frontend assets.
+        Tokvex generates theme.json.
+
+        theme-core v-2 orchestrates deterministic theme generation.
