@@ -16,6 +16,7 @@ final class Kernel
         private readonly Application $app,
         private readonly BootstrapRegistry $bootstrapRegistry,
         private readonly BootstrapperFactory $bootstrapperFactory,
+        private readonly KernelContext $context,
     ) {
     }
 
@@ -27,8 +28,7 @@ final class Kernel
             );
         }
 
-        $this->app->set(
-            KernelState::BOOTSTRAP_STATUS,
+        $this->context->setStatus(
             KernelBootstrapStatus::BOOTSTRAPPING
         );
 
@@ -36,10 +36,7 @@ final class Kernel
 
         try {
             foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
-                $this->app->set(
-                    KernelState::BOOTSTRAP_CURRENT,
-                    $bootstrapperClass
-                );
+                $this->context->setCurrent($bootstrapperClass);
 
                 $bootstrapper = $this->bootstrapperFactory->create(
                     $bootstrapperClass
@@ -50,38 +47,16 @@ final class Kernel
                 $executedBootstrappers[] = $bootstrapperClass;
             }
         } catch (Throwable $exception) {
-            $this->app->set(
-                KernelState::BOOTSTRAP_STATUS,
-                KernelBootstrapStatus::FAILED
-            );
-
-            $this->app->set(
-                KernelState::BOOTSTRAP_FAILED,
-                true
-            );
-
-            $this->app->set(
-                KernelState::BOOTSTRAP_EXCEPTION,
-                $exception
-            );
+            $this->context->setStatus(KernelBootstrapStatus::FAILED);
+            $this->context->setFailed(true);
+            $this->context->setException($exception);
 
             throw $exception;
         }
 
-        $this->app->set(
-            KernelState::BOOTSTRAPPERS_EXECUTED,
-            $executedBootstrappers
-        );
-
-        $this->app->set(
-            KernelState::BOOTSTRAP_CURRENT,
-            null
-        );
-
-        $this->app->set(
-            KernelState::BOOTSTRAP_STATUS,
-            KernelBootstrapStatus::BOOTSTRAPPED
-        );
+        $this->context->setExecuted($executedBootstrappers);
+        $this->context->setCurrent(null);
+        $this->context->setStatus(KernelBootstrapStatus::BOOTSTRAPPED);
 
         $this->bootstrapped = true;
     }
