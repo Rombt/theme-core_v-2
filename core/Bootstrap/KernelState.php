@@ -11,7 +11,4 @@ final class KernelState
     public const BOOTSTRAP_FAILED = 'kernel.bootstrap.failed';
     public const BOOTSTRAP_EXCEPTION = 'kernel.bootstrap.exception';
     public const BOOTSTRAPPERS_EXECUTED = 'kernel.bootstrappers.executed';
-    public const STATUS_BOOTSTRAPPING = 'bootstrapping';
-    public const STATUS_BOOTSTRAPPED = 'bootstrapped';
-    public const STATUS_FAILED = 'failed';
 }

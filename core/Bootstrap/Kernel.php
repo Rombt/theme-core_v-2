@@ -29,7 +29,7 @@ final class Kernel
 
         $this->app->set(
             KernelState::BOOTSTRAP_STATUS,
-            KernelState::STATUS_BOOTSTRAPPING
+            KernelBootstrapStatus::BOOTSTRAPPING
         );
 
         $executedBootstrappers = [];
@@ -52,7 +52,7 @@ final class Kernel
         } catch (Throwable $exception) {
             $this->app->set(
                 KernelState::BOOTSTRAP_STATUS,
-                KernelState::STATUS_FAILED
+                KernelBootstrapStatus::FAILED
             );
 
             $this->app->set(
@@ -80,7 +80,7 @@ final class Kernel
 
         $this->app->set(
             KernelState::BOOTSTRAP_STATUS,
-            KernelState::STATUS_BOOTSTRAPPED
+            KernelBootstrapStatus::BOOTSTRAPPED
         );
 
         $this->bootstrapped = true;

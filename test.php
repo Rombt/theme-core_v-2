@@ -29,8 +29,12 @@ $kernel = new Kernel(
 
 $kernel->bootstrap();
 
+$status = $app->get(
+    KernelState::BOOTSTRAP_STATUS
+);
+
 print_r([
-    'status' => $app->get(KernelState::BOOTSTRAP_STATUS),
+    'status' => $status?->value,
     'current' => $app->get(KernelState::BOOTSTRAP_CURRENT),
     'executed' => $app->get(KernelState::BOOTSTRAPPERS_EXECUTED),
 ]);
