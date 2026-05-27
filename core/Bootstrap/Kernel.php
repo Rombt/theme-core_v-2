@@ -26,9 +26,19 @@ final class Kernel
             );
         }
 
+        $this->app->set(
+            'kernel.bootstrap.status',
+            'bootstrapping'
+        );
+
         $executedBootstrappers = [];
 
         foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
+            $this->app->set(
+                'kernel.bootstrap.current',
+                $bootstrapperClass
+            );
+
             $bootstrapper = $this->bootstrapperFactory->create(
                 $bootstrapperClass
             );
@@ -41,6 +51,16 @@ final class Kernel
         $this->app->set(
             'kernel.bootstrappers.executed',
             $executedBootstrappers
+        );
+
+        $this->app->set(
+            'kernel.bootstrap.current',
+            null
+        );
+
+        $this->app->set(
+            'kernel.bootstrap.status',
+            'bootstrapped'
         );
 
         $this->bootstrapped = true;

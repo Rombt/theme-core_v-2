@@ -28,6 +28,8 @@ $kernel = new Kernel(
 
 $kernel->bootstrap();
 
-print_r(
-    $app->get('kernel.bootstrappers.executed')
-);
+print_r([
+    'status' => $app->get('kernel.bootstrap.status'),
+    'current' => $app->get('kernel.bootstrap.current'),
+    'executed' => $app->get('kernel.bootstrappers.executed'),
+]);
