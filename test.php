@@ -11,8 +11,8 @@ $app = new Application();
 
 $kernel = new Kernel($app);
 
+var_dump($kernel->isBootstrapped());
+
 $kernel->bootstrap();
 
-print_r(
-    $app->get('kernel.bootstrappers.executed')
-);
+var_dump($kernel->isBootstrapped());

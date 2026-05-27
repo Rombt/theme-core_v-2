@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Bootstrap;
 
+use LogicException;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\BootstrapperInterface;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetInternalEncodingBootstrapper;
@@ -17,6 +18,8 @@ final class Kernel
         SetInternalEncodingBootstrapper::class,
     ];
 
+    private bool $bootstrapped = false;
+
     public function __construct(
         private readonly Application $app,
     ) {
@@ -24,6 +27,12 @@ final class Kernel
 
     public function bootstrap(): void
     {
+        if ($this->bootstrapped) {
+            throw new LogicException(
+                'Kernel has already been bootstrapped.'
+            );
+        }
+
         $executedBootstrappers = [];
 
         foreach ($this->bootstrappers as $bootstrapperClass) {
@@ -38,5 +47,12 @@ final class Kernel
             'kernel.bootstrappers.executed',
             $executedBootstrappers
         );
+
+        $this->bootstrapped = true;
+    }
+
+    public function isBootstrapped(): bool
+    {
+        return $this->bootstrapped;
     }
 }
