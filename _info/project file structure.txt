@@ -33,11 +33,27 @@ tc-1/
 ├── vendor/
 │
 ├── core/
+│   ├── Application/
+│   ├── Contracts/
+│   ├── Support/
+│   ├── Infrastructure/
+│   ├── Exceptions/
+│   └── Bootstrap/
+│
 ├── config/
+│
 ├── storage/
+│   ├── logs/
+│   ├── cache/
+│   └── tmp/
+│
 ├── bin/
+│
 ├── tests/
-└── build/
+│
+├── build/
+│
+└── utils/
 
 
 
