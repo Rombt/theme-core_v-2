@@ -6,22 +6,14 @@ namespace Rombt\ThemeCore\Bootstrap;
 
 use LogicException;
 use Rombt\ThemeCore\Application\Application;
-use Rombt\ThemeCore\Bootstrap\Bootstrappers\BootstrapperInterface;
-use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetInternalEncodingBootstrapper;
 
 final class Kernel
 {
-    /**
-     * @var array<class-string<BootstrapperInterface>>
-     */
-    private array $bootstrappers = [
-        SetInternalEncodingBootstrapper::class,
-    ];
-
     private bool $bootstrapped = false;
 
     public function __construct(
         private readonly Application $app,
+        private readonly BootstrapRegistry $bootstrapRegistry,
     ) {
     }
 
@@ -35,7 +27,7 @@ final class Kernel
 
         $executedBootstrappers = [];
 
-        foreach ($this->bootstrappers as $bootstrapperClass) {
+        foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
             $bootstrapper = new $bootstrapperClass();
 
             $bootstrapper->bootstrap($this->app);
