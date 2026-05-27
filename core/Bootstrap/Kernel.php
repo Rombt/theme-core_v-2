@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Bootstrap;
 
 use LogicException;
+use Throwable;
 use Rombt\ThemeCore\Application\Application;
 
 final class Kernel
@@ -33,19 +34,38 @@ final class Kernel
 
         $executedBootstrappers = [];
 
-        foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
+        try {
+            foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
+                $this->app->set(
+                    'kernel.bootstrap.current',
+                    $bootstrapperClass
+                );
+
+                $bootstrapper = $this->bootstrapperFactory->create(
+                    $bootstrapperClass
+                );
+
+                $bootstrapper->bootstrap($this->app);
+
+                $executedBootstrappers[] = $bootstrapperClass;
+            }
+        } catch (Throwable $exception) {
             $this->app->set(
-                'kernel.bootstrap.current',
-                $bootstrapperClass
+                'kernel.bootstrap.status',
+                'failed'
             );
 
-            $bootstrapper = $this->bootstrapperFactory->create(
-                $bootstrapperClass
+            $this->app->set(
+                'kernel.bootstrap.failed',
+                true
             );
 
-            $bootstrapper->bootstrap($this->app);
+            $this->app->set(
+                'kernel.bootstrap.exception',
+                $exception
+            );
 
-            $executedBootstrappers[] = $bootstrapperClass;
+            throw $exception;
         }
 
         $this->app->set(
