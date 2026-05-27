@@ -13,4 +13,6 @@ $kernel = new Kernel($app);
 
 $kernel->bootstrap();
 
-echo $app->get('encoding.internal');
+print_r(
+    $app->get('kernel.bootstrappers.executed')
+);

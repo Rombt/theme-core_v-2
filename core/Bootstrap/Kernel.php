@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Core\Bootstrap;
-
 namespace Rombt\ThemeCore\Bootstrap;
 
 use Rombt\ThemeCore\Application\Application;
@@ -26,10 +24,19 @@ final class Kernel
 
     public function bootstrap(): void
     {
+        $executedBootstrappers = [];
+
         foreach ($this->bootstrappers as $bootstrapperClass) {
             $bootstrapper = new $bootstrapperClass();
 
             $bootstrapper->bootstrap($this->app);
+
+            $executedBootstrappers[] = $bootstrapperClass;
         }
+
+        $this->app->set(
+            'kernel.bootstrappers.executed',
+            $executedBootstrappers
+        );
     }
 }
