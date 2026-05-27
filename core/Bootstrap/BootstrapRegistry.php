@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Bootstrap;
 
-use InvalidArgumentException;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\BootstrapperInterface;
 
 final class BootstrapRegistry
@@ -15,15 +14,12 @@ final class BootstrapRegistry
     private array $bootstrappers = [];
 
     /**
-     * @param class-string $bootstrapper
+     * @param class-string<BootstrapperInterface> $bootstrapper
      */
     public function register(string $bootstrapper): void
     {
-        if (!is_subclass_of(
-            $bootstrapper,
-            BootstrapperInterface::class
-        )) {
-            throw new InvalidArgumentException(
+        if (!is_subclass_of($bootstrapper, BootstrapperInterface::class)) {
+            throw new \InvalidArgumentException(
                 sprintf(
                     'Bootstrapper [%s] must implement [%s].',
                     $bootstrapper,
