@@ -34,11 +34,16 @@ tc-1/
 │
 ├── core/
 │   ├── Application/
+    │    └── Application.php
 │   ├── Contracts/
 │   ├── Support/
 │   ├── Infrastructure/
 │   ├── Exceptions/
 │   └── Bootstrap/
+│        ├── Kernel.php
+│        ├── Bootstrappers/
+│        │   └── BootstrapperInterface.php
+│        └── Exceptions/
 │
 ├── config/
 │

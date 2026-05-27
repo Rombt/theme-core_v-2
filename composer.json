@@ -1,17 +1,19 @@
 {
-    "name": "rombt/theme-core",
-    "description": "Configuration-driven orchestration framework for WordPress themes",
-    "type": "project",
-    "autoload": {
-        "psr-4": {
-            "Rombt\\ThemeCore\\": "core/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Rombt",
-            "email": "rombtnet@gmail.com"
-        }
-    ],
-    "require": {}
+  "name": "rombt/theme-core",
+  "description": "Configuration-driven orchestration framework for WordPress themes",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "Rombt\\ThemeCore\\": "core/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Rombt",
+      "email": "rombtnet@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4"
+  }
 }

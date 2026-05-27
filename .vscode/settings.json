@@ -1,19 +1,21 @@
 {
-    "phpcs.executablePath": "vendor/bin/phpcs.bat",
-    "phpcs.standard": "WordPress-Extra",
-    "phpcs.autoConfigSearch": true,
+  "phpcs.executablePath": "vendor/bin/phpcs.bat",
+  "phpcs.standard": "WordPress-Extra",
+  "phpcs.autoConfigSearch": true,
 
-    "phpsab.standard": "WordPress-Extra",
-    "phpsab.executablePathCS": "vendor/bin/phpcs",
-    "phpsab.executablePathCBF": "vendor/bin/phpcbf",
-    "cSpell.words": [
-        "ABSPATH",
-        "fantasticon",
-        "kses",
-        "Tokvex",
-        "микросервисов",
-        "переиспользоваться",
-        "переиспользуемых",
-        "рендерера"
-    ],
+  "phpsab.standard": "WordPress-Extra",
+  "phpsab.executablePathCS": "vendor/bin/phpcs",
+  "phpsab.executablePathCBF": "vendor/bin/phpcbf",
+  "cSpell.words": [
+    "ABSPATH",
+    "Bootstrapper",
+    "Bootstrappers",
+    "fantasticon",
+    "kses",
+    "Tokvex",
+    "микросервисов",
+    "переиспользоваться",
+    "переиспользуемых",
+    "рендерера"
+  ]
 }
