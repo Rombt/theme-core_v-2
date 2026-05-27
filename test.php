@@ -9,6 +9,7 @@ use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
 use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetInternalEncodingBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Kernel;
+use Rombt\ThemeCore\Bootstrap\KernelState;
 
 $app = new Application();
 
@@ -29,7 +30,7 @@ $kernel = new Kernel(
 $kernel->bootstrap();
 
 print_r([
-    'status' => $app->get('kernel.bootstrap.status'),
-    'current' => $app->get('kernel.bootstrap.current'),
-    'executed' => $app->get('kernel.bootstrappers.executed'),
+    'status' => $app->get(KernelState::BOOTSTRAP_STATUS),
+    'current' => $app->get(KernelState::BOOTSTRAP_CURRENT),
+    'executed' => $app->get(KernelState::BOOTSTRAPPERS_EXECUTED),
 ]);

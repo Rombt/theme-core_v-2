@@ -28,7 +28,7 @@ final class Kernel
         }
 
         $this->app->set(
-            'kernel.bootstrap.status',
+            KernelState::BOOTSTRAP_STATUS,
             'bootstrapping'
         );
 
@@ -37,7 +37,7 @@ final class Kernel
         try {
             foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
                 $this->app->set(
-                    'kernel.bootstrap.current',
+                    KernelState::BOOTSTRAP_CURRENT,
                     $bootstrapperClass
                 );
 
@@ -51,17 +51,17 @@ final class Kernel
             }
         } catch (Throwable $exception) {
             $this->app->set(
-                'kernel.bootstrap.status',
+                KernelState::BOOTSTRAP_STATUS,
                 'failed'
             );
 
             $this->app->set(
-                'kernel.bootstrap.failed',
+                KernelState::BOOTSTRAP_FAILED,
                 true
             );
 
             $this->app->set(
-                'kernel.bootstrap.exception',
+                KernelState::BOOTSTRAP_EXCEPTION,
                 $exception
             );
 
@@ -69,17 +69,17 @@ final class Kernel
         }
 
         $this->app->set(
-            'kernel.bootstrappers.executed',
+            KernelState::BOOTSTRAPPERS_EXECUTED,
             $executedBootstrappers
         );
 
         $this->app->set(
-            'kernel.bootstrap.current',
+            KernelState::BOOTSTRAP_CURRENT,
             null
         );
 
         $this->app->set(
-            'kernel.bootstrap.status',
+            KernelState::BOOTSTRAP_STATUS,
             'bootstrapped'
         );
 
