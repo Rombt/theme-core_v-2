@@ -14,6 +14,7 @@ final class Kernel
     public function __construct(
         private readonly Application $app,
         private readonly BootstrapRegistry $bootstrapRegistry,
+        private readonly BootstrapperFactory $bootstrapperFactory,
     ) {
     }
 
@@ -28,7 +29,9 @@ final class Kernel
         $executedBootstrappers = [];
 
         foreach ($this->bootstrapRegistry->all() as $bootstrapperClass) {
-            $bootstrapper = new $bootstrapperClass();
+            $bootstrapper = $this->bootstrapperFactory->create(
+                $bootstrapperClass
+            );
 
             $bootstrapper->bootstrap($this->app);
 
