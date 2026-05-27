@@ -1,0 +1,484 @@
+theme-core v-2
+KERNEL
+ARCHITECTURAL DESCRIPTION
+(v2.1.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Kernel является minimal bootstrap subsystem приложения theme-core v-2.
+
+    Kernel НЕ является:
+        - runtime framework core
+        - execution engine
+        - lifecycle platform
+        - service locator
+        - business logic layer
+        - universal orchestration manager
+
+    Kernel отвечает исключительно за:
+        - bootstrap coordination
+        - infrastructure assembly
+        - dependency wiring
+        - registry loading
+        - runtime preparation
+        - execution handoff
+
+    Kernel intentionally НЕ участвует
+        в runtime execution после завершения bootstrap.
+
+    Архитектурно Kernel является:
+        MINIMAL BOOTSTRAP ROOT + EXECUTION RUNTIME ASSEMBLER
+
+    Kernel проектируется как:
+        - deterministic
+        - explicit
+        - orchestration-oriented
+        - infrastructure-level subsystem
+
+    Kernel intentionally избегает:
+        - runtime ownership
+        - hidden state
+        - implicit behavior
+        - framework semantics
+        - execution authority
+
+==================================================
+2. CORE ARCHITECTURAL IDEA
+==================================================
+
+    theme-core v-2 является:
+        deterministic compilation system, а НЕ runtime framework.
+
+    Поэтому архитектура системы разделяется на:
+
+    2.1 BOOTSTRAP WORLD
+    --------------------------------------------------
+
+        Bootstrap world отвечает за:
+            - environment preparation
+            - infrastructure assembly
+            - dependency wiring
+            - registry loading
+            - runtime construction
+
+        Bootstrap world является:
+            - mutable
+            - infrastructural
+            - initialization-oriented
+
+        Bootstrap phase заканчивается
+            после создания execution runtime.
+
+    2.2 EXECUTION WORLD
+    --------------------------------------------------
+
+        Execution world отвечает за:
+            - pipeline execution
+            - context propagation
+            - transformation flow
+            - artifact generation
+            - diagnostics collection
+
+        Execution world является:
+            - deterministic
+            - execution-oriented
+            - isolated from bootstrap mechanics
+
+        Execution world intentionally
+            НЕ изменяет execution structure.
+
+        Runtime:
+            - может изменять execution state
+            - но НЕ должен изменять execution structure
+
+        Structural mutation запрещена после:
+            - runtime assembly
+            - registry compilation
+            - dependency graph creation
+            - pipeline construction
+
+        Kernel существует только в bootstrap world.
+
+==================================================
+3. PRIMARY RESPONSIBILITIES
+==================================================
+
+    Kernel отвечает ТОЛЬКО за:
+
+        3.1 APPLICATION BOOTSTRAP
+        --------------------------------------------------
+
+            Kernel:
+                - запускает bootstrap process
+                - определяет environment
+                - загружает configuration
+                - подготавливает runtime dependencies
+
+            Kernel НЕ управляет execution lifecycle.
+
+        3.2 INFRASTRUCTURE ASSEMBLY
+        --------------------------------------------------
+
+            Kernel assembles infrastructure:
+                - logging
+                - filesystem
+                - configuration
+                - diagnostics
+                - cache
+                - event infrastructure
+                - registry infrastructure
+
+            Kernel НЕ реализует infrastructure services.
+
+            Kernel только выполняет:
+                - creation
+                - wiring
+                - initialization coordination
+
+    3.3 DEPENDENCY WIRING
+    --------------------------------------------------
+
+        Kernel выполняет minimal composition root role.
+
+        Kernel:
+            - создаёт dependency graph
+            - соединяет infrastructure services
+            - собирает runtime dependencies
+
+        Kernel intentionally избегает:
+            - service locator behavior
+            - runtime dependency resolution
+            - dynamic container semantics
+
+        Все critical dependencies должны быть explicit.
+
+    3.4 REGISTRY LOADING
+    --------------------------------------------------
+
+        Kernel:
+            - создаёт registry loaders
+            - загружает registry definitions
+            - orchestrates registry preparation
+
+        Registries в theme-core v-2 являются:
+            immutable compiled definitions
+
+        Registry mutation допустима
+            ТОЛЬКО во время bootstrap phase.
+
+        После registry compilation:
+            - registries становятся readonly
+            - registry structure freezes
+            - runtime mutation запрещается
+
+        Kernel НЕ владеет registries после завершения bootstrap.
+
+    3.5 EXECUTION RUNTIME CREATION
+    --------------------------------------------------
+
+        Главная responsibility Kernel.
+
+        Kernel:
+            - assembles execution runtime
+            - injects dependencies
+            - prepares execution environment
+            - creates runtime boundary
+
+        После этого:
+            control transfers to execution runtime
+                и bootstrap phase завершается.
+
+==================================================
+4. WHAT KERNEL MUST NOT DO
+==================================================
+
+    Kernel intentionally НЕ должен:
+
+    4.1 EXECUTE PIPELINE LOGIC
+    --------------------------------------------------
+
+        Kernel НЕ должен:
+            - выполнять stages
+            - orchestrate transformations
+            - propagate execution state
+            - управлять artifact generation
+
+        Pipeline execution принадлежит:
+            - PipelineRuntime
+            - ExecutionRuntime
+            - RuntimeExecutor
+        но НЕ Kernel.
+
+    4.2 OWN RUNTIME STATE
+    --------------------------------------------------
+
+        Kernel НЕ должен хранить:
+            - mutable execution state
+            - pipeline state
+            - transformation state
+            - artifact state
+            - runtime entities
+
+        Runtime state принадлежит execution world.
+
+    4.3 BECOME SERVICE CONTAINER
+    --------------------------------------------------
+
+        Запрещено:
+            $kernel->get(...)
+
+        Kernel НЕ является:
+            - dependency container
+            - global access point
+            - runtime resolver
+            - universal object registry
+
+        Dependencies должны быть:
+            - explicit
+            - predictable
+            - statically understandable
+
+    4.4 IMPLEMENT MAGIC DISCOVERY
+    --------------------------------------------------
+
+        Kernel intentionally избегает:
+            - runtime scanning
+            - hidden registration
+            - implicit discovery
+            - uncontrolled reflection
+            - dynamic runtime composition
+
+        Все connections должны быть explicit.
+
+    4.5 BECOME EXECUTION AUTHORITY
+    --------------------------------------------------
+
+        Kernel НЕ управляет:
+            - runtime lifecycle
+            - execution flow
+            - stage scheduling
+            - runtime coordination
+
+        После bootstrap Kernel
+            больше НЕ участвует в execution flow.
+
+    4.6 CONTAIN DOMAIN LOGIC
+    --------------------------------------------------
+
+        Kernel НЕ должен:
+            - рендерить templates
+            - генерировать layouts
+            - обрабатывать tokens
+            - строить compositions
+            - генерировать artifacts
+
+        Kernel orchestrates infrastructure,
+            но НЕ domain behavior.
+
+==================================================
+5. EXECUTION RUNTIME MODEL
+==================================================
+
+    После bootstrap создаётся isolated runtime.
+
+    Упрощённая схема:
+
+        BOOTSTRAP
+            ↓
+        RUNTIME ASSEMBLY
+            ↓
+        EXECUTION HANDOFF
+            ↓
+        PIPELINE EXECUTION
+
+    Kernel участвует только в первых трёх фазах.
+
+    Execution runtime:
+        - выполняет pipeline
+        - propagates execution context
+        - orchestrates stages
+        - produces artifacts
+
+    Kernel НЕ контролирует runtime execution.
+
+==================================================
+6. HIGH-LEVEL BOOTSTRAP FLOW
+==================================================
+
+    6.1 ENTRY POINT
+    --------------------------------------------------
+
+        - application startup
+        - environment detection
+        - bootstrap initialization
+
+    6.2 CONFIGURATION LOADING
+    --------------------------------------------------
+
+        - configuration discovery
+        - configuration validation
+        - environment preparation
+
+    6.3 INFRASTRUCTURE ASSEMBLY
+    --------------------------------------------------
+
+        - logger creation
+        - filesystem initialization
+        - diagnostics setup
+        - cache initialization
+
+    6.4 REGISTRY PREPARATION
+    --------------------------------------------------
+
+        - registry loading
+        - registry validation
+        - registry compilation
+
+    6.5 DEPENDENCY WIRING
+    --------------------------------------------------
+
+        - infrastructure graph assembly
+        - runtime dependency injection
+        - execution dependency preparation
+
+    6.6 EXECUTION RUNTIME CREATION
+    --------------------------------------------------
+
+        - runtime assembly
+        - execution environment creation
+        - runtime boundary creation
+
+    6.7 EXECUTION HANDOFF
+    --------------------------------------------------
+
+    Kernel transfers control to:
+        - ExecutionRuntime
+        or
+        - PipelineRuntime
+        or
+        - RuntimeExecutor
+
+    После этого bootstrap phase считается завершённой.
+
+==================================================
+7. DESIGN PRINCIPLES
+==================================================
+
+    7.1 EXPLICIT OVER MAGIC
+    --------------------------------------------------
+
+        Kernel prefers:
+            - explicit wiring
+            - explicit dependencies
+            - explicit initialization
+
+        instead of:
+            - hidden automation
+            - runtime discovery
+            - implicit behavior
+
+    7.2 BOOTSTRAP OVER RUNTIME AUTHORITY
+    --------------------------------------------------
+
+        Kernel:
+            - prepares execution
+            - but НЕ controls execution
+
+    7.3 ORCHESTRATION OVER IMPLEMENTATION
+    --------------------------------------------------
+
+        Kernel coordinates infrastructure,
+        но НЕ реализует domain systems.
+
+    --------------------------------------------------
+    7.4 MINIMALISM OVER FRAMEWORK COMPLEXITY
+    --------------------------------------------------
+
+        Kernel intentionally остаётся:
+            - small
+            - transparent
+            - predictable
+            - infrastructure-oriented
+
+    --------------------------------------------------
+    7.5 DETERMINISM OVER DYNAMIC BEHAVIOR
+    --------------------------------------------------
+
+        Одинаковый input должен производить одинаковый output.
+
+        Kernel поддерживает:
+            - reproducible builds
+            - deterministic execution
+            - stable compilation flow
+
+    --------------------------------------------------
+    7.6 CLEAR RUNTIME BOUNDARIES
+    --------------------------------------------------
+
+        Bootstrap systems и execution systems
+        должны быть архитектурно разделены.
+
+    --------------------------------------------------
+    7.7 DATA FLOW OVER CAPABILITY FLOW
+    --------------------------------------------------
+
+        Execution pipeline transport:
+            - execution data
+            - intermediate representations
+            - runtime state
+
+        но НЕ:
+            - infrastructure capabilities
+            - service access
+            - dependency resolution
+
+        Data flows through pipeline.
+
+        Capabilities inject into runtime systems.
+
+==================================================
+8. CONCEPTUAL SUMMARY
+==================================================
+
+    Kernel НЕ является:
+        - system brain
+        - execution engine
+        - runtime controller
+        - framework core
+
+    Kernel является:
+        deterministic bootstrap coordinator
+
+    Kernel:
+        - assembles infrastructure
+        - wires dependencies
+        - prepares execution runtime
+        - transfers execution control
+
+    при этом оставаясь:
+        - минимальным
+        - explicit
+        - predictable
+        - infrastructure-oriented
+
+==================================================
+12. FINAL FORMULA
+==================================================
+
+    Kernel =  MINIMAL BOOTSTRAP ROOT + EXECUTION RUNTIME ASSEMBLER
+
+    Kernel:
+        - prepares execution
+        - but НЕ owns execution
+
+    Bootstrap:
+        - creates execution structure
+
+    Runtime:
+        - operates inside execution structure
+
+    Execution may mutate data.
+
+    Only bootstrap may mutate structure.
