@@ -18,7 +18,13 @@ final class Kernel
         private readonly BootstrapRegistry $bootstrapRegistry,
         private readonly BootstrapperFactory $bootstrapperFactory,
         private readonly KernelContext $context,
+        private readonly string $projectRoot,
     ) {
+    }
+
+    public function projectRoot(): string
+    {
+        return $this->projectRoot;
     }
 
     public function bootstrap(): void
@@ -49,7 +55,7 @@ final class Kernel
                     $bootstrapperClass
                 );
 
-                $bootstrapper->bootstrap($this->app);
+                $bootstrapper->bootstrap($this->app,  $this);
 
                 $executedBootstrappers[] = $bootstrapperClass;
             }
