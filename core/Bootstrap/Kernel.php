@@ -12,7 +12,6 @@ use Rombt\ThemeCore\Bootstrap\KernelBootstrapStatus;
 
 final class Kernel
 {
-    private bool $bootstrapped = false;
 
     public function __construct(
         private readonly Application $app,
@@ -24,13 +23,15 @@ final class Kernel
 
     public function bootstrap(): void
     {
-        if ($this->bootstrapped) {
+        if ($this->isBootstrapped()) {
             throw new LogicException(
                 'Kernel has already been bootstrapped.'
             );
         }
 
-        $this->context->setStatus(KernelBootstrapStatus::BOOTSTRAPPING);
+        $this->context->setStatus(
+            KernelBootstrapStatus::BOOTSTRAPPING
+        );
 
         $bootstrappers = $this->bootstrapRegistry->all();
 
@@ -53,8 +54,9 @@ final class Kernel
                 $executedBootstrappers[] = $bootstrapperClass;
             }
         } catch (Throwable $exception) {
-            $this->context->setStatus(KernelBootstrapStatus::FAILED);
+            $this->context->setStatus( KernelBootstrapStatus::FAILED );
             $this->context->setFailed(true);
+            $this->context->setCurrent(null);
             $this->context->setException($exception);
 
             throw $exception;
@@ -62,14 +64,13 @@ final class Kernel
 
         $this->context->setExecuted($executedBootstrappers);
         $this->context->setCurrent(null);
-        $this->context->setStatus(KernelBootstrapStatus::BOOTSTRAPPED);
 
-        $this->bootstrapped = true;
+        $this->context->setStatus( KernelBootstrapStatus::BOOTSTRAPPED );
     }
 
     public function isBootstrapped(): bool
     {
-        return $this->bootstrapped;
+        return $this->context->getStatus() === KernelBootstrapStatus::BOOTSTRAPPED;
     }
 
     private function getPriority(string $bootstrapper): int
