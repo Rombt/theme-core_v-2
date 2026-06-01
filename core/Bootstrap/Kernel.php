@@ -12,7 +12,6 @@ use Rombt\ThemeCore\Bootstrap\KernelBootstrapStatus;
 
 final class Kernel
 {
-
     public function __construct(
         private readonly Application $app,
         private readonly BootstrapRegistry $bootstrapRegistry,
@@ -55,12 +54,12 @@ final class Kernel
                     $bootstrapperClass
                 );
 
-                $bootstrapper->bootstrap($this->app,  $this);
+                $bootstrapper->bootstrap($this->app, $this);
 
                 $executedBootstrappers[] = $bootstrapperClass;
             }
         } catch (Throwable $exception) {
-            $this->context->setStatus( KernelBootstrapStatus::FAILED );
+            $this->context->setStatus(KernelBootstrapStatus::FAILED);
             $this->context->setFailed(true);
             $this->context->setCurrent(null);
             $this->context->setException($exception);
@@ -71,7 +70,7 @@ final class Kernel
         $this->context->setExecuted($executedBootstrappers);
         $this->context->setCurrent(null);
 
-        $this->context->setStatus( KernelBootstrapStatus::BOOTSTRAPPED );
+        $this->context->setStatus(KernelBootstrapStatus::BOOTSTRAPPED);
     }
 
     public function isBootstrapped(): bool

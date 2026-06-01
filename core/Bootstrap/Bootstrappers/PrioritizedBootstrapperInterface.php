@@ -6,5 +6,5 @@ namespace Rombt\ThemeCore\Bootstrap\Bootstrappers;
 
 interface PrioritizedBootstrapperInterface extends BootstrapperInterface
 {
-    public  static  function priority(): int;
+    public static function priority(): int;
 }

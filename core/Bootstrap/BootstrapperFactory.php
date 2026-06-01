@@ -11,7 +11,8 @@ final class BootstrapperFactory
     /**
      * @param class-string<BootstrapperInterface> $bootstrapper
      */
-    public function create( string $bootstrapper, ): BootstrapperInterface {
+    public function create(string $bootstrapper,): BootstrapperInterface
+    {
         return new $bootstrapper();
     }
 }

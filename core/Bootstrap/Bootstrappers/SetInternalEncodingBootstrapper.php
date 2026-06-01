@@ -10,7 +10,7 @@ use Rombt\ThemeCore\Bootstrap\Kernel;
 
 final class SetInternalEncodingBootstrapper implements PrioritizedBootstrapperInterface
 {
-    public  static  function priority(): int
+    public static function priority(): int
     {
         return 100;
     }

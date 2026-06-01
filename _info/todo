@@ -22,6 +22,24 @@
                 - предоставляет readonly API
                 - его архитектура больше не потребует переделки
 
+                ++ 1. ConfigurationSchema
+                        ↓
+                ++ 2. ConfigurationDiscovery
+                        ↓
+                ++ . ConfigurationLoader
+                        ↓
+                ++ 4. ConfigurationValidator
+                        ↓
+                ++ 5. ConfigurationDefaultsApplier
+                        ↓
+                ++ 6. ConfigurationNormalizer
+                        ↓
+                ++ 7. Новый Configuration Model
+                        ↓
+                8. Переделка LoadConfigurationBootstrapper
+
+
+
                 ↓
         Сделать Logging Infrastructure
                 ↓

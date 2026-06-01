@@ -14,16 +14,19 @@ use Rombt\ThemeCore\Bootstrap\KernelState;
 use Rombt\ThemeCore\Bootstrap\KernelContext;
 use Rombt\ThemeCore\Configuration\ConfigurationState;
 
+
+
 $app = new Application();
 
 $bootstrapRegistry = new BootstrapRegistry();
 $bootstrapRegistry->register(SetInternalEncodingBootstrapper::class);
-$bootstrapRegistry->register( LoadConfigurationBootstrapper::class );
+$bootstrapRegistry->register(LoadConfigurationBootstrapper::class);
 
 $bootstrapperFactory = new BootstrapperFactory();
 
 $context = new KernelContext($app);
-$projectRoot = dirname(__DIR__);
+$projectRoot = __DIR__;
+
 
 $kernel = new Kernel(
     $app,
@@ -35,10 +38,22 @@ $kernel = new Kernel(
 
 $kernel->bootstrap();
 
-print_r([
-    'status' => $context->getStatus()?->value,
-    'current' => $app->get(KernelState::BOOTSTRAP_CURRENT),
-    'executed' => $app->get(KernelState::BOOTSTRAPPERS_EXECUTED),
+// print_r([
+//     'status' => $context->getStatus()?->value,
+//     'current' => $app->get(KernelState::BOOTSTRAP_CURRENT),
+//     'executed' => $app->get(KernelState::BOOTSTRAPPERS_EXECUTED),
 
-    'configuration' => $app->get(ConfigurationState::CONFIGURATION),
-]);
+//     'configuration' => $app->get(ConfigurationState::CONFIGURATION),
+// ]);
+
+// $configuration = $app->get(ConfigurationState::CONFIGURATION);
+
+// print_r(
+//     $configuration->all()
+// );
+
+$configuration = $app->get(ConfigurationState::CONFIGURATION);
+
+var_dump(
+    $configuration->get('project.name')
+);

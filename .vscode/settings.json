@@ -1,11 +1,10 @@
 {
-  "phpcs.executablePath": "vendor/bin/phpcs.bat",
-  "phpcs.standard": "WordPress-Extra",
-  "phpcs.autoConfigSearch": true,
+"phpsab.standard": ".phpcs.xml",
+"intelephense.environment.includePaths": [
+    "vendor"
+],
 
-  "phpsab.standard": "WordPress-Extra",
-  "phpsab.executablePathCS": "vendor/bin/phpcs",
-  "phpsab.executablePathCBF": "vendor/bin/phpcbf",
+
   "cSpell.words": [
     "ABSPATH",
     "Bootstrapper",
