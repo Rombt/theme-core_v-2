@@ -1,0 +1,551 @@
+theme-core v-2
+
+CONFIGURATION SUBSYSTEM
+
+ARCHITECTURAL DESCRIPTION
+
+(v2.0.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Configuration Subsystem является infrastructure subsystem, отвечающей за создание
+        единой immutable configuration model для всей системы.
+
+    Subsystem отвечает за:
+        - configuration discovery
+        - configuration loading
+        - configuration validation
+        - default value application
+        - configuration normalization
+        - readonly configuration access
+
+    Configuration НЕ является:
+        - service container
+        - registry system
+        - runtime state storage
+        - environment manager
+        - domain repository
+        - application state
+
+    Configuration предоставляет единый source of truth
+        для infrastructure configuration и system metadata.
+
+    После завершения bootstrap phase configuration становится immutable.
+
+
+==================================================
+2. CORE ARCHITECTURAL IDEA
+==================================================
+
+    Configuration Subsystem состоит из двух независимых частей:
+        CONFIGURATION PIPELINE и CONFIGURATION MODEL
+
+    Configuration Pipeline отвечает за создание configuration.
+
+    Configuration Model отвечает за readonly access.
+
+    Pipeline существует только во время bootstrap phase.
+
+    Configuration Model существует на протяжении всего runtime.
+
+
+==================================================
+3. CONFIGURATION PIPELINE
+==================================================
+
+    Configuration проходит фиксированный lifecycle:
+
+        CONFIGURATION FILE
+            ↓
+        DISCOVERY
+            ↓
+        LOADING
+            ↓
+        VALIDATION
+            ↓
+        DEFAULT APPLICATION
+            ↓
+        NORMALIZATION
+            ↓
+        IMMUTABLE CONFIGURATION
+
+    Каждый этап имеет одну единственную ответственность.
+
+    Каждый следующий этап получает результат предыдущего этапа.
+
+    Этапы pipeline никогда не пропускаются.
+
+
+==================================================
+4. PIPELINE RESPONSIBILITIES
+==================================================
+
+    4.1 CONFIGURATION DISCOVERY
+    --------------------------------------------------
+
+        Отвечает за:
+            - поиск configuration file
+            - проверку существования
+            - определение source location
+
+        НЕ отвечает за:
+            - loading
+            - validation
+            - normalization
+
+        Результат: configuration source
+
+    4.2 CONFIGURATION LOADING
+    --------------------------------------------------
+
+        Отвечает за:
+            - загрузку configuration file
+            - получение raw configuration data
+
+        НЕ отвечает за:
+            - validation
+            - defaults
+            - normalization
+
+        Результат: raw configuration
+
+    4.3 CONFIGURATION VALIDATION
+    --------------------------------------------------
+
+        Отвечает за:
+            - structure validation
+            - required section validation
+            - type validation
+            - schema validation
+
+        Validator никогда не изменяет configuration.
+
+        Результат: validated configuration
+
+    4.4 DEFAULT VALUE APPLICATION
+    --------------------------------------------------
+
+        Отвечает за:
+            - применение default values
+            - заполнение отсутствующих полей
+        После выполнения этапа configuration считается complete.
+
+        Результат: complete configuration
+
+    4.5 CONFIGURATION NORMALIZATION
+    --------------------------------------------------
+
+        Отвечает за:
+            - path normalization
+            - value normalization
+            - format normalization
+
+        Примеры:
+            build → absolute path
+            true → normalized boolean
+            string values → normalized format
+
+        Runtime не должен выполнять дополнительную нормализацию.
+
+        Результат:
+            normalized configuration
+
+==================================================
+5. CONFIGURATION MODEL
+==================================================
+
+    Configuration является финальной immutable model.
+
+    Configuration содержит только:
+        normalized configuration
+
+    Configuration НЕ содержит:
+        - loading logic
+        - validation logic
+        - normalization logic
+        - default logic
+
+    Configuration предоставляет:
+        - readonly access
+        - configuration querying
+
+    Configuration является единственным configuration source для runtime.
+
+
+==================================================
+6. CONFIGURATION SCHEMA
+==================================================
+
+    Configuration Schema определяет:
+        - допустимую структуру
+        - обязательные секции
+        - обязательные поля
+        - типы данных
+        - default values
+
+    Schema является контрактом configuration system.
+
+    Validator использует schema для проверки configuration.
+
+    Defaults Applier использует schema для получения default values.
+
+==================================================
+7. CONFIGURATION FILE
+==================================================
+
+    Базовым форматом является:
+        PHP configuration file
+
+    Формат:
+        return [ ... ];
+
+    Базовое расположение:
+        project-root/theme-core.config.php
+
+    Configuration file является единственной внешней точкой входа для Configuration Pipeline.
+
+==================================================
+8. MINIMUM CONFIGURATION MODEL
+==================================================
+
+    На первом этапе subsystem содержит:
+        - project
+        - environment
+        - paths
+        - logging
+    Данные секции относятся к infrastructure configuration и system metadata.
+
+==================================================
+9. PROJECT SECTION
+==================================================
+
+    Назначение: project metadata
+
+    Минимальная структура:
+        project: name
+
+    Пример:
+        'project' => [
+            'name' => 'my-theme',
+        ]
+
+
+==================================================
+10. ENVIRONMENT SECTION
+==================================================
+
+    Назначение:
+        environment configuration
+
+    Минимальная структура:
+        environment: debug
+
+    Пример:
+        'environment' => [
+            'debug' => false,
+        ]
+
+
+==================================================
+11. PATHS SECTION
+==================================================
+
+    Назначение:
+        infrastructure paths
+
+    Минимальная структура:
+        paths:
+            build
+            cache
+
+    Пример:
+        'paths' => [
+            'build' => 'build',
+            'cache' => '.cache',
+        ]
+
+    После normalization:
+        absolute paths
+
+
+==================================================
+12. LOGGING SECTION
+==================================================
+
+    Назначение:
+        logging configuration
+
+    Минимальная структура:
+        logging:
+            enabled
+
+    Пример:
+        'logging' => [
+            'enabled' => true,
+        ]
+
+
+==================================================
+13. INTERNAL COMPONENTS
+==================================================
+
+    Configuration Subsystem состоит из:
+        ConfigurationDiscovery
+        ConfigurationLoader
+        ConfigurationSchema
+        ConfigurationValidator
+        ConfigurationDefaultsApplier
+        ConfigurationNormalizer
+        Configuration
+
+    13.1 CONFIGURATION DISCOVERY
+    --------------------------------------------------
+
+        Отвечает за:
+            - configuration discovery
+            - source resolution
+        Результат:
+            configuration source
+
+    --------------------------------------------------
+    13.2 CONFIGURATION LOADER
+    --------------------------------------------------
+
+        Отвечает за:
+            - file loading
+
+        Результат: raw configuration
+
+    --------------------------------------------------
+    13.3 CONFIGURATION SCHEMA
+    --------------------------------------------------
+
+        Содержит:
+            - structure rules
+            - type rules
+            - required fields
+            - default values
+
+    --------------------------------------------------
+    13.4 CONFIGURATION VALIDATOR
+    --------------------------------------------------
+
+        Отвечает за:
+            - schema validation
+            - structure validation
+            - type validation
+
+        Результат:
+            validated configuration
+
+    --------------------------------------------------
+    13.5 CONFIGURATION DEFAULTS APPLIER
+    --------------------------------------------------
+
+        Отвечает за:
+            - default value application
+            - configuration completion
+
+        Результат:
+            complete configuration
+
+    --------------------------------------------------
+    13.6 CONFIGURATION NORMALIZER
+    --------------------------------------------------
+
+        Отвечает за:
+            - configuration normalization
+        Результат:
+            normalized configuration
+
+    --------------------------------------------------
+    13.7 CONFIGURATION
+    --------------------------------------------------
+
+        Финальная immutable model.
+
+        Предоставляет:
+            - readonly access
+            - configuration querying
+
+
+==================================================
+14. IMMUTABILITY RULES
+==================================================
+
+    После создания Configuration:
+        mutation запрещена
+
+    Запрещается:
+        - set()
+        - replace()
+        - merge()
+        - runtime modifications
+
+    Допускается только:
+        - reading
+        - querying
+
+    Configuration никогда не изменяется после создания.
+
+
+==================================================
+15. CONFIGURATION FLOW
+==================================================
+
+    Configuration распространяется только в одном направлении:
+
+        Bootstrap
+            ↓
+        Subsystems
+            ↓
+        Runtime
+
+    Subsystems могут:
+        - читать configuration
+
+    Subsystems не могут:
+        - изменять configuration
+        - обмениваться configuration
+        - создавать альтернативные configuration models
+
+    Configuration всегда остаётся единым source of truth.
+
+
+==================================================
+16. BOOTSTRAP INTEGRATION
+==================================================
+
+
+    Configuration создаётся во время bootstrap phase.
+
+    Схема:
+
+        Kernel
+            ↓
+        LoadConfigurationBootstrapper
+            ↓
+        ConfigurationDiscovery
+            ↓
+        ConfigurationLoader
+            ↓
+        ConfigurationValidator
+            ↓
+        ConfigurationDefaultsApplier
+            ↓
+        ConfigurationNormalizer
+            ↓
+        Configuration
+            ↓
+        Application State
+
+    После завершения bootstrap configuration считается готовой.
+
+
+==================================================
+17. DESIGN PRINCIPLES
+==================================================
+
+
+    17.1 IMMUTABILITY OVER MUTABILITY
+    --------------------------------------------------
+
+        Configuration должна быть readonly.
+
+
+    17.2 VALIDATION OVER ASSUMPTIONS
+    --------------------------------------------------
+
+        Configuration должна быть полностью проверена
+            до начала runtime execution.
+
+
+    17.3 EXPLICIT OVER MAGIC
+    --------------------------------------------------
+
+        Все секции, поля и правила должны быть явно определены.
+
+
+    17.4 NORMALIZATION OVER DUPLICATION
+    --------------------------------------------------
+
+        Все значения должны нормализоваться до runtime.
+
+
+    17.5 SINGLE RESPONSIBILITY PIPELINE
+    --------------------------------------------------
+
+        Каждый этап pipeline отвечает за одну задачу.
+
+
+    17.6 INFRASTRUCTURE OVER DOMAIN
+    --------------------------------------------------
+
+        Configuration отвечает только за infrastructure configuration
+            и system metadata.
+
+
+==================================================
+18. CONCEPTUAL SUMMARY
+==================================================
+
+    Configuration Subsystem состоит из:
+        Configuration Pipeline
+                +
+        Configuration Model
+
+    Configuration Pipeline:
+        - discovers configuration
+        - loads configuration
+        - validates configuration
+        - applies defaults
+        - normalizes configuration
+
+    Configuration Model:
+        - immutable
+        - readonly
+        - normalized
+
+    Bootstrap creates configuration.
+
+    Runtime consumes configuration.
+
+
+==================================================
+19. FINAL FORMULA
+==================================================
+
+    Configuration Pipeline =
+
+        Discovery
+            +
+        Loading
+            +
+        Validation
+            +
+        Defaults
+            +
+        Normalization
+
+    Configuration Model =
+
+        Immutable
+            +
+        Readonly
+            +
+        Normalized
+
+    Configuration Subsystem =
+
+        Configuration Pipeline
+            +
+        Configuration Model
+
+    Bootstrap creates configuration.
+
+    Runtime consumes configuration.
+
+    Configuration is never modified.
+

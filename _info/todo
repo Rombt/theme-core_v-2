@@ -10,3 +10,27 @@
 [ ] PHPUnit
 [ ] Deptrac
 [ ] First architectural rules
+
+
+01.06.26 
+    Kernel:
+        Завершить Configuration. Критерии готовности:  
+                - умеет найти конфиг
+                - умеет загрузить конфиг
+                - умеет валидировать конфиг
+                - умеет применить дефолты
+                - предоставляет readonly API
+                - его архитектура больше не потребует переделки
+
+                ↓
+        Сделать Logging Infrastructure
+                ↓
+        Сделать Filesystem Infrastructure
+                ↓
+        Сделать Diagnostics Infrastructure
+                ↓
+        Сделать Dependency Wiring Model
+                ↓
+        Сделать Registry Infrastructure
+                ↓
+        Только после этого перейти к Runtime Assembly
