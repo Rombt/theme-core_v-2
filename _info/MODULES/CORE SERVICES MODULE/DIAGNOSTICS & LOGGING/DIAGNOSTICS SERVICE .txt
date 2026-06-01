@@ -1,0 +1,401 @@
+theme-core v-2
+DIAGNOSTICS SERVICE
+ARCHITECTURAL DESCRIPTION
+(v2.1.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+Diagnostics Service является:
+    observability subsystem,
+
+
+    отвечающей за формирование структурированной диагностической
+        информации во время выполнения системы.
+
+    Diagnostics обеспечивает:
+        - execution observability
+        - diagnostic creation
+        - context-aware diagnostics
+        - failure representation
+        - diagnostic consistency
+
+    Diagnostics НЕ отвечает за:
+        - persistence
+        - serialization
+        - formatting
+        - output delivery
+        - output routing
+        - lifecycle orchestration
+        - execution control
+        - business logic
+
+    Главная задача Diagnostics:
+        преобразовывать execution events в structured diagnostic records.
+
+
+==================================================
+2. CORE ARCHITECTURAL PRINCIPLE
+==================================================
+
+    Diagnostics является: observability subsystem.
+
+    Logging является: persistence subsystem.
+
+    Главный principle: diagnostics create information, logging persists information.
+
+    Diagnostics производит: structured diagnostics.
+
+    Logging сохраняет: structured diagnostics.
+
+    Outputs отображают: persisted diagnostics.
+
+
+==================================================
+3. ARCHITECTURAL ROLE
+==================================================
+
+    Diagnostics располагается между: execution layer и logging layer.
+
+    Execution flow:
+
+        Runtime
+            ↓
+        Diagnostics
+            ↓
+        Logging
+            ↓
+        Outputs
+
+    Diagnostics преобразует execution events в diagnostics.
+
+    Logging сохраняет diagnostics.
+   
+    Outputs отображают diagnostics.
+
+==================================================
+4. RESPONSIBILITIES
+==================================================
+
+    Diagnostics отвечает за:
+        - diagnostic creation
+        - diagnostic normalization
+        - context attachment
+        - diagnostic emission
+        - failure representation
+        - execution observability
+        - diagnostic consistency
+
+    Diagnostics НЕ отвечает за:
+        - log writing
+        - file writing
+        - console output
+        - persistence
+        - serialization
+        - output routing
+        - monitoring
+        - telemetry
+
+==================================================
+5. SERVICE MODEL
+==================================================
+
+    Diagnostics Service является центральной точкой формирования
+        диагностической информации.
+
+    Любой execution component может передать диагностическое событие
+        в Diagnostics Service.
+
+    Diagnostics Service создаёт: DiagnosticEntry
+        после чего передаёт его следующему потребителю.
+
+    Diagnostics НЕ хранит записи.
+    Diagnostics НЕ владеет очередями.
+    Diagnostics НЕ владеет storage.
+    Diagnostics НЕ гарантирует delivery.
+
+    Delivery responsibility принадлежит: downstream consumers.
+
+
+==================================================
+6. DIAGNOSTIC MODEL
+==================================================
+
+    Diagnostics работает только со структурированными объектами.
+        
+    Primary diagnostic entity: DiagnosticEntry
+
+    Diagnostics НЕ работает с:
+        - log files
+        - output targets
+        - filesystem outputs
+        - persistence mechanisms
+
+    Все диагностические данные должны существовать в структурированном виде.
+
+==================================================
+7. DIAGNOSTIC ENTRY
+==================================================
+
+    DiagnosticEntry является: immutable diagnostic record.
+
+    DiagnosticEntry представляет собой единицу диагностической информации.
+
+    Минимальная структура:
+        - level
+        - timestamp
+        - message
+        - context
+        - metadata
+
+    DiagnosticEntry должен оставаться:
+        - immutable
+        - self-contained
+        - structured
+        - reproducible
+
+    Timestamp является частью зафиксированного execution event.
+
+==================================================
+8. DIAGNOSTIC CONTEXT
+==================================================
+
+    DiagnosticContext содержит: execution-related information.
+
+    Context позволяет связывать диагностическую запись с execution environment.
+
+    Context может содержать:
+        - execution_id
+        - build_id
+        - stage
+        - handler
+        - module
+        - environment
+
+    Diagnostics НЕ анализирует semantic meaning context.
+
+    Diagnostics может выполнять:
+        - context normalization
+        - context validation
+
+    для обеспечения целостности диагностической модели.
+
+==================================================
+9. DIAGNOSTIC LEVELS
+==================================================
+
+    Минимально поддерживаются:
+        - debug
+        - info
+        - warning
+        - error
+        - critical
+
+    DiagnosticLevel определяет: severity diagnostic entry.
+
+    DiagnosticLevel НЕ определяет:
+        - execution behaviour
+        - pipeline decisions
+        - lifecycle decisions
+
+
+==================================================
+10. DIAGNOSTIC CREATION
+==================================================
+
+    Любой subsystem может создавать диагностические записи через Diagnostics Service.
+
+    Examples:
+        - build stage execution
+        - configuration loading
+        - validation result
+        - filesystem operation
+        - compiler execution
+        - runtime failure
+
+
+    Diagnostics не ограничивает источник диагностической записи.
+
+    Diagnostics обеспечивает единообразную модель создания диагностических данных.
+
+
+==================================================
+11. CONTEXT ATTACHMENT
+==================================================
+
+    Execution context должен быть присоединён к записи в момент её создания.
+
+    Context attachment является частью diagnostic creation process.
+
+    Diagnostics обеспечивает: context-aware observability.
+
+    После создания записи context не может быть изменён.
+
+
+==================================================
+12. DIAGNOSTIC EMISSION
+==================================================
+
+    После создания DiagnosticEntry - Diagnostics выполняет emission.
+
+    Emission означает: передачу готовой записи следующему потребителю.
+
+    Diagnostics НЕ определяет:
+        - способ доставки
+        - способ хранения
+        - количество потребителей
+
+    Diagnostics отвечает только за создание и передачу записи.
+
+
+==================================================
+13. FAILURE DIAGNOSTICS
+==================================================
+
+    Failures являются частным случаем диагностической информации.
+
+    Diagnostics не ограничивается обработкой ошибок.
+
+    Failures должны быть представлены как structured diagnostics.
+
+    Failure diagnostics должны быть:
+        - explicit
+        - observable
+        - reproducible
+        - diagnosable
+
+    Hidden failures считаются:
+        architectural violation.
+ 
+
+==================================================
+14. IMMUTABILITY PRINCIPLE
+==================================================
+
+    DiagnosticEntry MUST remain: immutable.
+
+    После создания запись НЕ должна:
+        - изменяться
+        - переписываться
+        - мутироваться
+
+    Любые изменения требуют создания новой диагностической записи.
+
+    Diagnostics обеспечивает неизменяемость диагностической модели.
+
+
+==================================================
+15. STORAGE BOUNDARY
+==================================================
+
+    Diagnostics НЕ владеет: storage layer.
+
+    Diagnostics НЕ знает: где будут сохранены данные.
+
+    Diagnostics НЕ знает: каким образом данные будут сериализованы или записаны.
+
+    Storage responsibility принадлежит: Logging subsystem.
+
+
+==================================================
+16. DEVELOPMENT PRINCIPLES
+==================================================
+
+    Diagnostics architecture должна оставаться:
+        - simple
+        - explicit
+        - composable
+        - predictable
+        - observable
+
+    v2.1.0 intentionally НЕ строит:
+        - telemetry platform
+        - monitoring platform
+        - distributed tracing system
+        - analytics engine
+        - observability cloud
+
+
+==================================================
+17. MINIMAL REQUIRED COMPONENTS
+==================================================
+
+    Минимально необходимы:
+        - DiagnosticsService
+        - DiagnosticEntry
+        - DiagnosticLevel
+        - DiagnosticContext
+
+    Все остальные компоненты являются: future extensions.
+
+
+==================================================
+18. ARCHITECTURAL BOUNDARIES
+============================
+
+    Diagnostics НЕ должен:
+        - управлять execution
+        - управлять lifecycle
+        - сохранять данные
+        - писать файлы
+        - выводить данные
+        - изменять pipeline state
+        - принимать business decisions
+
+    Diagnostics является: passive observability service.
+
+
+==================================================
+19. RELATIONSHIP TO LOGGING
+==================================================
+
+    Diagnostics производит: DiagnosticEntry
+
+    Logging потребляет: DiagnosticEntry
+
+    Diagnostics НЕ зависит от: Logging
+
+    Logging зависит от: Diagnostics
+
+    Dependency direction:
+        Diagnostics
+            ↓
+        Logging
+
+
+==================================================
+20. RELATIONSHIP TO PIPELINE
+==================================================
+
+    Pipeline отвечает за: execution orchestration.
+
+    Diagnostics отвечает за: execution observability.
+
+    Logging отвечает за: execution persistence.
+
+    Главный principle:
+        pipeline orchestrates,
+        diagnostics observes,
+        logging persists.
+
+
+==================================================
+21. FINAL PRINCIPLE
+==================================================
+
+    Diagnostics Service существует для: structured execution observability.
+
+    Diagnostics создаёт диагностическое представление событий выполнения системы.
+
+    Diagnostics НЕ сохраняет и НЕ отображает информацию.
+
+    Diagnostics architecture должна оставаться:
+        predictable,
+        immutable,
+        composable,
+        execution-oriented.
+
+    Diagnostics creates observability.
+
+    Logging persists observability.

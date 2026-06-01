@@ -24,3 +24,5 @@ final class ConfigurationDiscovery
         return $path;
     }
 }
+
+//  CONCEPTUAL-CONFIGURATION-MODEL .txt
