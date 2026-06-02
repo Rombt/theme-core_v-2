@@ -1,0 +1,297 @@
+theme-core v-2
+COMPOSITION LAYER
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Composition Layer является subsystem, отвечающей за сборку object graph приложения.
+
+    Composition Layer обеспечивает:
+        - регистрацию сервисов
+        - описание сервисов
+        - управление жизненным циклом сервисов
+        - разрешение зависимостей между сервисами
+        - создание экземпляров сервисов
+        - сохранение сервисов в Application Storage
+
+    Composition Layer отвечает на вопрос: "Как собрать приложение из набора объектов?"
+
+
+==================================================
+2. NON-RESPONSIBILITIES
+==================================================
+
+    Composition Layer НЕ отвечает за:
+    - bootstrap процесса системы
+    - выполнение сервисов
+    - хранение runtime состояния приложения
+    - логирование
+    - диагностику
+    - бизнес-логику
+    - автоматическое обнаружение сервисов
+    - автоматическое связывание зависимостей
+
+
+==================================================
+3. ARCHITECTURAL POSITION
+==================================================
+
+    Kernel
+        ↓
+    Bootstrap Layer
+        ↓
+    Composition Layer
+        ↓
+    Application Storage
+        ↓
+    Application Runtime
+
+    Composition Layer является частью startup phase системы.
+
+
+==================================================
+4. CORE PRINCIPLE
+==================================================
+
+    Composition Layer использует исключительно explicit configuration model.
+
+    Все сервисы:
+        - регистрируются вручную
+        - описываются вручную
+        - связываются вручную
+        - создаются вручную
+
+    Система не выполняет никакого автоматического анализа кода.
+
+
+==================================================
+5. SUPPORTED FEATURES
+==================================================
+
+    Composition v1 поддерживает:
+        - Service Definitions
+        - Service Registry
+        - Service Factory
+        - Service Composer
+        - Dependencies
+        - Eager Services
+        - Lazy Services
+        - Transient Services
+
+
+==================================================
+6. EXPLICIT RESTRICTIONS
+==================================================
+
+    Composition v1 НЕ поддерживает:
+
+        - Reflection
+        - Autowiring
+        - Attributes
+        - Auto Discovery
+        - Auto Registration
+        - Service Providers
+        - Service Tags
+        - Service Aliases
+        - Service Decoration
+        - Container Compilation
+
+
+==================================================
+7. CORE CONCEPTS
+==================================================
+
+    7.1 Service
+    ==================================================
+
+        Service представляет собой обычный PHP объект,
+            используемый системой во время runtime.
+
+        Примеры:
+            - Configuration
+            - StructuredLogger
+            - DiagnosticsService
+
+
+    7.2 Service Definition
+    ==================================================
+
+        Service Definition является описанием сервиса.
+
+        Definition содержит:
+            - service identifier
+            - service class
+            - lifecycle type
+            - dependencies
+
+        Definition не содержит экземпляр сервиса.
+
+        Definition является metadata object.
+
+
+    7.3 Service Registry
+    ==================================================
+
+        Service Registry является хранилищем Service Definitions.
+
+        Registry отвечает за:
+            - регистрацию definitions
+            - получение definitions
+            - проверку существования definitions
+
+        Registry не хранит экземпляры сервисов.
+
+
+    7.4 Service Factory
+    ==================================================
+
+        Service Factory отвечает исключительно за создание объекта.
+
+        Factory получает:
+            - service class
+            - подготовленные зависимости
+
+        Factory создаёт объект и возвращает его.
+
+        Factory не знает:
+            - Registry
+            - Composer
+            - Application
+            - Lifecycle
+
+        Factory является максимально простой abstraction.
+
+
+    7.5 Service Composer
+    ==================================================
+
+        Service Composer является центральным объектом Composition Layer.
+
+        Composer отвечает за:
+            - получение definitions
+            - разрешение зависимостей
+            - управление lifecycle
+            - вызов factory
+            - сохранение сервисов в Application
+
+        Composer координирует весь процесс сборки.
+
+
+==================================================
+8. DEPENDENCY RESOLUTION
+==================================================
+
+    Все зависимости описываются вручную.
+
+    Пример концептуальной модели:
+
+        logger
+            ↓
+        formatter
+            ↓
+        writer
+
+    Composer рекурсивно собирает зависимости.
+
+    После получения всех зависимостей Composer передаёт их в Factory.
+
+
+==================================================
+9. SERVICE LIFECYCLE
+==================================================
+
+    9.1 Eager
+    ==================================================
+
+        Сервис создаётся во время bootstrap.
+        
+        После создания сохраняется в Application.
+
+
+    9.2 Lazy
+    ==================================================
+
+    Сервис создаётся при первом запросе.
+
+    После создания сохраняется в Application.
+
+    Все последующие запросы используют существующий экземпляр.
+
+
+    9.3 Transient
+    ==================================================
+
+        Сервис создаётся при каждом запросе.
+
+        Экземпляр не сохраняется.
+
+        Каждый запрос получает новый объект.
+
+
+==================================================
+10. STORAGE MODEL
+==================================================
+
+    Composition Layer не хранит сервисы.
+
+    Все созданные сервисы сохраняются в Application Storage.
+
+    Application является единственным runtime storage системы.
+
+
+==================================================
+11. BOOTSTRAP FLOW
+==================================================
+
+    Kernel
+        ↓
+    Bootstrap Layer
+        ↓
+    Composition Bootstrapper
+        ↓
+    Register Service Definitions
+        ↓
+    Create Eager Services
+        ↓
+    Store Services In Application
+        ↓
+    Runtime
+
+==================================================
+12. LAZY RESOLUTION FLOW
+==================================================
+
+    Runtime
+        ↓
+    Request Service
+        ↓
+    Service Composer
+        ↓
+    Resolve Dependencies
+        ↓
+    Service Factory
+        ↓
+    Create Service
+        ↓
+    Store Service In Application
+        ↓
+    Return Service
+
+==================================================
+13. DESIGN GOAL
+==================================================
+
+    Composition Layer должен оставаться:
+        - small
+        - explicit
+        - predictable
+        - deterministic
+
+    Composition Layer не должен эволюционировать в полноценный framework container.
+
+    Основная задача Composition Layer:
+
+    "Собрать систему из объектов предсказуемым и явным способом."
