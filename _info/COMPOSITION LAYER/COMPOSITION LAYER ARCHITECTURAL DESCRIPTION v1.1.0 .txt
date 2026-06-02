@@ -1,0 +1,388 @@
+theme-core v-2
+COMPOSITION LAYER
+ARCHITECTURAL DESCRIPTION
+(v1.1.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Composition Layer является subsystem, отвечающей за построение и разрешение object graph приложения.
+
+    Composition Layer обеспечивает:
+        - регистрацию Service Definitions
+        - хранение Service Definitions (через Registry)
+        - построение dependency graph
+        - разрешение зависимостей
+        - создание экземпляров сервисов
+        - управление lifecycle стратегиями сервисов
+        - сохранение runtime-экземпляров в Application Storage
+
+    Composition Layer отвечает на вопрос: 
+        "Как детерминированно собрать граф объектов приложения из явных описаний?"
+
+
+==================================================
+2. NON-RESPONSIBILITIES
+==================================================
+
+    Composition Layer НЕ отвечает за:
+        - bootstrap orchestration процесса системы
+        - выполнение бизнес-логики сервисов
+        - хранение runtime состояния вне процесса composition
+        - логирование (как бизнес-функция)
+        - диагностику (как отдельный subsystem)
+        - auto-discovery сервисов
+        - reflection-based analysis
+        - attribute-based configuration
+        - service providers
+        - runtime event orchestration
+
+
+==================================================
+3. ARCHITECTURAL POSITION
+==================================================
+
+    Kernel
+        ↓
+    Bootstrap Layer
+        ↓
+    Composition Layer
+        ↓
+    Application Storage
+        ↓
+    Application Runtime
+
+    Composition Layer является строго build-time + resolution-time subsystem
+        и не участвует в runtime execution логике приложения.
+
+
+==================================================
+4. CORE PRINCIPLE
+==================================================
+
+    Composition Layer использует исключительно explicit configuration model.
+
+    Все сервисы:
+        - регистрируются вручную
+        - описываются вручную
+        - связываются вручную
+        - разрешаются через явный graph traversal
+
+    Система не выполняет никакого автоматического анализа кода.
+
+
+==================================================
+5. ARCHITECTURAL PHASE MODEL
+==================================================
+
+    Composition Layer разделяет работу на две фазы:
+
+    5.1 BUILD PHASE
+    ==================================================
+
+        Отвечает за:
+            - регистрацию Service Definitions
+            - валидацию definitions
+            - построение dependency graph (logical model)
+
+        Результат:
+            - immutable graph description
+
+        Важно:
+            - никаких объектов сервисов не создаётся
+
+
+    5.2 RESOLUTION PHASE
+    ==================================================
+
+        Отвечает за:
+            - создание экземпляров сервисов
+            - разрешение зависимостей
+            - применение lifecycle стратегии
+            - взаимодействие с Application Storage
+
+        Результат:
+            - готовые runtime service instances
+
+
+==================================================
+6. SUPPORTED FEATURES
+==================================================
+
+    Composition v1.1 поддерживает:
+
+        - Service Definitions (explicit metadata objects)
+        - Service Registry
+        - Dependency Graph Builder
+        - Dependency Resolver
+        - Service Factory (stateless instantiation only)
+        - Lifecycle Manager (externalized policy)
+        - Eager Services
+        - Lazy Services
+        - Transient Services
+        - Resolution Context (per-graph execution state)
+
+
+==================================================
+7. EXPLICIT RESTRICTIONS
+==================================================
+
+    Composition v1.1 НЕ поддерживает:
+
+        - Reflection
+        - Autowiring
+        - Attributes
+        - Auto Discovery
+        - Auto Registration
+        - Service Providers
+        - Service Tags
+        - Service Aliases
+        - Service Decoration (implicit)
+        - Container Compilation
+        - Hidden internal state outside Resolution Context
+
+
+==================================================
+8. CORE CONCEPTS
+==================================================
+
+    8.1 Service
+    ==================================================
+
+        Service представляет собой обычный PHP объект,
+        используемый системой во время runtime.
+
+        Примеры:
+            - Configuration
+            - StructuredLogger
+            - DiagnosticsService
+
+
+    8.2 Service Definition
+    ==================================================
+
+        Service Definition является immutable описанием сервиса.
+
+        Definition содержит:
+            - service identifier
+            - service class
+            - lifecycle type
+            - dependency list (explicit)
+
+        Definition НЕ содержит:
+            - instance
+            - runtime state
+
+        Definition является compile-time metadata.
+
+
+    8.3 Service Registry
+    ==================================================
+
+        Service Registry является хранилищем Service Definitions.
+
+        Registry отвечает за:
+            - регистрацию definitions
+            - получение definitions
+            - проверку существования definitions
+
+        Registry не участвует в runtime resolution.
+
+
+    8.4 Dependency Graph
+    ==================================================
+
+        Dependency Graph является immutable моделью связей сервисов.
+
+        Он строится в BUILD PHASE и содержит:
+            - nodes (services)
+            - edges (dependencies)
+
+        Graph используется только для resolution planning.
+
+
+    8.5 Resolution Context
+    ==================================================
+
+        Resolution Context является явным runtime state контейнером
+        для процесса построения object graph.
+
+        Он содержит:
+            - stack resolving services (cycle detection)
+            - cache of constructed instances (per resolution session)
+            - execution cursor
+
+        Resolution Context НЕ является Application Storage.
+
+
+    8.6 Service Factory
+    ==================================================
+
+        Service Factory отвечает исключительно за создание объекта.
+
+        Factory получает:
+            - service class
+            - resolved dependencies
+
+        Factory:
+            - НЕ знает Registry
+            - НЕ знает Graph
+            - НЕ знает Lifecycle
+            - НЕ хранит state
+
+
+    8.7 Service Composer
+    ==================================================
+
+        Service Composer является orchestration layer RESOLUTION PHASE.
+
+        Composer отвечает за:
+            - traversal dependency graph
+            - управление Resolution Context
+            - orchestration of Dependency Resolver
+            - orchestration of Service Factory
+            - application of lifecycle rules
+            - persistence into Application Storage
+
+        Composer НЕ хранит permanent state вне Resolution Context.
+
+
+==================================================
+9. DEPENDENCY RESOLUTION MODEL
+==================================================
+
+    Dependencies описываются явно в Service Definition.
+
+    Resolution выполняется через graph traversal:
+
+        A → B → C
+
+    Алгоритм:
+        - Composer запрашивает Definition
+        - строит path в graph
+        - проверяет cycles через Resolution Context stack
+        - рекурсивно резолвит зависимости
+        - передаёт готовый dependency set в Factory
+
+
+==================================================
+10. CYCLE HANDLING STRATEGY
+==================================================
+
+    Composition Layer обязан обнаруживать циклы:
+
+        if service appears twice in Resolution Context stack:
+            → throw CompositionCycleException
+
+    Partial construction НЕ допускается.
+
+    Объекты всегда либо:
+        - полностью построены
+        - либо не созданы
+
+
+==================================================
+11. SERVICE LIFECYCLE
+==================================================
+
+    11.1 Eager
+    ==================================================
+
+        - создаётся в BUILD PHASE completion step
+        - сохраняется в Application Storage
+        - может участвовать в early dependency resolution
+
+
+    11.2 Lazy
+    ==================================================
+
+        - создаётся при первом request
+        - результат сохраняется в Application Storage
+        - повторно используется
+
+
+    11.3 Transient
+    ==================================================
+
+        - создаётся при каждом request
+        - НЕ сохраняется в Application Storage
+
+
+==================================================
+12. STORAGE MODEL
+==================================================
+
+    Application является единственным runtime storage системы.
+
+    Composition Layer использует Application Storage только для:
+
+        - persistence of eager services
+        - persistence of lazy-created singleton instances
+
+    Resolution Context хранится только на время graph execution.
+
+
+==================================================
+13. BOOTSTRAP FLOW
+==================================================
+
+    Kernel
+        ↓
+    Bootstrap Layer
+        ↓
+    Composition Bootstrapper
+        ↓
+    Register Service Definitions
+        ↓
+    Build Dependency Graph
+        ↓
+    Resolve Eager Services
+        ↓
+    Store Services In Application Storage
+        ↓
+    Runtime
+
+
+==================================================
+14. LAZY RESOLUTION FLOW
+==================================================
+
+    Runtime
+        ↓
+    Request Service
+        ↓
+    Service Composer
+        ↓
+    Load Definition
+        ↓
+    Resolve Dependency Graph Path
+        ↓
+    Create Resolution Context
+        ↓
+    Service Factory
+        ↓
+    Create Service
+        ↓
+    Store In Application Storage
+        ↓
+    Return Instance
+
+
+==================================================
+15. DESIGN GOAL
+==================================================
+
+    Composition Layer должен оставаться:
+
+        - explicit
+        - deterministic
+        - stateless (outside Resolution Context)
+        - graph-driven
+        - predictable
+
+    Composition Layer не должен становиться framework container'ом.
+
+    Основная цель:
+
+    "Сборка системы как явного графа объектов без скрытого поведения и магии."
