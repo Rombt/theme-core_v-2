@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Infrastructure\Logging;
+namespace Rombt\ThemeCore\Contracts\Logging;
 
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticEntry;
 
 interface LoggerInterface
 {
-    public function write(DiagnosticEntry $entry): void;
+    public function write(
+        DiagnosticEntry $entry
+    ): void;
 }

@@ -9,6 +9,7 @@ use Throwable;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\PrioritizedBootstrapperInterface;
 use Rombt\ThemeCore\Bootstrap\KernelBootstrapStatus;
+use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final class Kernel
 {
@@ -17,6 +18,7 @@ final class Kernel
         private readonly BootstrapRegistry $bootstrapRegistry,
         private readonly BootstrapperFactory $bootstrapperFactory,
         private readonly KernelContext $context,
+        private readonly LoggerInterface $logger,
         private readonly string $projectRoot,
     ) {
     }
@@ -34,9 +36,7 @@ final class Kernel
             );
         }
 
-        $this->context->setStatus(
-            KernelBootstrapStatus::BOOTSTRAPPING
-        );
+        $this->context->setStatus(KernelBootstrapStatus::BOOTSTRAPPING);
 
         $bootstrappers = $this->bootstrapRegistry->all();
 
@@ -49,13 +49,8 @@ final class Kernel
         try {
             foreach ($bootstrappers as $bootstrapperClass) {
                 $this->context->setCurrent($bootstrapperClass);
-
-                $bootstrapper = $this->bootstrapperFactory->create(
-                    $bootstrapperClass
-                );
-
+                $bootstrapper = $this->bootstrapperFactory->create($bootstrapperClass);
                 $bootstrapper->bootstrap($this->app, $this);
-
                 $executedBootstrappers[] = $bootstrapperClass;
             }
         } catch (Throwable $exception) {
