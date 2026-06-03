@@ -1,0 +1,37 @@
+core/
+└── Composition/
+    │
+    ├── Definitions/
+    │   ├── ServiceDefinition.php
+    │   └── ServiceLifecycle.php
+    │
+    ├── Registry/
+    │   └── ServiceRegistry.php
+    │
+    ├── Graph/
+    │   ├── DependencyGraph.php
+    │   ├── DependencyNode.php
+    │   └── DependencyGraphBuilder.php
+    │
+    ├── Resolution/
+    │   ├── ResolutionContext.php
+    │   ├── DependencyResolver.php
+    │   └── ServiceComposer.php
+    │
+    ├── Factory/
+    │   └── ServiceFactory.php
+    │
+    ├── Lifecycle/
+    │   └── LifecycleManager.php
+    │
+    ├── Exceptions/
+    │   ├── CompositionException.php
+    │   ├── CompositionDefinitionNotFoundException.php
+    │   ├── CompositionCycleException.php
+    │   └── CompositionInstantiationException.php
+    │
+    └── Contracts/
+        ├── ServiceRegistryInterface.php
+        ├── ServiceFactoryInterface.php
+        ├── LifecycleManagerInterface.php
+        └── ServiceComposerInterface.php
