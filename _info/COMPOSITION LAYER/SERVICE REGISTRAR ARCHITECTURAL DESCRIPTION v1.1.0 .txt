@@ -1,0 +1,138 @@
+theme-core v-2
+SERVICE REGISTRAR
+ARCHITECTURAL DESCRIPTION
+(v1.1.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Service Registrar является компонентом Composition Layer,
+        отвечающим за формирование и централизованную регистрацию Service Definitions
+        внутри Service Registry.
+
+    Service Registrar выступает как этап агрегации сервисных определений из различных источников
+        (ядро системы, модули, конфигурации, внешние расширения)
+        и подготавливает их для дальнейшей фазы построения Dependency Graph.
+
+    В результате работы Service Registrar в Service Registry попадает полный
+        НАБОP ИСХОДНЫХ Service Definitions, достаточный для последующих этапов композиции.
+
+
+==================================================
+2. RESPONSIBILITIES
+==================================================
+
+    Service Registrar отвечает за:
+        1. Агрегацию Service Definitions из всех доступных источников системы.
+        2. Передачу Service Definitions в Service Registry.
+        3. Формирование единого набора исходных (raw) Service Definitions.
+        4. Формирование единого и непротиворечивого набора исходных Service Definitions.
+        5. Централизацию процесса регистрации сервисов внутри Composition Layer.
+
+
+==================================================
+3. NON RESPONSIBILITIES
+==================================================
+
+    Service Registrar НЕ отвечает за:
+        1. Создание экземпляров сервисов.
+        2. Разрешение зависимостей между сервисами.
+        3. Построение Dependency Graph.
+        4. Любую форму runtime-оркестрации.
+        5. Управление жизненным циклом сервисов.
+        6. Кэширование или хранение экземпляров.
+        7. Eager resolution или ленивую инициализацию сервисов.
+        8. Проверку совместимости или выполнение анализа типов зависимостей.
+        9. Управление состоянием Application.
+
+    Service Registrar также НЕ выполняет:
+        - рефлексию классов с целью анализа зависимостей;
+        - загрузку или инстанцирование сервисных классов;
+        - выполнение логики, связанной с runtime-контекстом.
+
+
+==================================================
+4. POSITION IN COMPOSITION PIPELINE
+==================================================
+
+    Service Registrar является первым этапом фазы Composition Initialization.
+
+    Общая последовательность Composition Layer:
+
+        Service Registrar
+            ↓
+        Service Registry (storage layer)
+            ↓
+        Dependency Graph Builder
+            ↓
+        Dependency Resolver
+            ↓
+        Service Composer
+            ↓
+        Service Instances
+
+    Важно:
+        Service Registry на данном этапе является пассивным хранилищем Service Definitions
+            и не выполняет никакой логики кроме хранения и предоставления доступа к данным.
+
+    Service Registrar завершает свою работу ДО начала построения Dependency Graph.
+
+
+==================================================
+5. REGISTRATION MODEL
+==================================================
+
+    Service Registrar работает исключительно через Service Registry
+        как через слой хранения Service Definitions.
+
+    Регистрация представляет собой процесс добавления уже сформированных Service Definitions
+        в Service Registry без их модификации на последующих этапах Registrar-а.
+
+    Service Definition является декларативной структурой данных и включает:
+        - identifier;
+        - implementation class;
+        - lifecycle;
+        - dependency list (declarative, без разрешения);
+        - metadata (опционально).
+
+    Service Registrar НЕ интерпретирует и НЕ анализирует зависимости,
+        а лишь агрегирует и передаёт определения в Registry.
+
+
+==================================================
+6. DESIGN PRINCIPLES
+==================================================
+
+    1. Centralized Aggregation
+        Все Service Definitions собираются через единый Service Registrar.
+
+    2. Source-Agnostic Collection
+        Service Registrar не зависит от источника Service Definitions
+        (ядро, модули, конфигурации, внешние расширения).
+
+    3. Definition-Only Responsibility
+        Service Registrar работает исключительно с декларативными описаниями сервисов.
+
+    4. No Runtime Awareness
+        Service Registrar не имеет представления о существовании сервисных экземпляров
+        и не участвует в их создании.
+
+    5. No Graph or Resolution Knowledge
+        Service Registrar не знает и не участвует в построении Dependency Graph
+        и разрешении зависимостей.
+
+    6. Registry as Passive Storage
+        Service Registry является пассивным слоем хранения данных
+        без логики обработки или трансформации.
+
+
+==================================================
+7. RESULT
+==================================================
+
+    Результатом работы Service Registrar является полностью заполненный Service Registry,
+        содержащий полный набор исходных Service Definitions системы.
+
+    Этот набор служит единственной точкой входа для последующего построения Dependency Graph
+        и всей дальнейшей композиции сервисов внутри Composition Layer.
