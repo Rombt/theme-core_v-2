@@ -377,6 +377,24 @@ ARCHITECTURAL DESCRIPTION
         - может участвовать в early dependency resolution
 
 
+        12.1.1. Eager Service Resolver
+        ==================================================
+            Eager Service Resolver отвечает за startup resolution
+            всех сервисов с lifecycle EAGER.
+
+            Resolver:
+                - получает список Service Definitions
+                - отбирает EAGER definitions
+                - инициирует их построение через Service Composer
+
+            Resolver не участвует в
+                - runtime resolution
+                - создание объектов
+                - dependency resolution
+                - lifecycle management
+                - graph traversal      
+
+
     12.2 Lazy
     ==================================================
 
