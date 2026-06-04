@@ -8,17 +8,17 @@ use Rombt\ThemeCore\Composition\Contracts\ServiceComposerInterface;
 use Rombt\ThemeCore\Composition\Contracts\ServiceFactoryInterface;
 use Rombt\ThemeCore\Composition\Contracts\LifecycleManagerInterface;
 use Rombt\ThemeCore\Composition\Contracts\ServiceRegistryInterface;
-use Rombt\ThemeCore\Composition\Factory\ServiceFactory;
 use Rombt\ThemeCore\Composition\Exceptions\CompositionCycleException;
+use Rombt\ThemeCore\Composition\Contracts\DependencyResolverInterface;
 
 final class ServiceComposer implements ServiceComposerInterface
 {
     public function __construct(
         private ServiceRegistryInterface $registry,
+        private DependencyResolverInterface $resolver,
         private ServiceFactoryInterface $factory,
         private LifecycleManagerInterface $lifecycleManager,
         private ResolutionContext $context,
-        private array $graph // DependencyGraph
     ) {
     }
 
@@ -35,12 +35,10 @@ final class ServiceComposer implements ServiceComposerInterface
         }
 
         $this->context->push($identifier);
-
         $definition = $this->registry->get($identifier);
 
         $dependencies = [];
-
-        foreach ($definition->getDependencies() as $dependencyId) {
+        foreach ($this->resolver->resolve($identifier) as $dependencyId) {
             $dependencies[] = $this->get($dependencyId);
         }
 
