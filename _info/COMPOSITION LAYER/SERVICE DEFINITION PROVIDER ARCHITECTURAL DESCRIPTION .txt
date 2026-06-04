@@ -1,0 +1,136 @@
+theme-core v-2
+SERVICE DEFINITION PROVIDER
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Service Definition Provider является компонентом Composition Layer, 
+        отвечающим за создание и предоставление Service Definitions в рамках конкретного источника..
+
+    Service Definition Provider выступает источником декларативных описаний сервисов
+        для последующей регистрации внутри Composition Layer.
+
+    Каждый Provider изолирует конкретный источник сервисных определений
+        от остальных компонентов Composition Pipeline.
+
+    В результате работы Service Definition Provider формируется набор
+        Service Definitions, готовых к передаче в Service Registrar.
+
+==================================================
+2. RESPONSIBILITIES
+==================================================
+
+    Service Definition Provider отвечает за:
+        1. Формирование Service Definitions.
+        2. Предоставление набора Service Definitions.
+        3. Изоляцию источника определений от остальной Composition Pipeline.
+        4. Декларативное описание сервисов, относящихся к конкретному источнику.
+        5. Подготовку исходных данных для последующей регистрации.
+
+==================================================
+3. NON RESPONSIBILITIES
+==================================================
+
+    Service Definition Provider НЕ отвечает за:
+        1. Регистрацию Service Definitions.
+        2. Хранение Service Definitions.
+        3. Построение Dependency Graph.
+        4. Разрешение зависимостей.
+        5. Создание экземпляров сервисов.
+        6. Управление жизненным циклом сервисов.
+        7. Eager resolution или ленивую инициализацию сервисов.
+        8. Runtime orchestration.
+        9. Управление состоянием Application.
+
+    Service Definition Provider также НЕ выполняет:
+        - регистрацию определений в Registry;
+        - анализ Dependency Graph;
+        - создание сервисных объектов;
+        - выполнение логики runtime-контекста.
+
+==================================================
+4. POSITION IN COMPOSITION PIPELINE
+==================================================
+
+    Service Definition Provider является источником Service Definitions
+        для Composition Initialization.
+
+    Общая последовательность выглядит следующим образом:
+
+        Service Definition Provider
+                ↓
+        Service Registrar
+                ↓
+        Service Registry
+                ↓
+        Dependency Graph Builder
+                ↓
+        Dependency Resolver
+                ↓
+        Service Composer
+                ↓
+        Service Instances
+
+    Provider завершает свою работу до начала регистрации определений
+        внутри Service Registry.
+
+==================================================
+5. PROVIDER MODEL
+==================================================
+
+    Каждый Provider создаёт и возвращает собственный набор Service Definitions, относящийся к конкретному источнику
+        и предоставляет его по запросу.
+
+    Provider не зависит от Service Registry
+        и не взаимодействует с другими Provider-ами.
+
+    Результатом работы Provider является набор
+        полностью сформированных Service Definitions.
+
+    Service Definition является декларативной структурой данных и включает:
+        - identifier;
+        - implementation class;
+        - lifecycle;
+        - dependency list;
+        - metadata (опционально).
+
+    Provider возвращает Service Definitions
+        без выполнения какой-либо дополнительной обработки.
+
+==================================================
+6. DESIGN PRINCIPLES
+==================================================
+
+    1. Single Source Responsibility
+        Каждый Provider отвечает только за свой набор Service Definitions.
+
+    2. Definition-Oriented Design
+        Provider работает исключительно с декларативными описаниями сервисов.
+
+    3. Source Isolation
+        Источник Service Definitions полностью изолирован
+        от остальной Composition Pipeline.
+
+    4. No Registration Knowledge
+        Provider не знает о процессе регистрации определений.
+
+    5. No Runtime Awareness
+        Provider не знает о существовании сервисных экземпляров
+        и не участвует в их создании.
+
+    6. No Resolution Knowledge
+        Provider не участвует в построении Dependency Graph
+        и разрешении зависимостей.
+
+==================================================
+7. RESULT
+==================================================
+
+    Результатом работы Service Definition Provider является набор
+        полностью сформированных Service Definitions.
+
+    Этот набор передаётся в Service Registrar
+        и служит исходными данными для последующей регистрации внутри Composition Layer.
