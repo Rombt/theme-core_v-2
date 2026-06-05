@@ -1,0 +1,185 @@
+theme-core v-2
+COMPOSITION BOOTSTRAPPER
+ARCHITECTURAL DESCRIPTION
+(v1.1.0)
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Composition Bootstrapper отвечает за запуск и 
+        приведение Composition Layer в рабочее состояние.
+
+    Composition Bootstrapper является частью Bootstrap Layer.
+
+    Composition Bootstrapper не является частью Composition Layer.
+
+    Composition Bootstrapper выступает в роли точки входа в Composition Layer во время
+        загрузки приложения.
+
+    После завершения работы Composition Bootstrapper Composition Layer должен быть
+        полностью готов к использованию остальными частями системы.
+
+
+==================================================
+2. RESPONSIBILITIES
+==================================================
+
+    Composition Bootstrapper отвечает за:
+
+        1. Инициализацию процесса сборки  Composition Layer.
+        2. Получение Service Definitions.
+        3. Передачу Service Definitions в Composition Layer.
+        4. Запуск процесса построения Runtime Composition Model.
+        5. Запуск Startup Phase Composition Layer.
+        6. Получение готового Composition Runtime.
+        7. Публикацию Composition Runtime в Application Runtime.
+
+
+==================================================
+3. NON-RESPONSIBILITIES
+==================================================
+
+    Composition Bootstrapper НЕ отвечает за:
+
+        1. Хранение Service Definitions.
+        2. Регистрацию сервисов.
+        3. Построение Dependency Model.
+        4. Разрешение зависимостей.
+        5. Создание экземпляров сервисов.
+        6. Управление жизненным циклом сервисов.
+        7. Выбор стратегии хранения  экземпляров сервисов.
+        8. Поиск сервисов.
+        9. Выполнение Startup Activities.
+        10. Выполнение бизнес-логики приложения.
+
+
+==================================================
+4. POSITION IN SYSTEM
+==================================================
+
+    Composition Bootstrapper располагается между Bootstrap Layer и Composition Layer.
+
+        Схема взаимодействия:
+            Bootstrap Layer
+            Composition Bootstrapper
+            Composition Layer
+            Composition Runtime
+
+    Composition Bootstrapper является единственной точкой запуска Composition Layer во время
+        bootstrap-фазы приложения.
+
+
+==================================================
+5. HIGH LEVEL FLOW
+==================================================
+
+    Composition Bootstrapper выполняет следующие действия:
+
+        Step 1.
+            Получение Service Definitions.
+
+        Step 2.
+            Инициализация Composition Layer.
+
+        Step 3.
+            Передача Service Definitions
+            в Composition Layer.
+
+        Step 4.
+            Построение Runtime Composition
+            Model.
+
+        Step 5.
+            Запуск Startup Phase.
+
+        Step 6.
+            Получение Composition Runtime.
+
+        Step 7.
+            Публикация Composition Runtime в Application Runtime.
+
+==================================================
+6. COMPOSITION RUNTIME
+==================================================
+
+    Результатом работы Composition Bootstrapper является Composition Runtime.
+
+    Composition Runtime представляет собой runtime-состояние Composition Layer.
+
+    Composition Runtime содержит публичные механизмы, необходимые для взаимодействия
+        с Composition Layer во время работы системы.
+
+    Внутреннее устройство Composition Runtime не является частью контракта Composition Bootstrapper.
+
+    Composition Bootstrapper не зависит от внутренней структуры Composition Runtime.
+
+==================================================
+7. STARTUP PHASE
+==================================================
+
+    После завершения построения Runtime Composition Model должна быть выполнена Startup Phase.
+
+    Startup Phase является внутренней ответственностью Composition Layer.
+
+    Во время Startup Phase могут выполняться:
+        - eager-resolution
+        - validation
+        - warmup operations
+        - runtime preparation
+
+    Состав Startup Phase может изменяться без изменения контракта Composition Bootstrapper.
+
+    Composition Bootstrapper отвечает только за запуск данной фазы и ожидание её завершения.
+
+
+==================================================
+8. RESULT OF EXECUTION
+==================================================
+
+    После завершения работы Composition Bootstrapper должны существовать:
+
+    Service Definitions
+
+    Runtime Composition Model
+
+    Composition Runtime
+
+    Composition Layer должен находиться в полностью работоспособном состоянии.
+
+    Все механизмы Composition Layer должны быть готовы к использованию другими слоями системы.
+
+
+==================================================
+9. DESIGN PRINCIPLES
+==================================================
+
+    Composition Bootstrapper должен оставаться максимально тонким.
+
+    Composition Bootstrapper должен выполнять только orchestration.
+
+    Composition Bootstrapper не должен содержать логику Composition Layer.
+
+    Composition Bootstrapper не должен зависеть от внутренних компонентов Composition Layer.
+
+    Composition Bootstrapper должен знать только:
+        - как запустить Composition Layer
+        - как дождаться завершения его сборки
+        - как получить Composition Runtime
+        - как опубликовать результат
+
+    Все остальные решения должны приниматься внутри Composition Layer.
+
+==================================================
+10. ARCHITECTURAL ROLE
+==================================================
+
+    Composition Bootstrapper является Bootstrap Orchestrator-компонентом.
+
+    Его задача состоит не в выполнении работы, а в организации процесса запуска
+        Composition Layer.
+
+    Composition Bootstrapper формирует границу между Bootstrap Layer и Composition Layer.
+
+    После завершения работы Composition Bootstrapper Composition Layer становится
+        доступным для остальных частей theme-core v-2.
