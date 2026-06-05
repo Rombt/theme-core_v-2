@@ -377,22 +377,70 @@ ARCHITECTURAL DESCRIPTION
         - может участвовать в early dependency resolution
 
 
-        12.1.1. Eager Service Resolver
         ==================================================
-            Eager Service Resolver отвечает за startup resolution
-            всех сервисов с lifecycle EAGER.
+        12.1.1 STARTUP PHASE
+        ==================================================
 
-            Resolver:
-                - получает список Service Definitions
-                - отбирает EAGER definitions
-                - инициирует их построение через Service Composer
+            Startup Phase отвечает за выполнение
+            процедур запуска Composition Runtime.
 
-            Resolver не участвует в
-                - runtime resolution
-                - создание объектов
-                - dependency resolution
-                - lifecycle management
-                - graph traversal      
+            Startup Phase обеспечивает:
+
+                1. Выполнение Bootstrap Pipeline.
+                2. Последовательное выполнение всех
+                зарегистрированных Bootstrap Steps.
+                3. Подготовку Composition Runtime
+                к дальнейшей работе.
+
+            Startup Phase не создаёт сервисы напрямую.
+
+            Startup Phase является координатором
+            процесса запуска системы.
+
+
+        ==================================================
+        12.1.2 BOOTSTRAP PIPELINE
+        ==================================================
+
+            Bootstrap Pipeline представляет собой
+            последовательность Bootstrap Steps,
+            выполняемых во время Startup Phase.
+
+            Pipeline обеспечивает:
+
+                1. Определённый порядок запуска.
+                2. Изоляцию отдельных этапов запуска.
+                3. Возможность расширения процесса
+                инициализации системы.
+
+            Каждый Bootstrap Step выполняет
+            одну специализированную задачу.
+
+
+        ==================================================
+        12.1.3 EAGER BOOTSTRAP STEP
+        ==================================================
+
+            Eager Bootstrap Step отвечает за
+            инициализацию всех eager сервисов.
+
+            Eager Bootstrap Step:
+
+                1. Получает список eager сервисов.
+                2. Формирует план инициализации.
+                3. Определяет корректный порядок
+                создания сервисов.
+                4. Создаёт экземпляры eager сервисов.
+                5. Гарантирует завершение их
+                инициализации до начала работы
+                Composition Runtime.
+
+            Eager Bootstrap Step не участвует
+            в обработке lazy сервисов.
+
+            Для построения порядка инициализации
+            используются Dependency Plan Builder
+            и Dependency Graph.   
 
 
     12.2 Lazy

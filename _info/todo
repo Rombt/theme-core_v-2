@@ -12,6 +12,29 @@
 [ ] First architectural rules
 
 
+
+05.06.26  Composition Layer
+        готово полностью
+                Service Definition
+                Service Lifecycle
+                Service Registry
+                Service Registrar
+                Service Definition Provider
+                Dependency Graph
+                Dependency Graph Builder
+                Topological Sort
+                Resolution Context
+                Service Composer
+                Startup Phase
+                Bootstrap Pipeline
+                EagerBootstrapStep
+                Composition Exceptions   
+
+        готово частично
+                Service Factory
+                Lifecycle Manager
+                Dependency Resolver     
+
 01.06.26 
     Kernel:
         Завершить Configuration. Критерии готовности:  
