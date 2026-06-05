@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Composition\Contracts;
 
-interface EagerServiceResolverInterface
+interface BootstrapStepInterface
 {
-    public function resolve(): void;
+    public function execute(): void;
 }
