@@ -14,6 +14,8 @@ use Rombt\ThemeCore\Bootstrap\KernelState;
 use Rombt\ThemeCore\Bootstrap\KernelContext;
 use Rombt\ThemeCore\Configuration\ConfigurationState;
 
+use Rombt\ThemeCore\Infrastructure\Logging\StructuredLogger;
+
 
 
 $app = new Application();
