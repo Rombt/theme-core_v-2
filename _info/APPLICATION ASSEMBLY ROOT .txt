@@ -1,0 +1,63 @@
+APPLICATION ASSEMBLY ROOT
+
+==================================================
+PURPOSE
+==================================================
+
+    Выделен единый Application Assembly Root, отвечающий за сборку полного Application Runtime.
+
+    Application Assembly Root является единственной точкой, в которой создаются и инициализируются:
+
+        - Application
+        - Kernel
+        - Bootstrap Layer
+        - Configuration Layer
+        - Composition Layer
+
+==================================================
+ARCHITECTURAL MOTIVATION
+==================================================
+
+    Сборка Runtime отделена от способов его использования.
+
+    CLI, HTTP, Tests и другие интерфейсы больше не содержат
+    собственную bootstrap-логику и используют единый
+    механизм сборки приложения.
+
+==================================================
+RESULTING STRUCTURE
+==================================================
+
+    bootstrap/application.php
+            ↓
+    Application Runtime
+            
+    ┌──────┼──────┐
+    │      │      │
+    CLI   HTTP   TESTS
+
+==================================================
+BENEFITS
+==================================================
+
+    - Single Runtime Assembly Point
+    - Single Bootstrap Process
+    - Elimination of Bootstrap Duplication
+    - Runtime Independence From Interfaces
+    - Simplified Future HTTP Integration
+    - Simplified Test Infrastructure
+
+==================================================
+ARCHITECTURAL STATUS
+==================================================
+
+    Application Runtime теперь может быть создан из любого
+        интерфейса без изменения процесса сборки приложения.
+
+    CLI, HTTP и Tests рассматриваются как интерфейсы доступа к Runtime, а не как точки его создания.
+
+
+bootstrap/application.php
+bin/console.php
+tests/bootstrap.php
+public/index.php
