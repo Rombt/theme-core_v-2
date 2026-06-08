@@ -9,11 +9,15 @@ use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
 use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetInternalEncodingBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\LoadConfigurationBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\CompositionBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Kernel;
 use Rombt\ThemeCore\Bootstrap\KernelState;
 use Rombt\ThemeCore\Bootstrap\KernelContext;
 use Rombt\ThemeCore\Configuration\ConfigurationState;
 
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Infrastructure\Logging\StructuredLogger;
 
 
@@ -23,6 +27,7 @@ $app = new Application();
 $bootstrapRegistry = new BootstrapRegistry();
 $bootstrapRegistry->register(SetInternalEncodingBootstrapper::class);
 $bootstrapRegistry->register(LoadConfigurationBootstrapper::class);
+$bootstrapRegistry->register(CompositionBootstrapper::class);
 
 $bootstrapperFactory = new BootstrapperFactory();
 
@@ -39,6 +44,34 @@ $kernel = new Kernel(
 );
 
 $kernel->bootstrap();
+// var_dump($app->get('composition.bootstrapper.loaded'));
+
+$runtime = $app->get('composition.runtime');
+
+/** @var DiagnosticsService $diagnostics */
+$diagnostics = $runtime
+    ->services()
+    ->get(DiagnosticsService::class);
+
+/** @var StructuredLogger $logger */
+$logger = $runtime
+    ->services()
+    ->get(StructuredLogger::class);
+
+$entry = $diagnostics->create(
+    DiagnosticLevel::INFO,
+    'Composition test',
+    new DiagnosticContext([
+        'source' => 'test.php',
+    ])
+);
+
+$logger->write($entry);
+
+// $logger = $runtime->services()->get(StructuredLogger::class);
+
+// var_dump($logger);
+
 
 // print_r([
 //     'status' => $context->getStatus()?->value,
@@ -54,8 +87,8 @@ $kernel->bootstrap();
 //     $configuration->all()
 // );
 
-$configuration = $app->get(ConfigurationState::CONFIGURATION);
+// $configuration = $app->get(ConfigurationState::CONFIGURATION);
 
-var_dump(
-    $configuration->get('project.name')
-);
+// var_dump(
+//     $configuration->get('project.name')
+// );

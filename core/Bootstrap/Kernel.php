@@ -18,7 +18,7 @@ final class Kernel
         private readonly BootstrapRegistry $bootstrapRegistry,
         private readonly BootstrapperFactory $bootstrapperFactory,
         private readonly KernelContext $context,
-        private readonly LoggerInterface $logger,
+        // private readonly LoggerInterface $logger,
         private readonly string $projectRoot,
     ) {
     }
