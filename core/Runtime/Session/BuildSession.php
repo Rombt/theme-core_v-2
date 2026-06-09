@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Runtime\Session;
 
-use Rombt\ThemeCore\Runtime\Result\BuildResult;
+use Rombt\ThemeCore\Runtime\Result\StageResult;
 
 final class BuildSession
 {
@@ -14,7 +14,7 @@ final class BuildSession
 
     private BuildResources $resources;
 
-    private ?BuildResult $result = null;
+    private array $stageResults = [];
 
     public function __construct(string $id)
     {
@@ -59,13 +59,16 @@ final class BuildSession
         return $this->resources->get($key);
     }
 
-    public function getResult(): ?BuildResult
+    public function addStageResult(StageResult $result): void
     {
-        return $this->result;
+        $this->stageResults[] = $result;
     }
 
-    public function setResult(BuildResult $result): void
+    /**
+     * @return StageResult[]
+     */
+    public function getStageResults(): array
     {
-        $this->result = $result;
+        return $this->stageResults;
     }
 }

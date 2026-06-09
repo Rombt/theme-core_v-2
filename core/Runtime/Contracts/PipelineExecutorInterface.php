@@ -10,6 +10,8 @@ interface PipelineExecutorInterface
 {
     public function execute(
         PipelineInterface $pipeline,
-        BuildSession $session
+        BuildSession $session,
+        ExecutionDecisionInterface $decision,
+        ExecutionFlowPolicyInterface $flowPolicy
     ): void;
 }
