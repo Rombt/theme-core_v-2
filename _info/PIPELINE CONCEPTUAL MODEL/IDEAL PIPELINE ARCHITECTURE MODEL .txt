@@ -23,8 +23,7 @@ IDEAL PIPELINE ARCHITECTURE MODEL
 
         Главная architectural идея:
 
-                Website =
-                continuously assembled architecture.
+                Website = continuously assembled architecture.
 
         Система рассматривает сайт:
                 не как набор templates,

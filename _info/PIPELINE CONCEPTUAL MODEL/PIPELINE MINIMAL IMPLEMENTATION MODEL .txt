@@ -1,6 +1,6 @@
 theme-core v-2
 MINIMAL PIPELINE IMPLEMENTATION MODEL
-( ARCHITECTURAL FOUNDATION)
+(ARCHITECTURAL FOUNDATION)
 
 ==================================================
 1. PURPOSE OF THE MODEL
