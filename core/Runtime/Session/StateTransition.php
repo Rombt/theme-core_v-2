@@ -34,15 +34,21 @@ final class StateTransition implements StateTransitionInterface
         $from = $session->getState();
 
         if (!RuntimeState::isValid($toState)) {
-            throw new InvalidArgumentException("Invalid state: {$toState}");
+            throw new InvalidArgumentException(
+                sprintf('Invalid state: %s', $toState)
+            );
         }
 
         if (!in_array($toState, $this->allowed[$from] ?? [], true)) {
             throw new InvalidArgumentException(
-                "Invalid transition: {$from} → {$toState}"
+                sprintf(
+                    'Invalid transition: %s -> %s',
+                    $from,
+                    $toState
+                )
             );
         }
 
-        $session->setState($toState);
+        $session->internalSetState($toState);
     }
 }

@@ -22,7 +22,7 @@ final class DefaultExecutionDecision implements ExecutionDecisionInterface
         BuildSession $session,
         StageResult $result
     ): void {
-        // пока no-op (но теперь есть доступ к результату stage)
+        // no-op (runtime does not mutate state on success)
     }
 
     public function onStageFailure(
@@ -30,9 +30,11 @@ final class DefaultExecutionDecision implements ExecutionDecisionInterface
         Throwable $error,
         ?StageResult $result = null
     ): void {
-        $this->transition->transition(
-            $session,
-            RuntimeState::FAILED
-        );
+        if ($session->getState() !== RuntimeState::FAILED) {
+            $this->transition->transition(
+                $session,
+                RuntimeState::FAILED
+            );
+        }
     }
 }

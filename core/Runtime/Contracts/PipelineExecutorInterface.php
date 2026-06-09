@@ -11,7 +11,6 @@ interface PipelineExecutorInterface
     public function execute(
         PipelineInterface $pipeline,
         BuildSession $session,
-        ExecutionDecisionInterface $decision,
-        ExecutionFlowPolicyInterface $flowPolicy
+        ExecutionDecisionInterface $decision
     ): void;
 }

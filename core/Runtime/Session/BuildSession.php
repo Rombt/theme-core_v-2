@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Runtime\Session;
 
-use Rombt\ThemeCore\Runtime\Result\StageResult;
+use Rombt\ThemeCore\Runtime\Result\BuildResult;
 
 final class BuildSession
 {
@@ -14,7 +14,8 @@ final class BuildSession
 
     private BuildResources $resources;
 
-    private array $stageResults = [];
+    private ?BuildResult $buildResult = null;
+
 
     public function __construct(string $id)
     {
@@ -33,14 +34,8 @@ final class BuildSession
         return $this->state;
     }
 
-    public function setState(string $state): void
+    public function internalSetState(string $state): void
     {
-        if (!RuntimeState::isValid($state)) {
-            throw new \InvalidArgumentException(
-                sprintf('Invalid runtime state "%s"', $state)
-            );
-        }
-
         $this->state = $state;
     }
 
@@ -59,16 +54,13 @@ final class BuildSession
         return $this->resources->get($key);
     }
 
-    public function addStageResult(StageResult $result): void
+    public function setBuildResult(BuildResult $buildResult): void
     {
-        $this->stageResults[] = $result;
+        $this->buildResult = $buildResult;
     }
 
-    /**
-     * @return StageResult[]
-     */
-    public function getStageResults(): array
+    public function getBuildResult(): ?BuildResult
     {
-        return $this->stageResults;
+        return $this->buildResult;
     }
 }
