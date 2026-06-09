@@ -1,0 +1,141 @@
+ROADMAP ПРОЕКТА В ЦЕЛОМ
+
+PHASE 1 FOUNDATION
+
+        Статус: Завершено
+
+        Состав
+                Application
+                Composition Layer
+                Contracts
+                Exceptions
+                Service Definitions
+                Service Registry
+                Dependency Resolution
+                Service Lifecycle
+
+        Результат
+                Система умеет строить объектный граф приложения.
+
+PHASE 2 EXECUTION RUNTIME
+
+        Статус: Следующий этап
+
+        Состав
+                Application Flow
+                Build Pipeline
+                Build Context
+                Pipeline Stages
+                Runtime Orchestration
+
+        Результат
+                Система начинает выполнять процесс сборки.
+                Не просто создаёт объекты.
+                        А запускает процесс:
+                                Start
+                                   ↓
+                                Load Config
+                                   ↓
+                                Build Theme
+                                   ↓
+                                Generate Artifacts
+                                   ↓
+                                Write Output
+                                   ↓
+                                Finish
+PHASE 3 CONFIGURATION SYSTEM
+
+        Состав
+                Theme Configuration
+                Build Configuration
+                Project Configuration
+                Configuration Loaders
+                Configuration Validation
+
+        Результат
+                Появляется источник входных данных.
+
+        Например:
+                project.json
+                theme.json
+                tokens.json
+
+PHASE 4 THEME MODEL
+
+        Состав
+                Theme
+
+                Template
+
+                Section
+
+                Layout
+
+                Asset
+
+                Preset
+
+                ThemeJsonModel
+
+        Результат
+                Появляется внутренняя модель темы.
+
+        Система начинает понимать:
+                Что именно нужно собрать.
+
+PHASE 5 GENERATION LAYER
+        Состав
+                ThemeJson Generator
+                Template Generator
+                Asset Generator
+                Functions Generator
+                Manifest Generator
+                Результат
+                Theme Model начинает превращаться в файлы.
+
+PHASE 6 ARTIFACT OUTPUT
+        Состав
+                Artifact Writer
+                Filesystem Output
+                Directory Builder
+                Output Validation
+
+        Результат
+                Файлы начинают попадать на диск.
+
+PHASE 7 MVP
+        Цель
+
+                Получить:
+
+                Input
+                ↓
+                Build
+                ↓
+                Output
+
+        На выходе:
+
+                build/
+                my-theme/
+                ├─ style.css
+                ├─ functions.php
+                ├─ theme.json
+                ├─ templates/
+                └─ parts/
+
+        Если этот этап достигнут — MVP считается готовым.
+
+PHASE 8 ADVANCED FEATURES
+
+        После MVP.
+                Возможные направления
+                Diagnostics
+                Events
+                Extension System
+                Plugin SDK
+                CLI
+                Build Cache
+                Profiling
+                Parallel Build
+                Incremental Build

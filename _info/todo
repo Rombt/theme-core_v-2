@@ -1,3 +1,29 @@
+roadmap всего приложения theme-core v-2
+        [✓] Core Foundation
+        [✓] Composition Layer
+        [►] Execution Runtime   <-- 08.06.26
+        [ ] Theme Model
+        [ ] Configuration System
+        [ ] Generation Layer
+        [ ] Artifact Output
+        [ ] MVP
+        [ ] Extensions / Ecosystem
+        [ ] Production Release
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [✓] Composer
 [✓] PSR-4
 [✓] Namespace structure
@@ -10,44 +36,3 @@
 [ ] PHPUnit
 [ ] Deptrac
 [ ] First architectural rules
-
-
-
-05.06.26  Composition Layer
-        готово полностью
-                Service Definition
-                Service Lifecycle
-                Service Registry
-                Service Registrar
-                Service Definition Provider
-                Dependency Graph
-                Dependency Graph Builder
-                Topological Sort
-                Resolution Context
-                Service Composer
-                Startup Phase
-                Bootstrap Pipeline
-                EagerBootstrapStep
-                Composition Exceptions   
-
-        готово частично
-                Service Factory
-                Lifecycle Manager
-                Dependency Resolver     
-
-01.06.26 
-    Kernel:
-        Завершить Configuration. Критерии готовности:  
-
-                ↓
-        Сделать Logging Infrastructure
-                ↓
-        Сделать Filesystem Infrastructure
-                ↓
-        Сделать Diagnostics Infrastructure
-                ↓
-        Сделать Dependency Wiring Model
-                ↓
-        Сделать Registry Infrastructure
-                ↓
-        Только после этого перейти к Runtime Assembly

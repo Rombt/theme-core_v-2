@@ -1,0 +1,101 @@
+ROADMAP EXECUTION RUNTIME
+
+EXECUTION RUNTIME
+
+Главная задача Runtime:
+    Оркестрация процесса сборки.
+    Runtime не генерирует тему.
+    Runtime управляет процессом.
+
+STAGE 0 Designing of Runtime 
+
+    Создать полное подробное описание 
+
+STAGE 1 Runtime Contracts
+
+    Создать базовые контракты.
+
+        Примерно:
+            RuntimeInterface
+            PipelineInterface
+            PipelineStageInterface
+            BuildContextInterface
+
+        Результат:
+            определены правила работы Runtime.
+
+STAGE 2 Build Context
+
+    Создать объект состояния сборки.
+        Примерно:
+            BuildContext будет хранить:
+                configuration
+                theme
+                artifacts
+                output directory
+                runtime state
+
+    Результат:
+        единый объект состояния сборки.
+
+STAGE 3 Pipeline
+
+    Создать механизм пайплайна.
+
+    Примерно:
+        BuildPipeline
+
+    Он должен:
+        добавлять этапы
+        выполнять этапы
+        передавать BuildContext
+
+STAGE 4 Pipeline Stage System
+
+    Создать систему этапов.
+
+    Примерно: PipelineStageInterface
+
+    Каждый этап:
+        execute(BuildContext $context): void
+
+STAGE 5 Application Runner
+
+    Создать главный вход приложения.
+
+    Например:
+        ApplicationRunner
+
+    Задача:
+        получить Application
+        получить Pipeline
+        запустить Pipeline
+
+STAGE 6 Runtime Bootstrap
+
+    Связать Runtime с Composition Layer.
+
+    Runtime начинает получать зависимости через Composition.
+
+    Результат:
+
+        Composition
+            ↓
+        Runtime
+
+STAGE 7 MVP Pipeline
+
+    Создать минимальный pipeline.
+
+    Пока даже без реализации логики.
+
+    Например:
+        
+        LoadConfigurationStage
+        BuildThemeStage
+        GenerateArtifactsStage
+        WriteArtifactsStage
+
+    Пока они могут быть пустыми.
+
+    ГЛАВНОЕ — ПРОВЕРИТЬ РАБОТУ ПОТОКА ИСПОЛНЕНИЯ.
