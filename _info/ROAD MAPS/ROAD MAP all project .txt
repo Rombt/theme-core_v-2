@@ -17,9 +17,10 @@ PHASE 1 FOUNDATION
         Результат
                 Система умеет строить объектный граф приложения.
 
+
 PHASE 2 EXECUTION RUNTIME
 
-        Статус: Следующий этап
+        Статус: Завершено
 
         Состав
                 Application Flow
@@ -43,7 +44,10 @@ PHASE 2 EXECUTION RUNTIME
                                 Write Output
                                    ↓
                                 Finish
+
+
 PHASE 3 CONFIGURATION SYSTEM
+
 
         Состав
                 Theme Configuration

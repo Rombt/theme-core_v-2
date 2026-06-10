@@ -76,6 +76,7 @@ final class CoreServiceDefinitionProvider implements ServiceDefinitionProviderIn
                     BuildSessionFactory::class,
                     BuildResultFactory::class,
                     PipelineExecutor::class,
+                    StructuredLogger::class,
                 ]
             ),
         ];

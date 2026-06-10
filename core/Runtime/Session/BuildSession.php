@@ -5,22 +5,26 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Runtime\Session;
 
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
+use Rombt\ThemeCore\Runtime\Diagnostics\Diagnostics;
+use Rombt\ThemeCore\Infrastructure\Logging\StructuredLogger;
+use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 use InvalidArgumentException;
 
 final class BuildSession
 {
     private string $id;
-
     private string $state;
-
+    private Diagnostics $diagnostics;
+    private LoggerInterface $logger;
     private BuildResources $resources;
-
     private ?BuildResult $buildResult = null;
 
 
-    public function __construct(string $id)
+    public function __construct(string $id, LoggerInterface $logger)
     {
         $this->id = $id;
+        $this->diagnostics = new Diagnostics();
+        $this->logger = $logger;
         $this->state = RuntimeState::CREATED;
         $this->resources = new BuildResources();
     }
@@ -69,5 +73,15 @@ final class BuildSession
         }
 
         $this->state = $state;
+    }
+
+    public function getDiagnostics(): Diagnostics
+    {
+        return $this->diagnostics;
+    }
+
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
     }
 }

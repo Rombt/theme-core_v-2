@@ -14,7 +14,8 @@ require dirname(__DIR__) . '/bootstrap.php';
 $runtime = new ExecutionRuntime(
     new BuildSessionFactory(),
     new BuildResultFactory(),
-    new PipelineExecutor()
+    new PipelineExecutor(),
+    $logger
 );
 
 $pipeline = new Pipeline([
