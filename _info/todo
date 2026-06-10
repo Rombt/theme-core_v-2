@@ -1,38 +1,7 @@
-roadmap всего приложения theme-core v-2
-        [✓] Core Foundation
-        [✓] Composition Layer
-        [►] Execution Runtime   <-- 08.06.26
-        [ ] Theme Model
-        [ ] Configuration System
-        [ ] Generation Layer
-        [ ] Artifact Output
-        [ ] MVP
-        [ ] Extensions / Ecosystem
-        [ ] Production Release
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-[✓] Composer
-[✓] PSR-4
-[✓] Namespace structure
-[✓] Project skeleton
-[ ] Kernel
-[ ] Bootstrap
-[ ] Exception hierarchy
-[ ] Logging foundation
-[ ] PHPStan
-[ ] PHPUnit
-[ ] Deptrac
-[ ] First architectural rules
+Возможные способы запуска приложения
+         в соответствии с _info\APPLICATION ASSEMBLY ROOT .txt
+         
+                php bin/console.php
+                php tests/bootstrap.php
+                php sandbox/test.php
+                php public/index.php

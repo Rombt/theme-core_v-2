@@ -12,4 +12,4 @@ $logger = $runtime
     ->services()
     ->get(StructuredLogger::class);
 
-var_dump($logger);
+var_dump($runtime);
