@@ -2,18 +2,26 @@
 
 declare(strict_types=1);
 
+use Rombt\ThemeCore\Composition\Contracts\CompositionRuntimeInterface;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Runtime\ExecutionRuntime;
 use Rombt\ThemeCore\Runtime\Pipeline\Pipeline;
-use Rombt\ThemeCore\Runtime\Pipeline\PipelineExecutor;
-use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
-use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeStage;
 use Rombt\ThemeCore\Runtime\Stages\GenerateArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\LoadConfigurationStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteArtifactsStage;
 
 require dirname(__DIR__) . '/bootstrap.php';
+
+/** @var CompositionRuntimeInterface $composition */
+$composition = $app->get(
+    'composition.runtime'
+);
+
+/** @var ExecutionRuntime $runtime */
+$runtime = $composition
+    ->services()
+    ->get(ExecutionRuntime::class);
 
 $diagnostics = new DiagnosticsService();
 
@@ -23,13 +31,6 @@ $pipeline = new Pipeline([
     new GenerateArtifactsStage($diagnostics),
     new WriteArtifactsStage($diagnostics),
 ]);
-
-$runtime = new ExecutionRuntime(
-    new BuildSessionFactory(),
-    new BuildResultFactory(),
-    new PipelineExecutor(),
-    $logger
-);
 
 $result = $runtime->run($pipeline);
 
