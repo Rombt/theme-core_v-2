@@ -7,6 +7,7 @@ namespace Rombt\ThemeCore\Runtime\Result;
 use Throwable;
 use Rombt\ThemeCore\Runtime\Contracts\BuildResultFactoryInterface;
 use Rombt\ThemeCore\Runtime\Session\BuildSession;
+use Rombt\ThemeCore\Runtime\Session\RuntimeState;
 
 final class BuildResultFactory implements BuildResultFactoryInterface
 {
@@ -15,7 +16,7 @@ final class BuildResultFactory implements BuildResultFactoryInterface
         $result = $session->getBuildResult();
 
         return $result ?? new BuildResult(
-            status: 'completed',
+            status: RuntimeState::COMPLETED,
             metadata: [
                 'session_id' => $session->getId(),
             ]
@@ -29,7 +30,7 @@ final class BuildResultFactory implements BuildResultFactoryInterface
         $result = $session->getBuildResult();
 
         return $result ?? new BuildResult(
-            status: 'failed',
+            status: RuntimeState::FAILED,
             error: $error,
             metadata: [
                 'session_id' => $session->getId(),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Runtime\Session;
 
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
+use InvalidArgumentException;
 
 final class BuildSession
 {
@@ -34,11 +35,6 @@ final class BuildSession
         return $this->state;
     }
 
-    public function internalSetState(string $state): void
-    {
-        $this->state = $state;
-    }
-
     public function getResources(): BuildResources
     {
         return $this->resources;
@@ -62,5 +58,16 @@ final class BuildSession
     public function getBuildResult(): ?BuildResult
     {
         return $this->buildResult;
+    }
+
+    public function setState(string $state): void
+    {
+        if (!RuntimeState::isValid($state)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid state: %s', $state)
+            );
+        }
+
+        $this->state = $state;
     }
 }

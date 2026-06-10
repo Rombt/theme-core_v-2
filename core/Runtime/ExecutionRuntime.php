@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Runtime;
 
+use RuntimeException;
 use Throwable;
+use Rombt\ThemeCore\Runtime\Contracts\BuildResultFactoryInterface;
 use Rombt\ThemeCore\Runtime\Contracts\BuildSessionFactoryInterface;
-use Rombt\ThemeCore\Runtime\Contracts\ExecutionDecisionInterface;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineExecutorInterface;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineInterface;
-use Rombt\ThemeCore\Runtime\Contracts\StateTransitionInterface;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
 use Rombt\ThemeCore\Runtime\Session\RuntimeState;
 
@@ -17,9 +17,8 @@ final class ExecutionRuntime
 {
     public function __construct(
         private BuildSessionFactoryInterface $sessionFactory,
+        private BuildResultFactoryInterface $resultFactory,
         private PipelineExecutorInterface $pipelineExecutor,
-        private ExecutionDecisionInterface $executionDecision,
-        private StateTransitionInterface $stateTransition
     ) {
     }
 
@@ -28,44 +27,49 @@ final class ExecutionRuntime
         $session = $this->sessionFactory->create();
 
         try {
-            $this->stateTransition->transition(
-                $session,
+            $session->setState(
                 RuntimeState::RUNNING
             );
 
-            $this->pipelineExecutor->execute(
+            $success = $this->pipelineExecutor->execute(
                 $pipeline,
-                $session,
-                $this->executionDecision
+                $session
             );
 
-            $this->stateTransition->transition(
-                $session,
+            if (!$success) {
+                $session->setState(
+                    RuntimeState::FAILED
+                );
+
+                $result = $this->resultFactory->createFailure(
+                    $session,
+                    new RuntimeException('Pipeline execution failed')
+                );
+
+                $session->setBuildResult($result);
+
+                return $result;
+            }
+
+            $session->setState(
                 RuntimeState::COMPLETED
             );
 
-            $result = new BuildResult(
-                status: RuntimeState::COMPLETED,
-                metadata: [
-                    'session_id' => $session->getId(),
-                ]
+            $result = $this->resultFactory->createSuccess(
+                $session
             );
 
             $session->setBuildResult($result);
 
             return $result;
         } catch (Throwable $e) {
-            $this->stateTransition->transition(
-                $session,
+            $session->setState(
                 RuntimeState::FAILED
             );
 
-            $result = new BuildResult(
-                status: RuntimeState::FAILED,
-                error: $e,
-                metadata: [
-                    'session_id' => $session->getId(),
-                ]
+            $result = $this->resultFactory->createFailure(
+                $session,
+                $e
             );
 
             $session->setBuildResult($result);
