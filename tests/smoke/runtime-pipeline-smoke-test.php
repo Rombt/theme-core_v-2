@@ -10,6 +10,10 @@ use Rombt\ThemeCore\Runtime\Stages\BuildThemeStage;
 use Rombt\ThemeCore\Runtime\Stages\GenerateArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\LoadConfigurationStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteArtifactsStage;
+use Rombt\ThemeCore\Infrastructure\Logging\StructuredLogger;
+use Rombt\ThemeCore\Infrastructure\Logging\Formatters\JsonFormatter;
+use Rombt\ThemeCore\Infrastructure\Logging\Writers\FilesystemWriter;
+use Rombt\ThemeCore\Infrastructure\Logging\Writers\ConsoleWriter;
 
 require dirname(__DIR__) . '/bootstrap.php';
 

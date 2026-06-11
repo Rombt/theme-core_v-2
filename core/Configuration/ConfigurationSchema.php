@@ -54,6 +54,10 @@ final class ConfigurationSchema
                         'type'    => 'bool',
                         'default' => true,
                     ],
+                    'path' => [
+                        'type'    => 'string',
+                        'default' => 'logs/runtime.log',
+                    ],
                 ],
             ],
         ];

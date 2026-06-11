@@ -11,6 +11,7 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Infrastructure\Logging\Formatters\JsonFormatter;
 use Rombt\ThemeCore\Infrastructure\Logging\StructuredLogger;
 use Rombt\ThemeCore\Infrastructure\Logging\Writers\ConsoleWriter;
+use Rombt\ThemeCore\Infrastructure\Logging\Writers\FilesystemWriter;
 use Rombt\ThemeCore\Runtime\ExecutionRuntime;
 use Rombt\ThemeCore\Runtime\Pipeline\PipelineExecutor;
 use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
@@ -41,12 +42,22 @@ final class CoreServiceDefinitionProvider implements ServiceDefinitionProviderIn
             ),
 
             new ServiceDefinition(
+                identifier: FilesystemWriter::class,
+                class: FilesystemWriter::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: []
+            ),
+
+            new ServiceDefinition(
                 identifier: StructuredLogger::class,
                 class: StructuredLogger::class,
                 lifecycle: ServiceLifecycle::LAZY,
                 dependencies: [
                     JsonFormatter::class,
+
+                    // ВАЖНО: теперь нужен composite writer
                     ConsoleWriter::class,
+                    FilesystemWriter::class,
                 ]
             ),
 

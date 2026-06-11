@@ -10,5 +10,8 @@ return [
 
     'paths' => [],
 
-    'logging' => [],
+    'logging' => [
+        'enabled' => true,
+        'path' => 'logs/runtime.log',
+    ],
 ];
