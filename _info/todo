@@ -5,3 +5,25 @@
                 php tests/bootstrap.php
                 php sandbox/test.php
                 php public/index.php
+
+
+
+Application
+ ├─ Configuration
+ ├─ composition.runtime
+ └─ прочие глобальные объекты
+
+Composition Runtime
+ ├─ Service Definitions
+ ├─ Service Composer
+ └─ Service Instances
+
+
+Примеры того что нужно во всём приложении
+       Configuration
+       Clock
+       Environment
+       ProjectRoot
+       BuildSession
+       ApplicationVersion
+       DiagnosticsContext
