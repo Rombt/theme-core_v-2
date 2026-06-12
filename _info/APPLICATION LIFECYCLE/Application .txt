@@ -1,0 +1,78 @@
+==================================================
+APPLICATION OBJECT MODEL
+==================================================
+
+    Application является корневым объектом приложения.
+
+    Application не хранит application state.
+
+    Application не является key-value storage.
+
+    Application не является Service Locator.
+
+    Единственная ответственность Application — владение верхнеуровневыми lifecycle-объектами приложения.
+
+==================================================
+LIFECYCLE
+==================================================
+
+    На этапе Bootstrap создаётся ApplicationContextBuilder.
+
+    Bootstrapper'ы могут регистрировать application-wide объекты
+        в ApplicationContextBuilder.
+
+    После завершения Bootstrap происходит сборка
+        финального ApplicationContext.
+
+    После создания ApplicationContext становится неизменяемым.
+
+    После завершения Bootstrap ApplicationContextBuilder
+        больше не используется.
+
+==================================================
+OWNERSHIP
+==================================================
+
+    Application владеет:
+        
+        - ApplicationContextBuilder (Bootstrap Phase only)
+        - ApplicationContext (Application Lifetime)
+
+    ApplicationContextBuilder и ApplicationContext
+        никогда не существуют одновременно
+        как активные механизмы хранения данных.
+
+==================================================
+ACCESS RULES
+==================================================
+
+    Во время Bootstrap:
+
+        Application
+            ↓
+        ApplicationContextBuilder
+
+    После Bootstrap:
+
+        Application
+            ↓
+        ApplicationContext
+
+    Все application-wide объекты должны размещаться
+        исключительно в ApplicationContext.
+
+    Прямое хранение произвольных объектов внутри Application запрещено.
+
+==================================================
+ARCHITECTURAL GUARANTEES
+==================================================
+
+    Данная модель обеспечивает:
+
+        - единый источник application-wide состояния;
+        - неизменяемость ApplicationContext после Bootstrap;
+        - отсутствие дублирующих хранилищ состояния;
+        - предсказуемый lifecycle application-wide объектов;
+        - соответствие архитектуре Application Context;
+        - сохранение Bootstrap-процесса без переноса ответственности
+            за создание объектов за пределы Bootstrap Layer.
