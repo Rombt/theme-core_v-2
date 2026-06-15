@@ -6,6 +6,7 @@ namespace Rombt\ThemeCore\Runtime;
 
 use RuntimeException;
 use Throwable;
+use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Runtime\Contracts\ExecutionRuntimeInterface;
 use Rombt\ThemeCore\Runtime\Contracts\BuildResultFactoryInterface;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineExecutorInterface;
@@ -23,13 +24,13 @@ final class ExecutionRuntime implements ExecutionRuntimeInterface
     ) {
     }
 
-    public function run(ExecutionContext $context, PipelineInterface $pipeline): BuildResult
+    public function run(ExecutionContext $context, PipelineInterface $pipeline, Application $app): BuildResult
     {
 
         $session = $context->session();
 
         try {
-            $success = $this->pipelineExecutor->execute($pipeline, $context);
+            $success = $this->pipelineExecutor->execute($pipeline, $context, $app);
 
             if (!$success) {
                 $session->setState(RuntimeState::FAILED);

@@ -7,6 +7,8 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
+use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final class TestStage implements StageInterface
 {
@@ -14,6 +16,8 @@ final class TestStage implements StageInterface
     {
 
         $session = $context->session();
+        $logger = $context->service(LoggerInterface::class);
+        $diagnostics = $context->service(DiagnosticsService::class);
 
         $session->setResource(
             'test_stage',

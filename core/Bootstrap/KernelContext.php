@@ -19,6 +19,28 @@ final class KernelContext
 
     private ?\Throwable $exception = null;
 
+    /**
+     * @var array<int, object>
+     */
+    private array $serviceDefinitions = [];
+
+    /**
+     * @param array<int, object> $definitions
+     */
+    public function setServiceDefinitions(array $definitions): void
+    {
+        $this->serviceDefinitions = $definitions;
+    }
+
+    /**
+     * @return array<int, object>
+     */
+    public function getServiceDefinitions(): array
+    {
+        return $this->serviceDefinitions;
+    }
+
+
     public function setStatus(KernelBootstrapStatus $status): void
     {
         $this->status = $status;

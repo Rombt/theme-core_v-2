@@ -81,4 +81,9 @@ final class Kernel
 
         return $bootstrapper::priority();
     }
+
+    public function context(): KernelContext
+    {
+        return $this->context;
+    }
 }

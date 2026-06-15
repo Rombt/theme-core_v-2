@@ -111,7 +111,8 @@ APPLICATION LIFECYCLE CONTEXT MODEL
 
         Живёт только во время bootstrap.
 
-        Содержит bootstrap-specific состояние.
+        Содержит bootstrap-specific состояние 
+            является хранилищем для всего необходимого на стадии bootstrap.
 
         Примеры:
             - bootstrap status

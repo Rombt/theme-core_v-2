@@ -23,6 +23,7 @@ final class CoreServiceDefinitionProvider implements ServiceDefinitionProviderIn
     {
         return [
 
+            //todo  так как Diagnostic и Logger теперь в ApplicationContext отсюда их нужно убрать.
             new ServiceDefinition(
                 identifier: DiagnosticsService::class,
                 class: DiagnosticsService::class,

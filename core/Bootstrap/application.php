@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
+use Rombt\ThemeCore\Composition\Assembler\RuntimeAssembler;
 use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
 use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\CompositionBootstrapper;
@@ -24,6 +25,7 @@ use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
 use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContextFactory;
 use Rombt\ThemeCore\Runtime\Stages\TestStage;
+use Rombt\ThemeCore\Runtime\Stages\BuildThemeStage;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -49,7 +51,18 @@ $kernel = new Kernel(
 
 $kernel->bootstrap();
 
-$compositionRuntime = $app->getContext()->get(ApplicationContextKeys::COMPOSITION_RUNTIME);
+
+echo '$app = ';
+print_r($app);
+echo PHP_EOL;
+
+// die();
+
+$definitions = $kernel->context()->getServiceDefinitions();
+
+$compositionRuntime = (new RuntimeAssembler())->assemble($definitions);
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -57,24 +70,33 @@ $compositionRuntime = $app->getContext()->get(ApplicationContextKeys::COMPOSITIO
 |--------------------------------------------------------------------------
 */
 
+/** здесь начинается слой бизнес логики.
+ *   сюда должны приходить отдельно друг от друга
+ *       ApplicationContext
+ *       compositionRuntime
+ *   при этом
+ *       ApplicationContext пробрасывается
+ *           внутрь всех слоёв приложения как независимый и не изменяемый объект
+ *       compositionRuntime должен стать
+ *           неизменяемой частью ExecutionContext т.к. содержит всё необходимое для бизнес процессов
+*/
+
+
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
         new BuildSessionFactory(),
         new ExecutionContextFactory(),
         new ExecutionRuntime(new BuildResultFactory(), new PipelineExecutor()),
-        $compositionRuntime
+        $compositionRuntime,
+        $app
     )
 );
 
-echo '$runtimeKernel = ';
-print_r($runtimeKernel);
-echo PHP_EOL;
-
-
-
 $pipeline = new Pipeline([
     // стадии будут добавляться здесь
-     new TestStage(),
+    //  new TestStage(),
+     new BuildThemeStage(),
+
 ]);
 
 $result = $runtimeKernel->execute($pipeline);

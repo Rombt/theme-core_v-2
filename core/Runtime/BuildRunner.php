@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Runtime;
 
+use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Composition\Contracts\CompositionRuntimeInterface;
 use Rombt\ThemeCore\Runtime\Contracts\BuildRunnerInterface;
 use Rombt\ThemeCore\Runtime\Contracts\BuildSessionFactoryInterface;
@@ -19,6 +20,7 @@ final class BuildRunner implements BuildRunnerInterface
         private readonly ExecutionContextFactoryInterface $contextFactory,
         private readonly ExecutionRuntimeInterface $runtime,
         private readonly CompositionRuntimeInterface $compositionRuntime,
+        private readonly Application $app,
     ) {
     }
 
@@ -27,6 +29,6 @@ final class BuildRunner implements BuildRunnerInterface
         $session = $this->sessionFactory->create();
         $context = $this->contextFactory->create($session, $this->compositionRuntime);
 
-        return $this->runtime->run($context, $pipeline);
+        return $this->runtime->run($context, $pipeline, $this->app);
     }
 }

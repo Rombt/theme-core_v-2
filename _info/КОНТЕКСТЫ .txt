@@ -1,0 +1,8 @@
+Приложении существует такие контексты:
+
+APPLICATION CONTEXT -- $app
+KERNEL CONTEXT -- KernelContext
+COMPOSITION CONTEXT -- $compositionRuntime
+    формируется на стадии COMPOSITION потом передаётся в EXECUTION CONTEXT
+EXECUTION CONTEXT -- ExecutionContext
+    содержит в себе COMPOSITION CONTEXT

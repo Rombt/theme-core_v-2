@@ -24,4 +24,11 @@ final class ExecutionContext
     {
         return $this->compositionRuntime;
     }
+
+    public function service(string $id): object
+    {
+
+
+        return $this->compositionRuntime->services()->get($id);
+    }
 }
