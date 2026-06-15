@@ -12,9 +12,8 @@ final class Pipeline implements PipelineInterface
     /**
      * @param iterable<StageInterface> $stages
      */
-    public function __construct(
-        private iterable $stages
-    ) {
+    public function __construct(private iterable $stages)
+    {
     }
 
     public function getStages(): iterable

@@ -46,7 +46,7 @@ final class GenerateArtifactsStage implements StageInterface
             ])
         );
 
-        $session->getLogger()->write($entry);
+        // $session->getLogger()->write($entry);
 
         $artifacts = [
             [
@@ -78,9 +78,9 @@ final class GenerateArtifactsStage implements StageInterface
             $artifacts
         );
 
-        $session->getDiagnostics()->add(
-            'Artifacts generated'
-        );
+        // $session->getDiagnostics()->add(
+        //     'Artifacts generated'
+        // );
 
         return new StageResult(
             success: true

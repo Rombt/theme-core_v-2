@@ -31,7 +31,7 @@ final class LoadConfigurationStage implements StageInterface
 
         $session = $context->session();
 
-        $session->getLogger()->write($entry);
+        // $session->getLogger()->write($entry);
 
         $configuration = [
             'theme' => 'theme-core',
@@ -43,9 +43,9 @@ final class LoadConfigurationStage implements StageInterface
             $configuration
         );
 
-        $session->getDiagnostics()->add(
-            'Configuration loaded'
-        );
+        // $session->getDiagnostics()->add(
+        //     'Configuration loaded'
+        // );
 
         return new StageResult(
             success: true

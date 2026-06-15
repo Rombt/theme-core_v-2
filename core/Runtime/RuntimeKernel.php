@@ -11,16 +11,12 @@ use Rombt\ThemeCore\Runtime\Result\BuildResult;
 
 final class RuntimeKernel implements RuntimeKernelInterface
 {
-    public function __construct(
-        private readonly BuildRunnerInterface $buildRunner,
-    ) {
+    public function __construct(private readonly BuildRunnerInterface $buildRunner,)
+    {
     }
 
-    public function execute(
-        PipelineInterface $pipeline
-    ): BuildResult {
-        return $this->buildRunner->run(
-            $pipeline
-        );
+    public function execute(PipelineInterface $pipeline): BuildResult
+    {
+        return $this->buildRunner->run($pipeline);
     }
 }

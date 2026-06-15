@@ -23,57 +23,35 @@ final class ExecutionRuntime implements ExecutionRuntimeInterface
     ) {
     }
 
-    public function run(
-        ExecutionContext $context,
-        PipelineInterface $pipeline
-    ): BuildResult {
+    public function run(ExecutionContext $context, PipelineInterface $pipeline): BuildResult
+    {
 
         $session = $context->session();
 
         try {
-            $success = $this->pipelineExecutor->execute(
-                $pipeline,
-                $context
-            );
+            $success = $this->pipelineExecutor->execute($pipeline, $context);
 
             if (!$success) {
-                $session->setState(
-                    RuntimeState::FAILED
-                );
+                $session->setState(RuntimeState::FAILED);
 
                 $result = $this->resultFactory->createFailure(
                     $session,
-                    new RuntimeException(
-                        'Pipeline execution failed'
-                    )
+                    new RuntimeException('Pipeline execution failed')
                 );
 
                 $session->setBuildResult($result);
-
                 return $result;
             }
 
-            $session->setState(
-                RuntimeState::COMPLETED
-            );
-
-            $result = $this->resultFactory->createSuccess(
-                $session
-            );
-
+            $session->setState(RuntimeState::COMPLETED);
+            $result = $this->resultFactory->createSuccess($session);
             $session->setBuildResult($result);
 
             return $result;
         } catch (Throwable $e) {
-            $session->setState(
-                RuntimeState::FAILED
-            );
+            $session->setState(RuntimeState::FAILED);
 
-            $result = $this->resultFactory->createFailure(
-                $session,
-                $e
-            );
-
+            $result = $this->resultFactory->createFailure($session, $e);
             $session->setBuildResult($result);
 
             return $result;

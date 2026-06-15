@@ -45,7 +45,7 @@ final class BuildThemeStage implements StageInterface
             ])
         );
 
-        $session->getLogger()->write($entry);
+        // $session->getLogger()->write($entry);
 
         $theme = [
             'name' => $configuration['theme'],
@@ -57,9 +57,9 @@ final class BuildThemeStage implements StageInterface
             $theme
         );
 
-        $session->getDiagnostics()->add(
-            'Theme model created'
-        );
+        // $session->getDiagnostics()->add(
+        //     'Theme model created'
+        // );
 
         return new StageResult(
             success: true

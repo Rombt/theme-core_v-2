@@ -10,13 +10,8 @@ use Rombt\ThemeCore\Composition\Contracts\CompositionRuntimeInterface;
 
 final class ExecutionContextFactory implements ExecutionContextFactoryInterface
 {
-    public function create(
-        BuildSession $session,
-        CompositionRuntimeInterface $compositionRuntime
-    ): ExecutionContext {
-        return new ExecutionContext(
-            $session,
-            $compositionRuntime
-        );
+    public function create(BuildSession $session, CompositionRuntimeInterface $compositionRuntime): ExecutionContext
+    {
+        return new ExecutionContext($session, $compositionRuntime);
     }
 }

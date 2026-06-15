@@ -12,8 +12,5 @@ interface BuildResultFactoryInterface
 {
     public function createSuccess(BuildSession $session): BuildResult;
 
-    public function createFailure(
-        BuildSession $session,
-        Throwable $error
-    ): BuildResult;
+    public function createFailure(BuildSession $session, Throwable $error): BuildResult;
 }

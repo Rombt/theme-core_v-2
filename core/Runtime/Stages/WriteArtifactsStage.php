@@ -45,7 +45,7 @@ final class WriteArtifactsStage implements StageInterface
             ])
         );
 
-        $session->getLogger()->write($entry);
+        // $session->getLogger()->write($entry);
 
         foreach ($artifacts as $artifact) {
             $entry = $this->diagnostics->create(
@@ -57,14 +57,14 @@ final class WriteArtifactsStage implements StageInterface
                 ])
             );
 
-            $session->getLogger()->write($entry);
+            // $session->getLogger()->write($entry);
 
-            $session->getDiagnostics()->add(
-                sprintf(
-                    'Artifact "%s" written',
-                    $artifact['path']
-                )
-            );
+            // $session->getDiagnostics()->add(
+            //     sprintf(
+            //         'Artifact "%s" written',
+            //         $artifact['path']
+            //     )
+            // );
         }
 
         return new StageResult(

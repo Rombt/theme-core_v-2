@@ -13,25 +13,18 @@ use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 
 final class PipelineExecutor implements PipelineExecutorInterface
 {
-    public function execute(
-        PipelineInterface $pipeline,
-        ExecutionContext $context
-    ): bool {
+    public function execute(PipelineInterface $pipeline, ExecutionContext $context): bool
+    {
         foreach ($pipeline->getStages() as $stage) {
             if (!$stage instanceof StageInterface) {
-                throw new RuntimeException(
-                    'Invalid stage provided'
-                );
+                throw new RuntimeException('Invalid stage provided');
             }
 
             try {
-                $result = $stage->execute(
-                    $context
-                );
+                $result = $stage->execute($context);
 
                 if (!$result->isSuccess()) {
-                    throw $result->getError()
-                        ?? new RuntimeException('Stage failed');
+                    throw $result->getError() ?? new RuntimeException('Stage failed');
                 }
             } catch (Throwable $e) {
                 throw $e;
