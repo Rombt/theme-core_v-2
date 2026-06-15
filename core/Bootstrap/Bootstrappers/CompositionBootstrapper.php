@@ -7,8 +7,9 @@ namespace Rombt\ThemeCore\Bootstrap\Bootstrappers;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Bootstrap\Kernel;
 use Rombt\ThemeCore\Composition\Assembler\RuntimeAssembler;
-use Rombt\ThemeCore\Composition\Providers\CoreServiceDefinitionProvider;
 use Rombt\ThemeCore\Composition\Contracts\ServiceDefinitionProviderInterface;
+use Rombt\ThemeCore\Composition\Providers\CoreServiceDefinitionProvider;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 
 final class CompositionBootstrapper implements BootstrapperInterface, PrioritizedBootstrapperInterface
 {
@@ -22,12 +23,10 @@ final class CompositionBootstrapper implements BootstrapperInterface, Prioritize
         Kernel $kernel
     ): void {
 
-        // 1. Providers (source of truth)
         $providers = [
             new CoreServiceDefinitionProvider(),
         ];
 
-        // 2. Collect definitions
         $definitions = [];
 
         foreach ($providers as $provider) {
@@ -40,12 +39,12 @@ final class CompositionBootstrapper implements BootstrapperInterface, Prioritize
             }
         }
 
-        // 3. Build runtime (ALL DI LOGIC INSIDE ASSEMBLER)
-        $runtime = (new RuntimeAssembler())->assemble($definitions);
+        $runtime = (new RuntimeAssembler())
+        ->assemble($definitions);
 
-        // 4. Store runtime
-        $app->set('composition.runtime', $runtime);
-
-        $app->set('composition.bootstrapper.loaded', true);
+        $app ->getContextBuilder()->register(
+            ApplicationContextKeys::COMPOSITION_RUNTIME,
+            $runtime
+        );
     }
 }

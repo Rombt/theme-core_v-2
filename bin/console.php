@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-use Rombt\ThemeCore\Infrastructure\Logging\StructuredLogger;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 
 $app = require dirname(__DIR__) . '/core/bootstrap/application.php';
 
-$runtime = $app->get('composition.runtime');
+$runtime = $app->getContext()->get(ApplicationContextKeys::COMPOSITION_RUNTIME);
 
-$logger = $runtime
-    ->services()
-    ->get(StructuredLogger::class);
+echo '$app = ';
+var_dump($app);
 
+echo PHP_EOL;
+echo '$runtime = ';
 var_dump($runtime);

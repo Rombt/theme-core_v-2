@@ -9,4 +9,9 @@ interface ApplicationContextInterface
     public function has(string $key): bool;
 
     public function get(string $key): object;
+
+    /**
+     * @return array<string, object>
+     */
+    public function all(): array;
 }

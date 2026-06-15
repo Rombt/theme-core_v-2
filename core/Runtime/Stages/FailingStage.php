@@ -7,12 +7,12 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 use RuntimeException;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Runtime\Session\BuildSession;
+use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 
 final class FailingStage implements StageInterface
 {
     public function execute(
-        BuildSession $session
+        ExecutionContext $context
     ): StageResult {
         return new StageResult(
             success: false,

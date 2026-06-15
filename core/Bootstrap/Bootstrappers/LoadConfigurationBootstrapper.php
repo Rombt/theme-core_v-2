@@ -14,7 +14,7 @@ use Rombt\ThemeCore\Configuration\ConfigurationLoader;
 use Rombt\ThemeCore\Configuration\ConfigurationValidator;
 use Rombt\ThemeCore\Configuration\ConfigurationDefaultsApplier;
 use Rombt\ThemeCore\Configuration\ConfigurationNormalizer;
-use Rombt\ThemeCore\Configuration\ConfigurationState;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 
 final class LoadConfigurationBootstrapper implements PrioritizedBootstrapperInterface
 {
@@ -41,8 +41,8 @@ final class LoadConfigurationBootstrapper implements PrioritizedBootstrapperInte
         $configuration = $defaultsApplier->apply($configuration);
         $configuration = $normalizer->normalize($configuration);
 
-        $app->set(
-            ConfigurationState::CONFIGURATION,
+        $app->getContextBuilder()->register(
+            ApplicationContextKeys::CONFIGURATION,
             new Configuration($configuration)
         );
     }

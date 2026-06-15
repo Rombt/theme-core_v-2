@@ -6,16 +6,16 @@ namespace Rombt\ThemeCore\Runtime\Pipeline;
 
 use RuntimeException;
 use Throwable;
+use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineExecutorInterface;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineInterface;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
-use Rombt\ThemeCore\Runtime\Session\BuildSession;
 
 final class PipelineExecutor implements PipelineExecutorInterface
 {
     public function execute(
         PipelineInterface $pipeline,
-        BuildSession $session
+        ExecutionContext $context
     ): bool {
         foreach ($pipeline->getStages() as $stage) {
             if (!$stage instanceof StageInterface) {
@@ -25,10 +25,13 @@ final class PipelineExecutor implements PipelineExecutorInterface
             }
 
             try {
-                $result = $stage->execute($session);
+                $result = $stage->execute(
+                    $context
+                );
 
                 if (!$result->isSuccess()) {
-                    throw $result->getError() ?? new RuntimeException('Stage failed');
+                    throw $result->getError()
+                        ?? new RuntimeException('Stage failed');
                 }
             } catch (Throwable $e) {
                 throw $e;

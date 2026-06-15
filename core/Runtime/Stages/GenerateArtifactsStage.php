@@ -10,7 +10,7 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Runtime\Session\BuildSession;
+use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 
 final class GenerateArtifactsStage implements StageInterface
 {
@@ -20,8 +20,11 @@ final class GenerateArtifactsStage implements StageInterface
     }
 
     public function execute(
-        BuildSession $session
+        ExecutionContext $context
     ): StageResult {
+
+        $session = $context->session();
+
         $theme = $session->getResource(
             'theme'
         );

@@ -10,7 +10,8 @@ APPLICATION OBJECT MODEL
 
     Application не является Service Locator.
 
-    Единственная ответственность Application — владение верхнеуровневыми lifecycle-объектами приложения.
+    Единственная ответственность Application
+        — владение верхнеуровневыми lifecycle-объектами приложения.
 
 ==================================================
 LIFECYCLE
@@ -34,7 +35,7 @@ OWNERSHIP
 ==================================================
 
     Application владеет:
-        
+
         - ApplicationContextBuilder (Bootstrap Phase only)
         - ApplicationContext (Application Lifetime)
 

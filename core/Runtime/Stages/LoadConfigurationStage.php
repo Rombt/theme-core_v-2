@@ -9,7 +9,7 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Runtime\Session\BuildSession;
+use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 
 final class LoadConfigurationStage implements StageInterface
 {
@@ -19,7 +19,7 @@ final class LoadConfigurationStage implements StageInterface
     }
 
     public function execute(
-        BuildSession $session
+        ExecutionContext $context
     ): StageResult {
         $entry = $this->diagnostics->create(
             level: DiagnosticLevel::INFO,
@@ -28,6 +28,8 @@ final class LoadConfigurationStage implements StageInterface
                 'stage' => self::class,
             ])
         );
+
+        $session = $context->session();
 
         $session->getLogger()->write($entry);
 

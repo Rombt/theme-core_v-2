@@ -11,5 +11,11 @@ interface ApplicationContextBuilderInterface
         object $value
     ): void;
 
+    public function has(string $key): bool;
+
+    public function get(string $key): object;
+
     public function build(): ApplicationContextInterface;
+
+    public function isBuilt(): bool;
 }

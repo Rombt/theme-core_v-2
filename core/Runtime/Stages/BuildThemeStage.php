@@ -8,9 +8,9 @@ use RuntimeException;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
+use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Runtime\Session\BuildSession;
 
 final class BuildThemeStage implements StageInterface
 {
@@ -20,8 +20,10 @@ final class BuildThemeStage implements StageInterface
     }
 
     public function execute(
-        BuildSession $session
+        ExecutionContext $context
     ): StageResult {
+        $session = $context->session();
+
         $configuration = $session->getResource(
             'configuration'
         );

@@ -1,0 +1,137 @@
+theme-core v-2
+COMPOSITION RUNTIME OWNERSHIP
+
+1. НАЗНАЧЕНИЕ COMPOSITION
+
+Composition subsystem относится к стадии:
+
+    APPLICATION BUILD
+
+Composition отвечает за:
+
+    - обработку Service Definitions
+    - построение Dependency Graph
+    - подготовку Service Composer
+    - создание Composition Runtime
+
+Результатом работы Composition является CompositionRuntime
+--------------------------------------------------
+
+2. COMPOSITION RUNTIME
+
+CompositionRuntime является результатом работы
+Composition subsystem.
+
+CompositionRuntime предоставляет доступ к собранному сервисному окружению через:
+
+    ServiceComposer
+
+Пример:
+
+    $runtime
+        ->services()
+        ->get($identifier);
+
+--------------------------------------------------
+
+3. APPLICATION CONTEXT
+
+ApplicationContext предназначен исключительно для
+application-wide объектов.
+
+Примеры:
+
+    - Configuration
+    - Environment
+    - Clock
+    - Logger
+    - Diagnostics
+
+ApplicationContext не является сервисным контейнером.
+
+ApplicationContext не предназначен для хранения
+внутренних runtime-объектов отдельных подсистем.
+
+--------------------------------------------------
+
+4. COMPOSITION RUNTIME И APPLICATION CONTEXT
+
+CompositionRuntime не является application-wide объектом.
+
+Следовательно:
+
+    CompositionRuntime не должен регистрироваться
+    внутри ApplicationContext.
+
+Запрещено:
+
+    ApplicationContext
+        └── CompositionRuntime
+
+Запрещено:
+
+    $builder->register(
+        'composition_runtime',
+        $runtime
+    );
+
+--------------------------------------------------
+
+5. LIFECYCLE BOUNDARY
+
+CompositionRuntime создаётся на стадии:
+
+    APPLICATION BUILD
+
+Однако результат работы Composition должен быть
+доступен на стадии:
+
+    BUSINESS EXECUTION
+
+Поскольку именно BUSINESS EXECUTION использует
+подготовленное сервисное окружение.
+
+--------------------------------------------------
+
+6. OWNERSHIP
+
+После завершения APPLICATION BUILD должен
+происходить ownership handoff.
+
+Ownership передаётся от Composition subsystem
+к Execution Runtime.
+
+Схема владения:
+
+    ApplicationContext
+        ├── Configuration
+        ├── Logger
+        ├── Diagnostics
+        └── ...
+
+    ExecutionRuntime
+        └── CompositionRuntime
+
+Таким образом:
+
+    ApplicationContext является владельцем
+    application-wide объектов.
+
+    ExecutionRuntime является владельцем
+    CompositionRuntime.
+
+--------------------------------------------------
+
+7. ARCHITECTURAL CONSEQUENCE
+
+CompositionRuntime не публикуется через
+ApplicationContext.
+
+Доступ к CompositionRuntime должен осуществляться
+только через владельца:
+
+    ExecutionRuntime
+
+ExecutionRuntime получает CompositionRuntime
+в момент своего создания и использует его на
+протяжении всей стадии BUSINESS EXECUTION.

@@ -4,61 +4,74 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Bootstrap;
 
-use Rombt\ThemeCore\Application\Application;
-
 final class KernelContext
 {
-    public function __construct(
-        private readonly Application $app,
-    ) {
-    }
+    private ?KernelBootstrapStatus $status = null;
+
+    private ?string $currentBootstrapper = null;
+
+    /**
+     * @var array<int,string>
+     */
+    private array $executedBootstrappers = [];
+
+    private bool $failed = false;
+
+    private ?\Throwable $exception = null;
 
     public function setStatus(KernelBootstrapStatus $status): void
     {
-        $this->app->set(
-            KernelState::BOOTSTRAP_STATUS,
-            $status
-        );
+        $this->status = $status;
     }
 
     public function getStatus(): ?KernelBootstrapStatus
     {
-        $value = $this->app->get(KernelState::BOOTSTRAP_STATUS);
-
-        return $value instanceof KernelBootstrapStatus
-            ? $value
-            : null;
+        return $this->status;
     }
 
     public function setCurrent(?string $bootstrapper): void
     {
-        $this->app->set(
-            KernelState::BOOTSTRAP_CURRENT,
-            $bootstrapper
-        );
+        $this->currentBootstrapper = $bootstrapper;
     }
 
+    public function getCurrent(): ?string
+    {
+        return $this->currentBootstrapper;
+    }
+
+    /**
+     * @param array<int,string> $bootstrappers
+     */
     public function setExecuted(array $bootstrappers): void
     {
-        $this->app->set(
-            KernelState::BOOTSTRAPPERS_EXECUTED,
-            $bootstrappers
-        );
+        $this->executedBootstrappers = $bootstrappers;
+    }
+
+    /**
+     * @return array<int,string>
+     */
+    public function getExecuted(): array
+    {
+        return $this->executedBootstrappers;
     }
 
     public function setFailed(bool $failed): void
     {
-        $this->app->set(
-            KernelState::BOOTSTRAP_FAILED,
-            $failed
-        );
+        $this->failed = $failed;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->failed;
     }
 
     public function setException(?\Throwable $exception): void
     {
-        $this->app->set(
-            KernelState::BOOTSTRAP_EXCEPTION,
-            $exception
-        );
+        $this->exception = $exception;
+    }
+
+    public function getException(): ?\Throwable
+    {
+        return $this->exception;
     }
 }

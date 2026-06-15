@@ -39,6 +39,3 @@ final class BootstrapRegistry
         return $this->bootstrappers;
     }
 }
-
-
-// COMPOSITION LAYER ARCHITECTURAL DESCRIPTION .txt

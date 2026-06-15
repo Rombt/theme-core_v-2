@@ -1,10 +1,12 @@
 Возможные способы запуска приложения
          в соответствии с _info\APPLICATION ASSEMBLY ROOT .txt
-         
+
                 php bin/console.php
                 php tests/bootstrap.php
                 php sandbox/test.php
                 php public/index.php
+
+!! Убрать логер и диагностику из кода так как они должны быть в APPLICATION CONTEXT
 
 
 
@@ -27,3 +29,33 @@ Composition Runtime
        BuildSession
        ApplicationVersion
        DiagnosticsContext
+
+
+
+
+
+После завершения bootstrap получается примерно такая структура:
+       Application
+       │
+       ├── ApplicationContext
+       │       ├── Configuration
+       │       ├── Diagnostics
+       │       ├── Logger
+       │       ├── Formatter
+       │       └── Writer
+       │
+       ├── composition.runtime
+       │       └── Runtime
+       │
+       └── ContextBuilder
+              (по идее уже больше не нужен)
+
+       И отдельно:
+
+              Kernel
+              │
+              └── KernelContext
+                     ├── status
+                     ├── current
+                     ├── executed
+                     └── exception

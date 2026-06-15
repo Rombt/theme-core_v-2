@@ -19,12 +19,13 @@ ARCHITECTURAL DESCRIPTION
 ==================================================
 
     Execution Runtime отвечает за:
-        1. Создание и сопровождение Build Session.
-        2. Управление Runtime State.
-        3. Запуск Pipeline.
-        4. Координацию выполнения Stages.
-        5. Обработку ошибок выполнения.
-        6. Формирование Build Result.
+        1. Предоставление Stages доступа к CompositionRuntime.
+        2. Создание и сопровождение Build Session.
+        3. Управление Runtime State.
+        4. Запуск Pipeline.
+        5. Координацию выполнения Stages.
+        6. Обработку ошибок выполнения.
+        7. Формирование Build Result.
 
 ==================================================
 3. BUILD SESSION
@@ -69,6 +70,7 @@ ARCHITECTURAL DESCRIPTION
 ==================================================
 
     Минимальный сценарий выполнения:
+        Receive CompositionRuntime
         Create Build Session
         Set RUNNING State
         Execute Pipeline

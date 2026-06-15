@@ -440,7 +440,7 @@ ARCHITECTURAL DESCRIPTION
 
             Для построения порядка инициализации
             используются Dependency Plan Builder
-            и Dependency Graph.   
+            и Dependency Graph.
 
 
     12.2 Lazy
@@ -461,15 +461,12 @@ ARCHITECTURAL DESCRIPTION
 13. STORAGE MODEL
 ==================================================
 
-    Application является единственным runtime storage системы.
+    Результатом работы Composition Layer является CompositionRuntime
+        который предоставляет доступ к собранному сервисному окружению
+        через ServiceComposer
 
-    Composition Layer использует Application Storage только для:
+    Результат работы Composition должен быть доступен на слое EXECUTION RUNTIME
 
-        - persistence of eager services
-        - persistence of lazy-created singleton instances
-
-    Resolution Context существует только во время
-        выполнения процесса resolution.
 
 ==================================================
 14. BOOTSTRAP FLOW

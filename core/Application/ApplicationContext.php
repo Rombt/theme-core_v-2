@@ -4,22 +4,17 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Application;
 
-use RuntimeException;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextInterface;
+use Rombt\ThemeCore\Application\Exceptions\ApplicationContextObjectNotFoundException;
 
-final class ApplicationContext implements ApplicationContextInterface
+final readonly class ApplicationContext implements ApplicationContextInterface
 {
-    /**
-     * @var array<string, object>
-     */
-    private array $objects;
-
     /**
      * @param array<string, object> $objects
      */
-    public function __construct(array $objects)
-    {
-        $this->objects = $objects;
+    public function __construct(
+        private array $objects
+    ) {
     }
 
     public function has(string $key): bool
@@ -30,7 +25,7 @@ final class ApplicationContext implements ApplicationContextInterface
     public function get(string $key): object
     {
         if (!$this->has($key)) {
-            throw new RuntimeException(
+            throw new ApplicationContextObjectNotFoundException(
                 sprintf(
                     'ApplicationContext object "%s" is not registered.',
                     $key
@@ -39,5 +34,13 @@ final class ApplicationContext implements ApplicationContextInterface
         }
 
         return $this->objects[$key];
+    }
+
+    /**
+     * @return array<string, object>
+     */
+    public function all(): array
+    {
+        return $this->objects;
     }
 }
