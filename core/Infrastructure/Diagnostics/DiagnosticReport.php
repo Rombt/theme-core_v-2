@@ -6,6 +6,8 @@ namespace Rombt\ThemeCore\Infrastructure\Diagnostics;
 
 final class DiagnosticReport
 {
+    private \DateTimeImmutable $createdAt;
+
     /**
      * @param array<string, array<string, mixed>> $sections
      * @param array<string, int> $severities
@@ -16,6 +18,8 @@ final class DiagnosticReport
         private readonly array $severities,
         private readonly array $metadata,
     ) {
+
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     /**
@@ -49,5 +53,10 @@ final class DiagnosticReport
     public function metadata(): array
     {
         return $this->metadata;
+    }
+
+    public function createdAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 }

@@ -11,13 +11,19 @@ final class FilesystemWriter implements LogWriterInterface
 {
     private string $path;
 
-    public function __construct(Configuration $config)
+    public function __construct(string $path)
     {
-        $this->path = $config->get('logging.path');
+        $this->path = $path;
     }
 
     public function write(string $payload): void
     {
+        $dir = dirname($this->path);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
         file_put_contents(
             $this->path,
             $payload . PHP_EOL,

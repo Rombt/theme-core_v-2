@@ -24,8 +24,15 @@ use Rombt\ThemeCore\Runtime\Pipeline\PipelineExecutor;
 use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
 use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContextFactory;
-use Rombt\ThemeCore\Runtime\Stages\TestStage;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeStage;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticReportRenderer;
+use Rombt\ThemeCore\Infrastructure\Logging\Writers\CompositeWriter;
+use Rombt\ThemeCore\Infrastructure\Logging\Writers\ConsoleWriter;
+use Rombt\ThemeCore\Infrastructure\Logging\Writers\FilesystemWriter;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticEntry;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
+use Rombt\ThemeCore\Runtime\Stages\TestStage;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -52,9 +59,9 @@ $kernel = new Kernel(
 $kernel->bootstrap();
 
 
-echo '$app = ';
-print_r($app);
-echo PHP_EOL;
+// echo '$app = ';
+// print_r($app);
+// echo PHP_EOL;
 
 // die();
 
@@ -100,5 +107,38 @@ $pipeline = new Pipeline([
 ]);
 
 $result = $runtimeKernel->execute($pipeline);
+
+
+/** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
+$logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+
+$logger->write(
+    new DiagnosticEntry(
+        level: DiagnosticLevel::INFO,
+        message: 'Project execution completed successfully',
+        context: new DiagnosticContext([
+            'stage' => 'runtime_finish',
+        ]),
+        metadata: [],
+        timestamp: new \DateTimeImmutable(),
+    )
+);
+
+
+$diagnostics = $app->getContext()->get(ApplicationContextKeys::DIAGNOSTICS);
+$diagnostics_file_path = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION)->get('diagnostic.path');
+
+$renderer = new DiagnosticReportRenderer();
+
+
+$writer = new CompositeWriter([
+    new ConsoleWriter(),
+    new FilesystemWriter($diagnostics_file_path)
+]);
+
+$reportFormatter = new DiagnosticReportRenderer();
+$writer->write($reportFormatter->render($diagnostics->report()));
+
+
 
 return $app;
