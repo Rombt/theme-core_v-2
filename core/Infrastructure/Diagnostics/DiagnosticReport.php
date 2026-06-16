@@ -27,6 +27,15 @@ final class DiagnosticReport
     }
 
     /**
+     * @return array<string, mixed>|null
+     */
+    public function section(
+        string $name
+    ): ?array {
+        return $this->sections[$name] ?? null;
+    }
+
+    /**
      * @return array<string, int>
      */
     public function severities(): array

@@ -8,6 +8,7 @@ final class DiagnosticsService
 {
     public function __construct(
         private readonly DiagnosticCollector $collector,
+        private readonly DiagnosticReportBuilder $reportBuilder,
     ) {
     }
 
@@ -29,5 +30,17 @@ final class DiagnosticsService
         $this->collector->record($entry);
 
         return $entry;
+    }
+
+    public function report(): DiagnosticReport
+    {
+        return $this->reportBuilder->build(
+            $this->collector
+        );
+    }
+
+    public function collector(): DiagnosticCollector
+    {
+        return $this->collector;
     }
 }
