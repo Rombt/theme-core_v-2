@@ -21,15 +21,8 @@ final class BuildThemeStage implements StageInterface
     {
 
 
-        echo '$context = ';
-        print_r($context);
-        echo PHP_EOL;
-
-
         $session = $context->session();
         $logger = $context->service(LoggerInterface::class);
-        var_dump('stage entered');
-        die();
         $diagnostics = $context->service(DiagnosticsService::class);
 
 

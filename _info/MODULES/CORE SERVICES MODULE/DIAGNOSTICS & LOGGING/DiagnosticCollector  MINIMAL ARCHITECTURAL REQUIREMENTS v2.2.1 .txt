@@ -1,0 +1,402 @@
+theme-core v-2
+DIAGNOSTICS & LOGGING EXTENSION
+v2.2.1 (COLLECTOR & REPORT LAYER)
+
+
+==================================================
+1. PURPOSE
+==================================================
+
+    v2.2.1 расширяет observability architecture за счёт введения:
+
+        - DiagnosticCollector
+        - DiagnosticSection
+        - DiagnosticReportBuilder
+        - DiagnosticReport
+
+    Цель версии:
+        преобразовать поток диагностических событий
+        в структурированное представление execution lifecycle.
+
+    При этом сохраняется базовый принцип:
+        Diagnostics observes execution.
+        Logging persists diagnostics.
+
+==================================================
+2. CORE ARCHITECTURAL PRINCIPLE
+==================================================
+
+    Execution lifecycle:
+
+        Application
+            ↓
+        Diagnostics Service
+            ↓
+        Diagnostic Collector
+            ↓
+        Diagnostic Report Builder
+            ↓
+        Diagnostic Report
+
+    Logging остаётся отдельным направлением:
+
+        Diagnostics Service
+            ↓
+        Logging
+            ↓
+        Outputs
+
+    Главный принцип:
+
+        Diagnostics produces events.
+        Collector aggregates execution facts.
+        ReportBuilder builds execution report.
+        Logging persists diagnostic records.
+
+==================================================
+3. DIAGNOSTIC COLLECTOR
+==================================================
+
+    3.1 PURPOSE
+    ==================================================
+
+        DiagnosticCollector является:
+            application-scoped in-memory aggregation layer
+            для накопления execution metrics во время работы приложения.
+
+        Collector существует на протяжении всего lifecycle:
+            Bootstrap
+            Composition
+            Runtime
+
+
+    3.2 RESPONSIBILITIES
+    ==================================================
+
+        DiagnosticCollector отвечает за:
+            - aggregation of execution metrics
+            - aggregation of execution facts
+            - aggregation of section data
+            - severity counters
+            - lightweight execution metadata
+
+
+    3.3 COLLECTED DATA
+    ==================================================
+
+        Collector хранит только:
+            - execution metrics
+            - execution facts
+            - severity counters
+            - execution metadata
+
+        Collector НЕ хранит:
+            - DiagnosticEntry
+            - log messages
+            - exceptions
+            - raw diagnostic records
+
+    3.4 SEVERITY AGGREGATION
+    ==================================================
+
+        Collector агрегирует количество диагностических записей по уровням:
+            DEBUG
+            INFO
+            WARNING
+            ERROR
+            CRITICAL
+
+            Пример:
+                INFO: 12
+                WARNING: 1
+                ERROR: 0
+
+        Collector хранит только счётчики.
+        Collector НЕ хранит содержимое записей.
+
+
+    3.5 DIAGNOSTIC ENTRY AGGREGATION
+    ==================================================
+
+        Collector может принимать DiagnosticEntry исключительно для обновления внутренних агрегатов.
+
+            Пример:
+                - severity counters
+                - future aggregated metrics
+
+        Collector НЕ сохраняет DiagnosticEntry.
+
+        Collector извлекает только необходимые агрегированные данные.
+
+
+    3.6 ARCHITECTURAL BOUNDARY
+    ==================================================
+
+        Collector НЕ:
+            - участвует в orchestration
+            - изменяет execution flow
+            - принимает business decisions
+            - сохраняет данные
+            - форматирует данные
+            - взаимодействует с filesystem
+
+        Collector только:
+            aggregates execution metrics.
+
+==================================================
+4. SECTION-CENTRIC EXECUTION MODEL
+==================================================
+
+    4.1 PRINCIPLE
+    ==================================================
+
+        Основной единицей агрегации является DiagnosticSection
+
+        Collector группирует данные вокруг реально выполняемых частей системы.
+            
+        НЕ вокруг технических подсистем.
+
+            Плохо:
+                runtime
+                pipeline
+                memory
+
+            Хорошо:
+                BuildThemeStage
+                CompileCssStage
+                PublishThemeStage
+
+    4.2 SECTION DATA MODEL
+    ==================================================
+
+        Каждая секция имеет собственный набор метрик.
+
+        Пример:
+
+            BuildThemeStage
+                theme_created = true
+                duration_ms = 120
+
+            CompileCssStage
+                files_processed = 15
+                duration_ms = 340
+
+    4.3 API MODEL
+    ==================================================
+
+        Collector API:
+
+            section(string $name): DiagnosticSection
+
+            DiagnosticSection API:
+
+            set(
+                string $key,
+                mixed $value
+            ): self
+
+    4.4 EXAMPLE
+    ==================================================
+
+        $collector
+            ->section(BuildThemeStage::class)
+            ->set('theme_created', true);
+
+        $collector
+            ->section(BuildThemeStage::class)
+            ->set('duration_ms', 120);
+
+        $collector
+            ->section(CompileCssStage::class)
+            ->set('files_processed', 15);
+
+5. DIAGNOSTICS INTEGRATION
+==================================================
+
+    Diagnostics Service остаётся единственной точкой создания DiagnosticEntry.
+
+    После создания записи Diagnostics Service может передать запись
+        Collector для агрегации.
+
+        Пример:
+            $collector->record($entry);
+
+    Collector самостоятельно обновляет:
+        - severity counters
+        - внутренние агрегаты
+
+    После этого запись может быть передана в Logging subsystem.
+
+6. DIAGNOSTIC REPORT BUILDER
+==================================================
+
+
+    6.1 PURPOSE
+    ==================================================
+
+        DiagnosticReportBuilder отвечает за:
+
+            преобразование агрегированных данных в финальный DiagnosticReport.
+
+
+    6.2 RESPONSIBILITIES
+    ==================================================
+
+        Builder отвечает только за:
+            - report construction
+            - report projection
+
+        Builder НЕ отвечает за:
+            - diagnostics creation
+            - data collection
+            - logging
+            - persistence
+
+
+    6.3 INPUT MODEL
+    ==================================================
+
+        Builder принимает DiagnosticCollector
+            и ничего больше.
+
+
+    6.4 OUTPUT MODEL
+    ==================================================
+
+        Builder возвращает  DiagnosticReport
+
+==================================================
+7. DIAGNOSTIC REPORT
+==================================================
+
+    DiagnosticReport представляет собой
+        структурированное описание выполнения приложения.
+
+
+    7.1 SECTIONS
+    ==================================================
+
+        Содержит execution metrics сгруппированные по DiagnosticSection.
+
+        Пример:
+            BuildThemeStage
+            theme_created: true
+            duration_ms: 120
+
+        CompileCssStage
+            files_processed: 15
+            duration_ms: 340
+
+    7.2 LOGGING SUMMARY
+    ==================================================
+
+    Содержит агрегированную статистику диагностических уровней.
+
+        Пример:
+
+            Logging
+                DEBUG: 0
+                INFO: 12
+                WARNING: 1
+                ERROR: 0
+                CRITICAL: 0
+
+    Отчёт НЕ содержит:
+        - log messages
+        - DiagnosticEntry
+        - exceptions    
+
+    Отчёт содержит только агрегированную статистику.
+
+    7.3 METADATA
+    ==================================================
+
+        Может содержать:
+
+            - execution_id
+            - build_id
+            - environment
+
+        и другие execution-level attributes.
+
+==================================================
+8. SEPARATION OF CONCERNS
+==================================================
+
+    Diagnostics Service creates DiagnosticEntry
+
+    DiagnosticCollector aggregates execution facts
+
+    DiagnosticReportBuilder builds DiagnosticReport
+
+    Logging persists DiagnosticEntry
+
+==================================================
+9. ARCHITECTURAL BOUNDARIES
+==================================================
+
+    DiagnosticCollector MUST NOT:
+
+        - participate in orchestration
+        - mutate execution state
+        - write files
+        - emit logs
+        - store diagnostic records
+
+    DiagnosticReportBuilder MUST NOT:
+
+        - collect runtime data
+        - observe execution
+        - access logger
+
+    Diagnostics Service MUST NOT:
+
+        - persist data
+        - format output
+        - build reports
+
+    Logging MUST NOT:
+
+        - aggregate execution metrics
+        - build reports
+        - interpret execution state
+
+
+==================================================
+10. DESIGN PRINCIPLES
+==================================================
+
+    Система должна оставаться:
+
+        - simple
+        - deterministic
+        - composable
+        - execution-oriented
+        - non-invasive
+
+    Система НЕ должна становиться:
+
+        - telemetry platform
+        - monitoring system
+        - analytics engine
+        - distributed tracing solution
+
+==================================================
+11. FINAL PRINCIPLE
+==================================================
+
+    Diagnostics defines execution observability.
+
+    Collector summarizes execution facts.
+
+    Collector summarizes execution metrics.
+
+    ReportBuilder builds execution representation.
+
+    Logging persists diagnostic records.
+
+    Execution lifecycle becomes:
+        observable,
+        structured,
+        and reconstructable.
+
