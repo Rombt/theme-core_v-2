@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Runtime\Stages;
 
 use RuntimeException;
+use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
@@ -19,9 +20,8 @@ final class GenerateArtifactsStage implements StageInterface
     ) {
     }
 
-    public function execute(
-        ExecutionContext $context
-    ): StageResult {
+    public function execute(ExecutionContext $context, Application $app): StageResult
+    {
 
         $session = $context->session();
 

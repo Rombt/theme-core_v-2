@@ -8,6 +8,10 @@
 
 Запуск тестов
        composer test
+Запуск phpstan
+       composer analyse
+       composer analyse > phpstan.log 2>&1
+
 
 
 !! Убрать логер и диагностику из кода так как они должны быть в APPLICATION CONTEXT

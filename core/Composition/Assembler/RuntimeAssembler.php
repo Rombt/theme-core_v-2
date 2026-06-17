@@ -21,6 +21,11 @@ use Rombt\ThemeCore\Composition\Startup\EagerBootstrapStep;
 
 final class RuntimeAssembler implements RuntimeAssemblerInterface
 {
+    public function __construct()
+    {
+        // intentionally empty
+    }
+
     /**
      * @param ServiceDefinition[] $definitions
      */

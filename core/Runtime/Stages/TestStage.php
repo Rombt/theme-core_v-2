@@ -9,11 +9,14 @@ use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
+use Rombt\ThemeCore\Application\Application;
 
 final class TestStage implements StageInterface
 {
-    public function execute(ExecutionContext $context): StageResult
-    {
+    public function execute(
+        ExecutionContext $context,
+        Application $app
+    ): StageResult {
 
         $session = $context->session();
         $logger = $context->service(LoggerInterface::class);

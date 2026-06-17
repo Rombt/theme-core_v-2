@@ -71,7 +71,7 @@ final class TestBootstrapBuilder
             app: $app,
             bootstrapRegistry: $registry,
             bootstrapperFactory: $factory,
-            context: new KernelContext($app),
+            context: new KernelContext(),
             projectRoot: dirname(__DIR__, 3),
         );
     }

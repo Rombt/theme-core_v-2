@@ -11,6 +11,7 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
+use Rombt\ThemeCore\Application\Application;
 
 final class WriteArtifactsStage implements StageInterface
 {
@@ -20,7 +21,8 @@ final class WriteArtifactsStage implements StageInterface
     }
 
     public function execute(
-        ExecutionContext $context
+        ExecutionContext $context,
+        Application $app
     ): StageResult {
         $session = $context->session();
 

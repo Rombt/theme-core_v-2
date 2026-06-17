@@ -10,6 +10,7 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
+use Rombt\ThemeCore\Application\Application;
 
 final class LoadConfigurationStage implements StageInterface
 {
@@ -19,7 +20,8 @@ final class LoadConfigurationStage implements StageInterface
     }
 
     public function execute(
-        ExecutionContext $context
+        ExecutionContext $context,
+        Application $app
     ): StageResult {
         $entry = $this->diagnostics->create(
             level: DiagnosticLevel::INFO,

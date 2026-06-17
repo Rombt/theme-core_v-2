@@ -30,7 +30,7 @@ final class BootstrapperExecutionOrderTest extends TestCase
             $app,
             $registry,
             new BootstrapperFactory(),
-            new KernelContext($app),
+            new KernelContext(),
             dirname(__DIR__, 3),
         );
 

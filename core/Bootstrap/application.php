@@ -52,7 +52,7 @@ $kernel = new Kernel(
     $app,
     $bootstrapRegistry,
     new BootstrapperFactory(),
-    new KernelContext($app),
+    new KernelContext(),
     dirname(__DIR__, 2),
 );
 
