@@ -33,8 +33,21 @@ param(
     [Parameter(Mandatory = $false)]
     [string]$BasePath = ".",
 
-    [string[]]$ExcludeDirs = @("node_modules", ".git", "vendor", "dist", "build", ".vscode")
+    [string[]]$ExcludeDirs = @()
 )
+
+# дефолтные исключения
+$defaultExcludeDirs = @(
+    "node_modules",
+    ".git",
+    "vendor",
+    "dist",
+    "build",
+    ".vscode"
+)
+
+# объединяем дефолтные + пользовательские
+$ExcludeDirs = $defaultExcludeDirs + $ExcludeDirs
 
 # Нормализация пути
 $BasePath = (Resolve-Path $BasePath).Path
@@ -80,19 +93,14 @@ function Build-Tree {
     }
 }
 
-# Имя корня
 $output.Add((Split-Path $BasePath -Leaf))
 
-# Построение дерева
 Build-Tree -Folder $BasePath
 
-# Финальный результат
 $result = $output -join [Environment]::NewLine
 
-# Clipboard
 Set-Clipboard -Value $result
 
-# Console output
 Write-Host ""
 Write-Host "===== TREE STRUCTURE ====="
 Write-Host ""
