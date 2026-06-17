@@ -84,7 +84,7 @@ TESTING & QUALITY ASSURANCE ROADMAP
         Процесс сборки приложения имеет тестовое покрытие.
 
 ==================================================
-5. END-TO-END COVERAGE
+++ 5. END-TO-END COVERAGE
 ==================================================
 
     Цель:
@@ -93,11 +93,11 @@ TESTING & QUALITY ASSURANCE ROADMAP
 
     Действия:
 
-        - протестировать создание Application
-        - протестировать выполнение Bootstrap
-        - протестировать выполнение Composition
-        - протестировать создание Composition Runtime
-        - протестировать формирование итогового Runtime Context
+        ++ протестировать создание Application
+        ++ протестировать выполнение Bootstrap
+        ++ протестировать выполнение Composition
+        ++ протестировать создание Composition Runtime
+        ++ протестировать формирование итогового Runtime Context
 
     Результат:
 
