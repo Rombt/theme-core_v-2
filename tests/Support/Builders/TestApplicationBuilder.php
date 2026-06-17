@@ -66,7 +66,7 @@ final class TestApplicationBuilder
     public function build(): Application
     {
         $contextBuilder = $this->contextBuilder
-            ?? new FakeApplicationContextBuilder();
+        ?? new FakeApplicationContextBuilder();
 
         $logger = $this->logger ?? new FakeLogger();
         $writer = $this->writer ?? new FakeLogWriter();
@@ -81,25 +81,9 @@ final class TestApplicationBuilder
             $writer
         );
 
-        $context = $contextBuilder->build();
-
         $app = new Application();
 
-        $bootstrapRegistry = $this->bootstrapRegistry
-            ?? new BootstrapRegistry();
-
-        $bootstrapperFactory = $this->bootstrapperFactory
-            ?? new BootstrapperFactory();
-
-        $kernel = new Kernel(
-            app: $app,
-            bootstrapRegistry: $bootstrapRegistry,
-            bootstrapperFactory: $bootstrapperFactory,
-            context: new KernelContext($app),
-            projectRoot: dirname(__DIR__, 3),
-        );
-
-        $kernel->bootstrap();
+        $app->setContextBuilder($contextBuilder);
 
         return $app;
     }

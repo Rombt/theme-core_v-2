@@ -17,6 +17,14 @@ final class BootstrapRegistryTest extends TestCase
         $registry->register(SimpleBootstrapper::class);
 
         self::assertTrue(
+            is_subclass_of(
+                SimpleBootstrapper::class,
+                \Rombt\ThemeCore\Bootstrap\Bootstrappers\BootstrapperInterface::class
+            )
+        );
+
+
+        self::assertTrue(
             $registry->has(SimpleBootstrapper::class)
         );
     }

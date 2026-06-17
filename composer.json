@@ -7,6 +7,12 @@
       "Rombt\\ThemeCore\\": "core/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+
   "authors": [
     {
       "name": "Rombt",

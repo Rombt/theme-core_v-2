@@ -11,6 +11,7 @@ use Rombt\ThemeCore\Bootstrap\Bootstrappers\LoadConfigurationBootstrapper;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Tests\Support\Builders\TestApplicationBuilder;
 use Tests\Support\Builders\TestBootstrapBuilder;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\FinalizeApplicationContextBootstrapper;
 
 final class KernelBootstrapTest extends TestCase
 {
@@ -21,6 +22,7 @@ final class KernelBootstrapTest extends TestCase
         $kernel = TestBootstrapBuilder::create()
             ->addBootstrapper(LoadConfigurationBootstrapper::class)
             ->addBootstrapper(CreateLoggerBootstrapper::class)
+            ->addBootstrapper(FinalizeApplicationContextBootstrapper::class)
             ->build($app);
 
         $kernel->bootstrap();

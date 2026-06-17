@@ -10,7 +10,9 @@ use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
 use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
 use Rombt\ThemeCore\Bootstrap\Kernel;
 use Rombt\ThemeCore\Bootstrap\KernelContext;
-use Tests\Support\Fakes\RecordingBootstrapper;
+use Tests\Support\Fakes\HighPriorityBootstrapper;
+use Tests\Support\Fakes\LowPriorityBootstrapper;
+use Tests\Support\Fakes\MediumPriorityBootstrapper;
 
 final class BootstrapperExecutionOrderTest extends TestCase
 {
@@ -19,9 +21,10 @@ final class BootstrapperExecutionOrderTest extends TestCase
         $app = new Application();
 
         $registry = new BootstrapRegistry();
-        $registry->register(RecordingBootstrapper::class . ':1');
-        $registry->register(RecordingBootstrapper::class . ':2');
-        $registry->register(RecordingBootstrapper::class . ':3');
+
+        $registry->register(LowPriorityBootstrapper::class);
+        $registry->register(HighPriorityBootstrapper::class);
+        $registry->register(MediumPriorityBootstrapper::class);
 
         $kernel = new Kernel(
             $app,
@@ -33,11 +36,13 @@ final class BootstrapperExecutionOrderTest extends TestCase
 
         $kernel->bootstrap();
 
-        $context = $kernel->context();
-
         self::assertSame(
-            ['3', '2', '1'],
-            $context->getExecuted()
+            [
+                HighPriorityBootstrapper::class,
+                MediumPriorityBootstrapper::class,
+                LowPriorityBootstrapper::class,
+            ],
+            $kernel->context()->getExecuted()
         );
     }
 }

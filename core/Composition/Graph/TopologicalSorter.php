@@ -21,7 +21,9 @@ final class TopologicalSorter
             $this->visit($node->getIdentifier(), $graph, $visited, $visiting, $result);
         }
 
-        return array_reverse($result);
+        //todo здесь не уверен, тестировать
+        // return array_reverse($result);
+        return $result;
     }
 
     private function visit(
