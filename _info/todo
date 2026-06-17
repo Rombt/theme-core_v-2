@@ -6,6 +6,10 @@
                 php sandbox/test.php
                 php public/index.php
 
+Запуск тестов
+       composer test
+
+
 !! Убрать логер и диагностику из кода так как они должны быть в APPLICATION CONTEXT
 
 
