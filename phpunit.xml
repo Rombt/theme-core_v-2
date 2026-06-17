@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit
-    bootstrap="vendor/autoload.php"
-    cacheDirectory=".cache/phpunit"
->
+<phpunit bootstrap="vendor/autoload.php" cacheDirectory=".cache/phpunit">
+    
     <testsuites>
 
         <testsuite name="Unit">

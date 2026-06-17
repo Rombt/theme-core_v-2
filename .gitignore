@@ -4,6 +4,7 @@ node_modules/
 # Composer
 vendor/
 composer.lock
+.cache/
 
 # OS
 .DS_Store
