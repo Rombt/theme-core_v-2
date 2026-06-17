@@ -3,7 +3,7 @@ TESTING & QUALITY ASSURANCE ROADMAP
 
 
 ==================================================
-1. TESTING FOUNDATION
+++ 1. TESTING FOUNDATION
 ==================================================
 
 
@@ -23,7 +23,7 @@ TESTING & QUALITY ASSURANCE ROADMAP
         Проект готов к написанию тестов.
 
 ==================================================
-2. TEST UTILITIES
+++ 2. TEST UTILITIES
 ==================================================
 
     Цель:
@@ -33,11 +33,11 @@ TESTING & QUALITY ASSURANCE ROADMAP
 
     Действия:
 
-        - создать Test Application Builder
-        - создать Test Bootstrap Builder
-        - подготовить Fake Services
-        - подготовить Test Definitions
-        - создать вспомогательные Assertions Helpers
+        ++ создать Test Application Builder
+        ++ создать Test Bootstrap Builder
+        ++ подготовить Fake Services
+        ++ подготовить Test Definitions
+        ++ создать вспомогательные Assertions Helpers
 
     Результат:
 
