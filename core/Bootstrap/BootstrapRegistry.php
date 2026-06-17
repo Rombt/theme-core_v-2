@@ -38,4 +38,13 @@ final class BootstrapRegistry
     {
         return $this->bootstrappers;
     }
+
+    public function has(string $bootstrapper): bool
+    {
+        return in_array(
+            $bootstrapper,
+            $this->bootstrappers,
+            true
+        );
+    }
 }
