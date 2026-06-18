@@ -52,25 +52,32 @@ C:\scripts\copy-tree-content.ps1 -BasePath C:\projects\tokvex
 #>
 
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$BasePath,
 
     [string]$RelativeTo,
 
-    [string[]]$ExcludeExtensions = @("*.png","*.jpg","*.jpeg","*.gif","*.exe","*.lock"),
+    [string[]]$ExcludeExtensions = @("*.png", "*.jpg", "*.jpeg", "*.gif", "*.exe", "*.lock"),
 
-    [string[]]$ExcludeDirs = @("node_modules",".git","dist","build")
+    [string[]]$ExcludeDirs = @("node_modules", ".git", "dist", "build")
 )
 
-# Нормализуем пути
+# ===== FIX: глобальная кодировка PowerShell =====
+[Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$OutputEncoding = [System.Text.UTF8Encoding]::new()
+
+# ===== Normalize paths =====
 $BasePath = (Resolve-Path $BasePath).Path
 
 if (-not $RelativeTo) {
     $RelativeTo = $BasePath
-} else {
+}
+else {
     $RelativeTo = (Resolve-Path $RelativeTo).Path
 }
 
+# ===== Collect files =====
 $files = Get-ChildItem -Path $BasePath -Recurse -File -Exclude $ExcludeExtensions |
 Where-Object {
     $full = $_.FullName
@@ -81,23 +88,28 @@ Where-Object {
 } |
 Sort-Object FullName
 
+# ===== Build output =====
 $output = foreach ($file in $files) {
+
     $from = New-Object System.Uri($RelativeTo + '\')
-    $to   = New-Object System.Uri($file.FullName)
+    $to = New-Object System.Uri($file.FullName)
 
     $relative = [System.Uri]::UnescapeDataString(
         $from.MakeRelativeUri($to).ToString()
     ).Replace('/', '\')
 
-@"
+    # FIX: явное UTF-8 чтение файла
+    $content = Get-Content -Raw -Encoding UTF8 $file.FullName
+
+    @"
 --- FILE: $relative ---
-$(Get-Content $file.FullName -Raw)
+$content
 
 "@
 }
 
-# В буфер обмена
-$output | Set-Clipboard
+# ===== Copy to clipboard (Unicode-safe) =====
+$final = $output -join "`r`n"
 
-# И в консоль
-# $output
+Set-Clipboard -Value $final
+
