@@ -2,43 +2,75 @@ deptrac:
   paths:
     - ./core
 
+  exclude_files:
+    - '#.*Test.*#'
+
   layers:
-    - name: Application
+
+    - name: Kernel
       collectors:
-        - type: directory
-          value: core/Application/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Kernel\
 
     - name: Bootstrap
       collectors:
-        - type: directory
-          value: core/Bootstrap/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Bootstrap\
 
-    - name: Configuration
+    - name: CompositionBootstrapper
       collectors:
-        - type: directory
-          value: core/Configuration/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Composition\Bootstrapper\
 
     - name: Composition
       collectors:
-        - type: directory
-          value: core/Composition/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Composition\
 
-    - name: Runtime
+    - name: ApplicationContext
       collectors:
-        - type: directory
-          value: core/Runtime/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Application\Context\
 
-    - name: Infrastructure
+    - name: ExecutionRuntime
       collectors:
-        - type: directory
-          value: core/Infrastructure/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Runtime\Execution\
 
-    - name: Contracts
+    - name: ApplicationStorage
       collectors:
-        - type: directory
-          value: core/Contracts/.*
+        - type: classNameRegex
+          value: ^Rombt\ThemeCore\Application\Storage\
 
-    - name: Support
-      collectors:
-        - type: directory
-          value: core/Support/.*
+  ruleset:
+
+    Kernel:
+      - Bootstrap
+      - CompositionBootstrapper
+      - ApplicationContext
+      - ApplicationStorage
+
+    Bootstrap:
+      - CompositionBootstrapper
+      - ApplicationContext
+      - ApplicationStorage
+
+    CompositionBootstrapper:
+      - Composition
+      - ApplicationContext
+      - ExecutionRuntime
+
+    Composition:
+      - ApplicationStorage
+
+    ApplicationContext: []
+
+    ExecutionRuntime:
+      - Composition
+      - ApplicationStorage
+      - ApplicationContext
+
+  skip_violations:
+    - name: Allow Composition Bootstrapper to access Registry
+      from: Rombt\ThemeCore\Bootstrap\CompositionBootstrapper
+      to: Rombt\ThemeCore\Composition\Registry\ServiceRegistry
