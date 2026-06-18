@@ -16,5 +16,14 @@
     "переиспользоваться",
     "переиспользуемых",
     "рендерера"
-  ]
+  ],
+
+    "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.php$",
+        "cmd": "composer qa"
+      }
+    ]
+  }
 }

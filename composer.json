@@ -33,6 +33,10 @@
   "scripts": {
       "test": "phpunit",
       "analyse": "phpstan analyse",
-      "deptrac": "deptrac analyse"
+      "deptrac": "deptrac analyse",
+        "qa": [
+          "composer test > logs/phpunit.log 2>&1",
+          "composer analyse > logs/phpstan.log 2>&1"
+        ]
   }
 }
