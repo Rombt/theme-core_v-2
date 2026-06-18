@@ -11,6 +11,9 @@
 Запуск phpstan
        composer analyse
        composer analyse > phpstan.log 2>&1
+Запуск deptrac
+       composer deptrac
+       composer deptrac > deptrac.log 2>&1
 
 
 

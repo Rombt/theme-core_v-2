@@ -26,11 +26,13 @@
     "squizlabs/php_codesniffer": "^4.0",
     "friendsofphp/php-cs-fixer": "^3.95",
     "phpunit/phpunit": "^13.1",
-    "phpstan/phpstan": "2.1"
+    "phpstan/phpstan": "^2.1.30",
+    "deptrac/deptrac": "^4.1"
   },
 
   "scripts": {
       "test": "phpunit",
-      "analyse": "phpstan analyse"
+      "analyse": "phpstan analyse",
+      "deptrac": "deptrac analyse"
   }
 }

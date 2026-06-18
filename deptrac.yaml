@@ -1,0 +1,44 @@
+deptrac:
+  paths:
+    - ./core
+
+  layers:
+    - name: Application
+      collectors:
+        - type: directory
+          value: core/Application/.*
+
+    - name: Bootstrap
+      collectors:
+        - type: directory
+          value: core/Bootstrap/.*
+
+    - name: Configuration
+      collectors:
+        - type: directory
+          value: core/Configuration/.*
+
+    - name: Composition
+      collectors:
+        - type: directory
+          value: core/Composition/.*
+
+    - name: Runtime
+      collectors:
+        - type: directory
+          value: core/Runtime/.*
+
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: core/Infrastructure/.*
+
+    - name: Contracts
+      collectors:
+        - type: directory
+          value: core/Contracts/.*
+
+    - name: Support
+      collectors:
+        - type: directory
+          value: core/Support/.*

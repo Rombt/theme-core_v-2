@@ -43,7 +43,8 @@ $defaultExcludeDirs = @(
     "vendor",
     "dist",
     "build",
-    ".vscode"
+    ".vscode",
+    ".cache"
 )
 
 # объединяем дефолтные + пользовательские
