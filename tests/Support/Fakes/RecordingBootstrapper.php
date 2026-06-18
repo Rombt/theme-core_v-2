@@ -10,6 +10,7 @@ use Rombt\ThemeCore\Bootstrap\Kernel;
 
 final class RecordingBootstrapper implements BootstrapperInterface
 {
+    /** @var list<class-string> */
     public static array $executionLog = [];
 
     public function bootstrap(Application $app, Kernel $kernel): void

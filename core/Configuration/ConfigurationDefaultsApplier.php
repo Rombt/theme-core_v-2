@@ -13,20 +13,35 @@ final class ConfigurationDefaultsApplier
 
     /**
      * @param array<string, mixed> $configuration
-     *
      * @return array<string, mixed>
      */
     public function apply(array $configuration): array
     {
-        foreach ($this->schema->rules() as $section => $rules) {
-            if (!isset($configuration[$section])) {
+        /**
+         * @var array<string, array{
+         *     required: bool,
+         *     fields: array<string, array{
+         *         type: string,
+         *         required?: bool,
+         *         default?: mixed
+         *     }>
+         * }> $rules
+         */
+        $rules = $this->schema->rules();
+
+        foreach ($rules as $section => $sectionRules) {
+            if (
+                !isset($configuration[$section]) ||
+                !is_array($configuration[$section])
+            ) {
                 $configuration[$section] = [];
             }
 
-            foreach ($rules['fields'] ?? [] as $field => $fieldRules) {
-                if (
-                    array_key_exists($field, $configuration[$section])
-                ) {
+            /** @var array<string, mixed> $sectionConfig */
+            $sectionConfig = $configuration[$section];
+
+            foreach ($sectionRules['fields'] as $field => $fieldRules) {
+                if (array_key_exists($field, $sectionConfig)) {
                     continue;
                 }
 
@@ -34,9 +49,10 @@ final class ConfigurationDefaultsApplier
                     continue;
                 }
 
-                $configuration[$section][$field]
-                    = $fieldRules['default'];
+                $sectionConfig[$field] = $fieldRules['default'];
             }
+
+            $configuration[$section] = $sectionConfig;
         }
 
         return $configuration;

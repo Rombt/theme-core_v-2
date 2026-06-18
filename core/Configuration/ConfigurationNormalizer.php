@@ -13,20 +13,34 @@ final class ConfigurationNormalizer
 
     /**
      * @param array<string, mixed> $configuration
-     *
      * @return array<string, mixed>
      */
     public function normalize(array $configuration): array
     {
-        $configuration['paths']['build']
-            = $this->normalizePath(
-                $configuration['paths']['build']
-            );
+        $paths = $configuration['paths'] ?? [];
 
-        $configuration['paths']['cache']
-            = $this->normalizePath(
-                $configuration['paths']['cache']
-            );
+        if (!is_array($paths)) {
+            $paths = [
+                'build' => '',
+                'cache' => '',
+            ];
+        }
+
+        $build = $paths['build'] ?? '';
+        $cache = $paths['cache'] ?? '';
+
+        $build = is_string($build) || is_int($build) || is_float($build)
+            ? (string) $build
+            : '';
+
+        $cache = is_string($cache) || is_int($cache) || is_float($cache)
+            ? (string) $cache
+            : '';
+
+        $paths['build'] = $this->normalizePath($build);
+        $paths['cache'] = $this->normalizePath($cache);
+
+        $configuration['paths'] = $paths;
 
         return $configuration;
     }

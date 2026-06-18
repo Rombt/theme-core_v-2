@@ -13,19 +13,34 @@ final class TopologicalSorter
      */
     public function sort(DependencyGraph $graph): array
     {
+        /** @var array<string, true> $visited */
         $visited = [];
+
+        /** @var array<string, true> $visiting */
         $visiting = [];
+
+        /** @var string[] $result */
         $result = [];
 
         foreach ($graph->all() as $node) {
-            $this->visit($node->getIdentifier(), $graph, $visited, $visiting, $result);
+            $this->visit(
+                $node->getIdentifier(),
+                $graph,
+                $visited,
+                $visiting,
+                $result
+            );
         }
 
-        //todo здесь не уверен, тестировать
-        // return array_reverse($result);
+        // todo: уточнить необходимость reverse в тестах
         return $result;
     }
 
+    /**
+     * @param array<string, true> $visited
+     * @param array<string, true> $visiting
+     * @param string[] $result
+     */
     private function visit(
         string $id,
         DependencyGraph $graph,

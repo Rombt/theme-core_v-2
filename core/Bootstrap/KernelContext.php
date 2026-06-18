@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Bootstrap;
 
+use Rombt\ThemeCore\Composition\Definitions\ServiceDefinition;
+
 final class KernelContext
 {
     private ?KernelBootstrapStatus $status = null;
@@ -20,12 +22,12 @@ final class KernelContext
     private ?\Throwable $exception = null;
 
     /**
-     * @var array<int, object>
+     * @var array<int, ServiceDefinition>
      */
     private array $serviceDefinitions = [];
 
     /**
-     * @param array<int, object> $definitions
+     * @param array<int, ServiceDefinition> $definitions
      */
     public function setServiceDefinitions(array $definitions): void
     {
@@ -33,7 +35,7 @@ final class KernelContext
     }
 
     /**
-     * @return array<int, object>
+     * @return array<int, ServiceDefinition>
      */
     public function getServiceDefinitions(): array
     {

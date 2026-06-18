@@ -125,8 +125,18 @@ $logger->write(
 );
 
 
+/** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
 $diagnostics = $app->getContext()->get(ApplicationContextKeys::DIAGNOSTICS);
-$diagnostics_file_path = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION)->get('diagnostic.path');
+
+/** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
+$configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
+
+$diagnostics_file_path = $configuration->get('diagnostic.path');
+if (!is_string($diagnostics_file_path)) {
+    throw new RuntimeException(
+        'Configuration key "diagnostic.path" must be string.'
+    );
+}
 
 $renderer = new DiagnosticReportRenderer();
 

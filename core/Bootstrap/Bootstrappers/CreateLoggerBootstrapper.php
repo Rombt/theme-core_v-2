@@ -23,8 +23,9 @@ final class CreateLoggerBootstrapper implements PrioritizedBootstrapperInterface
     {
 
         /** @var Configuration $configuration */
-        // $configuration = $app->getContextBuilder()->get(ApplicationContextKeys::CONFIGURATION);
-        $logging_file_path = $app->getContextBuilder()->get(ApplicationContextKeys::CONFIGURATION)->get('logging.path');
+        $configuration = $app->getContextBuilder()->get(ApplicationContextKeys::CONFIGURATION);
+        /** @var string $logging_file_path */
+        $logging_file_path = $configuration->get('logging.path');
 
         $formatter = new JsonFormatter();
         $writer = new FilesystemWriter($logging_file_path);

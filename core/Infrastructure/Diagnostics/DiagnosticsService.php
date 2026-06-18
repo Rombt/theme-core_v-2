@@ -12,6 +12,9 @@ final class DiagnosticsService
     ) {
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public function create(
         DiagnosticLevel $level,
         string $message,

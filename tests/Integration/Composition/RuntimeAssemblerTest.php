@@ -47,11 +47,7 @@ final class RuntimeAssemblerTest extends TestCase
             context: new ResolutionContext(),
         );
 
-        $assembler = new RuntimeAssembler(
-            $registry,
-            $composer,
-            new TopologicalSorter()
-        );
+        $assembler = new RuntimeAssembler();
 
         $runtime = $assembler->assemble($registry->all());
 

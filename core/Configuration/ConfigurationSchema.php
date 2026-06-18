@@ -4,19 +4,33 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Configuration;
 
+/**
+ * @phpstan-type FieldSchema array{
+ *     type: string,
+ *     required?: bool,
+ *     default?: mixed
+ * }
+ *
+ * @phpstan-type SectionSchema array{
+ *     required: bool,
+ *     fields: array<string, FieldSchema>
+ * }
+ *
+ * @phpstan-type Schema array<string, SectionSchema>
+ */
 final class ConfigurationSchema
 {
     /**
-     * @return array<string, mixed>
+     * @return Schema
      */
     public function rules(): array
     {
         return [
             'project' => [
                 'required' => true,
-                'fields'   => [
+                'fields' => [
                     'name' => [
-                        'type'     => 'string',
+                        'type' => 'string',
                         'required' => true,
                     ],
                 ],
@@ -24,9 +38,9 @@ final class ConfigurationSchema
 
             'environment' => [
                 'required' => true,
-                'fields'   => [
+                'fields' => [
                     'debug' => [
-                        'type'    => 'bool',
+                        'type' => 'bool',
                         'default' => false,
                     ],
                 ],
@@ -34,14 +48,13 @@ final class ConfigurationSchema
 
             'paths' => [
                 'required' => true,
-                'fields'   => [
+                'fields' => [
                     'build' => [
-                        'type'    => 'string',
+                        'type' => 'string',
                         'default' => 'build',
                     ],
-
                     'cache' => [
-                        'type'    => 'string',
+                        'type' => 'string',
                         'default' => '.cache',
                     ],
                 ],
@@ -49,13 +62,13 @@ final class ConfigurationSchema
 
             'logging' => [
                 'required' => true,
-                'fields'   => [
+                'fields' => [
                     'enabled' => [
-                        'type'    => 'bool',
+                        'type' => 'bool',
                         'default' => true,
                     ],
                     'path' => [
-                        'type'    => 'string',
+                        'type' => 'string',
                         'default' => 'logs/runtime.log',
                     ],
                 ],
@@ -63,13 +76,13 @@ final class ConfigurationSchema
 
             'diagnostic' => [
                 'required' => true,
-                'fields'   => [
+                'fields' => [
                     'enabled' => [
-                        'type'    => 'bool',
+                        'type' => 'bool',
                         'default' => true,
                     ],
                     'path' => [
-                        'type'    => 'string',
+                        'type' => 'string',
                         'default' => 'logs/diagnostic.log',
                     ],
                 ],

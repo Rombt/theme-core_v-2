@@ -24,6 +24,7 @@ final class ConfigurationLoader
             );
         }
 
+        /** @var array<string, mixed> $configuration */
         return $configuration;
     }
 }

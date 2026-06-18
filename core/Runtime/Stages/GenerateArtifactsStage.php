@@ -22,14 +22,12 @@ final class GenerateArtifactsStage implements StageInterface
 
     public function execute(ExecutionContext $context, Application $app): StageResult
     {
-
         $session = $context->session();
 
-        $theme = $session->getResource(
-            'theme'
-        );
+        /** @var array{name: string, version: string}|null $theme */
+        $theme = $session->getResource('theme');
 
-        if ($theme === null) {
+        if (!is_array($theme)) {
             return new StageResult(
                 success: false,
                 error: new RuntimeException(
@@ -38,15 +36,13 @@ final class GenerateArtifactsStage implements StageInterface
             );
         }
 
-        $entry = $this->diagnostics->create(
+        $this->diagnostics->create(
             level: DiagnosticLevel::INFO,
             message: 'Generating artifacts',
             context: new DiagnosticContext([
                 'stage' => self::class,
             ])
         );
-
-        // $session->getLogger()->write($entry);
 
         $artifacts = [
             [
@@ -77,10 +73,6 @@ final class GenerateArtifactsStage implements StageInterface
             'artifacts',
             $artifacts
         );
-
-        // $session->getDiagnostics()->add(
-        //     'Artifacts generated'
-        // );
 
         return new StageResult(
             success: true

@@ -6,6 +6,9 @@ namespace Rombt\ThemeCore\Infrastructure\Diagnostics;
 
 final class DiagnosticEntry
 {
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public function __construct(
         private readonly DiagnosticLevel $level,
         private readonly string $message,

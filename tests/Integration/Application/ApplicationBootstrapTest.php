@@ -15,6 +15,11 @@ final class ApplicationBootstrapTest extends TestCase
 
         $this->assertInstanceOf(Application::class, $app);
 
-        $this->assertNotNull($app->getContext());
+        $context = $app->getContext();
+
+        $this->assertInstanceOf(
+            \Rombt\ThemeCore\Application\Contracts\ApplicationContextInterface::class,
+            $context
+        );
     }
 }

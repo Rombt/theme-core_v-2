@@ -6,7 +6,6 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 
 use RuntimeException;
 use Rombt\ThemeCore\Application\Application;
-use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
@@ -19,16 +18,18 @@ final class BuildThemeStage implements StageInterface
 {
     public function execute(ExecutionContext $context, Application $app): StageResult
     {
-
-
         $session = $context->session();
+
+        /** @var LoggerInterface $logger */
         $logger = $context->service(LoggerInterface::class);
+
+        /** @var DiagnosticsService $diagnostics */
         $diagnostics = $context->service(DiagnosticsService::class);
 
-
+        /** @var array<string, mixed>|null $configuration */
         $configuration = $session->getResource('configuration');
 
-        if ($configuration === null) {
+        if (!is_array($configuration)) {
             return new StageResult(
                 success: false,
                 error: new RuntimeException(
@@ -48,16 +49,21 @@ final class BuildThemeStage implements StageInterface
         $logger->write($entry);
 
         $theme = [
-            'name' => $configuration['theme'],
-            'version' => $configuration['version'],
+            'name' => $configuration['theme'] ?? '',
+            'version' => $configuration['version'] ?? '',
         ];
 
         $session->setResource('theme', $theme);
 
-        $diagnostics->add('Theme model created');
-
-        return new StageResult(
-            success: true
+        /** @var DiagnosticsService $diagnostics */
+        $diagnostics->create(
+            level: DiagnosticLevel::INFO,
+            message: 'Theme model created',
+            context: new DiagnosticContext([
+                'stage' => self::class,
+            ])
         );
+
+        return new StageResult(success: true);
     }
 }

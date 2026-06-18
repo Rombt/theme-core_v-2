@@ -13,13 +13,24 @@ final class ConfigurationValidator
     ) {
     }
 
-/**
- * @param array<string, mixed> $configuration
- */
+    /**
+     * @param array<string, mixed> $configuration
+     */
     public function validate(array $configuration): void
     {
-        foreach ($this->schema->rules() as $section => $rules) {
-            $required = $rules['required'] ?? false;
+        /** @var array<string, array{
+         *     required: bool,
+         *     fields: array<string, array{
+         *         type: string,
+         *         required?: bool,
+         *         default?: mixed
+         *     }>
+         * }> $rules
+         */
+        $rules = $this->schema->rules();
+
+        foreach ($rules as $section => $rule) {
+            $required = $rule['required'];
 
             if (
                 $required
@@ -33,16 +44,18 @@ final class ConfigurationValidator
                 );
             }
 
-            if (!isset($configuration[$section])) {
-                continue;
+            $sectionConfig = $configuration[$section] ?? [];
+
+            if (!is_array($sectionConfig)) {
+                $sectionConfig = [];
             }
 
-            foreach ($rules['fields'] ?? [] as $field => $fieldRules) {
+            foreach ($rule['fields'] as $field => $fieldRules) {
                 $fieldRequired = $fieldRules['required'] ?? false;
 
                 if (
                     $fieldRequired
-                    && !array_key_exists($field, $configuration[$section])
+                    && !array_key_exists($field, $sectionConfig)
                 ) {
                     throw new InvalidConfigurationException(
                         sprintf(
@@ -53,18 +66,14 @@ final class ConfigurationValidator
                     );
                 }
 
-                if (!array_key_exists($field, $configuration[$section])) {
+                if (!array_key_exists($field, $sectionConfig)) {
                     continue;
                 }
 
-                $value = $configuration[$section][$field];
+                $value = $sectionConfig[$field];
+                $type = $fieldRules['type'];
 
-                $type = $fieldRules['type'] ?? null;
-
-                if (
-                    $type === 'string'
-                    && !is_string($value)
-                ) {
+                if ($type === 'string' && !is_string($value)) {
                     throw new InvalidConfigurationException(
                         sprintf(
                             'Configuration field [%s.%s] must be string.',
@@ -74,10 +83,7 @@ final class ConfigurationValidator
                     );
                 }
 
-                if (
-                    $type === 'bool'
-                    && !is_bool($value)
-                ) {
+                if ($type === 'bool' && !is_bool($value)) {
                     throw new InvalidConfigurationException(
                         sprintf(
                             'Configuration field [%s.%s] must be bool.',

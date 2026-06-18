@@ -26,11 +26,10 @@ final class WriteArtifactsStage implements StageInterface
     ): StageResult {
         $session = $context->session();
 
-        $artifacts = $session->getResource(
-            'artifacts'
-        );
+        /** @var array<int, array{path: string, content: string}>|null $artifacts */
+        $artifacts = $session->getResource('artifacts');
 
-        if ($artifacts === null) {
+        if (!is_array($artifacts)) {
             return new StageResult(
                 success: false,
                 error: new RuntimeException(
@@ -39,7 +38,7 @@ final class WriteArtifactsStage implements StageInterface
             );
         }
 
-        $entry = $this->diagnostics->create(
+        $this->diagnostics->create(
             level: DiagnosticLevel::INFO,
             message: 'Writing artifacts',
             context: new DiagnosticContext([
@@ -47,10 +46,10 @@ final class WriteArtifactsStage implements StageInterface
             ])
         );
 
-        // $session->getLogger()->write($entry);
-
         foreach ($artifacts as $artifact) {
-            $entry = $this->diagnostics->create(
+
+            /** @var array{path: string, content: string} $artifact */
+            $this->diagnostics->create(
                 level: DiagnosticLevel::INFO,
                 message: 'Artifact written',
                 context: new DiagnosticContext([
@@ -58,15 +57,6 @@ final class WriteArtifactsStage implements StageInterface
                     'artifact' => $artifact['path'],
                 ])
             );
-
-            // $session->getLogger()->write($entry);
-
-            // $session->getDiagnostics()->add(
-            //     sprintf(
-            //         'Artifact "%s" written',
-            //         $artifact['path']
-            //     )
-            // );
         }
 
         return new StageResult(
