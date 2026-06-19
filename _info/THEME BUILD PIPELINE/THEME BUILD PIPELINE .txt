@@ -1,0 +1,290 @@
+1. BUILD PIPELINE OVERVIEW
+
+2. PIPELINE PRINCIPLES
+
+3. INPUT DOMAIN
+
+4. CONFIGURATION PHASE
+
+5. COMPOSITION PHASE
+
+6. RESOLUTION PHASE
+
+7. COMPILATION PHASE
+
+8. GENERATION PHASE
+
+9. OUTPUT ASSEMBLY PHASE
+
+10. ARTIFACT MODEL
+
+11. PIPELINE CONTRACTS
+
+12. PIPELINE EXTENSIBILITY
+
+13. ERROR HANDLING
+
+14. DIAGNOSTICS
+
+15. INCREMENTAL BUILDS
+
+16. FUTURE PIPELINE EVOLUTION
+
+
+
+1. BUILD PIPELINE OVERVIEW
+
+Что такое Pipeline.
+
+Главная схема системы.
+
+Например:
+
+Configuration
+    ↓
+Composition
+    ↓
+Resolution
+    ↓
+Compilation
+    ↓
+Generation
+    ↓
+Assembly
+    ↓
+Theme
+
+Только обзор.
+
+Без деталей.
+
+2. PIPELINE PHILOSOPHY
+
+Почему вообще существует Pipeline.
+
+Здесь фиксируются идеи:
+
+Architecture First
+
+Build-Time First
+
+Deterministic Processing
+
+Stage Isolation
+
+Immutable Transitions
+
+Очень важный раздел.
+
+3. PIPELINE INPUT MODEL
+
+Что может поступать на вход.
+
+Например:
+
+Configuration
+
+Presets
+
+Design Tokens
+
+Layout Definitions
+
+Section Definitions
+
+Renderer Definitions
+
+Theme Metadata
+4. CONFIGURATION PHASE
+
+Первый настоящий этап.
+
+Что происходит.
+
+Что приходит.
+
+Что выходит.
+
+Контракты.
+
+Ограничения.
+
+Ошибки.
+
+5. COMPOSITION PHASE
+
+На мой взгляд один из крупнейших разделов.
+
+Потому что именно здесь рождается Theme Architecture.
+
+Нужно описать:
+
+Composition Graph
+
+Sections
+
+Layouts
+
+Composition Rules
+
+Composition Contracts
+
+Composition Context
+6. RESOLUTION PHASE
+
+Тоже огромный раздел.
+
+Например:
+
+Token Resolution
+
+Reference Resolution
+
+Alias Resolution
+
+Binding Resolution
+
+Dependency Resolution
+
+Inheritance Resolution
+7. COMPILATION PHASE
+
+Здесь начинается самое интересное.
+
+Нужно определить:
+
+Что такое Compilation?
+
+Потому что сейчас это ещё не формализовано.
+
+Например:
+
+Architecture Model
+        ↓
+Compiled Model
+
+Что конкретно меняется?
+
+Какие данные исчезают?
+
+Какие появляются?
+
+8. GENERATION PHASE
+
+Отдельный большой раздел.
+
+Потому что генерация файлов — это уже не компиляция.
+
+Нужно описать:
+
+Generators
+
+Generation Context
+
+Generator Contracts
+
+Generation Outputs
+9. OUTPUT ASSEMBLY PHASE
+
+Часто забывают.
+
+Но это отдельный этап.
+
+Например:
+
+generated/
+
+ещё не является темой.
+
+Нужно:
+
+организовать
+структурировать
+упаковать
+собрать
+
+финальный результат.
+
+10. ARTIFACT MODEL
+
+На мой взгляд критически важный раздел.
+
+Нужно формально определить:
+
+Что такое Artifact?
+
+Например:
+
+Generated File
+
+Generated Asset
+
+Generated Configuration
+
+Generated Metadata
+
+Сейчас такого определения нет.
+
+11. PIPELINE STATE MODEL
+
+Очень важный инженерный раздел.
+
+Например:
+
+Raw Configuration
+
+Composed Theme
+
+Resolved Theme
+
+Compiled Theme
+
+Generated Theme
+
+Assembled Theme
+
+Это состояния объекта Theme во время прохождения Pipeline.
+
+12. PIPELINE CONTRACTS
+
+Какие данные разрешено передавать между стадиями.
+
+Например:
+
+Stage Input Contract
+
+Stage Output Contract
+
+Без этого Pipeline со временем развалится.
+
+13. DIAGNOSTICS MODEL
+
+Что происходит при ошибках.
+
+Что такое:
+
+Warning
+
+Error
+
+Diagnostic
+
+Report
+14. BUILD REPRODUCIBILITY
+
+Очень важный раздел.
+
+Формально закрепляет:
+
+Same Input
+    =
+Same Output
+15. INCREMENTAL BUILDS
+
+Сейчас не нужен.
+
+Но документ должен предусматривать его.
+
+Потому что рано или поздно появится вопрос:
+
+Можно ли пересобирать только изменённые части?
