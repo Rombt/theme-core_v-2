@@ -8,10 +8,6 @@ parameters:
     tmpDir: .cache/phpstan
 
     ignoreErrors:
-        # TODO(v2): review runtime validation vs PHPDoc guarantees
-        -
-            message: '#Call to function is_subclass_of\(\) with class-string<Rombt\\ThemeCore\\Bootstrap\\Bootstrappers\\BootstrapperInterface> and .* will always evaluate to true#'
-            path: core/Bootstrap/BootstrapRegistry.php
         -
             message: '#Instanceof between .*ServiceDefinitionProviderInterface.* will always evaluate to true#'
             path: core/Bootstrap/Bootstrappers/CompositionBootstrapper.php
