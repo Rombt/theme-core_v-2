@@ -1,0 +1,558 @@
+theme-core v-2
+ARCHITECTURAL GLOSSARY
+(v1.0.0)
+
+Status: Foundational Vocabulary
+
+====================================================================
+1. PURPOSE OF THE GLOSSARY
+====================================================================
+
+    Architectural Glossary определяет официальный словарь терминов theme-core v-2.
+
+    Цель документа:
+        - фиксировать архитектурные понятия
+        - предотвращать semantic drift
+        - обеспечивать единый язык системы
+        - синхронизировать архитектурное мышление
+        - создавать стабильную терминологическую базу
+
+    Glossary является частью архитектуры системы.
+
+    Каждый термин должен иметь одно значение во всех слоях системы.
+    
+
+====================================================================
+2. SYSTEM DOMAIN
+====================================================================
+
+    2.1 THEME-CORE V-2
+    ================================================================
+
+        theme-core v-2 — Configuration-Driven Theme 
+            Architecture Compiler для WordPress.
+
+        Система преобразует архитектурное описание темы 
+            в набор готовых артефактов WordPress Theme.
+
+        Основной продукт системы: WordPress Theme
+
+        Основная ответственность: Theme Architecture Compilation
+
+    2.2 ARCHITECTURE
+    ================================================================
+
+        Архитектура темы представляет собой декларативную модель темы,
+            описывающую её 
+                структуру, 
+                визуальную систему,
+                композиционные правила,
+                контракты и зависимости,
+            независимо от конкретных технологий реализации.
+
+        Архитектура является исходным материалом для процесса компиляции и служит
+            единственным источником истины для построения темы.
+
+        Архитектура — это источник истины.
+        
+        Тема — её скомпилированное представление.
+
+
+    2.3 THEME
+    ================================================================
+
+        Theme — compiled architectural product, генерированный theme-core v-2.
+
+        Theme представляет собой presentation layer сайта.
+
+        Theme определяет:
+            - visual architecture
+            - composition architecture
+            - design system integration
+            - rendering architecture
+            - generated assets
+
+        Theme не является:
+            - сайтом целиком
+            - CMS
+            - контентом
+            - системой хранения данных
+
+
+    2.4 SITE
+    ================================================================
+   
+        Site — целевая система, для которой создаётся Theme.
+
+        В контексте WordPress сайт состоит из:
+            - data layer
+            - application/runtime layer
+            - presentation layer
+
+        Theme является presentation layer сайта.
+
+        theme-core v-2 не создаёт весь сайт, но отвечает за одну из его ключевых
+            архитектурных частей.
+
+====================================================================
+3. STRUCTURAL DOMAIN
+====================================================================
+
+    3.1 PAGE
+    ================================================================
+    
+        Page — compositional architectural unit Theme.
+
+        Page определяет:
+            - composition structure
+            - section hierarchy
+            - layout organization
+            - rendering participation
+
+        Page состоит из Sections.
+
+
+    3.2 SECTION
+    ================================================================
+        Section — reusable semantic composition unit.
+
+        Section является фундаментальным строительным блоком композиционной архитектуры.
+
+        Section может участвовать в:
+            - page composition
+            - layout composition
+            - composition graphs
+            - renderer mappings
+
+        Section является renderer-independent entity.
+
+        Section не является:
+            - page template
+            - rendering implementation
+            - standalone page
+
+
+    3.3 LAYOUT
+    ================================================================
+
+        Layout — structural organization mechanism.
+
+        Layout отвечает за:
+            - positioning
+            - alignment
+            - sizing
+            - structural flow
+            - responsive structure
+
+        Layout определяет структуру, но не определяет содержимое.
+
+
+    3.4 COMPOSITION
+    ================================================================
+    
+        Composition — процесс организации архитектурных сущностей
+            в единую структуру Theme.
+
+        Composition отвечает за:
+            - assembly hierarchy
+            - section organization
+            - layout relationships
+            - structural composition
+            - architecture assembly
+
+        Composition является центральным структурным механизмом системы.
+
+====================================================================
+4. COMPOSITION GRAPH DOMAIN
+====================================================================
+
+    4.1 COMPOSITION GRAPH
+    ================================================================
+
+        Composition Graph — canonical structural representation Theme.
+
+        Graph описывает:
+            - hierarchy
+            - relationships
+            - dependencies
+            - composition structure
+
+        Composition Graph является центральным представлением Composition Layer.
+
+
+    4.2 SLOT
+    ================================================================
+
+        Slot — controlled insertion point внутри композиционной структуры.
+
+        Slot используется для:
+            - structural composition
+            - reusable assembly
+            - dynamic placement
+            - architecture extension
+
+====================================================================
+5. DESIGN SYSTEM DOMAIN
+====================================================================
+
+    5.1 DESIGN SYSTEM
+    ================================================================
+
+        Design System — central visual contract layer Theme.
+
+        Design System определяет:
+            - typography
+            - spacing
+            - colors
+            - dimensions
+            - breakpoints
+            - visual scales
+            - visual consistency
+
+        Design System не зависит от renderer.
+
+
+    5.2 DESIGN TOKEN
+    ================================================================
+
+        Design Token — canonical visual definition.
+
+        Tokens являются источником истины для визуальной архитектуры.
+
+        Tokens могут описывать:
+            - colors
+            - spacing
+            - typography
+            - shadows
+            - radii
+            - breakpoints
+
+====================================================================
+6. CONFIGURATION DOMAIN
+====================================================================
+
+    6.1 CONFIGURATION
+    ================================================================
+
+        Configuration — declarative architectural definition Theme.
+
+        Configuration описывает:
+            - pages
+            - sections
+            - layouts
+            - design rules
+            - composition rules
+            - renderer bindings
+
+        Configuration не содержит:
+            - generated output
+            - final HTML
+            - runtime state
+
+
+    6.2 PRESET
+    ================================================================
+
+        Preset — reusable configuration package.
+
+        Preset может содержать:
+
+            - design definitions
+            - composition definitions
+            - layout definitions
+            - renderer definitions
+
+        Preset предназначен для повторного использования архитектуры.
+
+
+    6.3 DEMO
+    ================================================================
+
+        Demo — predefined theme assembly definition.
+
+        Demo описывает:
+            - configuration packages
+            - design presets
+            - composition presets
+            - content packages
+            - provisioning instructions
+
+        Demo определяет, как должна быть подготовлена
+            готовая инсталляция темы.
+
+        Demo не является:
+            - XML dump
+            - site snapshot
+            - static export
+
+====================================================================
+7. PIPELINE DOMAIN
+====================================================================
+
+    7.1 PIPELINE
+    ================================================================
+
+        Pipeline — multi-stage transformation system.
+
+        Pipeline преобразует архитектурные определения 
+            в готовые Theme Artifacts.
+
+        Pipeline является центральным механизмом 
+            архитектурной компиляции.
+
+
+    7.2 ARCHITECTURAL STATE
+    ================================================================
+
+        Architectural State — состояние архитектурной модели
+            на определённой стадии Pipeline.
+
+        Примеры:
+            - raw configuration
+            - normalized configuration
+            - composition graph
+            - resolved model
+            - compiled model
+
+
+    7.3 STAGE
+    ================================================================
+
+        Stage — логическая граница Pipeline.
+
+        Stage объединяет связанные преобразования в единую фазу обработки.
+
+
+    7.4 HANDLER
+    ================================================================
+
+        Handler — минимальная единица преобразования.
+
+        Handler выполняет одну детерминированную трансформацию.
+
+        Handler должен быть:
+            - isolated
+            - predictable
+            - explicit
+            - composable
+
+
+    7.5 TRANSFORMATION
+    ================================================================
+
+        Transformation — контролируемое преобразование одного
+            Architectural State в другой.
+
+        Каждая Transformation должна быть:
+            - deterministic
+            - observable
+            - explicit
+
+====================================================================
+8. RESOLUTION DOMAIN
+====================================================================
+
+    8.1 RESOLUTION
+    ================================================================
+
+        Resolution — процесс связывания архитектурных
+            абстракций с конкретными реализациями.
+
+        Resolution может включать:
+            - token resolution
+            - reference resolution
+            - binding resolution
+            - renderer resolution
+
+        Resolution не является Rendering.
+
+
+    8.2 CAPABILITY
+    ================================================================
+
+        Capability — архитектурная возможность системы.
+
+        Capability описывает, что может поддерживать система.
+
+
+    8.3 REGISTRY
+    ================================================================
+
+        Registry — discoverability mechanism.
+
+        Registry отвечает за:
+            - registration
+            - discovery
+            - lookup
+            - metadata access
+
+        Registry устраняет жёсткие зависимости.
+
+====================================================================
+9. RENDERER DOMAIN
+====================================================================
+
+    9.1 RENDERER
+    ================================================================
+
+    Renderer — implementation adapter,
+        преобразующий архитектурную модель в renderer-specific representation.
+
+    Примеры:
+        - PHP Renderer
+        - Gutenberg Renderer
+        - Elementor Renderer
+
+    Renderer не определяет архитектуру.
+
+
+    9.2 RENDER MODEL
+    ================================================================
+
+        Render Model — renderer-ready representation
+            архитектурной модели.
+
+
+    9.3 RENDERER MAPPING
+    ================================================================
+
+        Renderer Mapping — binding между:
+            architectural entity и renderer implementation
+
+====================================================================
+10. ARTIFACT DOMAIN
+====================================================================
+
+    10.1 ARTIFACT
+    ================================================================
+
+        Artifact — generated output системы.
+
+        Artifact является результатом  Pipeline execution.
+
+        Примеры:
+            - theme.json
+            - PHP files
+            - CSS files
+            - assets
+            - metadata
+
+
+    10.2 ARTIFACT GENERATION
+    ================================================================
+
+        Artifact Generation — процесс создания артефактов
+            из скомпилированной модели темы.
+
+
+    10.3 INTERMEDIATE REPRESENTATION (IR)
+    ================================================================
+
+        Intermediate Representation — внутреннее представление,
+            используемое между стадиями Pipeline.
+
+        IR обеспечивает:
+            - deterministic processing
+            - stage isolation
+            - predictable transformations
+
+====================================================================
+11. PROVISIONING DOMAIN
+====================================================================
+
+    11.1 PROVISIONING
+    ================================================================
+
+    Provisioning — система подготовки готовой темы
+        к использованию в WordPress.
+
+    Provisioning начинается после завершения Theme Build Pipeline.
+
+    Provisioning отвечает за:
+        - installation preparation
+        - demo preparation
+        - content import
+        - preset application
+        - site bootstrap
+        - environment configuration
+
+
+    11.2 SITE BOOTSTRAP
+    ================================================================
+
+        Site Bootstrap — процесс подготовки WordPress installation
+            для работы с Theme.
+
+
+    11.3 CONTENT PACKAGE
+    ================================================================
+
+        Content Package — набор данных, используемый для демонстрации
+            возможностей Theme.
+
+        Content Package может включать:
+            - posts
+            - pages
+            - media
+            - menus
+            - WooCommerce entities
+
+
+    11.4 INSTALLATION PROFILE
+    ================================================================
+
+        Installation Profile — описание того,
+            каким должен стать WordPress сайт после завершения Provisioning.
+
+====================================================================
+12. INTEGRATION DOMAIN
+====================================================================
+
+    12.1 INTEGRATION
+    ================================================================
+
+        Integration — controlled connection между
+            Theme Architecture и внешними системами.
+
+
+    12.2 ADAPTER
+    ================================================================
+
+        Adapter — boundary isolation mechanism между core architecture
+            и external systems.
+
+
+    12.3 WORDPRESS
+    ================================================================
+
+        WordPress — target runtime platform.
+
+        WordPress предоставляет:
+            - CMS capabilities
+            - storage
+            - users
+            - APIs
+            - plugin ecosystem
+            - runtime lifecycle
+
+        theme-core v-2 использует WordPress, но не заменяет его.
+
+====================================================================
+13. CORE PRINCIPLES
+====================================================================
+
+    Theme = Compiled Architecture
+
+    Configuration = Source of Truth
+
+    Composition = Structural Foundation
+
+    Pipeline = Transformation Engine
+
+    Renderer = Implementation Detail
+
+    Artifacts = Primary Output
+
+    Provisioning = Theme Delivery System
+
+    WordPress = Runtime Platform

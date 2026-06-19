@@ -1,6 +1,6 @@
 theme-core v-2
 ARCHITECTURAL GLOSSARY
-(EVOLUTIONARY PLATFORM VERSION)
+(v1.0.0)
 
 ==================================================
 1. PURPOSE OF THE GLOSSARY
@@ -673,4 +673,3 @@ ARCHITECTURAL GLOSSARY
     Визуализация = детали реализации, а не архитектурная собственность.
 
     Композиция = центральный структурный механизм.
-
