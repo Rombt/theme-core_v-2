@@ -4,22 +4,31 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Runtime\Session;
 
-use Rombt\ThemeCore\Runtime\Result\BuildResult;
 use InvalidArgumentException;
+use Rombt\ThemeCore\Artifacts\ArtifactCollection;
+use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
+use Rombt\ThemeCore\Runtime\Result\BuildResult;
 
 final class BuildSession
 {
     private string $id;
-    private string $state;
-    private BuildResources $resources;
-    private ?BuildResult $buildResult = null;
 
+    private string $state;
+
+    private BuildResources $resources;
+
+    private ArtifactCollectionInterface $artifacts;
+
+    private ?BuildResult $buildResult = null;
 
     public function __construct(string $id)
     {
         $this->id = $id;
         $this->state = RuntimeState::CREATED;
+
         $this->resources = new BuildResources();
+
+        $this->artifacts = new ArtifactCollection();
     }
 
     public function getId(): string
@@ -45,6 +54,11 @@ final class BuildSession
     public function getResource(string $key): mixed
     {
         return $this->resources->get($key);
+    }
+
+    public function artifacts(): ArtifactCollectionInterface
+    {
+        return $this->artifacts;
     }
 
     public function setBuildResult(BuildResult $buildResult): void

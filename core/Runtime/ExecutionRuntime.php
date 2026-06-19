@@ -29,6 +29,9 @@ final class ExecutionRuntime implements ExecutionRuntimeInterface
 
         $session = $context->session();
 
+        $session->setState(RuntimeState::RUNNING);
+
+
         try {
             $success = $this->pipelineExecutor->execute($pipeline, $context, $app);
 
