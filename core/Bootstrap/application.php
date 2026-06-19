@@ -109,6 +109,12 @@ $pipeline = new Pipeline([
 $result = $runtimeKernel->execute($pipeline);
 
 
+/*
+|--------------------------------------------------------------------------
+| The Runtime END
+|--------------------------------------------------------------------------
+*/
+
 /** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
 $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
