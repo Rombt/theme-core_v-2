@@ -1,0 +1,339 @@
+theme-core v-2
+Architectural Foundation
+Core Development Compass
+(v2.0.0)
+
+
+
+====================================================================
+1. SYSTEM IDENTITY
+====================================================================
+
+    theme-core v-2 рассматривает Theme не как набор шаблонов,
+        а как архитектурную систему.
+
+    Theme должна проектироваться, собираться и развиваться
+        как архитектура, а не как коллекция файлов.
+
+    Главный продукт системы: WordPress Theme
+
+    Главный объект проектирования: Theme Architecture
+
+    Главный контекст существования темы: WordPress Site
+
+    Ключевой принцип: Theme = Compiled Architecture
+
+    Тема является результатом:
+        - архитектурного проектирования
+        - композиции
+        - разрешения зависимостей
+        - компиляции
+        - генерации артефактов
+
+    а не результатом:
+        - копирования шаблонов
+        - ручной сборки файлов
+        - импорта snapshot-контента
+        - XML demo dumps
+
+====================================================================
+2. WORDPRESS ROLE
+====================================================================
+
+    WordPress является Runtime Platform.
+
+    WordPress отвечает за:
+        - CMS capabilities
+        - data storage
+        - user management
+        - content APIs
+        - plugin ecosystem
+        - runtime lifecycle
+        - application execution
+
+    theme-core v-2 НЕ:
+        - заменяет WordPress
+        - создаёт новую CMS
+        - ломает WordPress lifecycle
+        - конкурирует с WordPress ecosystem
+
+    theme-core v-2 использует WordPress как целевую платформу исполнения.
+
+    Архитектурная формула:
+        WordPress = Runtime Platform
+
+    theme-core v-2 = Theme Architecture Compiler
+
+====================================================================
+3. PRIMARY SYSTEM RESPONSIBILITY
+====================================================================
+
+    theme-core v-2 отвечает за создание архитектуры WordPress Theme.
+
+    Theme Architecture
+        - visual architecture
+        - composition architecture
+        - layout architecture
+        - renderer abstraction
+        - architectural contracts
+
+    Design System
+        - visual language
+        - design tokens
+        - typography
+        - spacing
+        - colors
+        - responsive foundations
+
+    Composition System
+        - page composition
+        - section composition
+        - layout composition
+        - composition contracts
+        - composition graph construction
+
+    Artifact Generation
+        - generated configuration
+        - generated assets
+        - generated metadata
+        - generated theme artifacts
+
+    Provisioning Support
+        - demo definitions
+        - installation profiles
+        - content packages
+        - provisioning metadata
+
+====================================================================
+4. CORE ARCHITECTURAL PRINCIPLE
+====================================================================
+
+    Система строится вокруг идеи: Architecture over Templates
+
+    Template-centric подход:
+        - duplicated layouts
+        - duplicated templates
+        - manually maintained files
+        - copied implementations
+
+    Architecture-centric подход:
+        - reusable sections
+        - reusable composition
+        - design tokens
+        - renderer abstraction
+        - architectural contracts
+        - generated artifacts
+
+    Каждая Theme должна создаваться из архитектурных определений.
+
+    Архитектура является источником истины.
+
+====================================================================
+5. SITE MODEL
+====================================================================
+
+    theme-core v-2 рассматривает Theme в контексте целевого сайта.
+
+    Site состоит из трёх основных частей:
+        Data Layer
+        Runtime Layer
+        Presentation Layer
+
+    WordPress отвечает за:
+        - Data Layer
+        - Runtime Layer
+
+    Theme отвечает за:
+        - Presentation Layer
+
+    Theme не существует изолированно.
+
+    Theme является визуальной и композиционной подсистемой сайта.
+
+    Следствие: theme-core v-2 проектирует
+        не весь сайт целиком,
+
+    а его Presentation Layer.
+
+====================================================================
+6. DEMO PHILOSOPHY                                                      todo: кажется этот раздел нужно пересматривать
+====================================================================
+
+    Demo является архитектурным описанием готовой инсталляции Theme.
+
+    Demo НЕ является:
+        - XML dump
+        - site snapshot
+        - copied website
+        - collection of exported pages
+
+    Demo является:
+        - configuration package
+        - composition package
+        - design package
+        - content package
+        - provisioning definition
+
+    Demo описывает:
+        как должна выглядеть готовая инсталляция Theme.
+
+    Demo описывает архитектуру и процесс подготовки окружения,
+
+    а не HTML для импорта.
+
+====================================================================
+7. RENDERING MODEL
+====================================================================
+
+    theme-core v-2 использует Renderer Abstraction Model.
+
+    Архитектура Theme должна быть независима от конкретной реализации рендеринга.
+
+    Одна и та же архитектура может работать через:
+        - PHP Renderer
+        - Gutenberg Renderer
+        - Elementor Renderer
+        - WooCommerce Renderer
+        - Future Renderers
+
+    Следствие:  Renderer является адаптером реализации.
+
+    Renderer не является архитектурой.
+
+====================================================================
+8. DESIGN SYSTEM FOUNDATION
+====================================================================
+
+    Design System является центральным источником визуальной истины.
+
+    Design System определяет:
+        - typography
+        - spacing
+        - colors
+        - dimensions
+        - breakpoints
+        - visual scales
+        - visual rhythm
+        - component consistency
+
+    Design System не является набором CSS.
+
+    Design System является:
+
+    Visual Contract Layer
+
+    для всей Theme Architecture.
+
+====================================================================
+9. COMPOSITION MODEL
+====================================================================
+
+    Композиция является главным механизмом построения Theme Architecture.
+
+    Архитектура строится из:
+        - pages
+        - sections
+        - layouts
+        - slots
+        - composition contracts
+
+    Композиция отвечает за:
+        - structural assembly
+        - hierarchy construction
+        - reusable architecture
+        - architecture scalability
+
+    Композиция должна быть:
+        - reusable
+        - composable
+        - deterministic
+        - renderer-independent
+        - configuration-driven
+
+====================================================================
+10. PROVISIONING MODEL
+====================================================================
+
+    Provisioning является отдельной системой, следующей после Theme Build Pipeline.
+
+    Pipeline отвечает за: Theme
+
+    Provisioning отвечает за: Ready-to-Use Site
+
+    Provisioning включает:
+        - demo content
+        - installation profiles
+        - default configuration
+        - media preparation
+        - menu assignment
+        - WooCommerce preparation
+        - site bootstrap
+
+    Provisioning не создаёт Theme.
+
+    Provisioning подготавливает WordPress к использованию Theme.
+
+====================================================================
+11. MULTISITE ARCHITECTURE
+====================================================================
+
+    Архитектура должна проектироваться с возможностью повторного использования
+        между несколькими сайтами.
+
+    Система должна поддерживать:
+        - single-site usage
+        - multisite usage
+
+    Переиспользованию подлежит:
+        - architecture
+        - composition
+        - design system
+        - presets
+        - provisioning definitions
+
+    Главный объект повторного использования: 
+        не шаблон,
+        а архитектура.
+
+====================================================================
+12. CORE ENGINEERING DIRECTION
+====================================================================
+
+    Система должна стремиться к максимальному разделению ответственности.
+
+    Необходимо отделять:
+        - Theme Architecture
+        - Composition Logic
+        - Renderer Implementations
+        - Design System
+        - Artifact Generation
+        - Provisioning Logic
+        - WordPress Runtime
+
+    Предпочтение получают решения, которые усиливают:
+        - abstraction
+        - composition
+        - determinism
+        - configurability
+        - reusability
+        - renderer independence
+        - build-time processing
+
+====================================================================
+13. FINAL SYSTEM DEFINITION
+====================================================================
+
+    theme-core v-2 является системой архитектурного проектирования,
+        композиции и компиляции WordPress Themes.
+
+    Система позволяет описывать Theme через конфигурацию,
+        архитектурные контракты,
+        композицию и дизайн-систему,
+        после чего генерирует набор готовых Theme Artifacts.
+
+    Полученная Theme может быть дополнительно подготовлена
+        через Provisioning System для получения готовой
+        WordPress Installation.
+
+    Главная цель проекта: создавать WordPress Themes как результат архитектуры,
+        а не как результат ручной сборки файлов.
