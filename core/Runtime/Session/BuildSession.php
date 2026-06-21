@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Runtime\Session;
 
 use InvalidArgumentException;
-use Rombt\ThemeCore\Artifacts\ArtifactCollection;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
 
@@ -21,14 +20,18 @@ final class BuildSession
 
     private ?BuildResult $buildResult = null;
 
-    public function __construct(string $id)
-    {
+    private mixed $theme = null;
+
+    public function __construct(
+        string $id,
+        BuildResources $resources,
+        ArtifactCollectionInterface $artifacts
+    ) {
         $this->id = $id;
         $this->state = RuntimeState::CREATED;
 
-        $this->resources = new BuildResources();
-
-        $this->artifacts = new ArtifactCollection();
+        $this->resources = $resources;
+        $this->artifacts = $artifacts;
     }
 
     public function getId(): string
@@ -80,5 +83,15 @@ final class BuildSession
         }
 
         $this->state = $state;
+    }
+
+    public function setTheme(mixed $theme): void
+    {
+        $this->theme = $theme;
+    }
+
+    public function theme(): mixed
+    {
+        return $this->theme;
     }
 }

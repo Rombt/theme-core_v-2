@@ -19,6 +19,8 @@ final class BuildResultFactory implements BuildResultFactoryInterface
             status: RuntimeState::COMPLETED,
             metadata: [
                 'session_id' => $session->getId(),
+                'final_state' => $session->getState(),
+                'artifact_count' => $session->artifacts()->count(),
             ]
         );
     }
@@ -34,6 +36,8 @@ final class BuildResultFactory implements BuildResultFactoryInterface
             error: $error,
             metadata: [
                 'session_id' => $session->getId(),
+                'final_state' => $session->getState(),
+                'artifact_count' => $session->artifacts()->count(),
             ]
         );
     }
