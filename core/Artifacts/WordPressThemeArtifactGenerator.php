@@ -6,33 +6,53 @@ namespace Rombt\ThemeCore\Artifacts;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
-use Rombt\ThemeCore\Configuration\Configuration;
+use Rombt\ThemeCore\Theme\ThemeConfiguration;
 
 final class WordPressThemeArtifactGenerator implements ArtifactGeneratorInterface
 {
     public function generate(
-        Configuration $configuration,
+        ThemeConfiguration $configuration,
         ArtifactCollectionInterface $artifacts
     ): void {
+        $themeName = (string) $configuration->get('name');
+
         $artifacts->add(
             new Artifact(
                 id: new ArtifactId('style-css'),
                 type: ArtifactType::FILE,
                 destination: 'style.css',
-                content: $this->generateStyleCss($configuration),
+                content: <<<CSS
+/*
+Theme Name: {$themeName}
+*/
+CSS
             )
         );
-    }
 
-    private function generateStyleCss(
-        Configuration $configuration
-    ): string {
-        $name = (string) $configuration->get('theme.name');
+        $artifacts->add(
+            new Artifact(
+                id: new ArtifactId('functions-php'),
+                type: ArtifactType::FILE,
+                destination: 'functions.php',
+                content: <<<'PHP'
+<?php
 
-        return <<<CSS
-/*
-Theme Name: {$name}
-*/
-CSS;
+declare(strict_types=1);
+PHP
+            )
+        );
+
+        $artifacts->add(
+            new Artifact(
+                id: new ArtifactId('index-php'),
+                type: ArtifactType::FILE,
+                destination: 'index.php',
+                content: <<<'PHP'
+<?php
+
+declare(strict_types=1);
+PHP
+            )
+        );
     }
 }

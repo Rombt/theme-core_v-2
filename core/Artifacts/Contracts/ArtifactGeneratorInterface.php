@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Contracts;
 
-use Rombt\ThemeCore\Configuration\Configuration;
+use Rombt\ThemeCore\Theme\ThemeConfiguration;
 
 interface ArtifactGeneratorInterface
 {
     public function generate(
-        Configuration $configuration,
+        ThemeConfiguration $configuration,
         ArtifactCollectionInterface $artifacts
     ): void;
 }

@@ -8,9 +8,10 @@ use InvalidArgumentException;
 
 final readonly class ArtifactId
 {
-    public function __construct(
-        private string $value
-    ) {
+    private string $value;
+
+    public function __construct(string $value)
+    {
         $value = trim($value);
 
         if ($value === '') {
