@@ -7,6 +7,7 @@ namespace Rombt\ThemeCore\Runtime\Session;
 use InvalidArgumentException;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
+use Rombt\ThemeCore\Theme\ThemeDefinition;
 
 final class BuildSession
 {
@@ -20,7 +21,7 @@ final class BuildSession
 
     private ?BuildResult $buildResult = null;
 
-    private mixed $theme = null;
+    private ?ThemeDefinition $theme = null;
 
     public function __construct(
         string $id,
@@ -85,12 +86,13 @@ final class BuildSession
         $this->state = $state;
     }
 
-    public function setTheme(mixed $theme): void
-    {
+    public function setTheme(
+        ThemeDefinition $theme
+    ): void {
         $this->theme = $theme;
     }
 
-    public function theme(): mixed
+    public function theme(): ?ThemeDefinition
     {
         return $this->theme;
     }

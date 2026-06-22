@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Configuration;
 
-final class Configuration
+use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
+
+final class Configuration implements ConfigurationInterface
 {
     /**
      * @param array<string, mixed> $data
@@ -13,7 +15,6 @@ final class Configuration
         private readonly array $data,
     ) {
     }
-
 
     public function get(string $key): mixed
     {
@@ -31,7 +32,6 @@ final class Configuration
 
         return $value;
     }
-
 
     /**
      * @return array<string, mixed>

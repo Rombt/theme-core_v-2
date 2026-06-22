@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Runtime\Stages;
 
 use Throwable;
+use RuntimeException;
 use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Artifacts\FileArtifactWriter;
+use Rombt\ThemeCore\Artifacts\ThemeBuildPathResolver;
+use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Artifacts\Contracts\ArtifactWriterInterface;
+use Rombt\ThemeCore\Theme\ThemeDefinition;
 
 final class WriteThemeArtifactsStage implements StageInterface
 {
     public function __construct(
-        private readonly ArtifactWriterInterface $writer
+        private readonly ConfigurationInterface $configuration
     ) {
     }
 
@@ -23,18 +27,34 @@ final class WriteThemeArtifactsStage implements StageInterface
         Application $app
     ): StageResult {
         try {
-            $this->writer->write(
-                $context->session()->artifacts()
-            );
+            $theme = $context->session()->theme();
+
+            echo '$theme = ';
+            print_r($theme);
+            echo PHP_EOL;
+
+            if (!$theme instanceof ThemeDefinition) {
+                throw new RuntimeException(
+                    'Theme definition not loaded.'
+                );
+            }
+
+
+            $themePath = (
+                new ThemeBuildPathResolver((string) $this->configuration->get('paths.build'))
+                )->resolveThemePath($theme);
+
+            echo '$themePath = ';
+            print_r($themePath);
+            echo PHP_EOL;
+
+
+            $writer = new FileArtifactWriter($themePath);
+
+            $writer->write($context->session()->artifacts());
 
             return new StageResult(
-                success: true,
-                metadata: [
-                    'artifact_count' => $context
-                        ->session()
-                        ->artifacts()
-                        ->count(),
-                ]
+                success: true
             );
         } catch (Throwable $e) {
             return new StageResult(

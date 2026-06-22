@@ -11,7 +11,7 @@ use Rombt\ThemeCore\Artifacts\Contracts\ArtifactWriterInterface;
 final class FileArtifactWriter implements ArtifactWriterInterface
 {
     public function __construct(
-        private readonly string $buildDirectory
+        private readonly string $themePath
     ) {
     }
 
@@ -19,24 +19,15 @@ final class FileArtifactWriter implements ArtifactWriterInterface
         ArtifactCollectionInterface $artifacts
     ): void {
         foreach ($artifacts as $artifact) {
-            $path = $this->buildDirectory
-                . DIRECTORY_SEPARATOR
-                . $artifact->destination();
+            $path = $this->themePath . DIRECTORY_SEPARATOR . ltrim($artifact->destination(), '/\\');
 
             $directory = dirname($path);
 
             if (!is_dir($directory)) {
-                mkdir(
-                    $directory,
-                    0777,
-                    true
-                );
+                mkdir($directory, 0777, true);
             }
 
-            $result = file_put_contents(
-                $path,
-                $artifact->content()
-            );
+            $result = file_put_contents($path, $artifact->content());
 
             if ($result === false) {
                 throw new RuntimeException(

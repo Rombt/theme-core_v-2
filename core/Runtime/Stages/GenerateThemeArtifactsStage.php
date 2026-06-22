@@ -10,8 +10,8 @@ use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Theme\ThemeConfiguration;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
+use Rombt\ThemeCore\Theme\ThemeDefinition;
 
 final class GenerateThemeArtifactsStage implements StageInterface
 {
@@ -29,9 +29,9 @@ final class GenerateThemeArtifactsStage implements StageInterface
                 ->session()
                 ->theme();
 
-            if (!$theme instanceof ThemeConfiguration) {
+            if (!$theme instanceof ThemeDefinition) {
                 throw new RuntimeException(
-                    'Theme configuration not loaded.'
+                    'Theme definition not loaded.'
                 );
             }
 

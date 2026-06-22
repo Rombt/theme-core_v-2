@@ -10,11 +10,13 @@ use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Theme\Contracts\ThemeConfigurationLoaderInterface;
+use Rombt\ThemeCore\Theme\ThemeDefinitionFactory;
 
 final class LoadThemeConfigurationStage implements StageInterface
 {
     public function __construct(
-        private readonly ThemeConfigurationLoaderInterface $loader
+        private readonly ThemeConfigurationLoaderInterface $loader,
+        private readonly ThemeDefinitionFactory $definitions,
     ) {
     }
 
@@ -23,7 +25,11 @@ final class LoadThemeConfigurationStage implements StageInterface
         Application $app
     ): StageResult {
         try {
-            $theme = $this->loader->load();
+            $configuration = $this->loader->load();
+
+            $theme = $this->definitions->create(
+                $configuration
+            );
 
             $context
                 ->session()

@@ -38,6 +38,8 @@ use Rombt\ThemeCore\Runtime\Stages\GenerateThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\LoadThemeConfigurationStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteThemeArtifactsStage;
 use Rombt\ThemeCore\Theme\ThemeConfigurationLoader;
+use Rombt\ThemeCore\Theme\ThemeDefinitionFactory;
+use Rombt\ThemeCore\Artifacts\ThemeBuildPathResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -95,23 +97,22 @@ $runtimeKernel = new RuntimeKernel(
     )
 );
 
+/** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
+$configuration = $app->getContext()->get(
+    ApplicationContextKeys::CONFIGURATION
+);
+
+$buildRoot = $configuration->get('paths.build');
+
 $pipeline = new Pipeline([
     new LoadThemeConfigurationStage(
-        new ThemeConfigurationLoader(
-            dirname(__DIR__, 2) . '/config/themeConfig.php'
-        )
+        new ThemeConfigurationLoader(dirname(__DIR__, 2) . '/config/themeConfig.php'),
+        new ThemeDefinitionFactory()
     ),
 
-    new GenerateThemeArtifactsStage(
-        new WordPressThemeArtifactGenerator()
-    ),
+    new GenerateThemeArtifactsStage(new WordPressThemeArtifactGenerator()),
 
-    new WriteThemeArtifactsStage(
-        new FileArtifactWriter(
-            dirname(__DIR__, 2)
-            . '/build/my-theme'
-        )
-    ),
+    new WriteThemeArtifactsStage($configuration)
 ]);
 
 $result = $runtimeKernel->execute($pipeline);
@@ -156,11 +157,6 @@ $logger->write(
 /** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
 $diagnostics = $app->getContext()->get(
     ApplicationContextKeys::DIAGNOSTICS
-);
-
-/** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
-$configuration = $app->getContext()->get(
-    ApplicationContextKeys::CONFIGURATION
 );
 
 $diagnosticsFilePath = $configuration->get(

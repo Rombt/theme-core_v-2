@@ -8,7 +8,9 @@ return [
 
     'environment' => [],
 
-    'paths' => [],
+    'paths' => [
+        'build' => 'build',
+    ],
 
     'logging' => [
         'enabled' => true,

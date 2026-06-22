@@ -6,15 +6,17 @@ namespace Rombt\ThemeCore\Artifacts;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
-use Rombt\ThemeCore\Theme\ThemeConfiguration;
+use Rombt\ThemeCore\Theme\ThemeDefinition;
 
 final class WordPressThemeArtifactGenerator implements ArtifactGeneratorInterface
 {
     public function generate(
-        ThemeConfiguration $configuration,
+        ThemeDefinition $theme,
         ArtifactCollectionInterface $artifacts
     ): void {
-        $themeName = (string) $configuration->get('name');
+        $themeName = $theme
+            ->metadata()
+            ->name();
 
         $artifacts->add(
             new Artifact(
@@ -22,10 +24,10 @@ final class WordPressThemeArtifactGenerator implements ArtifactGeneratorInterfac
                 type: ArtifactType::FILE,
                 destination: 'style.css',
                 content: <<<CSS
-/*
-Theme Name: {$themeName}
-*/
-CSS
+                    /*
+                    Theme Name: {$themeName}
+                    */
+                    CSS
             )
         );
 
@@ -35,10 +37,10 @@ CSS
                 type: ArtifactType::FILE,
                 destination: 'functions.php',
                 content: <<<'PHP'
-<?php
+                    <?php
 
-declare(strict_types=1);
-PHP
+                        declare(strict_types=1);
+                    PHP
             )
         );
 
@@ -48,10 +50,10 @@ PHP
                 type: ArtifactType::FILE,
                 destination: 'index.php',
                 content: <<<'PHP'
-<?php
+                    <?php
 
-declare(strict_types=1);
-PHP
+                    declare(strict_types=1);
+                    PHP
             )
         );
     }

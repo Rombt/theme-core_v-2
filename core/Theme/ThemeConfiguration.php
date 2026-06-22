@@ -16,7 +16,19 @@ final readonly class ThemeConfiguration
 
     public function get(string $key, mixed $default = null): mixed
     {
-        return $this->data[$key] ?? $default;
+        $segments = explode('.', $key);
+
+        $value = $this->data;
+
+        foreach ($segments as $segment) {
+            if (!is_array($value) || !array_key_exists($segment, $value)) {
+                return $default;
+            }
+
+            $value = $value[$segment];
+        }
+
+        return $value;
     }
 
     /**
