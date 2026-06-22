@@ -1,0 +1,353 @@
+theme-core v-2
+THEME CONFIGURATION ARCHITECTURE
+(v2.1.0)
+
+========================================================================
+1. PURPOSE
+========================================================================
+
+    Theme Configuration является частью Configuration Subsystem и отвечает за
+        декларативное описание архитектуры будущих WordPress Themes.
+
+    Theme Configuration отвечает исключительно на вопрос:
+        "Какую тему необходимо построить?"
+
+    Theme Configuration является входными данными для Theme Architecture Compiler.
+
+    Результатом обработки Theme Configuration является полностью 
+        сгенерированная WordPress Theme.
+
+    Theme Configuration не содержит:
+        - runtime state;
+        - build state;
+        - session state;
+        - application configuration;
+        - compiler internal state;
+        - service definitions;
+        - container configuration.
+
+========================================================================
+2. PLACE INSIDE CONFIGURATION SUBSYSTEM
+========================================================================
+
+    Configuration Subsystem состоит из двух независимых частей:
+        Application Configuration и Theme Configuration Packages
+
+    Application Configuration отвечает за работу приложения.
+
+    Theme Configuration Packages отвечают за описание тем.
+
+    Обе модели являются immutable и создаются во время bootstrap phase.
+
+========================================================================
+3. CORE ARCHITECTURAL IDEA
+========================================================================
+
+    Система хранит не темы.
+
+    Система хранит Theme Configuration Packages.
+
+    Theme является результатом компиляции Theme Definition.
+
+    Theme Configuration Package является способом хранения и описания Theme Definition.
+
+        Theme Configuration Package
+                    ↓
+            Theme Definition
+                    ↓
+            Compilation
+                    ↓
+            Generated Theme
+
+    Theme Definition является центральной архитектурной моделью системы.
+    
+    Все compiler stages работают исключительно с Theme Definition.
+
+========================================================================
+4. THEME CONFIGURATION PACKAGE
+========================================================================
+
+    ThemeConfigurationPackage является единицей хранения архитектурного описания темы.
+
+    Каждый пакет содержит полное описание одной темы.
+
+    Каждый пакет имеет:
+        - package id;
+        - metadata;
+        - configuration domains;
+        - loader.
+
+    Build Session всегда работает ровно с одним ThemeConfigurationPackage.
+
+    Допускается существование нескольких версий одного пакета.
+
+    Например:
+        shop-theme v1
+        shop-theme v2
+
+    Идентичность пакета определяется его PackageId.
+
+========================================================================
+5. CONFIGURATION DOMAIN MODEL
+========================================================================
+
+    Theme Configuration представляет собой набор независимых Configuration Domains.
+
+    Архитектурная модель:
+
+        ThemeConfigurationPackage
+                ├── Theme Metadata
+                └── Configuration Domains
+
+    Каждый домен описывает отдельную часть архитектуры темы.
+
+    Конкретный набор доменов заранее не фиксируется.
+
+    Новый домен появляется только после появления соответствующей Domain Model.
+
+========================================================================
+6. PHYSICAL STORAGE
+========================================================================
+
+    ThemeConfigurationPackage может храниться в файловой системе.
+
+    Например:
+        config/themes/
+            blog-theme/
+            shop-theme/
+            business-theme/
+
+    Внутренняя структура пакета может быть любой.
+
+    Например:
+        theme.php
+        tokens/
+        layouts/
+        sections/
+        assets/
+        demos/
+
+    Важно:
+
+    Файловая структура не является архитектурой темы.
+
+    Файловая структура является только способом хранения архитектурной модели.
+
+========================================================================
+7. DOMAIN REGISTRATION
+========================================================================
+
+    Система не интерпретирует каталоги напрямую.
+
+    Наличие каталога не означает существование Configuration Domain.
+
+    Каждый домен должен быть явно зарегистрирован.
+
+    Регистрация определяет:
+        - domain identifier;
+        - domain model;
+        - loading mechanism;
+        - validation mechanism;
+        - compiler integration rules.
+
+    Только зарегистрированные домены участвуют в формировании Theme Definition.
+
+========================================================================
+8. THEME PACKAGE REGISTRY
+========================================================================
+
+    Во время bootstrap phase приложение:
+        - обнаруживает Theme Configuration Packages;
+        - регистрирует Theme Configuration Packages;
+        - формирует Theme Package Registry.
+
+    Theme Package Registry содержит:
+        - PackageId;
+        - Package Metadata;
+        - Package Loader.
+
+    Registry не хранит полную конфигурацию пакета.
+
+    Полная конфигурация может быть загружена позднее.
+
+========================================================================
+9. PACKAGE LIFECYCLE
+========================================================================
+
+    ThemeConfigurationPackage проходит следующие состояния:
+
+        Discovered
+            ↓
+        Registered
+            ↓
+        Loaded
+            ↓
+        Validated
+            ↓
+        ThemeDefinitionBuilt
+
+    Описание состояний:
+
+        Discovered
+            Пакет обнаружен системой, но ещё не зарегистрирован.
+
+        Registered
+            Пакет зарегистрирован в Registry.
+
+        Loaded
+            Конфигурация пакета полностью загружена.
+
+        Validated
+            Конфигурация успешно прошла валидацию.
+
+        ThemeDefinitionBuilt
+            На основе Theme Configuration Package было сформировано Theme Definition.
+
+========================================================================
+10. LAZY LOADING
+========================================================================
+
+    ThemeConfigurationPackage не обязан полностью загружаться во время bootstrap.
+
+    Допускается следующая схема:
+
+        Bootstrap
+            ↓
+        Discover Packages
+            ↓
+        Register Package Metadata
+            ↓
+        Application Ready
+            ↓
+        Build Session
+            ↓
+        Load Package
+            ↓
+        Validation
+            ↓
+        Build Theme Definition
+
+    Данный подход позволяет поддерживать неограниченное количество 
+        Theme Configuration Packages.
+
+========================================================================
+11. BUILD SESSION INTEGRATION
+========================================================================
+
+    Build Session не может существовать без ThemeConfigurationPackage.
+
+    Инвариант системы:
+        Build Session MUST reference ThemeConfigurationPackage
+
+    Схема работы:
+
+        Create Session
+                ↓
+        Select Theme Package
+                ↓
+        Load Configuration Domains
+                ↓
+        Build Theme Definition
+                ↓
+        Compile Theme
+
+========================================================================
+12. CONFIGURATION FLOW
+========================================================================
+
+    Application Startup:
+
+        Load Application Configuration
+                ↓
+        Discover Theme Packages
+                ↓
+        Register Theme Packages
+                ↓
+        Application Ready
+
+    Build:
+
+        Create Session
+                ↓
+        Select Theme Package
+                ↓
+        Load Theme Configuration
+                ↓
+        Build Theme Definition
+                ↓
+        Compilation
+                ↓
+        Generated Theme
+
+========================================================================
+13. DESIGN PRINCIPLES
+========================================================================
+
+    1. Architecture over Filesystem.
+    2. Domain Model over Directories.
+    3. Explicit Registration over Directory Interpretation.
+    4. Immutable Configuration over Runtime Mutation.
+    5. Theme Configuration Packages over Generated Themes.
+    6. Lazy Loading over Eager Loading.
+    7. Theme Definition as Central Architecture Model.
+    8. Compiler consumes Theme Definitions.
+    9. ThemeConfigurationPackage is Storage, not Architecture.
+
+========================================================================
+14. FINAL FORMULA
+========================================================================
+
+    Configuration Subsystem =
+
+        Application Configuration
+                и
+        Theme Configuration Packages
+
+
+    ThemeConfigurationPackage =
+
+        Package Metadata
+                +
+        Configuration Domains
+                +
+        Package Loader
+
+
+    ThemeDefinition =
+
+        ThemeConfigurationPackage
+                →
+        Domain Loading
+                →
+        Domain Validation
+                →
+        Unified Theme Model
+
+
+    Build Session =
+
+        ThemeConfigurationPackage
+                +
+        ThemeDefinition
+                +
+        Runtime State
+
+
+    Generated Theme =
+
+        ThemeDefinition
+                →
+        Compilation
+                →
+        WordPress Theme
+
+
+    Theme Architecture Flow =
+
+        ThemeConfigurationPackage
+                →
+        ThemeDefinition
+                →
+        Compilation
+                →
+        Generated Theme    
