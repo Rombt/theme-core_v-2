@@ -11,17 +11,34 @@ final readonly class ThemeDefinitionBuilder implements ThemeDefinitionBuilderInt
 {
     public function __construct(
         private ThemeMetadataFactory $metadataFactory,
+        private ThemeComponentBuilderRegistry $builders,
     ) {
     }
 
     public function build(
         ValidatedPackage $package,
     ): ThemeDefinition {
+        $components = [];
+
+        foreach ($package->package()->domains()->all() as $domain) {
+            foreach ($this->builders->all() as $builder) {
+                if (!$builder->supports($domain)) {
+                    continue;
+                }
+
+                $components[] = $builder->build($domain);
+
+                break;
+            }
+        }
+
         return new ThemeDefinition(
             metadata: $this->metadataFactory->create(
                 $package->package()->metadata(),
             ),
-            components: new ThemeComponentCollection(),
+            components: new ThemeComponentCollection(
+                $components,
+            ),
         );
     }
 }
