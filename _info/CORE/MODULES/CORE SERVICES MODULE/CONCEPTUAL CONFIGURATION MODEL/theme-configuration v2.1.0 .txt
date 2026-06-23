@@ -2,6 +2,15 @@ theme-core v-2
 THEME CONFIGURATION ARCHITECTURE
 (v2.1.0)
 
+
+Я бы хотел что бы слой конфигурации тем работали следующим образом. 
+    Прежде всего, конфигурация одной темы представляет из себя папку с файлами конфигурации т.е. конфигурационный пакет. 
+    В  конфиге приложения указывается папка в которой хранятся все конфигурационные пакеты 
+    так же в конфиге указываться какой именно конфигурационный пакет использовать для текущей сборки. 
+    Приложение регистрирует все доступные конфигурационные пакеты. А использует только тот что указан.
+
+
+
 ========================================================================
 1. PURPOSE
 ========================================================================
@@ -156,7 +165,7 @@ THEME CONFIGURATION ARCHITECTURE
 8. THEME PACKAGE REGISTRY
 ========================================================================
 
-    Во время bootstrap phase приложение:
+    Во время composition phase приложение:
         - обнаруживает Theme Configuration Packages;
         - регистрирует Theme Configuration Packages;
         - формирует Theme Package Registry.
@@ -207,17 +216,17 @@ THEME CONFIGURATION ARCHITECTURE
 10. LAZY LOADING
 ========================================================================
 
-    ThemeConfigurationPackage не обязан полностью загружаться во время bootstrap.
+    ThemeConfigurationPackage не должен полностью загружаться во время composition.
 
     Допускается следующая схема:
 
-        Bootstrap
+        Composition
             ↓
         Discover Packages
             ↓
         Register Package Metadata
             ↓
-        Application Ready
+        Composition Ready
             ↓
         Build Session
             ↓
@@ -255,15 +264,15 @@ THEME CONFIGURATION ARCHITECTURE
 12. CONFIGURATION FLOW
 ========================================================================
 
-    Application Startup:
+    Composition Startup:
 
-        Load Application Configuration
+        Get Application Configuration
                 ↓
         Discover Theme Packages
                 ↓
         Register Theme Packages
                 ↓
-        Application Ready
+        Composition Ready
 
     Build:
 

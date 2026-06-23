@@ -20,6 +20,21 @@
 !! Убрать логер и диагностику из кода так как они должны быть в APPLICATION CONTEXT
 
 
+Убрать из runtime любую загрузку темы через файл:
+
+       Удаляются зависимости:
+
+       ThemeConfigurationLoader
+       ThemeConfiguration
+       ThemeDefinitionFactory
+       config/themeConfig.php
+
+       Вместо этого ThemeDefinition должен приходить из:
+
+       ThemeDefinitionProviderInterface
+
+
+
 
 
 
