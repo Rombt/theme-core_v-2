@@ -18,9 +18,8 @@ final class ServiceRegistrar implements ServiceRegistrarInterface
     ) {
     }
 
-    public function register(
-        ServiceRegistryInterface $registry
-    ): void {
+    public function register(ServiceRegistryInterface $registry): void
+    {
 
         foreach ($this->providers as $provider) {
             foreach ($provider->provide() as $definition) {

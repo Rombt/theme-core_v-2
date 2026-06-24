@@ -34,7 +34,20 @@
        ThemeDefinitionProviderInterface
 
 
-
+Ориентировочная структура pipeline построения темы:
+       RegisterThemePackagesStage
+              ↓
+       LoadThemeConfigurationStage
+              ↓
+       ValidateThemePackageStage
+              ↓
+       BuildThemeDefinitionStage
+              ↓
+       GenerateThemeArtifactsStage
+              ↓
+       WriteThemeArtifactsStage
+              ↓
+       FinalizeBuildStage
 
 
 

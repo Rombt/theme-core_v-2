@@ -17,21 +17,18 @@ final readonly class ThemePackageRegistry implements PackageRegistryInterface
     /**
      * @param array<string, ThemePackageRegistration> $registrations
      */
-    public function __construct(
-        array $registrations = [],
-    ) {
+    public function __construct(array $registrations = [])
+    {
         $this->registrations = $registrations;
     }
 
-    public function has(
-        PackageId $id,
-    ): bool {
+    public function has(PackageId $id): bool
+    {
         return isset($this->registrations[$id->value()]);
     }
 
-    public function get(
-        PackageId $id,
-    ): ThemePackageRegistration {
+    public function get(PackageId $id): ThemePackageRegistration
+    {
         $registration = $this->registrations[$id->value()] ?? null;
 
         if ($registration === null) {

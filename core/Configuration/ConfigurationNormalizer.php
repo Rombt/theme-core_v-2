@@ -21,8 +21,8 @@ final class ConfigurationNormalizer
 
         if (!is_array($paths)) {
             $paths = [
-                'build' => '',
-                'cache' => '',
+            'build' => '',
+            'cache' => '',
             ];
         }
 
@@ -30,17 +30,37 @@ final class ConfigurationNormalizer
         $cache = $paths['cache'] ?? '';
 
         $build = is_string($build) || is_int($build) || is_float($build)
-            ? (string) $build
-            : '';
+        ? (string) $build
+        : '';
 
         $cache = is_string($cache) || is_int($cache) || is_float($cache)
-            ? (string) $cache
-            : '';
+        ? (string) $cache
+        : '';
 
         $paths['build'] = $this->normalizePath($build);
         $paths['cache'] = $this->normalizePath($cache);
 
         $configuration['paths'] = $paths;
+
+        // Theme
+
+        $theme = $configuration['theme'] ?? [];
+
+        if (!is_array($theme)) {
+            $theme = [];
+        }
+
+        $packagesPath = $theme['packages_path'] ?? '';
+
+        $packagesPath = is_string($packagesPath)
+        || is_int($packagesPath)
+        || is_float($packagesPath)
+        ? (string) $packagesPath
+        : '';
+
+        $theme['packages_path'] = $this->normalizePath($packagesPath);
+
+        $configuration['theme'] = $theme;
 
         return $configuration;
     }

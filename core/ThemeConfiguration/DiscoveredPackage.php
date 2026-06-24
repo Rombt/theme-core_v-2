@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageLoaderInterface;
-
 final readonly class DiscoveredPackage
 {
     public function __construct(
         private PackageId $id,
         private PackageMetadata $metadata,
-        private PackageLoaderInterface $loader,
+        private string $path,
     ) {
     }
 
@@ -25,8 +23,8 @@ final readonly class DiscoveredPackage
         return $this->metadata;
     }
 
-    public function loader(): PackageLoaderInterface
+    public function path(): string
     {
-        return $this->loader;
+        return $this->path;
     }
 }

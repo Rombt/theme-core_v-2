@@ -9,6 +9,7 @@ use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Bootstrap\Kernel;
 use Rombt\ThemeCore\Composition\Contracts\ServiceDefinitionProviderInterface;
 use Rombt\ThemeCore\Composition\Providers\CoreServiceDefinitionProvider;
+use Rombt\ThemeCore\Composition\Providers\ThemeConfigurationServiceDefinitionProvider;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 
 final class CompositionBootstrapper implements BootstrapperInterface, PrioritizedBootstrapperInterface
@@ -23,6 +24,7 @@ final class CompositionBootstrapper implements BootstrapperInterface, Prioritize
 
         $providers = [
             new CoreServiceDefinitionProvider(),
+            new ThemeConfigurationServiceDefinitionProvider(),
         ];
 
         $definitions = [];

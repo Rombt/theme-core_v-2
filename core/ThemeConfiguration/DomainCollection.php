@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-use RuntimeException;
-
 final readonly class DomainCollection
 {
     /**
@@ -16,9 +14,8 @@ final readonly class DomainCollection
     /**
      * @param iterable<ConfigurationDomain> $domains
      */
-    public function __construct(
-        iterable $domains = [],
-    ) {
+    public function __construct(iterable $domains = [])
+    {
         $indexed = [];
 
         foreach ($domains as $domain) {
@@ -28,23 +25,18 @@ final readonly class DomainCollection
         $this->domains = $indexed;
     }
 
-    public function has(
-        DomainId $id,
-    ): bool {
+    public function has(DomainId $id): bool
+    {
         return isset($this->domains[$id->value()]);
     }
 
-    public function get(
-        DomainId $id,
-    ): ConfigurationDomain {
+    public function get(DomainId $id): ConfigurationDomain
+    {
         $domain = $this->domains[$id->value()] ?? null;
 
         if ($domain === null) {
-            throw new RuntimeException(
-                sprintf(
-                    'Domain "%s" is not registered.',
-                    $id->value(),
-                ),
+            throw new \RuntimeException(
+                sprintf('Domain "%s" is not registered.', $id->value())
             );
         }
 
@@ -52,10 +44,12 @@ final readonly class DomainCollection
     }
 
     /**
-     * @return array<string, ConfigurationDomain>
+     * @return iterable<ConfigurationDomain>
      */
-    public function all(): array
+    public function all(): iterable
     {
-        return $this->domains;
+        foreach ($this->domains as $domain) {
+            yield $domain;
+        }
     }
 }

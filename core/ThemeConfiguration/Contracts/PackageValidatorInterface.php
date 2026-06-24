@@ -8,7 +8,5 @@ use Rombt\ThemeCore\ThemeConfiguration\LoadedPackage;
 
 interface PackageValidatorInterface
 {
-    public function validate(
-        LoadedPackage $package,
-    ): void;
+    public function validate(LoadedPackage $package): void;
 }

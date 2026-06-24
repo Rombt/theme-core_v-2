@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-final class ThemePackageRegistryBuilder
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemePackageRegistryBuilderInterface;
+
+final class ThemePackageRegistryBuilder implements ThemePackageRegistryBuilderInterface
 {
     /**
      * @param iterable<DiscoveredPackage> $packages
@@ -19,12 +21,12 @@ final class ThemePackageRegistryBuilder
                 new ThemePackageRegistration(
                     id: $package->id(),
                     metadata: $package->metadata(),
-                    loader: $package->loader(),
+                    path: $package->path(),
                 );
         }
 
         return new ThemePackageRegistry(
-            registrations: $registrations,
+            $registrations,
         );
     }
 }

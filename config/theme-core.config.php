@@ -12,6 +12,11 @@ return [
         'build' => 'build',
     ],
 
+    'theme' => [
+        'packages_path' => 'config/themes',
+        'package' => 'theme_1',
+    ],
+
     'logging' => [
         'enabled' => true,
         'path' => 'logs/runtime.log',

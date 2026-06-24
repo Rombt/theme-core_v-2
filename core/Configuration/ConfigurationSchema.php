@@ -36,6 +36,20 @@ final class ConfigurationSchema
                 ],
             ],
 
+            'theme' => [
+                'required' => true,
+                'fields' => [
+                    'packages_path' => [
+                        'type' => 'string',
+                        'default' => 'themes',
+                    ],
+                    'package' => [
+                        'type' => 'string',
+                        'required' => true,
+                    ],
+                ],
+            ],
+
             'environment' => [
                 'required' => true,
                 'fields' => [

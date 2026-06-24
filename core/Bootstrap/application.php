@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\ArtifactCollectionFactory;
-use Rombt\ThemeCore\Artifacts\FileArtifactWriter;
 use Rombt\ThemeCore\Artifacts\WordPressThemeArtifactGenerator;
 use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
 use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
@@ -35,11 +34,8 @@ use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
 use Rombt\ThemeCore\Runtime\RuntimeKernel;
 use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Stages\GenerateThemeArtifactsStage;
-use Rombt\ThemeCore\Runtime\Stages\LoadThemeConfigurationStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteThemeArtifactsStage;
-use Rombt\ThemeCore\Theme\ThemeConfigurationLoader;
-use Rombt\ThemeCore\Theme\ThemeDefinitionFactory;
-use Rombt\ThemeCore\Artifacts\ThemeBuildPathResolver;
+use Rombt\ThemeCore\Runtime\Stages\FinalizeBuildStage;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -70,11 +66,8 @@ $kernel = new Kernel(
 );
 
 $kernel->bootstrap();
-
 $definitions = $kernel->context()->getServiceDefinitions();
-
-$compositionRuntime = (new RuntimeAssembler())
-    ->assemble($definitions);
+$compositionRuntime = (new RuntimeAssembler($app))->assemble($definitions);
 
 /*
 |--------------------------------------------------------------------------
@@ -84,9 +77,7 @@ $compositionRuntime = (new RuntimeAssembler())
 
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
-        new BuildSessionFactory(
-            new ArtifactCollectionFactory()
-        ),
+        new BuildSessionFactory(new ArtifactCollectionFactory()),
         new ExecutionContextFactory(),
         new ExecutionRuntime(
             new BuildResultFactory(),
@@ -98,21 +89,26 @@ $runtimeKernel = new RuntimeKernel(
 );
 
 /** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
-$configuration = $app->getContext()->get(
-    ApplicationContextKeys::CONFIGURATION
-);
+$configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
 
 $buildRoot = $configuration->get('paths.build');
 
+
+echo '$compositionRuntime = ';
+print_r($compositionRuntime);
+echo PHP_EOL;
+
 $pipeline = new Pipeline([
-    new LoadThemeConfigurationStage(
-        new ThemeConfigurationLoader(dirname(__DIR__, 2) . '/config/themeConfig.php'),
-        new ThemeDefinitionFactory()
+
+    new GenerateThemeArtifactsStage(
+        new WordPressThemeArtifactGenerator()
     ),
 
-    new GenerateThemeArtifactsStage(new WordPressThemeArtifactGenerator()),
+    new WriteThemeArtifactsStage(
+        $configuration
+    ),
 
-    new WriteThemeArtifactsStage($configuration)
+    new FinalizeBuildStage(),
 ]);
 
 $result = $runtimeKernel->execute($pipeline);
@@ -136,9 +132,7 @@ if ($result->getError() !== null) {
 */
 
 /** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
-$logger = $app->getContext()->get(
-    ApplicationContextKeys::LOGGER
-);
+$logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
 $logger->write(
     new DiagnosticEntry(

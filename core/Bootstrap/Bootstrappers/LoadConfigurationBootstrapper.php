@@ -23,10 +23,8 @@ final class LoadConfigurationBootstrapper implements PrioritizedBootstrapperInte
         return 90;
     }
 
-    public function bootstrap(
-        Application $app,
-        Kernel $kernel
-    ): void {
+    public function bootstrap(Application $app, Kernel $kernel): void
+    {
 
         $schema = new ConfigurationSchema();
         $discovery = new ConfigurationDiscovery();

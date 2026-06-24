@@ -86,9 +86,8 @@ final class BuildSession
         $this->state = $state;
     }
 
-    public function setTheme(
-        ThemeDefinition $theme
-    ): void {
+    public function setTheme(ThemeDefinition $theme): void
+    {
         $this->theme = $theme;
     }
 

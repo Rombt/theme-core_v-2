@@ -11,5 +11,5 @@ interface PackageDiscoveryInterface
     /**
      * @return iterable<DiscoveredPackage>
      */
-    public function discover(): iterable;
+    public function discover(string $packagesPath): iterable;
 }

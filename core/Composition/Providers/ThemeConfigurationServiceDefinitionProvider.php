@@ -1,0 +1,109 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Rombt\ThemeCore\Composition\Providers;
+
+use Rombt\ThemeCore\Composition\Contracts\ServiceDefinitionProviderInterface;
+use Rombt\ThemeCore\Composition\Definitions\ServiceDefinition;
+use Rombt\ThemeCore\Composition\Definitions\ServiceLifecycle;
+use Rombt\ThemeCore\Theme\Contracts\ThemeDefinitionBuilderInterface;
+use Rombt\ThemeCore\Theme\ThemeDefinitionBuilder;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageLoaderServiceInterface;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageSelectorInterface;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageValidatorInterface;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemeDefinitionProviderInterface;
+use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
+use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
+use Rombt\ThemeCore\ThemeConfiguration\ThemeDefinitionProvider;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageDiscoveryInterface;
+use Rombt\ThemeCore\ThemeConfiguration\FilesystemPackageDiscovery;
+use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;
+use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
+use Rombt\ThemeCore\ThemeConfiguration\PackageMetadataReader;
+use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
+
+final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefinitionProviderInterface
+{
+    public function provide(): array
+    {
+        return [
+
+            new ServiceDefinition(
+                identifier: PackageSelectorInterface::class,
+                class: RegistryPackageSelector::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    // PackageRegistryInterface
+                ],
+            ),
+
+            new ServiceDefinition(
+                identifier: PackageLoaderServiceInterface::class,
+                class: PackageLoaderService::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemeDefinitionBuilderInterface::class,
+                class: ThemeDefinitionBuilder::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    // ThemeMetadataFactory
+                    // ThemeComponentBuilderRegistry
+                ],
+            ),
+
+            new ServiceDefinition(
+                identifier: PackageValidatorInterface::class,
+                class: PackageValidator::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemeDefinitionProviderInterface::class,
+                class: ThemeDefinitionProvider::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    PackageSelectorInterface::class,
+                    PackageLoaderServiceInterface::class,
+                    PackageValidatorInterface::class,
+                    ThemeDefinitionBuilderInterface::class,
+                ],
+            ),
+
+            new ServiceDefinition(
+                identifier: PackageMetadataReader::class,
+                class: PackageMetadataReader::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
+                identifier: PackageDiscoveryInterface::class,
+                class: FilesystemPackageDiscovery::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    PackageMetadataReader::class,
+                ],
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemePackageRegistryBuilder::class,
+                class: ThemePackageRegistryBuilder::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemePackageRegistryProvider::class,
+                class: ThemePackageRegistryProvider::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    PackageDiscoveryInterface::class,
+                    ThemePackageRegistryBuilder::class,
+                ],
+            ),
+
+
+        ];
+    }
+}
