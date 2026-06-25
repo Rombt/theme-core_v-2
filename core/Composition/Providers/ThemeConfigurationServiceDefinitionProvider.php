@@ -27,6 +27,7 @@ use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageRegistryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistry;
 use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesComponentBuilder;
 
 final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefinitionProviderInterface
 {
@@ -113,6 +114,12 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
             ),
 
             new ServiceDefinition(
+                identifier: TemplatesComponentBuilder::class,
+                class: TemplatesComponentBuilder::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
                 identifier: ThemeComponentBuilderRegistry::class,
                 class: ThemeComponentBuilderRegistry::class,
                 lifecycle: ServiceLifecycle::LAZY,
@@ -130,7 +137,6 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                     ThemeComponentBuilderRegistry::class,
                 ],
             ),
-
 
         ];
     }
