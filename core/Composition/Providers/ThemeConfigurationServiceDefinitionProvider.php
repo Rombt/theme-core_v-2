@@ -22,6 +22,8 @@ use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
 use Rombt\ThemeCore\ThemeConfiguration\PackageMetadataReader;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
+use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
+use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
 
 final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefinitionProviderInterface
 {
@@ -100,6 +102,28 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 dependencies: [
                     PackageDiscoveryInterface::class,
                     ThemePackageRegistryBuilder::class,
+                ],
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemeMetadataFactory::class,
+                class: ThemeMetadataFactory::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemeComponentBuilderRegistry::class,
+                class: ThemeComponentBuilderRegistry::class,
+                lifecycle: ServiceLifecycle::LAZY,
+            ),
+
+            new ServiceDefinition(
+                identifier: ThemeDefinitionBuilderInterface::class,
+                class: ThemeDefinitionBuilder::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    ThemeMetadataFactory::class,
+                    ThemeComponentBuilderRegistry::class,
                 ],
             ),
 

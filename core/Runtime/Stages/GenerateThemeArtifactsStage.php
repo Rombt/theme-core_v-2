@@ -25,14 +25,10 @@ final class GenerateThemeArtifactsStage implements StageInterface
         Application $app
     ): StageResult {
         try {
-            $theme = $context
-                ->session()
-                ->theme();
+            $theme = $context->session()->theme();
 
             if (!$theme instanceof ThemeDefinition) {
-                throw new RuntimeException(
-                    'Theme definition not loaded.'
-                );
+                throw new RuntimeException('Theme definition not loaded.');
             }
 
             $this->generator->generate(

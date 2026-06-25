@@ -12,19 +12,14 @@ use Rombt\ThemeCore\Theme\ThemeDefinition;
 final class BuildSession
 {
     private string $id;
-
     private string $state;
-
     private BuildResources $resources;
-
     private ArtifactCollectionInterface $artifacts;
-
     private ?BuildResult $buildResult = null;
-
-    private ?ThemeDefinition $theme = null;
 
     public function __construct(
         string $id,
+        private readonly ThemeDefinition $theme,
         BuildResources $resources,
         ArtifactCollectionInterface $artifacts
     ) {
@@ -86,12 +81,7 @@ final class BuildSession
         $this->state = $state;
     }
 
-    public function setTheme(ThemeDefinition $theme): void
-    {
-        $this->theme = $theme;
-    }
-
-    public function theme(): ?ThemeDefinition
+    public function theme(): ThemeDefinition
     {
         return $this->theme;
     }
