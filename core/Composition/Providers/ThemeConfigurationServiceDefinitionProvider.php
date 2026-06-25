@@ -24,6 +24,9 @@ use Rombt\ThemeCore\ThemeConfiguration\PackageMetadataReader;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
 use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
 use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageRegistryInterface;
+use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistry;
+use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
 
 final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefinitionProviderInterface
 {
@@ -36,7 +39,15 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 class: RegistryPackageSelector::class,
                 lifecycle: ServiceLifecycle::LAZY,
                 dependencies: [
-                    // PackageRegistryInterface
+                    PackageRegistryInterface::class,
+                ],
+            ),
+
+            new ServiceDefinition(
+                identifier: PackageRegistryInterface::class,
+                class: ThemePackageRegistry::class,
+                lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
                 ],
             ),
 
@@ -44,16 +55,6 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 identifier: PackageLoaderServiceInterface::class,
                 class: PackageLoaderService::class,
                 lifecycle: ServiceLifecycle::LAZY,
-            ),
-
-            new ServiceDefinition(
-                identifier: ThemeDefinitionBuilderInterface::class,
-                class: ThemeDefinitionBuilder::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: [
-                    // ThemeMetadataFactory
-                    // ThemeComponentBuilderRegistry
-                ],
             ),
 
             new ServiceDefinition(
@@ -115,6 +116,9 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 identifier: ThemeComponentBuilderRegistry::class,
                 class: ThemeComponentBuilderRegistry::class,
                 lifecycle: ServiceLifecycle::LAZY,
+                dependencies: [
+                    ThemeComponentBuilderInterface::class,
+                ],
             ),
 
             new ServiceDefinition(

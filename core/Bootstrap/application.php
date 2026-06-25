@@ -36,6 +36,7 @@ use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Stages\GenerateThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\FinalizeBuildStage;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemeDefinitionProviderInterface;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -75,15 +76,24 @@ $compositionRuntime = (new RuntimeAssembler($app))->assemble($definitions);
 |--------------------------------------------------------------------------
 */
 
+/** @var ThemeDefinitionProviderInterface $themeProvider */
+$themeProvider = $compositionRuntime
+    ->services()
+    ->get(ThemeDefinitionProviderInterface::class);
+
+
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
-        new BuildSessionFactory(new ArtifactCollectionFactory()),
+        new BuildSessionFactory(
+            new ArtifactCollectionFactory()
+        ),
         new ExecutionContextFactory(),
         new ExecutionRuntime(
             new BuildResultFactory(),
             new PipelineExecutor()
         ),
         $compositionRuntime,
+        $themeProvider,
         $app
     )
 );

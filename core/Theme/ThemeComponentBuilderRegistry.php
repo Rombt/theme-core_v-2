@@ -11,9 +11,8 @@ final readonly class ThemeComponentBuilderRegistry
     /**
      * @param iterable<ThemeComponentBuilderInterface> $builders
      */
-    public function __construct(
-        private iterable $builders,
-    ) {
+    public function __construct(private iterable $builders)
+    {
     }
 
     /**
