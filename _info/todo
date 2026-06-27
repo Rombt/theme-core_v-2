@@ -100,3 +100,24 @@ Composition Runtime
                      ├── current
                      ├── executed
                      └── exception
+
+
+
+
+    Другими словами
+              Запуск приложения        → один
+              Контекст приложения      → один
+              CompositionRuntime       → один
+              Pipeline                 → просто список Stage их может быть много.
+              Каждый запуск Pipeline   → создаёт свою BuildSession и свой ExecutionContext.
+              BuildSession             → состояние конкретной сборки (theme, resources, artifacts, state, result).
+              ExecutionContext         → окружение выполнения (BuildSession + CompositionRuntime).
+
+              Все операции по сборке темы выполняются Stage внутри Pipeline.
+
+              Выполнение Pipeline происходит в:
+                     ExecutionRuntime::run()
+                            ↓
+                     PipelineExecutor::execute()
+                            ↓
+                     Stage::execute()

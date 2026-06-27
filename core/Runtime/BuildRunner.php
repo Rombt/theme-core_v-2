@@ -29,6 +29,8 @@ final class BuildRunner implements BuildRunnerInterface
     public function run(PipelineInterface $pipeline): BuildResult
     {
         $theme = $this->themeProvider->provide();
+
+
         $session = $this->sessionFactory->create($theme);
         $context = $this->contextFactory->create($session, $this->compositionRuntime);
 

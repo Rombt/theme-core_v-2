@@ -11,9 +11,8 @@ final class ThemePackageRegistryBuilder implements ThemePackageRegistryBuilderIn
     /**
      * @param iterable<DiscoveredPackage> $packages
      */
-    public function build(
-        iterable $packages,
-    ): ThemePackageRegistry {
+    public function build(iterable $packages): ThemePackageRegistry
+    {
         $registrations = [];
 
         foreach ($packages as $package) {

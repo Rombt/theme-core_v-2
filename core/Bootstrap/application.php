@@ -36,7 +36,14 @@ use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Stages\GenerateThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\FinalizeBuildStage;
-use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemeDefinitionProviderInterface;
+use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
+use Rombt\ThemeCore\Theme\ThemeDefinitionBuilder;
+use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
+use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
+use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
+use Rombt\ThemeCore\ThemeConfiguration\ThemeDefinitionProvider;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -75,12 +82,23 @@ $compositionRuntime = (new RuntimeAssembler($app))->assemble($definitions);
 | Runtime
 |--------------------------------------------------------------------------
 */
+/** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
+$configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
 
-/** @var ThemeDefinitionProviderInterface $themeProvider */
-$themeProvider = $compositionRuntime
-    ->services()
-    ->get(ThemeDefinitionProviderInterface::class);
-
+$themeProvider = new ThemeDefinitionProvider(
+    $configuration,
+    new RegistryPackageSelector(
+        $compositionRuntime->packageRegistry()
+    ),
+    new PackageLoaderService(),     //!! <<<== !!!!!!!!!!!!!!!!!!!!!!!
+    new PackageValidator(),
+    new ThemeDefinitionBuilder(
+        new ThemeMetadataFactory(),
+        new ThemeComponentBuilderRegistry([
+            new TemplatesComponentBuilder(),
+        ])
+    )
+);
 
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
@@ -98,15 +116,8 @@ $runtimeKernel = new RuntimeKernel(
     )
 );
 
-/** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
-$configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
-
 $buildRoot = $configuration->get('paths.build');
 
-
-echo '$compositionRuntime = ';
-print_r($compositionRuntime);
-echo PHP_EOL;
 
 $pipeline = new Pipeline([
 

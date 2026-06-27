@@ -12,7 +12,6 @@ use Rombt\ThemeCore\Theme\ThemeDefinitionBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageLoaderServiceInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageSelectorInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageValidatorInterface;
-use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemeDefinitionProviderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
 use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
 use Rombt\ThemeCore\ThemeConfiguration\ThemeDefinitionProvider;
@@ -65,18 +64,6 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
             ),
 
             new ServiceDefinition(
-                identifier: ThemeDefinitionProviderInterface::class,
-                class: ThemeDefinitionProvider::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: [
-                    PackageSelectorInterface::class,
-                    PackageLoaderServiceInterface::class,
-                    PackageValidatorInterface::class,
-                    ThemeDefinitionBuilderInterface::class,
-                ],
-            ),
-
-            new ServiceDefinition(
                 identifier: PackageMetadataReader::class,
                 class: PackageMetadataReader::class,
                 lifecycle: ServiceLifecycle::LAZY,
@@ -117,25 +104,6 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 identifier: TemplatesComponentBuilder::class,
                 class: TemplatesComponentBuilder::class,
                 lifecycle: ServiceLifecycle::LAZY,
-            ),
-
-            new ServiceDefinition(
-                identifier: ThemeComponentBuilderRegistry::class,
-                class: ThemeComponentBuilderRegistry::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: [
-                    ThemeComponentBuilderInterface::class,
-                ],
-            ),
-
-            new ServiceDefinition(
-                identifier: ThemeDefinitionBuilderInterface::class,
-                class: ThemeDefinitionBuilder::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: [
-                    ThemeMetadataFactory::class,
-                    ThemeComponentBuilderRegistry::class,
-                ],
             ),
 
         ];
