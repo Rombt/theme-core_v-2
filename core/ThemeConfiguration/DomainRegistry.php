@@ -17,9 +17,8 @@ final readonly class DomainRegistry implements DomainRegistryInterface
     /**
      * @param array<string, DomainRegistration> $registrations
      */
-    public function __construct(
-        array $registrations = [],
-    ) {
+    public function __construct(array $registrations = [])
+    {
         $this->registrations = $registrations;
     }
 

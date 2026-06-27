@@ -29,10 +29,6 @@ final class WriteThemeArtifactsStage implements StageInterface
         try {
             $theme = $context->session()->theme();
 
-            echo '$theme = ';
-            print_r($theme);
-            echo PHP_EOL;
-
             if (!$theme instanceof ThemeDefinition) {
                 throw new RuntimeException(
                     'Theme definition not loaded.'
@@ -43,11 +39,6 @@ final class WriteThemeArtifactsStage implements StageInterface
             $themePath = (
                 new ThemeBuildPathResolver((string) $this->configuration->get('paths.build'))
                 )->resolveThemePath($theme);
-
-            echo '$themePath = ';
-            print_r($themePath);
-            echo PHP_EOL;
-
 
             $writer = new FileArtifactWriter($themePath);
 

@@ -44,6 +44,12 @@ use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
 use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
 use Rombt\ThemeCore\ThemeConfiguration\ThemeDefinitionProvider;
+use Rombt\ThemeCore\ThemeConfiguration\PackageLoader;
+use Rombt\ThemeCore\ThemeConfiguration\DomainId;
+use Rombt\ThemeCore\ThemeConfiguration\DomainRegistration;
+use Rombt\ThemeCore\ThemeConfiguration\DomainRegistry;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesValidator;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -90,11 +96,21 @@ $themeProvider = new ThemeDefinitionProvider(
     new RegistryPackageSelector(
         $compositionRuntime->packageRegistry()
     ),
-    new PackageLoaderService(),     //!! <<<== !!!!!!!!!!!!!!!!!!!!!!!
+    new PackageLoaderService(new PackageLoader(new DomainRegistry(
+        [
+            //!! здесь добавлять домены которые может обрабатывать приложение
+            'templates' => new DomainRegistration(
+                id: new DomainId('templates'),
+                domainClass: TemplatesConfiguration::class,
+                validator: new TemplatesValidator(),
+            ),
+        ]
+    ))),
     new PackageValidator(),
     new ThemeDefinitionBuilder(
         new ThemeMetadataFactory(),
         new ThemeComponentBuilderRegistry([
+            //!! здесь добавлять новые компоненты
             new TemplatesComponentBuilder(),
         ])
     )

@@ -11,17 +11,13 @@ use Rombt\ThemeCore\ThemeConfiguration\DomainRegistration;
 
 final class PackageLoader implements PackageLoaderInterface
 {
-    public function __construct(
-        private readonly DomainRegistryInterface $domains,
-    ) {
+    public function __construct(private readonly DomainRegistryInterface $domains)
+    {
     }
 
-    public function load(
-        ThemePackageRegistration $registration,
-    ): ThemeConfigurationPackage {
-        $domains = $this->loadDomains(
-            $registration->path(),
-        );
+    public function load(ThemePackageRegistration $registration): ThemeConfigurationPackage
+    {
+        $domains = $this->loadDomains($registration->path());
 
         return new ThemeConfigurationPackage(
             id: $registration->id(),
@@ -33,14 +29,11 @@ final class PackageLoader implements PackageLoaderInterface
     /**
      * @return iterable<ConfigurationDomain>
      */
-    private function loadDomains(
-        string $packagePath,
-    ): iterable {
+    private function loadDomains(string $packagePath): iterable
+    {
+
         foreach ($this->domains->all() as $registration) {
-            yield $this->loadDomain(
-                $packagePath,
-                $registration,
-            );
+            yield $this->loadDomain($packagePath, $registration);
         }
     }
 
@@ -54,10 +47,7 @@ final class PackageLoader implements PackageLoaderInterface
 
         if (!is_file($file)) {
             throw new \RuntimeException(
-                sprintf(
-                    'Domain configuration "%s" not found.',
-                    $file,
-                ),
+                sprintf('Domain configuration "%s" not found.', $file),
             );
         }
 

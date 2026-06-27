@@ -15,9 +15,8 @@ final readonly class ThemeDefinitionBuilder implements ThemeDefinitionBuilderInt
     ) {
     }
 
-    public function build(
-        ValidatedPackage $package,
-    ): ThemeDefinition {
+    public function build(ValidatedPackage $package): ThemeDefinition
+    {
         $components = [];
 
         foreach ($package->package()->domains()->all() as $domain) {

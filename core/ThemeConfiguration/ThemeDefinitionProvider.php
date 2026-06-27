@@ -33,6 +33,8 @@ final readonly class ThemeDefinitionProvider implements ThemeDefinitionProviderI
 
         $this->validator->validate($loaded,);
 
+
+
         return $this->builder->build(new ValidatedPackage($loaded->package()));
     }
 }

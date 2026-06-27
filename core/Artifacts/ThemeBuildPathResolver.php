@@ -16,10 +16,6 @@ final class ThemeBuildPathResolver
     public function resolveThemePath(ThemeDefinition $theme): string
     {
 
-        echo '$theme = ';
-        print_r($theme);
-        echo PHP_EOL;
-
         return rtrim($this->buildRoot, '/\\') . DIRECTORY_SEPARATOR . $theme->metadata()->name();
     }
 }

@@ -14,7 +14,9 @@ return [
 
     'theme' => [
         'packages_path' => 'config/themes',
-        'package' => 'theme_1',
+        // 'package' => 'theme_1',
+        // 'package' => 'theme_2',
+        'package' => 'theme_blog',
     ],
 
     'logging' => [
