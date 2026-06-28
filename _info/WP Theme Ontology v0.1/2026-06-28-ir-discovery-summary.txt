@@ -1,0 +1,424 @@
+THEME-CORE V-2
+ИССЛЕДОВАНИЕ ПРОМЕЖУТОЧНОГО ПРЕДСТАВЛЕНИЯ (IR)
+(v0.1.0)
+
+
+
+1. ПРЕДПОСЫЛКИ ИССЛЕДОВАНИЯ
+================================================================================
+
+Изначально исследование строилось вокруг идеи:
+
+Concept
+    ↓
+Definition Object
+
+Например:
+
+Product      → ProductDefinition
+Header       → HeaderDefinition
+Search       → SearchDefinition
+Cart         → CartDefinition
+Checkout     → CheckoutDefinition
+
+Основная проблема данного подхода:
+
+* количество Definition-классов неограниченно растёт;
+* появляются дублирующие структуры;
+* множество Definition отличаются только именем;
+* архитектура начинает моделировать предметную область темы;
+* компилятор начинает понимать бизнес-концепции вместо информации,
+  необходимой для генерации артефактов.
+
+Был сделан вывод:
+
+это скорее онтология темы,
+чем промежуточное представление компилятора.
+
+# 2. СМЕНА НАПРАВЛЕНИЯ ИССЛЕДОВАНИЯ
+
+Исследование было переориентировано на другой вопрос.
+
+Вместо:
+
+Какой объект описывает Product?
+
+начали задавать вопрос:
+
+Что необходимо знать компилятору,
+чтобы полностью сгенерировать Product?
+
+Например:
+
+Product
+    ↓
+    Schema
+    Relationships
+    Views
+    Queries
+    Components
+    Capabilities
+
+Был сделан вывод:
+
+большинство концепций не требуют собственного корневого объекта.
+
+Например:
+
+Product
+    ≠ ProductDefinition
+
+Product
+    = Entity
+    + Schema
+    + Query
+    + View
+    + Capability
+
+Аналогично:
+
+Search
+    ≠ SearchDefinition
+
+Search
+    = Capability
+    + Query
+    + View
+    + Component
+
+Header
+    ≠ HeaderDefinition
+
+Header
+    = Composition
+    + Region
+    + Component
+    + Variant
+
+# 3. НОВАЯ ЦЕЛЬ ИССЛЕДОВАНИЯ
+
+Перейти от:
+
+Ontology of Themes
+
+к:
+
+Compiler Intermediate Representation (IR)
+
+# 4. НОВАЯ МАТРИЦА ИССЛЕДОВАНИЯ
+
+Вместо:
+
+Concept
+    ↓
+Definition
+
+была построена новая модель:
+
+Concept
+    ↓
+Generated Artifacts
+    ↓
+Required Information
+    ↓
+IR Nodes
+
+# 5. РЕЗУЛЬТАТ ПЕРВОГО ПРОХОДА
+
+На множестве различных концепций:
+
+Product
+Header
+Search
+Cart
+Booking
+Course
+Dark Mode
+WooCommerce
+Demo
+Gallery
+
+были обнаружены повторяющиеся строительные блоки:
+
+Entity
+Schema
+Relationship
+Query
+View
+Composition
+Component
+Workflow
+Action
+State
+DesignSystem
+Asset
+Integration
+Dataset
+Configuration
+
+# 6. ДЕКОМПОЗИЦИЯ УЗЛОВ
+
+Было установлено:
+
+Field
+    является частью Schema.
+
+Region
+    является частью Composition.
+
+State
+    является частью Workflow.
+
+Action
+    является частью Workflow.
+
+Variant
+    является механизмом расширения любого узла.
+
+Configuration
+    является механизмом метаданных.
+
+В результате количество фундаментальных узлов существенно сократилось.
+
+7. ПРОВЕРКА НА ФУНДАМЕНТАЛЬНОСТЬ
+   ================================================================================
+
+Был введён критерий.
+
+Узел является фундаментальным, если:
+
+1. Не выражается через другие узлы.
+2. Используется множеством концепций.
+3. Имеет собственных потребителей (генераторов).
+
+Если условие не выполняется, узел считается производным.
+
+8. ИССЛЕДОВАНИЕ PRESENTATION LAYER
+   ================================================================================
+
+Была выдвинута гипотеза:
+
+Component
+    =
+маленькая Composition.
+
+Проверка на:
+
+Button
+Card
+Form
+Gallery
+Hero
+SearchForm
+Modal
+
+не выявила ни одного свойства,
+которое присутствует у Component,
+но отсутствует у Composition.
+
+Был сделан предварительный вывод:
+
+Component
+    не является фундаментальным узлом.
+
+Возможная модель:
+
+Composition
+    ├── type
+    ├── children
+    ├── slots
+    ├── bindings
+    ├── variants
+    └── metadata
+
+# 9. ИССЛЕДОВАНИЕ CONFIGURATION
+
+Было установлено:
+
+Configuration
+не обладает собственной семантикой.
+
+Она используется всеми остальными узлами:
+
+Entity
+Composition
+Workflow
+Integration
+Query
+DesignSystem
+
+Предварительный вывод:
+
+Configuration
+    не является фундаментальным IR-узлом,
+    а является инфраструктурным механизмом.
+
+# 10. ИССЛЕДОВАНИЕ DATASET
+
+Было установлено:
+
+Demo
+Seed
+Fixtures
+
+представляют собой:
+
+набор экземпляров данных
++ ссылки
++ ресурсы.
+
+Dataset не имеет собственных генераторов.
+
+Предварительный вывод:
+
+Dataset
+    вероятно является инфраструктурным механизмом,
+    а не фундаментальным узлом.
+
+# 11. ПЕРЕХОД К СЛОЯМ IR
+
+Было замечено, что найденные узлы естественным образом группируются.
+
+---
+
+## Data Layer
+
+Entity
+Dataset
+
+---
+
+## Presentation Layer
+
+Composition
+DesignSystem
+
+---
+
+## Behavior Layer
+
+Query
+Workflow
+Configuration
+
+---
+
+## Infrastructure Layer
+
+Asset
+Integration
+
+# 12. ТЕКУЩЕЕ ПРЕДСТАВЛЕНИЕ О МИНИМАЛЬНОМ IR
+
+На текущем этапе исследования минимальное ядро выглядит следующим образом:
+
+Entity
+Composition
+Query
+Workflow
+DesignSystem
+Asset
+Integration
+
+Под вопросом:
+
+Dataset
+
+Не фундаментальны:
+
+Field
+Region
+State
+Action
+Variant
+Configuration
+
+# 13. ОБНАРУЖЕНИЕ МЕТАМОДЕЛИ
+
+Было замечено, что:
+
+Entity
+Composition
+Workflow
+
+имеют практически одинаковую внутреннюю структуру.
+
+Предварительная модель:
+
+DefinitionNode
+    ├── id
+    ├── kind
+    ├── children
+    ├── references
+    ├── metadata
+    └── extensions
+
+При этом:
+
+DefinitionNode
+    не заменяет фундаментальные узлы,
+    а является их общей метамоделью.
+
+# 14. ТЕКУЩАЯ ГИПОТЕЗА АРХИТЕКТУРЫ IR
+
+    Метамодель:
+        DefinitionNode
+
+    Фундаментальные узлы:
+        Entity
+        Composition
+        Query
+        Workflow
+        DesignSystem
+        Asset
+        Integration
+
+    Инфраструктурные механизмы:
+        Configuration
+        Variant
+        Metadata
+        Extensions
+        Dataset
+        References
+
+# 15. ГЛАВНЫЙ ВЫВОД ИССЛЕДОВАНИЯ
+
+Исследование привело к важному изменению архитектурного мышления.
+
+Раньше:
+
+ThemeDefinition
+    =
+коллекция специализированных Definition-классов.
+
+Теперь:
+
+ThemeDefinition
+    =
+комбинация небольшого набора универсальных IR-узлов.
+
+Это переводит проект:
+
+из онтологии предметной области
+
+в:
+
+настоящий промежуточный язык компилятора.
+
+# 16. СЛЕДУЮЩИЙ ЭТАП ИССЛЕДОВАНИЯ
+
+    Для каждого фундаментального узла необходимо построить:
+
+        IR Node
+            ↓
+        Generators
+            ↓
+        Produced Artifacts
+
+    Цель:
+
+        доказать,
+        что найденный набор узлов является минимальным и достаточным
+        для генерации всех артефактов theme-core v-2.
+
+================================================================================

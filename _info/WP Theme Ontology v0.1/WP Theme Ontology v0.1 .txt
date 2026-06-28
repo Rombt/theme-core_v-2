@@ -1,0 +1,252 @@
+
+
+исследования предметной области
+
+Шаг 1.
+Собрать 30 максимально разных тем.
+
+Шаг 2.
+Выписать всё, что они содержат.
+
+Шаг 3.
+Сгруппировать.
+
+Шаг 4.
+Найти инварианты.
+
+Шаг 5.
+Построить первую метамодель.
+
+Шаг 6.
+Пытаться её сломать.
+
+
+Architecture of Theme Description / Theme Specification
+       «Мы построили механизм обработки конфигурации тем.
+              Теперь нужно спроектировать саму модель данных (DSL/Specification),
+              которая сможет выразить любую WordPress-тему и
+              стать источником данных для ThemeDefinition.»
+
+       Architecture of Theme Description
+              То есть ответить на вопросы:
+                     Что вообще может существовать в теме?
+                     Какие концепции являются первичными?
+                     Как выразить любую тему через эти концепции?
+                     Что должно стать содержимым ConfigurationDomain?
+
+
+
+Консолидированный каталог, полученный из исследования и дополненный типичными концепциями,
+       встречающимися в большинстве современных тем
+
+       Domain Entities (Content)
+              Post
+              Page
+              Article
+              Product
+              Product Category
+              Product Brand
+              Course
+              Lesson
+              Quiz
+              Teacher
+              Student
+              Event
+              Property
+              Listing
+              Hotel
+              Room
+              Tour
+              Destination
+              Service
+              Project
+              Portfolio
+              Team Member
+              Testimonial
+              FAQ
+              Job
+              Company
+              Author
+              User
+              Review
+              Comment
+              Tag
+              Category
+       Visual Components
+              Header
+              Footer
+              Sidebar
+              Navigation
+              Breadcrumbs
+              Hero
+              Banner
+              Card
+              Tile
+              List Item
+              Table
+              Gallery
+              Carousel
+              Slider
+              Tabs
+              Accordion
+              Modal
+              Popup
+              Form
+              Search Form
+              Login Form
+              Newsletter Form
+              Pagination
+              Filters
+              Widget
+              Logo
+              Icon
+              Button
+              Badge
+              Rating
+              Price
+              Meta Information
+       Layouts
+              Home Layout
+              Archive Layout
+              Single Layout
+              Page Layout
+              Blog Layout
+              Shop Layout
+              Product Layout
+              Category Layout
+              Search Layout
+              Author Layout
+              404 Layout
+              Landing Layout
+              Portfolio Layout
+              Listing Layout
+              Course Layout
+              Dashboard Layout
+       Composition
+              Section
+              Region
+              Container
+              Grid
+              Masonry
+              Columns
+              Row
+              Stack
+              Sidebar Area
+              Content Area
+              Widget Area
+              Template Part
+              Pattern
+       Navigation
+              Primary Menu
+              Secondary Menu
+              Mobile Menu
+              Mega Menu
+              Breadcrumbs
+              Pagination
+              Previous / Next Navigation
+              Table of Contents
+       Search & Discovery
+              Search
+              Filters
+              Faceted Search
+              Sorting
+              Autocomplete
+              Suggestions
+              Advanced Search
+       Ecommerce
+              Cart
+              Checkout
+              Wishlist
+              Compare
+              Quick View
+              Product Gallery
+              Product Variations
+              Related Products
+              Cross Sell
+              Upsell
+       Learning (LMS)
+              Enrollment
+              Curriculum
+              Progress
+              Certificates
+              Assignments
+              Lessons Navigation
+              Quizzes
+       Directory / Booking
+              Booking
+              Reservation
+              Availability
+              Pricing
+              Maps
+              Geolocation
+              Reviews
+              Favorites
+              Claims
+       Social
+              Comments
+              Sharing
+              Likes
+              Followers
+              Author Box
+              Related Posts
+       Media
+              Image
+              Video
+              Audio
+              Gallery
+              Slider
+              Lightbox
+       Personalization
+              Dark Mode
+              RTL
+              Language Switcher
+              Currency Switcher
+              Theme Style
+              Typography Settings
+       Performance
+              Lazy Loading
+              Asset Optimization
+              Responsive Images
+              AMP
+              Caching Support
+       Integrations
+              WooCommerce
+              LMS
+              Contact Forms
+              SEO
+              Maps
+              Social Networks
+              Analytics
+       Design System
+              Colors
+              Typography
+              Spacing
+              Borders
+              Radius
+              Shadows
+              Elevation
+              Motion
+              Icons
+              Tokens
+              Style Variations
+       Distribution
+              Assets
+              Fonts
+              Images
+              JavaScript
+              CSS
+              Translations
+              Readme
+              License
+              Dependencies
+              Build Options
+              Screenshots
+       Demo
+       Starter Content
+       Demo Import
+       Pages
+       Posts
+       Menus
+       Widgets
+       Theme Options
+       Media Library
