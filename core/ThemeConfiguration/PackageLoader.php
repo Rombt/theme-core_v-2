@@ -46,8 +46,9 @@ final class PackageLoader implements PackageLoaderInterface
         );
 
         if (!is_file($file)) {
-            throw new \RuntimeException(
-                sprintf('Domain configuration "%s" not found.', $file),
+            return new ConfigurationDomain(
+                id: $registration->id(),
+                configuration: new ($registration->domainClass())([]),
             );
         }
 

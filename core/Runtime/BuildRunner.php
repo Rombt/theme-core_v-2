@@ -31,6 +31,10 @@ final class BuildRunner implements BuildRunnerInterface
     {
         $theme = $this->themeProvider->provide();
 
+        echo '$theme = ';
+        print_r($theme);
+        echo PHP_EOL;
+
         $session = $this->sessionFactory->create($theme);
         $session->setResource(SessionKeys::THEME_DEFINITION, $theme);
         $context = $this->contextFactory->create($session, $this->compositionRuntime);

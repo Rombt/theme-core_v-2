@@ -50,6 +50,21 @@ use Rombt\ThemeCore\ThemeConfiguration\DomainRegistration;
 use Rombt\ThemeCore\ThemeConfiguration\DomainRegistry;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesValidator;
+use Rombt\ThemeCore\Theme\ThemeIrFactory;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Entities\EntitiesConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Entities\EntitiesValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Queries\QueriesConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Queries\QueriesValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Workflows\WorkflowsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Workflows\WorkflowsValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\DesignSystems\DesignSystemsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\DesignSystems\DesignSystemsValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsValidator;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -104,15 +119,58 @@ $themeProvider = new ThemeDefinitionProvider(
                 domainClass: TemplatesConfiguration::class,
                 validator: new TemplatesValidator(),
             ),
+
+            'entities' => new DomainRegistration(
+                id: new DomainId('entities'),
+                domainClass: EntitiesConfiguration::class,
+                validator: new EntitiesValidator(),
+            ),
+
+            'compositions' => new DomainRegistration(
+                id: new DomainId('compositions'),
+                domainClass: CompositionsConfiguration::class,
+                validator: new CompositionsValidator(),
+            ),
+
+            'queries' => new DomainRegistration(
+                id: new DomainId('queries'),
+                domainClass: QueriesConfiguration::class,
+                validator: new QueriesValidator(),
+            ),
+
+            'workflows' => new DomainRegistration(
+                id: new DomainId('workflows'),
+                domainClass: WorkflowsConfiguration::class,
+                validator: new WorkflowsValidator(),
+            ),
+
+            'design-systems' => new DomainRegistration(
+                id: new DomainId('design-systems'),
+                domainClass: DesignSystemsConfiguration::class,
+                validator: new DesignSystemsValidator(),
+            ),
+
+            'assets' => new DomainRegistration(
+                id: new DomainId('assets'),
+                domainClass: AssetsConfiguration::class,
+                validator: new AssetsValidator(),
+            ),
+
+            'integrations' => new DomainRegistration(
+                id: new DomainId('integrations'),
+                domainClass: IntegrationsConfiguration::class,
+                validator: new IntegrationsValidator(),
+            ),
+
         ]
     ))),
     new PackageValidator(),
     new ThemeDefinitionBuilder(
         new ThemeMetadataFactory(),
         new ThemeComponentBuilderRegistry([
-            //!! здесь добавлять новые компоненты
             new TemplatesComponentBuilder(),
-        ])
+        ]),
+        new ThemeIrFactory(),
     )
 );
 
