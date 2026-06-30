@@ -7,16 +7,16 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 use Throwable;
 use RuntimeException;
 use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Theme\ThemeDefinition;
 
 final class GenerateThemeArtifactsStage implements StageInterface
 {
     public function __construct(
-        private readonly ArtifactGeneratorInterface $generator
+        private readonly ThemeArtifactGeneratorInterface $generator,
     ) {
     }
 
@@ -33,7 +33,7 @@ final class GenerateThemeArtifactsStage implements StageInterface
 
             $this->generator->generate(
                 $theme,
-                $context->session()->artifacts()
+                $context->session()->artifacts(),
             );
 
             return new StageResult(
@@ -48,7 +48,7 @@ final class GenerateThemeArtifactsStage implements StageInterface
         } catch (Throwable $e) {
             return new StageResult(
                 success: false,
-                error: $e
+                error: $e,
             );
         }
     }

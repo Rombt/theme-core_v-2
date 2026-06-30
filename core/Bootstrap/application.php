@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\ArtifactCollectionFactory;
-use Rombt\ThemeCore\Artifacts\WordPressThemeArtifactGenerator;
 use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
 use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\CompositionBootstrapper;
@@ -65,6 +64,11 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsValidator;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsValidator;
+use Rombt\ThemeCore\Artifacts\ArtifactGeneratorRegistryFactory;
+use Rombt\ThemeCore\Artifacts\ThemeArtifactGenerator;
+use Rombt\ThemeCore\Runtime\Stages\GenerateIrArtifactsStage;
+use Rombt\ThemeCore\Artifacts\Generators\WordPressThemeArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Generators\CompositionArtifactGenerator;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -195,8 +199,12 @@ $buildRoot = $configuration->get('paths.build');
 
 $pipeline = new Pipeline([
 
-    new GenerateThemeArtifactsStage(
-        new WordPressThemeArtifactGenerator()
+    new GenerateIrArtifactsStage(
+        new ThemeArtifactGenerator(
+            (new ArtifactGeneratorRegistryFactory())->create([
+                new CompositionArtifactGenerator(),
+            ])
+        )
     ),
 
     new WriteThemeArtifactsStage(

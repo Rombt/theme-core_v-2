@@ -22,10 +22,8 @@ final class WriteThemeArtifactsStage implements StageInterface
     ) {
     }
 
-    public function execute(
-        ExecutionContext $context,
-        Application $app
-    ): StageResult {
+    public function execute(ExecutionContext $context, Application $app): StageResult
+    {
         try {
             $theme = $context->session()->theme();
 
@@ -41,6 +39,11 @@ final class WriteThemeArtifactsStage implements StageInterface
                 )->resolveThemePath($theme);
 
             $writer = new FileArtifactWriter($themePath);
+
+
+            echo '$context->session()->artifacts() = ';
+            print_r($context->session()->artifacts());
+            echo PHP_EOL;
 
             $writer->write($context->session()->artifacts());
 

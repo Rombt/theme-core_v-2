@@ -17,32 +17,6 @@ final class ThemeIrFactory
         $domains = $package->package()->domains();
 
 
-        // foreach ($package->package()->domains()->all() as $domain) {
-        //     echo $domain->id()->value();
-        //     echo PHP_EOL;
-        // }
-
-
-        // $ir = new ThemeIr(
-        //     entities: $this->load($domains, 'entities'),
-        //     compositions: $this->load($domains, 'compositions'),
-        //     queries: $this->load($domains, 'queries'),
-        //     workflows: $this->load($domains, 'workflows'),
-        //     designSystems: $this->load($domains, 'design-systems'),
-        //     assets: $this->load($domains, 'assets'),
-        //     integrations: $this->load($domains, 'integrations'),
-        // );
-
-        // echo '$ir = ';
-        // print_r($ir);
-        // echo PHP_EOL;
-
-
-        // return $ir;
-
-
-
-
         return new ThemeIr(
             entities: $this->load($domains, 'entities'),
             compositions: $this->load($domains, 'compositions'),

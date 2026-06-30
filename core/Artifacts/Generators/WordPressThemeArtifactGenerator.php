@@ -2,32 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Artifacts;
+namespace Rombt\ThemeCore\Artifacts\Generators;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\Artifacts\Artifact;
+use Rombt\ThemeCore\Artifacts\ArtifactId;
+use Rombt\ThemeCore\Artifacts\ArtifactType;
+use Rombt\ThemeCore\Theme\ThemeIr;
 
 final class WordPressThemeArtifactGenerator implements ArtifactGeneratorInterface
 {
     public function generate(
-        ThemeDefinition $theme,
+        ThemeIr $ir,
         ArtifactCollectionInterface $artifacts
     ): void {
-        $themeName = $theme
-            ->metadata()
-            ->name();
-
         $artifacts->add(
             new Artifact(
                 id: new ArtifactId('style-css'),
                 type: ArtifactType::FILE,
                 destination: 'style.css',
-                content: <<<CSS
-                    /*
-                    Theme Name: {$themeName}
-                    */
-                    CSS
+                content: '/* Theme */'
             )
         );
 
@@ -39,7 +34,7 @@ final class WordPressThemeArtifactGenerator implements ArtifactGeneratorInterfac
                 content: <<<'PHP'
                     <?php
 
-                        declare(strict_types=1);
+                    declare(strict_types=1);
                     PHP
             )
         );

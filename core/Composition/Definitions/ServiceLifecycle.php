@@ -12,6 +12,8 @@ final class ServiceLifecycle
 
     public const TRANSIENT = 'transient';
 
+    public const SINGLETON = 'singleton';
+
     private function __construct()
     {
     }
