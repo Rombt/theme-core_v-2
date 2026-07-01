@@ -59,7 +59,7 @@ param(
 
     [string[]]$ExcludeExtensions = @("*.png", "*.jpg", "*.jpeg", "*.gif", "*.exe", "*.lock"),
 
-    [string[]]$ExcludeDirs = @("node_modules", ".git", "dist", "build")
+    [string[]]$ExcludeDirs = @("node_modules", ".git", "dist")
 )
 
 # ===== FIX: глобальная кодировка PowerShell =====
@@ -101,15 +101,20 @@ $output = foreach ($file in $files) {
     # FIX: явное UTF-8 чтение файла
     $content = Get-Content -Raw -Encoding UTF8 $file.FullName
 
-    @"
---- FILE: $relative ---
-$content
-
-"@
+    if ([string]::IsNullOrEmpty($content)) {
+            "--- FILE: $relative ---`r`n[FILE IS EMPTY]`r`n"
+    }
+    else {
+        "--- FILE: $relative ---`r`n$content`r`n"
+    }
 }
 
 # ===== Copy to clipboard (Unicode-safe) =====
-$final = $output -join "`r`n"
+$final = ($output -join "`r`n")
+if ($null -eq $final -or $final -eq '')
+    {
+        $final = '[NO FILES FOUND]'
+    } Set-Clipboard -Value $final
 
 Set-Clipboard -Value $final
 
