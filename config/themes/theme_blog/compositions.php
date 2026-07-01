@@ -1,11 +1,8 @@
 <?php
 
-/**
- * Канал для описания всех Composition темы (Header, Footer, Archive, Single, Sidebar и т.д.)
- *
- */
+declare(strict_types=1);
 
- return [
+return [
 
     'header' => [
         'type' => 'template-part',
@@ -15,24 +12,52 @@
         'type' => 'template-part',
     ],
 
-    'index' => [
-        'type' => 'template',
-    ],
-
-    'single' => [
-        'type' => 'template',
-    ],
-
-    'category' => [
-        'type' => 'template',
-    ],
-
-    'tag' => [
-        'type' => 'template',
-    ],
-
     'sidebar' => [
         'type' => 'template-part',
     ],
 
- ];
+    'index' => [
+        'type' => 'template',
+
+        'children' => [
+            'header',
+            'content',
+            'sidebar',
+            'footer',
+        ],
+    ],
+
+    'single' => [
+        'type' => 'template',
+
+        'children' => [
+            'header',
+            'content',
+            'sidebar',
+            'footer',
+        ],
+    ],
+
+    'category' => [
+        'type' => 'template',
+
+        'children' => [
+            'header',
+            'content',
+            'sidebar',
+            'footer',
+        ],
+    ],
+
+    'tag' => [
+        'type' => 'template',
+
+        'children' => [
+            'header',
+            'content',
+            'sidebar',
+            'footer',
+        ],
+    ],
+
+];
