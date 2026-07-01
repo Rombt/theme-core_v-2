@@ -1,7 +1,24 @@
 <!-- wp:template-part {"slug":"header"} /-->
 
-<!-- content -->
+<!-- layout:start -->
+
+<!-- content:start -->
+
+<!-- wp:query-title /-->
+
+<!-- wp:query -->
+<div class="wp-block-query">
+    <!-- wp:post-template -->
+        <!-- wp:post-title {"isLink":true} /-->
+        <!-- wp:post-excerpt /-->
+    <!-- /wp:post-template -->
+</div>
+<!-- /wp:query -->
+
+<!-- content:end -->
 
 <!-- wp:template-part {"slug":"sidebar"} /-->
+
+<!-- layout:end -->
 
 <!-- wp:template-part {"slug":"footer"} /-->

@@ -6,14 +6,27 @@ return [
 
     'header' => [
         'type' => 'template-part',
+
+        'children' => [
+            'site-title',
+            'navigation',
+        ],
     ],
 
     'footer' => [
         'type' => 'template-part',
+
+        'children' => [
+            'copyright',
+        ],
     ],
 
     'sidebar' => [
         'type' => 'template-part',
+
+        'children' => [
+            'widgets',
+        ],
     ],
 
     'index' => [
@@ -21,8 +34,25 @@ return [
 
         'children' => [
             'header',
-            'content',
-            'sidebar',
+
+            [
+                'id' => 'layout',
+
+                'children' => [
+
+                    [
+                        'id' => 'content',
+
+                        'children' => [
+                            'page-title',
+                            'post-loop',
+                        ],
+                    ],
+
+                    'sidebar',
+                ],
+            ],
+
             'footer',
         ],
     ],
@@ -32,8 +62,25 @@ return [
 
         'children' => [
             'header',
-            'content',
-            'sidebar',
+
+            [
+                'id' => 'layout',
+
+                'children' => [
+
+                    [
+                        'id' => 'content',
+
+                        'children' => [
+                            'post-title',
+                            'post-content',
+                        ],
+                    ],
+
+                    'sidebar',
+                ],
+            ],
+
             'footer',
         ],
     ],
@@ -43,8 +90,25 @@ return [
 
         'children' => [
             'header',
-            'content',
-            'sidebar',
+
+            [
+                'id' => 'layout',
+
+                'children' => [
+
+                    [
+                        'id' => 'content',
+
+                        'children' => [
+                            'archive-title',
+                            'post-loop',
+                        ],
+                    ],
+
+                    'sidebar',
+                ],
+            ],
+
             'footer',
         ],
     ],
@@ -54,8 +118,25 @@ return [
 
         'children' => [
             'header',
-            'content',
-            'sidebar',
+
+            [
+                'id' => 'layout',
+
+                'children' => [
+
+                    [
+                        'id' => 'content',
+
+                        'children' => [
+                            'archive-title',
+                            'post-loop',
+                        ],
+                    ],
+
+                    'sidebar',
+                ],
+            ],
+
             'footer',
         ],
     ],

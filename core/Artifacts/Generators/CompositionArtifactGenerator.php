@@ -45,30 +45,108 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
         array $composition,
         array $compositions,
     ): string {
-        $children = $composition['children'] ?? [];
+        return $this->renderChildren(
+            $composition['children'] ?? [],
+            $compositions,
+        );
+    }
 
-        if ($children === []) {
-            return '';
-        }
-
+    /**
+     * @param array<int, mixed> $children
+     * @param array<string, array<string, mixed>> $compositions
+     */
+    private function renderChildren(
+        array $children,
+        array $compositions,
+    ): string {
         $lines = [];
 
         foreach ($children as $child) {
-            if (
-                isset($compositions[$child])
-                && ($compositions[$child]['type'] ?? null) === 'template-part'
-            ) {
-                $lines[] = sprintf(
-                    '<!-- wp:template-part {"slug":"%s"} /-->',
-                    $child
-                );
+            if (is_string($child)) {
+                if (
+                    isset($compositions[$child])
+                    && ($compositions[$child]['type'] ?? null) === 'template-part'
+                ) {
+                    $lines[] = sprintf(
+                        '<!-- wp:template-part {"slug":"%s"} /-->',
+                        $child
+                    );
+
+                    continue;
+                }
+
+                $lines[] = $this->renderNode($child);
 
                 continue;
             }
 
-            $lines[] = sprintf('<!-- %s -->', $child);
+            if (is_array($child)) {
+                $id = $child['id'] ?? 'composition';
+
+                $lines[] = sprintf('<!-- %s:start -->', $id);
+
+                $content = $this->renderChildren(
+                    $child['children'] ?? [],
+                    $compositions,
+                );
+
+                if ($content !== '') {
+                    $lines[] = $content;
+                }
+
+                $lines[] = sprintf('<!-- %s:end -->', $id);
+            }
         }
 
-        return implode(PHP_EOL . PHP_EOL, $lines) . PHP_EOL;
+        return implode(PHP_EOL . PHP_EOL, $lines);
+    }
+
+    private function renderNode(string $node): string
+    {
+        return match ($node) {
+            'site-title' => <<<'HTML'
+                <!-- wp:site-title /-->
+                HTML,
+
+            'navigation' => <<<'HTML'
+                <!-- wp:navigation /-->
+                HTML,
+
+            'page-title',
+            'archive-title' => <<<'HTML'
+                <!-- wp:query-title /-->
+                HTML,
+
+            'post-title' => <<<'HTML'
+                <!-- wp:post-title /-->
+                HTML,
+
+            'post-content' => <<<'HTML'
+                <!-- wp:post-content /-->
+                HTML,
+
+            'post-loop' => <<<'HTML'
+                <!-- wp:query -->
+                <div class="wp-block-query">
+                    <!-- wp:post-template -->
+                        <!-- wp:post-title {"isLink":true} /-->
+                        <!-- wp:post-excerpt /-->
+                    <!-- /wp:post-template -->
+                </div>
+                <!-- /wp:query -->
+                HTML,
+
+            'widgets' => <<<'HTML'
+                <!-- wp:template-part {"slug":"sidebar"} /-->
+                HTML,
+
+            'copyright' => <<<'HTML'
+                <!-- wp:paragraph -->
+                <p>© Copyright</p>
+                <!-- /wp:paragraph -->
+                HTML,
+
+            default => sprintf('<!-- %s -->', $node),
+        };
     }
 }
