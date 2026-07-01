@@ -10,9 +10,37 @@ use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\Artifacts\Contracts\CompositionNodeRendererInterface;
+use Rombt\ThemeCore\Artifacts\Renderers\SiteTitleNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\NavigationNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\QueryTitleNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\PostLoopNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\PostTitleNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\PostContentNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\WidgetsNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\CopyrightNodeRenderer;
 
 final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 {
+    /**
+     * @var array<CompositionNodeRendererInterface>
+     */
+    private array $renderers;
+
+    public function __construct()
+    {
+        $this->renderers = [
+            new SiteTitleNodeRenderer(),
+            new NavigationNodeRenderer(),
+            new QueryTitleNodeRenderer(),
+            new PostLoopNodeRenderer(),
+            new PostTitleNodeRenderer(),
+            new PostContentNodeRenderer(),
+            new WidgetsNodeRenderer(),
+            new CopyrightNodeRenderer(),
+        ];
+    }
+
     public function generate(
         ThemeIr $ir,
         ArtifactCollectionInterface $artifacts,
@@ -103,50 +131,12 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 
     private function renderNode(string $node): string
     {
-        return match ($node) {
-            'site-title' => <<<'HTML'
-                <!-- wp:site-title /-->
-                HTML,
+        foreach ($this->renderers as $renderer) {
+            if ($renderer->supports($node)) {
+                return $renderer->render($node);
+            }
+        }
 
-            'navigation' => <<<'HTML'
-                <!-- wp:navigation /-->
-                HTML,
-
-            'page-title',
-            'archive-title' => <<<'HTML'
-                <!-- wp:query-title /-->
-                HTML,
-
-            'post-title' => <<<'HTML'
-                <!-- wp:post-title /-->
-                HTML,
-
-            'post-content' => <<<'HTML'
-                <!-- wp:post-content /-->
-                HTML,
-
-            'post-loop' => <<<'HTML'
-                <!-- wp:query -->
-                <div class="wp-block-query">
-                    <!-- wp:post-template -->
-                        <!-- wp:post-title {"isLink":true} /-->
-                        <!-- wp:post-excerpt /-->
-                    <!-- /wp:post-template -->
-                </div>
-                <!-- /wp:query -->
-                HTML,
-
-            'widgets' => <<<'HTML'
-                <!-- wp:template-part {"slug":"sidebar"} /-->
-                HTML,
-
-            'copyright' => <<<'HTML'
-                <!-- wp:paragraph -->
-                <p>© Copyright</p>
-                <!-- /wp:paragraph -->
-                HTML,
-
-            default => sprintf('<!-- %s -->', $node),
-        };
+        return sprintf('<!-- %s -->', $node);
     }
 }
