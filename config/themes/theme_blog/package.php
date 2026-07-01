@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name' => 'Blog Theme',
+    'name' => 'Blog_Theme',
     'version' => '2.1.0',
 ];
