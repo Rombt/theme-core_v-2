@@ -23,14 +23,6 @@ final readonly class DiscoveredPackage
         return $this->configuration;
     }
 
-    public function metadata(): PackageMetadata
-    {
-        return new PackageMetadata(
-            name: (string) ($this->configuration['name'] ?? ''),
-            version: (string) ($this->configuration['version'] ?? ''),
-        );
-    }
-
     public function path(): string
     {
         return $this->path;

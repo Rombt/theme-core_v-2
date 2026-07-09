@@ -19,7 +19,6 @@ final class ThemePackageRegistryBuilder implements ThemePackageRegistryBuilderIn
             $registrations[$package->id()->value()] =
                 new ThemePackageRegistration(
                     id: $package->id(),
-                    metadata: $package->metadata(),
                     configuration: $package->configuration(),
                     path: $package->path(),
                 );

@@ -16,8 +16,9 @@ final readonly class ThemeDefinitionBuilder implements ThemeDefinitionBuilderInt
     ) {
     }
 
-    public function build(ValidatedPackage $package): ThemeDefinition
-    {
+    public function build(
+        ValidatedPackage $package,
+    ): ThemeDefinition {
         $components = [];
 
         foreach ($package->package()->domains()->all() as $domain) {
@@ -33,7 +34,9 @@ final readonly class ThemeDefinitionBuilder implements ThemeDefinitionBuilderInt
         }
 
         return new ThemeDefinition(
-            metadata: $this->metadataFactory->create($package->package()->metadata()),
+            metadata: $this->metadataFactory->create(
+                $package->package()->configuration(),
+            ),
             components: new ThemeComponentCollection($components),
             ir: $this->irFactory->create($package),
         );

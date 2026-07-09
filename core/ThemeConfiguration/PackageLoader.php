@@ -23,10 +23,15 @@ final class PackageLoader implements PackageLoaderInterface
             $registration->configuration()['domains'] ?? [],
         );
 
+        echo '$registration = ';
+        print_r($registration);
+        echo PHP_EOL;
+
+
         return new ThemeConfigurationPackage(
             id: $registration->id(),
-            metadata: $registration->metadata(),
             domains: new DomainCollection($domains),
+            configuration: $registration->configuration(),
         );
     }
 

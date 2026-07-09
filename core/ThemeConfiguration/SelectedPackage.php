@@ -20,9 +20,4 @@ final readonly class SelectedPackage
     {
         return $this->registration->id();
     }
-
-    public function metadata(): PackageMetadata
-    {
-        return $this->registration->metadata();
-    }
 }

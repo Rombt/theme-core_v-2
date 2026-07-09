@@ -11,6 +11,7 @@
 return [
 
     // Metadata
+    // при добавлении нового поля добавить его и в core\Theme\ThemeMetadataFactory.php
 
     'name'        => 'Blog Theme',
     'description' => 'A lightweight, accessibility-ready, and block-based WordPress theme designed for modern blogging and optimal readability.',

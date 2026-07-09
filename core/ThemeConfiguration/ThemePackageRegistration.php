@@ -8,7 +8,6 @@ final readonly class ThemePackageRegistration
 {
     public function __construct(
         private PackageId $id,
-        private PackageMetadata $metadata,
         private array $configuration,
         private string $path,
     ) {
@@ -17,11 +16,6 @@ final readonly class ThemePackageRegistration
     public function id(): PackageId
     {
         return $this->id;
-    }
-
-    public function metadata(): PackageMetadata
-    {
-        return $this->metadata;
     }
 
     public function configuration(): array

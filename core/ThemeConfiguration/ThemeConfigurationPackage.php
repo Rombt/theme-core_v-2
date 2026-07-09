@@ -8,8 +8,8 @@ final readonly class ThemeConfigurationPackage
 {
     public function __construct(
         private PackageId $id,
-        private PackageMetadata $metadata,
         private DomainCollection $domains,
+        private array $configuration
     ) {
     }
 
@@ -18,13 +18,16 @@ final readonly class ThemeConfigurationPackage
         return $this->id;
     }
 
-    public function metadata(): PackageMetadata
-    {
-        return $this->metadata;
-    }
-
     public function domains(): DomainCollection
     {
         return $this->domains;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function configuration(): array
+    {
+        return $this->configuration;
     }
 }
