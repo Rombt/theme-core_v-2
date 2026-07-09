@@ -15,9 +15,13 @@ final class PackageLoader implements PackageLoaderInterface
     {
     }
 
-    public function load(ThemePackageRegistration $registration): ThemeConfigurationPackage
-    {
-        $domains = $this->loadDomains($registration->path());
+    public function load(
+        ThemePackageRegistration $registration,
+    ): ThemeConfigurationPackage {
+        $domains = $this->loadDomains(
+            $registration->path(),
+            $registration->configuration()['domains'] ?? [],
+        );
 
         return new ThemeConfigurationPackage(
             id: $registration->id(),
@@ -27,30 +31,29 @@ final class PackageLoader implements PackageLoaderInterface
     }
 
     /**
+     * @param array<string, string> $domains
+     *
      * @return iterable<ConfigurationDomain>
      */
-    private function loadDomains(string $packagePath): iterable
-    {
-
-        foreach ($this->domains->all() as $registration) {
-            yield $this->loadDomain($packagePath, $registration);
+    private function loadDomains(
+        string $packagePath,
+        array $domains,
+    ): iterable {
+        foreach ($domains as $id => $file) {
+            yield $this->loadDomain(
+                $id,
+                $packagePath . '/' . $file,
+            );
         }
     }
 
-    private function loadDomain(string $packagePath, DomainRegistration $registration): ConfigurationDomain
-    {
-        $file = sprintf(
-            '%s/%s.php',
-            $packagePath,
-            $registration->id()->value(),
+    private function loadDomain(
+        string $id,
+        string $file,
+    ): ConfigurationDomain {
+        $registration = $this->domains->get(
+            new DomainId($id),
         );
-
-        if (!is_file($file)) {
-            return new ConfigurationDomain(
-                id: $registration->id(),
-                configuration: new ($registration->domainClass())([]),
-            );
-        }
 
         $data = require $file;
 
@@ -58,16 +61,14 @@ final class PackageLoader implements PackageLoaderInterface
             throw new \RuntimeException(
                 sprintf(
                     'Domain "%s" must return array.',
-                    $registration->id()->value(),
+                    $id,
                 ),
             );
         }
 
-        $configuration = new ($registration->domainClass())($data);
-
         return new ConfigurationDomain(
             id: $registration->id(),
-            configuration: $configuration,
+            configuration: new ($registration->domainClass())($data),
         );
     }
 }

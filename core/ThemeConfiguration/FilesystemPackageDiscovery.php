@@ -4,24 +4,19 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
-use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageDiscoveryInterface;
-use Rombt\ThemeCore\ThemeConfiguration\PackageMetadataReader;
 use RuntimeException;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageDiscoveryInterface;
 
 final readonly class FilesystemPackageDiscovery implements PackageDiscoveryInterface
 {
-    public function __construct(
-        private PackageMetadataReader $metadataReader,
-    ) {
-    }
-
-    public function discover($packagesPath): iterable
+    public function discover(string $packagesPath): iterable
     {
-
         if (!is_dir($packagesPath)) {
             throw new RuntimeException(
-                sprintf('Theme packages directory "%s" not found.', $packagesPath)
+                sprintf(
+                    'Theme packages directory "%s" not found.',
+                    $packagesPath,
+                ),
             );
         }
 
@@ -36,11 +31,41 @@ final readonly class FilesystemPackageDiscovery implements PackageDiscoveryInter
                 continue;
             }
 
+            $configuration = $this->loadPackageConfiguration($packagePath);
+
             yield new DiscoveredPackage(
                 id: new PackageId($directory),
-                metadata: $this->metadataReader->read($packagePath),
+                configuration: $configuration,
                 path: $packagePath,
             );
         }
+    }
+
+    private function loadPackageConfiguration(
+        string $packagePath,
+    ): array {
+        $file = $packagePath . '/package.php';
+
+        if (!is_file($file)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Package file "%s" not found.',
+                    $file,
+                ),
+            );
+        }
+
+        $configuration = require $file;
+
+        if (!is_array($configuration)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Package file "%s" must return array.',
+                    $file,
+                ),
+            );
+        }
+
+        return $configuration;
     }
 }

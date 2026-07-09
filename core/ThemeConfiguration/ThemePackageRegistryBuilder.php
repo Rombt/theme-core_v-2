@@ -20,6 +20,7 @@ final class ThemePackageRegistryBuilder implements ThemePackageRegistryBuilderIn
                 new ThemePackageRegistration(
                     id: $package->id(),
                     metadata: $package->metadata(),
+                    configuration: $package->configuration(),
                     path: $package->path(),
                 );
         }

@@ -19,7 +19,6 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageDiscoveryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\FilesystemPackageDiscovery;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
-use Rombt\ThemeCore\ThemeConfiguration\PackageMetadataReader;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
 use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
 use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
@@ -63,18 +62,12 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 lifecycle: ServiceLifecycle::LAZY,
             ),
 
-            new ServiceDefinition(
-                identifier: PackageMetadataReader::class,
-                class: PackageMetadataReader::class,
-                lifecycle: ServiceLifecycle::LAZY,
-            ),
 
             new ServiceDefinition(
                 identifier: PackageDiscoveryInterface::class,
                 class: FilesystemPackageDiscovery::class,
                 lifecycle: ServiceLifecycle::LAZY,
                 dependencies: [
-                    PackageMetadataReader::class,
                 ],
             ),
 

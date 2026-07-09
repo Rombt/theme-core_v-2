@@ -8,7 +8,7 @@ final readonly class DiscoveredPackage
 {
     public function __construct(
         private PackageId $id,
-        private PackageMetadata $metadata,
+        private array $configuration,
         private string $path,
     ) {
     }
@@ -18,9 +18,17 @@ final readonly class DiscoveredPackage
         return $this->id;
     }
 
+    public function configuration(): array
+    {
+        return $this->configuration;
+    }
+
     public function metadata(): PackageMetadata
     {
-        return $this->metadata;
+        return new PackageMetadata(
+            name: (string) ($this->configuration['name'] ?? ''),
+            version: (string) ($this->configuration['version'] ?? ''),
+        );
     }
 
     public function path(): string
