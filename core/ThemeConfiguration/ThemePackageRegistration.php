@@ -4,27 +4,32 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-final readonly class ThemePackageRegistration
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemePackageInterface;
+
+final readonly class ThemePackageRegistration implements ThemePackageInterface
 {
     public function __construct(
-        private PackageId $id,
-        private array $configuration,
-        private string $path,
+        private ThemePackageInterface $package,
     ) {
     }
 
     public function id(): PackageId
     {
-        return $this->id;
-    }
-
-    public function configuration(): array
-    {
-        return $this->configuration;
+        return $this->package->id();
     }
 
     public function path(): string
     {
-        return $this->path;
+        return $this->package->path();
+    }
+
+    public function configuration(): array
+    {
+        return $this->package->configuration();
+    }
+
+    public function package(): ThemePackageInterface
+    {
+        return $this->package;
     }
 }

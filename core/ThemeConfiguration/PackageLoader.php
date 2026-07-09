@@ -8,6 +8,7 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\DomainRegistryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageLoaderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\DomainRegistration;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemePackageInterface;
 
 final class PackageLoader implements PackageLoaderInterface
 {
@@ -16,22 +17,16 @@ final class PackageLoader implements PackageLoaderInterface
     }
 
     public function load(
-        ThemePackageRegistration $registration,
+        ThemePackageInterface $package,
     ): ThemeConfigurationPackage {
         $domains = $this->loadDomains(
-            $registration->path(),
-            $registration->configuration()['domains'] ?? [],
+            $package->path(),
+            $package->configuration()['domains'] ?? [],
         );
 
-        echo '$registration = ';
-        print_r($registration);
-        echo PHP_EOL;
-
-
         return new ThemeConfigurationPackage(
-            id: $registration->id(),
+            package: $package,
             domains: new DomainCollection($domains),
-            configuration: $registration->configuration(),
         );
     }
 

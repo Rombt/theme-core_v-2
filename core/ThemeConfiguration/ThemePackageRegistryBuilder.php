@@ -16,16 +16,11 @@ final class ThemePackageRegistryBuilder implements ThemePackageRegistryBuilderIn
         $registrations = [];
 
         foreach ($packages as $package) {
-            $registrations[$package->id()->value()] =
-                new ThemePackageRegistration(
-                    id: $package->id(),
-                    configuration: $package->configuration(),
-                    path: $package->path(),
-                );
+            $registration = new ThemePackageRegistration($package);
+
+            $registrations[$registration->id()->value()] = $registration;
         }
 
-        return new ThemePackageRegistry(
-            $registrations,
-        );
+        return new ThemePackageRegistry($registrations);
     }
 }

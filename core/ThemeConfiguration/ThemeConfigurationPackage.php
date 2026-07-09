@@ -4,18 +4,29 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-final readonly class ThemeConfigurationPackage
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemePackageInterface;
+
+final readonly class ThemeConfigurationPackage implements ThemePackageInterface
 {
     public function __construct(
-        private PackageId $id,
+        private ThemePackageInterface $package,
         private DomainCollection $domains,
-        private array $configuration
     ) {
     }
 
     public function id(): PackageId
     {
-        return $this->id;
+        return $this->package->id();
+    }
+
+    public function path(): string
+    {
+        return $this->package->path();
+    }
+
+    public function configuration(): array
+    {
+        return $this->package->configuration();
     }
 
     public function domains(): DomainCollection
@@ -23,11 +34,8 @@ final readonly class ThemeConfigurationPackage
         return $this->domains;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function configuration(): array
+    public function package(): ThemePackageInterface
     {
-        return $this->configuration;
+        return $this->package;
     }
 }
