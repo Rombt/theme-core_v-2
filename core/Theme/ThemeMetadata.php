@@ -51,4 +51,20 @@ final readonly class ThemeMetadata
     {
         return $this->textDomain;
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'version' => $this->version,
+            'author' => $this->author,
+            'author_uri' => $this->authorUri,
+            'theme_uri' => $this->themeUri,
+            'text_domain' => $this->textDomain,
+        ];
+    }
 }

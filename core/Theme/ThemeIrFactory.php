@@ -16,8 +16,10 @@ final class ThemeIrFactory
     ): ThemeIr {
         $domains = $package->package()->domains();
 
-
         return new ThemeIr(
+            metadata: $this->createMetadata(
+                $package->package()->configuration(),
+            ),
             entities: $this->load($domains, 'entities'),
             compositions: $this->load($domains, 'compositions'),
             queries: $this->load($domains, 'queries'),
@@ -50,5 +52,18 @@ final class ThemeIrFactory
         }
 
         return $configuration->toArray();
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     *
+     * @return array<string, string>
+     */
+    private function createMetadata(
+        array $configuration,
+    ): array {
+        return (new ThemeMetadataFactory())
+        ->create($configuration)
+        ->toArray();
     }
 }

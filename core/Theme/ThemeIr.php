@@ -7,6 +7,7 @@ namespace Rombt\ThemeCore\Theme;
 final readonly class ThemeIr
 {
     public function __construct(
+        private array $metadata = [],
         private array $entities = [],
         private array $compositions = [],
         private array $queries = [],
@@ -42,6 +43,13 @@ final readonly class ThemeIr
         return $this->designSystems;
     }
 
+    /**
+     * @return array<string, array{
+     *     type: string,
+     *     entry: string,
+     *     dependencies: array<int, string>
+     * }>
+     */
     public function assets(): array
     {
         return $this->assets;
@@ -50,5 +58,21 @@ final readonly class ThemeIr
     public function integrations(): array
     {
         return $this->integrations;
+    }
+
+    /**
+     * @return array{
+     *     name: string,
+     *     description: string,
+     *     version: string,
+     *     author: string,
+     *     author_uri: string,
+     *     theme_uri: string,
+     *     text_domain: string,
+     * }
+     */
+    public function metadata(): array
+    {
+        return $this->metadata;
     }
 }
