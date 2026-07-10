@@ -69,6 +69,9 @@ use Rombt\ThemeCore\Artifacts\ThemeArtifactGenerator;
 use Rombt\ThemeCore\Runtime\Stages\GenerateIrArtifactsStage;
 use Rombt\ThemeCore\Artifacts\Generators\WordPressThemeArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Generators\CompositionArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Generators\FunctionsPhpArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Renderers\WordPressFunctionsRenderer;
+use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -203,6 +206,11 @@ $pipeline = new Pipeline([
         new ThemeArtifactGenerator(
             (new ArtifactGeneratorRegistryFactory())->create([
                 new CompositionArtifactGenerator(),
+
+                new FunctionsPhpArtifactGenerator(
+                    new AssetRegistrationBuilder(),
+                    new WordPressFunctionsRenderer(),
+                ),
             ])
         )
     ),
