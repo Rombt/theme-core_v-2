@@ -6,15 +6,27 @@
 
  return [
 
-    'styles' => [
-        'main' => [
-            'source' => 'assets/css/style.css',
-        ],
+    'theme' => [
+        'type' => 'style',
+        'entry' => 'resources/scss/theme.scss',
     ],
 
-    'scripts' => [
-        'theme' => [
-            'source' => 'assets/js/theme.js',
+    'editor' => [
+        'type' => 'style',
+        'entry' => 'resources/scss/editor.scss',
+    ],
+
+    'frontend' => [
+        'type' => 'script',
+        'entry' => 'resources/js/frontend.js',
+        'dependencies' => [],
+    ],
+
+    'editor-js' => [
+        'type' => 'script',
+        'entry' => 'resources/js/editor.js',
+        'dependencies' => [
+            'frontend',
         ],
     ],
 
