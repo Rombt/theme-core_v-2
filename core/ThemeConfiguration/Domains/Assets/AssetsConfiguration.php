@@ -11,18 +11,30 @@ final readonly class AssetsConfiguration implements
     ConfigurationDomainInterface,
     IrExportableInterface
 {
+    private AssetCollection $assets;
+
     /**
      * @param array<string, array<string, mixed>> $assets
      */
-    public function __construct(
-        private array $assets,
-    ) {
+    public function __construct(array $assets)
+    {
+        $collection = [];
+
+        foreach ($assets as $id => $asset) {
+            $collection[] = new Asset(
+                id: $id,
+                type: (string) ($asset['type'] ?? ''),
+                entry: (string) ($asset['entry'] ?? ''),
+                dependencies: array_values(
+                    $asset['dependencies'] ?? [],
+                ),
+            );
+        }
+
+        $this->assets = new AssetCollection($collection);
     }
 
-    /**
-     * @return array<string, array<string, mixed>>
-     */
-    public function assets(): array
+    public function assets(): AssetCollection
     {
         return $this->assets;
     }
@@ -32,27 +44,16 @@ final readonly class AssetsConfiguration implements
      */
     public function toArray(): array
     {
-        return $this->normalize($this->assets);
-    }
+        $result = [];
 
-    /**
-     * @param array<string, array<string, mixed>> $assets
-     *
-     * @return array<string, array<string, mixed>>
-     */
-    private function normalize(
-        array $assets,
-    ): array {
-        foreach ($assets as $id => &$asset) {
-            $asset['type'] = (string) ($asset['type'] ?? '');
-
-            $asset['entry'] = (string) ($asset['entry'] ?? '');
-
-            $asset['dependencies'] = array_values(
-                $asset['dependencies'] ?? [],
-            );
+        foreach ($this->assets as $asset) {
+            $result[$asset->id()] = [
+                'type' => $asset->type(),
+                'entry' => $asset->entry(),
+                'dependencies' => $asset->dependencies(),
+            ];
         }
 
-        return $assets;
+        return $result;
     }
 }
