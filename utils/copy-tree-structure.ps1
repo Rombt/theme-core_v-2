@@ -26,7 +26,7 @@ project
 .\copy-tree-structure.ps1 -BasePath .
 
 .EXAMPLE
-.\copy-tree-structure.ps1 -BasePath "F:\web\theme-core"
+.\copy-tree-structure.ps1 -BasePath "D:\web\multisite\wp-content\themes\tc-1"
 #>
 
 param(
