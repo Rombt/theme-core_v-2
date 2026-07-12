@@ -15,7 +15,7 @@ Roadmap разработки
 
     1.2 Реализация доменных конфигураций
         ++ 1.2.1 Assets
-        1.2.2 Templates
+        ++ 1.2.2 Templates
         1.2.3 Template Parts
         1.2.4 Layouts
         1.2.5 Menus

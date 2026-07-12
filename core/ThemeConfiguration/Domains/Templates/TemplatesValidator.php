@@ -11,6 +11,6 @@ final readonly class TemplatesValidator implements DomainValidatorInterface
 {
     public function validate(ConfigurationDomain $domain): void
     {
-        // Пока ничего не проверяем.
+        // TODO: validation will be implemented later
     }
 }

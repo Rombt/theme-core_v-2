@@ -91,13 +91,7 @@ final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefini
                 identifier: ThemeMetadataFactory::class,
                 class: ThemeMetadataFactory::class,
                 lifecycle: ServiceLifecycle::LAZY,
-            ),
-
-            new ServiceDefinition(
-                identifier: TemplatesComponentBuilder::class,
-                class: TemplatesComponentBuilder::class,
-                lifecycle: ServiceLifecycle::LAZY,
-            ),
+            )
 
         ];
     }
