@@ -1,4 +1,4 @@
-WP THEME ONTOLOGY v0.1
+WP THEME ONTOLOGY v0.2
 Исследование предметной области WordPress Theme
 Этап №1 — Анализ множества существующих тем
 
