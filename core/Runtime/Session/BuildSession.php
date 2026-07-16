@@ -7,7 +7,7 @@ namespace Rombt\ThemeCore\Runtime\Session;
 use InvalidArgumentException;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
 
 final class BuildSession
 {
@@ -19,9 +19,9 @@ final class BuildSession
 
     public function __construct(
         string $id,
-        private readonly ThemeDefinition $theme,
+        private readonly ThemeConfigurationPackage $package,
         BuildResources $resources,
-        ArtifactCollectionInterface $artifacts
+        ArtifactCollectionInterface $artifacts,
     ) {
         $this->id = $id;
         $this->state = RuntimeState::CREATED;
@@ -81,8 +81,8 @@ final class BuildSession
         $this->state = $state;
     }
 
-    public function theme(): ThemeDefinition
+    public function package(): ThemeConfigurationPackage
     {
-        return $this->theme;
+        return $this->package;
     }
 }

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Runtime\Contracts;
 
 use Rombt\ThemeCore\Runtime\Session\BuildSession;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
 
 interface BuildSessionFactoryInterface
 {
     public function create(
-        ThemeDefinition $theme,
+        ThemeConfigurationPackage $package,
     ): BuildSession;
 }

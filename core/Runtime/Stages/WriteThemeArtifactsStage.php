@@ -41,10 +41,6 @@ final class WriteThemeArtifactsStage implements StageInterface
             $writer = new FileArtifactWriter($themePath);
 
 
-            echo '$context->session()->artifacts() = ';
-            print_r($context->session()->artifacts());
-            echo PHP_EOL;
-
             $writer->write($context->session()->artifacts());
 
             return new StageResult(

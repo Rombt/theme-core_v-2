@@ -12,7 +12,7 @@ use Rombt\ThemeCore\Runtime\Contracts\ExecutionContextFactoryInterface;
 use Rombt\ThemeCore\Runtime\Contracts\ExecutionRuntimeInterface;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineInterface;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
-use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemeDefinitionProviderInterface;
+use Rombt\ThemeCore\ThemeConfiguration\Contracts\SelectedPackageProviderInterface;
 
 final class BuildRunner implements BuildRunnerInterface
 {
@@ -21,20 +21,21 @@ final class BuildRunner implements BuildRunnerInterface
         private readonly ExecutionContextFactoryInterface $contextFactory,
         private readonly ExecutionRuntimeInterface $runtime,
         private readonly CompositionRuntimeInterface $compositionRuntime,
-        private readonly ThemeDefinitionProviderInterface $themeProvider,
+        private readonly SelectedPackageProviderInterface $packageProvider,
         private readonly Application $app,
     ) {
     }
 
     public function run(PipelineInterface $pipeline): BuildResult
     {
-        $theme = $this->themeProvider->provide();
+        $package = $this->packageProvider->provide();
 
-        echo '$theme = ';
-        print_r($theme);
+        $session = $this->sessionFactory->create($package);
+
+
+        echo '$session = ';
+        print_r($session);
         echo PHP_EOL;
-
-        $session = $this->sessionFactory->create($theme);
 
         $context = $this->contextFactory->create(
             $session,

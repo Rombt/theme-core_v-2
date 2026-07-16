@@ -6,7 +6,7 @@ namespace Rombt\ThemeCore\Runtime\Session;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionFactoryInterface;
 use Rombt\ThemeCore\Runtime\Contracts\BuildSessionFactoryInterface;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
 
 final class BuildSessionFactory implements BuildSessionFactoryInterface
 {
@@ -15,11 +15,12 @@ final class BuildSessionFactory implements BuildSessionFactoryInterface
     ) {
     }
 
-    public function create(ThemeDefinition $theme): BuildSession
-    {
+    public function create(
+        ThemeConfigurationPackage $package,
+    ): BuildSession {
         return new BuildSession(
             id: uniqid('session_', true),
-            theme: $theme,
+            package: $package,
             resources: new BuildResources(),
             artifacts: $this->artifactCollections->create(),
         );

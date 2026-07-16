@@ -14,7 +14,6 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageSelectorInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageValidatorInterface;
 use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
 use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
-use Rombt\ThemeCore\ThemeConfiguration\ThemeDefinitionProvider;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageDiscoveryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\FilesystemPackageDiscovery;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;

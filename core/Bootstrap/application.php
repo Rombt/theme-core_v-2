@@ -72,6 +72,7 @@ use Rombt\ThemeCore\Artifacts\Renderers\WordPressFunctionsRenderer;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeIrStage;
 use Rombt\ThemeCore\Resolution\ThemeIrBuilder;
+use Rombt\ThemeCore\ThemeConfiguration\SelectedPackageProvider;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -113,88 +114,82 @@ $compositionRuntime = (new RuntimeAssembler($app))->assemble($definitions);
 /** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
 $configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
 
-$themeProvider = new ThemeDefinitionProvider(
-    $configuration,
-    new RegistryPackageSelector(
-        $compositionRuntime->packageRegistry()
-    ),
-    new PackageLoaderService(new PackageLoader(new DomainRegistry(
-        [
-            //!! здесь добавлять домены которые может обрабатывать приложение
-            'templates' => new DomainRegistration(
-                id: new DomainId('templates'),
-                domainClass: TemplatesConfiguration::class,
-                validator: new TemplatesValidator(),
-            ),
-
-            'entities' => new DomainRegistration(
-                id: new DomainId('entities'),
-                domainClass: EntitiesConfiguration::class,
-                validator: new EntitiesValidator(),
-            ),
-
-            'compositions' => new DomainRegistration(
-                id: new DomainId('compositions'),
-                domainClass: CompositionsConfiguration::class,
-                validator: new CompositionsValidator(),
-            ),
-
-            'queries' => new DomainRegistration(
-                id: new DomainId('queries'),
-                domainClass: QueriesConfiguration::class,
-                validator: new QueriesValidator(),
-            ),
-
-            'workflows' => new DomainRegistration(
-                id: new DomainId('workflows'),
-                domainClass: WorkflowsConfiguration::class,
-                validator: new WorkflowsValidator(),
-            ),
-
-            'design-systems' => new DomainRegistration(
-                id: new DomainId('design-systems'),
-                domainClass: DesignSystemsConfiguration::class,
-                validator: new DesignSystemsValidator(),
-            ),
-
-            'assets' => new DomainRegistration(
-                id: new DomainId('assets'),
-                domainClass: AssetsConfiguration::class,
-                validator: new AssetsValidator(),
-            ),
-
-            'integrations' => new DomainRegistration(
-                id: new DomainId('integrations'),
-                domainClass: IntegrationsConfiguration::class,
-                validator: new IntegrationsValidator(),
-            ),
-
-        ]
-    ))),
-    new PackageValidator(),
-    new ThemeDefinitionBuilder(
-        new ThemeMetadataFactory(),
-        new ThemeComponentBuilderRegistry([
-            new TemplatesComponentBuilder(),
-            new AssetsComponentBuilder(),
-        ]),
-    )
-);
-
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
         new BuildSessionFactory(
-            new ArtifactCollectionFactory()
+            new ArtifactCollectionFactory(),
         ),
         new ExecutionContextFactory(),
         new ExecutionRuntime(
             new BuildResultFactory(),
-            new PipelineExecutor()
+            new PipelineExecutor(),
         ),
         $compositionRuntime,
-        $themeProvider,
-        $app
-    )
+        new SelectedPackageProvider(
+            $configuration,
+            new RegistryPackageSelector(
+                $compositionRuntime->packageRegistry(),
+            ),
+            new PackageLoader(
+                new DomainRegistry([
+
+                    //!! здесь добавлять домены которые может обрабатывать приложение
+
+                    'templates' => new DomainRegistration(
+                        id: new DomainId('templates'),
+                        domainClass: TemplatesConfiguration::class,
+                        validator: new TemplatesValidator(),
+                    ),
+
+                    'entities' => new DomainRegistration(
+                        id: new DomainId('entities'),
+                        domainClass: EntitiesConfiguration::class,
+                        validator: new EntitiesValidator(),
+                    ),
+
+                    'compositions' => new DomainRegistration(
+                        id: new DomainId('compositions'),
+                        domainClass: CompositionsConfiguration::class,
+                        validator: new CompositionsValidator(),
+                    ),
+
+                    'queries' => new DomainRegistration(
+                        id: new DomainId('queries'),
+                        domainClass: QueriesConfiguration::class,
+                        validator: new QueriesValidator(),
+                    ),
+
+                    'workflows' => new DomainRegistration(
+                        id: new DomainId('workflows'),
+                        domainClass: WorkflowsConfiguration::class,
+                        validator: new WorkflowsValidator(),
+                    ),
+
+                    'design-systems' => new DomainRegistration(
+                        id: new DomainId('design-systems'),
+                        domainClass: DesignSystemsConfiguration::class,
+                        validator: new DesignSystemsValidator(),
+                    ),
+
+                    'assets' => new DomainRegistration(
+                        id: new DomainId('assets'),
+                        domainClass: AssetsConfiguration::class,
+                        validator: new AssetsValidator(),
+                    ),
+
+                    'integrations' => new DomainRegistration(
+                        id: new DomainId('integrations'),
+                        domainClass: IntegrationsConfiguration::class,
+                        validator: new IntegrationsValidator(),
+                    ),
+
+
+
+                ]),
+            ),
+        ),
+        $app,
+    ),
 );
 
 $buildRoot = $configuration->get('paths.build');
