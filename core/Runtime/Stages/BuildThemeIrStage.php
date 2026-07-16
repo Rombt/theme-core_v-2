@@ -24,14 +24,14 @@ final readonly class BuildThemeIrStage implements StageInterface
         Application $app,
     ): StageResult {
         try {
-            $theme = $context->session()->theme();
+            // $theme = $context->session()->theme();
 
-            $ir = $this->builder->build($theme);
+            // $ir = $this->builder->build($theme);
 
-            $context->session()->setResource(
-                SessionKeys::THEME_IR,
-                $ir,
-            );
+            // $context->session()->setResource(
+            //     SessionKeys::THEME_IR,
+            //     $ir,
+            // );
 
             return new StageResult(
                 success: true,

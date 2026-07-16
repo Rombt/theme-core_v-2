@@ -4,59 +4,36 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Theme;
 
-use RuntimeException;
-use Rombt\ThemeCore\Theme\ThemeComponent;
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
 
-final readonly class ThemeComponentCollection
+final class ThemeComponentCollection implements IteratorAggregate
 {
     /**
-     * @var array<string, ThemeComponent>
-     */
-    private array $components;
-
-    /**
-     * @param iterable<ThemeComponent> $components
+     * @param ThemeComponent[] $components
      */
     public function __construct(
-        iterable $components = [],
+        private array $components = [],
     ) {
-        $indexed = [];
-
-        foreach ($components as $component) {
-            $indexed[$component->id()->value()] = $component;
-        }
-
-        $this->components = $indexed;
     }
 
-    public function has(
-        ComponentId $id,
-    ): bool {
-        return isset($this->components[$id->value()]);
-    }
-
-    public function get(
-        ComponentId $id,
-    ): ThemeComponent {
-        $component = $this->components[$id->value()] ?? null;
-
-        if ($component === null) {
-            throw new RuntimeException(
-                sprintf(
-                    'Component "%s" is not defined.',
-                    $id->value(),
-                ),
-            );
-        }
-
-        return $component;
+    public function add(
+        ThemeComponent $component,
+    ): void {
+        $this->components[] = $component;
     }
 
     /**
-     * @return array<string, ThemeComponent>
+     * @return ThemeComponent[]
      */
     public function all(): array
     {
         return $this->components;
+    }
+
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->components);
     }
 }

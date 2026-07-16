@@ -32,11 +32,6 @@ final class BuildRunner implements BuildRunnerInterface
 
         $session = $this->sessionFactory->create($package);
 
-
-        echo '$session = ';
-        print_r($session);
-        echo PHP_EOL;
-
         $context = $this->contextFactory->create(
             $session,
             $this->compositionRuntime,

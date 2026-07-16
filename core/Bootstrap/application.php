@@ -34,15 +34,7 @@ use Rombt\ThemeCore\Runtime\RuntimeKernel;
 use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
 use Rombt\ThemeCore\Runtime\Stages\WriteThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\FinalizeBuildStage;
-use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
-use Rombt\ThemeCore\Theme\ThemeDefinitionBuilder;
-use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
-use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponentBuilder;
-use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponentBuilder;
-use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
-use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
 use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
-use Rombt\ThemeCore\ThemeConfiguration\ThemeDefinitionProvider;
 use Rombt\ThemeCore\ThemeConfiguration\PackageLoader;
 use Rombt\ThemeCore\ThemeConfiguration\DomainId;
 use Rombt\ThemeCore\ThemeConfiguration\DomainRegistration;
@@ -71,8 +63,14 @@ use Rombt\ThemeCore\Artifacts\Generators\FunctionsPhpArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Renderers\WordPressFunctionsRenderer;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeIrStage;
+use Rombt\ThemeCore\Runtime\Stages\BuildThemeComponentsStage;
 use Rombt\ThemeCore\Resolution\ThemeIrBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\SelectedPackageProvider;
+use Rombt\ThemeCore\Theme\ThemeComponentBuilder;
+use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
+use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Compositions\CompositionsComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponentBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -196,6 +194,16 @@ $buildRoot = $configuration->get('paths.build');
 
 
 $pipeline = new Pipeline([
+
+    new BuildThemeComponentsStage(
+        new ThemeComponentBuilder(
+            new ThemeComponentBuilderRegistry([
+                new TemplatesComponentBuilder(),
+                new CompositionsComponentBuilder(),
+                new AssetsComponentBuilder(),
+            ]),
+        ),
+    ),
 
     new BuildThemeIrStage(
         $compositionRuntime
