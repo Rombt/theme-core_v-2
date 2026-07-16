@@ -22,7 +22,8 @@ use Rombt\ThemeCore\Composition\Startup\EagerBootstrapStep;
 use Rombt\ThemeCore\Composition\Startup\StartupPhase;
 use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponentBuilder;
 
 final class RuntimeAssembler implements RuntimeAssemblerInterface
 {
@@ -69,6 +70,8 @@ final class RuntimeAssembler implements RuntimeAssemblerInterface
             packageRegistry: $provider->provide($packagesPath),
             componentBuilderRegistry: new ThemeComponentBuilderRegistry([
                 new TemplatesComponentBuilder(),
+                new AssetsComponentBuilder(),
+
             ]),
         );
     }

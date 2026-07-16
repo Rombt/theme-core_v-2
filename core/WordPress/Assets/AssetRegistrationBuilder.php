@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\WordPress\Assets;
 
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetCollection;
+
 final class AssetRegistrationBuilder
 {
     public function build(
-        array $assets,
+        AssetCollection $assets,
     ): AssetRegistrationCollection {
         $registrations = [];
 
-        foreach ($assets as $handle => $asset) {
+        foreach ($assets as $asset) {
             $registrations[] = new AssetRegistration(
-                handle: $handle,
-                type: $asset['type'],
-                source: $asset['entry'],
-                dependencies: $asset['dependencies'],
+                handle: $asset->id(),
+                type: $asset->type(),
+                source: $asset->entry(),
+                dependencies: $asset->dependencies(),
             );
         }
 

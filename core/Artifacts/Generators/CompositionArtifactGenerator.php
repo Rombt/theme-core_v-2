@@ -19,6 +19,10 @@ use Rombt\ThemeCore\Artifacts\Renderers\PostTitleNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\PostContentNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\WidgetsNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\CopyrightNodeRenderer;
+use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionIr;
+use Rombt\ThemeCore\Resolution\Domains\Compositions\Composition;
+use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionCollection;
+use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionChild;
 
 final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 {
@@ -45,18 +49,22 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
         ThemeIr $ir,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        $compositions = $ir->compositions();
+        $domain = $ir->domain('compositions');
 
-        foreach ($compositions as $id => $composition) {
-            $type = $composition['type'] ?? 'template';
+        if (!$domain instanceof CompositionIr) {
+            return;
+        }
 
-            $destination = $type === 'template-part'
-                ? sprintf('parts/%s.html', $id)
-                : sprintf('templates/%s.html', $id);
+        $compositions = $domain->compositions();
+
+        foreach ($compositions->all() as $composition) {
+            $destination = $composition->type() === 'template-part'
+                ? sprintf('parts/%s.html', $composition->id())
+                : sprintf('templates/%s.html', $composition->id());
 
             $artifacts->add(
                 new Artifact(
-                    id: new ArtifactId(sprintf('composition-%s', $id)),
+                    id: new ArtifactId(sprintf('composition-%s', $composition->id())),
                     type: ArtifactType::FILE,
                     destination: $destination,
                     content: $this->render($composition, $compositions),
@@ -65,35 +73,32 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
         }
     }
 
-    /**
-     * @param array<string, mixed> $composition
-     * @param array<string, array<string, mixed>> $compositions
-     */
     private function render(
-        array $composition,
-        array $compositions,
+        Composition $composition,
+        CompositionCollection $compositions,
     ): string {
         return $this->renderChildren(
-            $composition['children'] ?? [],
+            $composition->children(),
             $compositions,
         );
     }
 
     /**
-     * @param array<int, mixed> $children
-     * @param array<string, array<string, mixed>> $compositions
+     * @param array<CompositionChild|string> $children
      */
     private function renderChildren(
         array $children,
-        array $compositions,
+        CompositionCollection $compositions,
     ): string {
         $lines = [];
 
         foreach ($children as $child) {
             if (is_string($child)) {
+                $composition = $compositions->get($child);
+
                 if (
-                    isset($compositions[$child])
-                    && ($compositions[$child]['type'] ?? null) === 'template-part'
+                    $composition !== null
+                    && $composition->type() === 'template-part'
                 ) {
                     $lines[] = sprintf(
                         '<!-- wp:template-part {"slug":"%s"} /-->',
@@ -107,14 +112,14 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 
                 continue;
             }
-
-            if (is_array($child)) {
-                $id = $child['id'] ?? 'composition';
-
-                $lines[] = sprintf('<!-- %s:start -->', $id);
+            if ($child instanceof CompositionChild) {
+                $lines[] = sprintf(
+                    '<!-- %s:start -->',
+                    $child->id(),
+                );
 
                 $content = $this->renderChildren(
-                    $child['children'] ?? [],
+                    $child->children(),
                     $compositions,
                 );
 
@@ -122,7 +127,10 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
                     $lines[] = $content;
                 }
 
-                $lines[] = sprintf('<!-- %s:end -->', $id);
+                $lines[] = sprintf(
+                    '<!-- %s:end -->',
+                    $child->id(),
+                );
             }
         }
 

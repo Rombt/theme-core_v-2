@@ -9,7 +9,6 @@ final readonly class ThemeDefinition
     public function __construct(
         private ThemeMetadata $metadata,
         private ThemeComponentCollection $components,
-        private ThemeIr $ir,
     ) {
     }
 
@@ -21,10 +20,5 @@ final readonly class ThemeDefinition
     public function components(): ThemeComponentCollection
     {
         return $this->components;
-    }
-
-    public function ir(): ThemeIr
-    {
-        return $this->ir;
     }
 }

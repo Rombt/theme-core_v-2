@@ -2,32 +2,32 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Templates;
+namespace Rombt\ThemeCore\Theme\Domains\Assets;
 
 use Rombt\ThemeCore\Theme\ComponentId;
 use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
-use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponent;
 use Rombt\ThemeCore\Theme\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsConfiguration;
 
-final readonly class TemplatesComponentBuilder implements ThemeComponentBuilderInterface
+final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInterface
 {
     public function supports(
         ConfigurationDomain $domain,
     ): bool {
-        return $domain->configuration() instanceof TemplatesConfiguration;
+        return $domain->configuration() instanceof AssetsConfiguration;
     }
 
     public function build(
         ConfigurationDomain $domain,
     ): ThemeComponent {
-        /** @var TemplatesConfiguration $configuration */
+        /** @var AssetsConfiguration $configuration */
         $configuration = $domain->configuration();
 
         return new ThemeComponent(
-            id: new ComponentId('templates'),
-            component: new TemplatesComponent(
-                $configuration->templates(),
+            id: new ComponentId('assets'),
+            component: new AssetsComponent(
+                $configuration->assets(),
             ),
         );
     }

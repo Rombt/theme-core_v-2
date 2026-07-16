@@ -32,13 +32,13 @@ use Rombt\ThemeCore\Runtime\Pipeline\PipelineExecutor;
 use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
 use Rombt\ThemeCore\Runtime\RuntimeKernel;
 use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
-use Rombt\ThemeCore\Runtime\Stages\GenerateThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\WriteThemeArtifactsStage;
 use Rombt\ThemeCore\Runtime\Stages\FinalizeBuildStage;
 use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
 use Rombt\ThemeCore\Theme\ThemeDefinitionBuilder;
 use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponentBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\PackageLoaderService;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
 use Rombt\ThemeCore\ThemeConfiguration\RegistryPackageSelector;
@@ -49,7 +49,6 @@ use Rombt\ThemeCore\ThemeConfiguration\DomainRegistration;
 use Rombt\ThemeCore\ThemeConfiguration\DomainRegistry;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesValidator;
-use Rombt\ThemeCore\Theme\ThemeIrFactory;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Entities\EntitiesConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Entities\EntitiesValidator;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
@@ -67,11 +66,12 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsValidato
 use Rombt\ThemeCore\Artifacts\ArtifactGeneratorRegistryFactory;
 use Rombt\ThemeCore\Artifacts\ThemeArtifactGenerator;
 use Rombt\ThemeCore\Runtime\Stages\GenerateIrArtifactsStage;
-use Rombt\ThemeCore\Artifacts\Generators\WordPressThemeArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Generators\CompositionArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Generators\FunctionsPhpArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Renderers\WordPressFunctionsRenderer;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
+use Rombt\ThemeCore\Runtime\Stages\BuildThemeIrStage;
+use Rombt\ThemeCore\Resolution\ThemeIrBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -176,8 +176,8 @@ $themeProvider = new ThemeDefinitionProvider(
         new ThemeMetadataFactory(),
         new ThemeComponentBuilderRegistry([
             new TemplatesComponentBuilder(),
+            new AssetsComponentBuilder(),
         ]),
-        new ThemeIrFactory(),
     )
 );
 
@@ -201,6 +201,12 @@ $buildRoot = $configuration->get('paths.build');
 
 
 $pipeline = new Pipeline([
+
+    new BuildThemeIrStage(
+        $compositionRuntime
+            ->services()
+            ->get(ThemeIrBuilder::class),
+    ),
 
     new GenerateIrArtifactsStage(
         new ThemeArtifactGenerator(

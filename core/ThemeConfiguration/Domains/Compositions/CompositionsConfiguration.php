@@ -8,8 +8,7 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\ConfigurationDomainInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\IrExportableInterface;
 
 final readonly class CompositionsConfiguration implements
-    ConfigurationDomainInterface,
-    IrExportableInterface
+    ConfigurationDomainInterface
 {
     public function __construct(
         private array $compositions,
@@ -17,11 +16,6 @@ final readonly class CompositionsConfiguration implements
     }
 
     public function compositions(): array
-    {
-        return $this->compositions;
-    }
-
-    public function toArray(): array
     {
         return $this->compositions;
     }

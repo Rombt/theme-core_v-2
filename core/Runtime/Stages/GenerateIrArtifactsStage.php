@@ -11,7 +11,8 @@ use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\Runtime\Session\SessionKeys;
+use Rombt\ThemeCore\Theme\ThemeIr;
 
 final class GenerateIrArtifactsStage implements StageInterface
 {
@@ -25,16 +26,18 @@ final class GenerateIrArtifactsStage implements StageInterface
         Application $app
     ): StageResult {
         try {
-            $theme = $context->session()->theme();
+            $ir = $context->session()->getResource(
+                SessionKeys::THEME_IR,
+            );
 
-            if (!$theme instanceof ThemeDefinition) {
+            if (!$ir instanceof ThemeIr) {
                 throw new RuntimeException(
-                    'Theme definition not loaded.'
+                    'Theme IR not built.'
                 );
             }
 
             $this->generator->generate(
-                $theme,
+                $ir,
                 $context->session()->artifacts(),
             );
 

@@ -10,6 +10,7 @@ use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\AssetRegistrationRendererInterface;
+use Rombt\ThemeCore\Resolution\Domains\Assets\AssetsIr;
 use Rombt\ThemeCore\Theme\ThemeIr;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 
@@ -25,8 +26,14 @@ final readonly class FunctionsPhpArtifactGenerator implements ArtifactGeneratorI
         ThemeIr $ir,
         ArtifactCollectionInterface $artifacts,
     ): void {
+        $domain = $ir->domain('assets');
+
+        if (!$domain instanceof AssetsIr) {
+            return;
+        }
+
         $registrations = $this->builder->build(
-            $ir->assets(),
+            $domain->assets(),
         );
 
         $artifacts->add(

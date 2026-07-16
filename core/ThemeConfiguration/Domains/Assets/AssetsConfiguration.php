@@ -8,8 +8,7 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\ConfigurationDomainInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\IrExportableInterface;
 
 final readonly class AssetsConfiguration implements
-    ConfigurationDomainInterface,
-    IrExportableInterface
+    ConfigurationDomainInterface
 {
     private AssetCollection $assets;
 

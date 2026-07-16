@@ -12,7 +12,6 @@ final readonly class ThemeDefinitionBuilder implements ThemeDefinitionBuilderInt
     public function __construct(
         private ThemeMetadataFactory $metadataFactory,
         private ThemeComponentBuilderRegistry $builders,
-        private ThemeIrFactory $irFactory,
     ) {
     }
 
@@ -38,7 +37,6 @@ final readonly class ThemeDefinitionBuilder implements ThemeDefinitionBuilderInt
                 $package->package()->configuration(),
             ),
             components: new ThemeComponentCollection($components),
-            ir: $this->irFactory->create($package),
         );
     }
 }

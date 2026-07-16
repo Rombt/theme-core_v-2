@@ -8,8 +8,7 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\ConfigurationDomainInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\IrExportableInterface;
 
 final readonly class DesignSystemsConfiguration implements
-    ConfigurationDomainInterface,
-    IrExportableInterface
+    ConfigurationDomainInterface
 {
     public function __construct(
         private array $designSystems,

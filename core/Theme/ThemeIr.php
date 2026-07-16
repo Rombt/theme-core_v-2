@@ -4,75 +4,41 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Theme;
 
-final readonly class ThemeIr
+final class ThemeIr
 {
-    public function __construct(
-        private array $metadata = [],
-        private array $entities = [],
-        private array $compositions = [],
-        private array $queries = [],
-        private array $workflows = [],
-        private array $designSystems = [],
-        private array $assets = [],
-        private array $integrations = [],
-    ) {
+    /**
+     * @var array<string, object>
+     */
+    private array $domains = [];
+
+    public function has(string $id): bool
+    {
+        return isset($this->domains[$id]);
     }
 
-    public function entities(): array
-    {
-        return $this->entities;
+    public function set(
+        string $id,
+        object $domain,
+    ): void {
+        $this->domains[$id] = $domain;
     }
 
-    public function compositions(): array
+    public function get(string $id): object
     {
-        return $this->compositions;
-    }
-
-    public function queries(): array
-    {
-        return $this->queries;
-    }
-
-    public function workflows(): array
-    {
-        return $this->workflows;
-    }
-
-    public function designSystems(): array
-    {
-        return $this->designSystems;
+        return $this->domains[$id];
     }
 
     /**
-     * @return array<string, array{
-     *     type: string,
-     *     entry: string,
-     *     dependencies: array<int, string>
-     * }>
+     * @return array<string, object>
      */
-    public function assets(): array
+    public function all(): array
     {
-        return $this->assets;
+        return $this->domains;
     }
 
-    public function integrations(): array
-    {
-        return $this->integrations;
-    }
-
-    /**
-     * @return array{
-     *     name: string,
-     *     description: string,
-     *     version: string,
-     *     author: string,
-     *     author_uri: string,
-     *     theme_uri: string,
-     *     text_domain: string,
-     * }
-     */
-    public function metadata(): array
-    {
-        return $this->metadata;
+    public function domain(
+        string $id,
+    ): ?object {
+        return $this->domains[$id] ?? null;
     }
 }

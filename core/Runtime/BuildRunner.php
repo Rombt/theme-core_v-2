@@ -13,7 +13,6 @@ use Rombt\ThemeCore\Runtime\Contracts\ExecutionRuntimeInterface;
 use Rombt\ThemeCore\Runtime\Contracts\PipelineInterface;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\ThemeDefinitionProviderInterface;
-use Rombt\ThemeCore\Runtime\Session\SessionKeys;
 
 final class BuildRunner implements BuildRunnerInterface
 {
@@ -36,13 +35,16 @@ final class BuildRunner implements BuildRunnerInterface
         echo PHP_EOL;
 
         $session = $this->sessionFactory->create($theme);
-        $session->setResource(SessionKeys::THEME_DEFINITION, $theme);
-        $context = $this->contextFactory->create($session, $this->compositionRuntime);
+
+        $context = $this->contextFactory->create(
+            $session,
+            $this->compositionRuntime,
+        );
 
         return $this->runtime->run(
             $context,
             $pipeline,
-            $this->app
+            $this->app,
         );
     }
 }
