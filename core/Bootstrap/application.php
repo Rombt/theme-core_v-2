@@ -71,6 +71,8 @@ use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
 use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponentBuilder;
 use Rombt\ThemeCore\Theme\Domains\Compositions\CompositionsComponentBuilder;
 use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\DesignSystems\DesignSystemsComponentBuilder;
+use Rombt\ThemeCore\Theme\Domains\Integrations\IntegrationsComponentBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -201,6 +203,8 @@ $pipeline = new Pipeline([
                 new TemplatesComponentBuilder(),
                 new CompositionsComponentBuilder(),
                 new AssetsComponentBuilder(),
+                new DesignSystemsComponentBuilder(),
+                new IntegrationsComponentBuilder(),
             ]),
         ),
     ),

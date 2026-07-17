@@ -20,7 +20,6 @@ use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
 use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
-use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageRegistryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistry;
 use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;

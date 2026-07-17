@@ -12,17 +12,21 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesConfiguration;
 
 final readonly class TemplatesComponentBuilder implements ThemeComponentBuilderInterface
 {
-    public function supports(
-        ConfigurationDomain $domain,
-    ): bool {
+    public function supports(ConfigurationDomain $domain): bool
+    {
         return $domain->configuration() instanceof TemplatesConfiguration;
     }
 
-    public function build(
-        ConfigurationDomain $domain,
-    ): ThemeComponent {
+    public function build(ConfigurationDomain $domain): ThemeComponent
+    {
         /** @var TemplatesConfiguration $configuration */
         $configuration = $domain->configuration();
+
+            echo '$configuration = ';
+            print_r($configuration);
+            echo PHP_EOL;
+
+
 
         return new ThemeComponent(
             id: new ComponentId('templates'),

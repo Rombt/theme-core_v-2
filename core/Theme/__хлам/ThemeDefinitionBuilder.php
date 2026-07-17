@@ -14,9 +14,8 @@ final class ThemeComponentBuilder
     ) {
     }
 
-    public function build(
-        ThemeConfigurationPackage $package,
-    ): ThemeComponentCollection {
+    public function build(ThemeConfigurationPackage $package): ThemeComponentCollection
+    {
         $components = new ThemeComponentCollection();
 
         foreach ($package->domains() as $domain) {

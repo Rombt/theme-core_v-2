@@ -12,14 +12,14 @@ final class ThemeComponentBuilderRegistry
     /**
      * @param ThemeComponentBuilderInterface[] $builders
      */
-    public function __construct(
-        private readonly array $builders,
-    ) {
+    public function __construct(private readonly array $builders)
+    {
     }
 
-    public function builderFor(
-        ConfigurationDomain $domain,
-    ): ThemeComponentBuilderInterface {
+    public function builderFor(ConfigurationDomain $domain): ThemeComponentBuilderInterface
+    {
+
+
         foreach ($this->builders as $builder) {
             if ($builder->supports($domain)) {
                 return $builder;

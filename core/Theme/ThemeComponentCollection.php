@@ -18,9 +18,8 @@ final class ThemeComponentCollection implements IteratorAggregate
     ) {
     }
 
-    public function add(
-        ThemeComponent $component,
-    ): void {
+    public function add(ThemeComponent $component): void
+    {
         $this->components[] = $component;
     }
 
