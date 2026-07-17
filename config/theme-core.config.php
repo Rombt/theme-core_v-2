@@ -21,7 +21,10 @@ return [
 
     'logging' => [
         'enabled' => true,
-        'path' => 'logs/runtime.log',
+        'runtime_path' => 'logs/runtime.log',
+        'runtime_append' => true,   // дописывать в конец файла
+        'debug_path' => 'logs/debug.log',
+        'debug_append' => false, // переписывать файл при каждом запуске приложения
     ],
 
     'diagnostic' => [

@@ -6,7 +6,7 @@ namespace Rombt\ThemeCore\Artifacts;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
-use Rombt\ThemeCore\ThemeComponents\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
 
 final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInterface
 {
@@ -14,10 +14,8 @@ final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInt
     {
     }
 
-    public function generate(
-        ThemeIr $ir,
-        ArtifactCollectionInterface $artifacts,
-    ): void {
+    public function generate(ThemeIr $ir, ArtifactCollectionInterface $artifacts): void
+    {
         foreach ($this->registry->all() as $generator) {
             $generator->generate($ir, $artifacts);
         }

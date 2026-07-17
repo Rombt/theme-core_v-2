@@ -11,7 +11,7 @@ use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\AssetRegistrationRendererInterface;
 use Rombt\ThemeCore\Resolution\Domains\Assets\AssetsIr;
-use Rombt\ThemeCore\ThemeComponents\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 
 final readonly class FunctionsPhpArtifactGenerator implements ArtifactGeneratorInterface

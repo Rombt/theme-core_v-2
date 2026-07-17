@@ -73,6 +73,7 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponentBu
 use Rombt\ThemeCore\ThemeComponents\Domains\Templates\TemplatesComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\DesignSystems\DesignSystemsComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponentBuilder;
+use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -113,6 +114,10 @@ $compositionRuntime = (new RuntimeAssembler($app))->assemble($definitions);
 */
 /** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
 $configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
+
+/** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
+$logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+
 
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
@@ -194,7 +199,6 @@ $runtimeKernel = new RuntimeKernel(
 
 $buildRoot = $configuration->get('paths.build');
 
-
 $pipeline = new Pipeline([
 
     new BuildThemeComponentsStage(
@@ -210,7 +214,9 @@ $pipeline = new Pipeline([
     ),
 
     new BuildThemeIrStage(
-        new ThemeIrBuilder(),
+        new ThemeIrBuilder(
+            new AssetsResolver(),
+        ),
     ),
 
     new GenerateIrArtifactsStage(
@@ -253,8 +259,6 @@ if ($result->getError() !== null) {
 |--------------------------------------------------------------------------
 */
 
-/** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
-$logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
 $logger->write(
     new DiagnosticEntry(

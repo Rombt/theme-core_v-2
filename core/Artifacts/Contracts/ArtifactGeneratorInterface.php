@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Artifacts\Contracts;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
-use Rombt\ThemeCore\ThemeComponents\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
 
 interface ArtifactGeneratorInterface
 {

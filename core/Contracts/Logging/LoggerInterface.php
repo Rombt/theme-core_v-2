@@ -9,6 +9,10 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticEntry;
 interface LoggerInterface
 {
     public function write(
-        DiagnosticEntry $entry
+        DiagnosticEntry $entry,
+    ): void;
+
+    public function dump(
+        mixed $value,
     ): void;
 }
