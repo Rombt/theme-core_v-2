@@ -16,10 +16,6 @@ use Rombt\ThemeCore\Runtime\ExecutionRuntime;
 use Rombt\ThemeCore\Runtime\Pipeline\PipelineExecutor;
 use Rombt\ThemeCore\Runtime\Result\BuildResultFactory;
 use Rombt\ThemeCore\Runtime\Session\BuildSessionFactory;
-use Rombt\ThemeCore\Resolution\ThemeIrBuilder;
-use Rombt\ThemeCore\Resolution\ThemeIrResolverRegistry;
-use Rombt\ThemeCore\Resolution\Domains\Assets\AssetsResolver;
-use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionResolver;
 
 final class CoreServiceDefinitionProvider implements ServiceDefinitionProviderInterface
 {
@@ -96,36 +92,6 @@ final class CoreServiceDefinitionProvider implements ServiceDefinitionProviderIn
                 ]
             ),
 
-            new ServiceDefinition(
-                identifier: ThemeIrResolverRegistry::class,
-                class: ThemeIrResolverRegistry::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: [
-                    AssetsResolver::class,
-                    CompositionResolver::class,
-                ],
-            ),
-
-            new ServiceDefinition(
-                identifier: ThemeIrBuilder::class,
-                class: ThemeIrBuilder::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: [
-                    ThemeIrResolverRegistry::class,
-                ],
-            ),
-
-            new ServiceDefinition(
-                identifier: AssetsResolver::class,
-                class: AssetsResolver::class,
-                lifecycle: ServiceLifecycle::LAZY,
-            ),
-
-            new ServiceDefinition(
-                identifier: CompositionResolver::class,
-                class: CompositionResolver::class,
-                lifecycle: ServiceLifecycle::LAZY,
-            ),
 
         ];
     }

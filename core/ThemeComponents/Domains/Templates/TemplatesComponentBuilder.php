@@ -22,11 +22,6 @@ final readonly class TemplatesComponentBuilder implements ThemeComponentBuilderI
         /** @var TemplatesConfiguration $configuration */
         $configuration = $domain->configuration();
 
-            echo '$configuration = ';
-            print_r($configuration);
-            echo PHP_EOL;
-
-
 
         return new ThemeComponent(
             id: new ComponentId('templates'),

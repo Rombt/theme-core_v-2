@@ -64,7 +64,7 @@ use Rombt\ThemeCore\Artifacts\Renderers\WordPressFunctionsRenderer;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeIrStage;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeComponentsStage;
-use Rombt\ThemeCore\Resolution\ThemeIrBuilder;
+use Rombt\ThemeCore\ThemeIR\ThemeIrBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\SelectedPackageProvider;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilderRegistry;
@@ -210,9 +210,7 @@ $pipeline = new Pipeline([
     ),
 
     new BuildThemeIrStage(
-        $compositionRuntime
-            ->services()
-            ->get(ThemeIrBuilder::class),
+        new ThemeIrBuilder(),
     ),
 
     new GenerateIrArtifactsStage(

@@ -25,11 +25,6 @@ final class BuildThemeComponentsStage implements StageInterface
             $components = $this->builder->build($context->session()->package());
             $context->session()->setResource(SessionKeys::THEME_COMPONENTS, $components);
 
-            echo '$context->session() = ';
-            print_r($context->session());
-            echo PHP_EOL;
-
-
             return new StageResult(
                 success: true,
             );
