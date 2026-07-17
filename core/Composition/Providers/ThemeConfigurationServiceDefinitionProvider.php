@@ -7,8 +7,8 @@ namespace Rombt\ThemeCore\Composition\Providers;
 use Rombt\ThemeCore\Composition\Contracts\ServiceDefinitionProviderInterface;
 use Rombt\ThemeCore\Composition\Definitions\ServiceDefinition;
 use Rombt\ThemeCore\Composition\Definitions\ServiceLifecycle;
-use Rombt\ThemeCore\Theme\Contracts\ThemeDefinitionBuilderInterface;
-use Rombt\ThemeCore\Theme\ThemeDefinitionBuilder;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeDefinitionBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinitionBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageLoaderServiceInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageSelectorInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageValidatorInterface;
@@ -19,10 +19,10 @@ use Rombt\ThemeCore\ThemeConfiguration\FilesystemPackageDiscovery;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
 use Rombt\ThemeCore\ThemeConfiguration\PackageValidator;
-use Rombt\ThemeCore\Theme\ThemeMetadataFactory;
+use Rombt\ThemeCore\ThemeComponents\ThemeMetadataFactory;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageRegistryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistry;
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesComponentBuilder;
 
 final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefinitionProviderInterface

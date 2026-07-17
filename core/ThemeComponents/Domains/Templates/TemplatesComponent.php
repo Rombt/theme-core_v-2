@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme\Domains\Templates;
+namespace Rombt\ThemeCore\ThemeComponents\Domains\Templates;
 
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplateCollection;
 
 final readonly class TemplatesComponent implements ThemeComponentInterface

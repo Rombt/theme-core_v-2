@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Resolution\Domains\Compositions;
 
 use Rombt\ThemeCore\Resolution\Contracts\ThemeIrResolverInterface;
-use Rombt\ThemeCore\Theme\ComponentId;
-use Rombt\ThemeCore\Theme\Domains\Compositions\CompositionsComponent;
-use Rombt\ThemeCore\Theme\ThemeComponentCollection;
-use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\ThemeComponents\ComponentId;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponent;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
+use Rombt\ThemeCore\ThemeComponents\ThemeIr;
 
 final readonly class CompositionResolver implements ThemeIrResolverInterface
 {

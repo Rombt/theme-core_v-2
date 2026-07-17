@@ -66,13 +66,13 @@ use Rombt\ThemeCore\Runtime\Stages\BuildThemeIrStage;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeComponentsStage;
 use Rombt\ThemeCore\Resolution\ThemeIrBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\SelectedPackageProvider;
-use Rombt\ThemeCore\Theme\ThemeComponentBuilder;
-use Rombt\ThemeCore\Theme\ThemeComponentBuilderRegistry;
-use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponentBuilder;
-use Rombt\ThemeCore\Theme\Domains\Compositions\CompositionsComponentBuilder;
-use Rombt\ThemeCore\Theme\Domains\Templates\TemplatesComponentBuilder;
-use Rombt\ThemeCore\Theme\Domains\DesignSystems\DesignSystemsComponentBuilder;
-use Rombt\ThemeCore\Theme\Domains\Integrations\IntegrationsComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilderRegistry;
+use Rombt\ThemeCore\ThemeComponents\Domains\Assets\AssetsComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\Domains\Templates\TemplatesComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\Domains\DesignSystems\DesignSystemsComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponentBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 

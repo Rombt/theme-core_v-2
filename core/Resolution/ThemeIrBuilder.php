@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Resolution;
 
-use Rombt\ThemeCore\Theme\ThemeDefinition;
-use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\ThemeIr;
 
 final readonly class ThemeIrBuilder
 {

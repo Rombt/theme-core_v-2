@@ -9,7 +9,7 @@ use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
-use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\ThemeComponents\ThemeIr;
 use Rombt\ThemeCore\Artifacts\Contracts\CompositionNodeRendererInterface;
 use Rombt\ThemeCore\Artifacts\Renderers\SiteTitleNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\NavigationNodeRenderer;

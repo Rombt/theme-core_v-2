@@ -6,7 +6,7 @@ namespace Rombt\ThemeCore\Artifacts;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
-use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\ThemeComponents\ThemeIr;
 
 final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInterface
 {

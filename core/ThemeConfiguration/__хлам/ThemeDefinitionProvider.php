@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration;
 
-use Rombt\ThemeCore\Theme\ThemeDefinition;
-use Rombt\ThemeCore\Theme\Contracts\ThemeDefinitionBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeDefinitionBuilderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageLoaderServiceInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageSelectorInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageValidatorInterface;

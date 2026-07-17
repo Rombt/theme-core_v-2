@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme;
+namespace Rombt\ThemeCore\ThemeComponents;
 
 final readonly class ComponentId
 {

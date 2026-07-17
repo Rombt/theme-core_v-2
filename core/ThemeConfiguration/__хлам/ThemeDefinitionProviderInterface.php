@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration\Contracts;
 
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
 
 interface ThemeDefinitionProviderInterface
 {

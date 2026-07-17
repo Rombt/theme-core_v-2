@@ -11,7 +11,7 @@ use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Result\BuildResult;
 use Rombt\ThemeCore\Runtime\Session\SessionKeys;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
 
 final class FinalizeBuildStage implements StageInterface
 {

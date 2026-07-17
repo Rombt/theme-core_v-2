@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme;
+namespace Rombt\ThemeCore\ThemeComponents;
 
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentCollectionBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentCollectionBuilderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
 
 final class ThemeComponentCollectionBuilder implements ThemeComponentCollectionBuilderInterface

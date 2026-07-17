@@ -10,7 +10,7 @@ use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Session\SessionKeys;
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentCollectionBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentCollectionBuilderInterface;
 
 final class BuildThemeComponentsStage implements StageInterface
 {

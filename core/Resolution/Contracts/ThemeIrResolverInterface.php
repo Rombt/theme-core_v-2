@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Resolution\Contracts;
 
-use Rombt\ThemeCore\Theme\ThemeComponentCollection;
-use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
+use Rombt\ThemeCore\ThemeComponents\ThemeIr;
 
 interface ThemeIrResolverInterface
 {

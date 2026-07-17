@@ -13,7 +13,7 @@ use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
 
 final class WriteThemeArtifactsStage implements StageInterface
 {

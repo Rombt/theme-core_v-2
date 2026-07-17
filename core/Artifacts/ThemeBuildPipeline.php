@@ -6,7 +6,7 @@ namespace Rombt\ThemeCore\Artifacts;
 
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionFactoryInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactWriterInterface;
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
 
 final readonly class ThemeBuildPipeline
 {

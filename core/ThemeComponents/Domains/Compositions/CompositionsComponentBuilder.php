@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme\Domains\Compositions;
+namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
-use Rombt\ThemeCore\Theme\ComponentId;
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
-use Rombt\ThemeCore\Theme\ThemeComponent;
+use Rombt\ThemeCore\ThemeComponents\ComponentId;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
 

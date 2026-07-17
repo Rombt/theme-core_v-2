@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Resolution\Domains\Assets;
 
 use Rombt\ThemeCore\Resolution\Contracts\ThemeIrResolverInterface;
-use Rombt\ThemeCore\Theme\ComponentId;
-use Rombt\ThemeCore\Theme\Domains\Assets\AssetsComponent;
-use Rombt\ThemeCore\Theme\ThemeComponentCollection;
-use Rombt\ThemeCore\Theme\ThemeIr;
+use Rombt\ThemeCore\ThemeComponents\ComponentId;
+use Rombt\ThemeCore\ThemeComponents\Domains\Assets\AssetsComponent;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
+use Rombt\ThemeCore\ThemeComponents\ThemeIr;
 
 final readonly class AssetsResolver implements ThemeIrResolverInterface
 {

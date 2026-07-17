@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme\Domains\DesignSystems;
+namespace Rombt\ThemeCore\ThemeComponents\Domains\DesignSystems;
 
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentInterface;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\DesignSystems\DesignSystemsConfiguration;
 
 final readonly class DesignSystemsComponent implements ThemeComponentInterface

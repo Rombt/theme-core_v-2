@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme\Contracts;
+namespace Rombt\ThemeCore\ThemeComponents\Contracts;
 
-use Rombt\ThemeCore\Theme\ThemeDefinition;
+use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
 use Rombt\ThemeCore\ThemeConfiguration\ValidatedPackage;
 
 interface ThemeDefinitionBuilderInterface

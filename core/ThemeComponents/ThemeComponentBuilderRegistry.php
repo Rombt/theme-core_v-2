@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\Theme;
+namespace Rombt\ThemeCore\ThemeComponents;
 
-use Rombt\ThemeCore\Theme\Contracts\ThemeComponentBuilderInterface;
+use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 
 final class ThemeComponentBuilderRegistry
