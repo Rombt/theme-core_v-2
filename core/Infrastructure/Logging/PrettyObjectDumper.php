@@ -123,35 +123,39 @@ final class PrettyObjectDumper implements ObjectDumperInterface
 
         $this->visited->attach($value);
 
-        $reflection = new ReflectionClass($value);
+        try {
+            $reflection = new ReflectionClass($value);
 
-        $indent = $this->indent($depth);
-        $childIndent = $this->indent($depth + 1);
+            $indent = $this->indent($depth);
+            $childIndent = $this->indent($depth + 1);
 
-        $lines = [
-            $reflection->getShortName() . ' {',
-        ];
+            $lines = [
+                $reflection->getShortName() . ' {',
+            ];
 
-        foreach ($reflection->getProperties() as $property) {
-            $property->setAccessible(true);
+            foreach ($reflection->getProperties() as $property) {
+                $property->setAccessible(true);
 
-            $lines[] = sprintf(
-                '%s%s: %s',
-                $childIndent,
-                $property->getName(),
-                $this->format(
-                    $this->getPropertyValue(
-                        $property,
-                        $value,
+                $lines[] = sprintf(
+                    '%s%s: %s',
+                    $childIndent,
+                    $property->getName(),
+                    $this->format(
+                        $this->getPropertyValue(
+                            $property,
+                            $value,
+                        ),
+                        $depth + 1,
                     ),
-                    $depth + 1,
-                ),
-            );
+                );
+            }
+
+            $lines[] = $indent . '}';
+
+            return implode(PHP_EOL, $lines);
+        } finally {
+            $this->visited->detach($value);
         }
-
-        $lines[] = $indent . '}';
-
-        return implode(PHP_EOL, $lines);
     }
 
     private function getPropertyValue(
