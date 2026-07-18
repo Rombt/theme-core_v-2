@@ -75,6 +75,9 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponentBu
 use Rombt\ThemeCore\ThemeIR\ThemeIrBuilder;
 use Rombt\ThemeCore\ThemeIR\ThemeIrResolverRegistry;
 use Rombt\ThemeCore\ThemeIR\Domains\Compositions\CompositionsThemeIrResolver;
+use Rombt\ThemeCore\ThemeIR\Domains\DesignSystems\DesignSystemsThemeIrResolver;
+use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsThemeIrResolver;
+use Rombt\ThemeCore\ThemeIR\Domains\Integrations\IntegrationsThemeIrResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -217,7 +220,10 @@ $pipeline = new Pipeline([
     new BuildThemeIrStage(
         new ThemeIrBuilder(
             new ThemeIrResolverRegistry([
-                new CompositionsThemeIrResolver($app),
+                new CompositionsThemeIrResolver(),
+                new DesignSystemsThemeIrResolver(),
+                new AssetsThemeIrResolver(),
+                new IntegrationsThemeIrResolver(),
             ]),
         ),
     ),
