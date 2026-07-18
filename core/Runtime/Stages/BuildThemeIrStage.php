@@ -18,10 +18,8 @@ final readonly class BuildThemeIrStage implements StageInterface
     {
     }
 
-    public function execute(
-        ExecutionContext $context,
-        Application $app,
-    ): StageResult {
+    public function execute(ExecutionContext $context, Application $app): StageResult
+    {
         try {
             $components = $context->session()->getResource(SessionKeys::THEME_COMPONENTS);
 

@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Contracts;
+namespace Rombt\ThemeCore\ThemeIR\Contracts;
 
-use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentCollectionInterface;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
+use Rombt\ThemeCore\ThemeIR\ThemeIrCollection;
 
 interface ThemeIrResolverInterface
 {
-    public function resolve(ThemeComponentCollectionInterface $components): mixed;
+    public function supports(ThemeComponent $component): bool;
+
+    public function resolve(ThemeComponent $component): ThemeIrCollection;
 }

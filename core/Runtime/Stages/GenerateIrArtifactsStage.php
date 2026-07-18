@@ -28,6 +28,7 @@ final class GenerateIrArtifactsStage implements StageInterface
     ): StageResult {
 
         $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+        $logger->dump('$context->session() = ');
         $logger->dump($context->session());
 
 
