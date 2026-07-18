@@ -16,8 +16,16 @@ final readonly class ThemeIrCollection implements IteratorAggregate, Countable
      * @param ThemeIrInterface[] $items
      */
     public function __construct(
-        private array $items,
+        private array $items = [],
     ) {
+    }
+
+    public function merge(self $collection): self
+    {
+        return new self([
+            ...$this->items,
+            ...$collection->all(),
+        ]);
     }
 
     /**

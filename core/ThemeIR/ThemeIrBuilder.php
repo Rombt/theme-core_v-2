@@ -16,14 +16,16 @@ final readonly class ThemeIrBuilder implements ThemeIrBuilderInterface
 
     public function build(ThemeComponentCollection $components): ThemeIrCollection
     {
-        $items = [];
+        $collection = new ThemeIrCollection();
 
         foreach ($components as $component) {
             $resolver = $this->registry->resolverFor($component);
 
-            $items[] = $resolver->resolve($component);
+            $collection = $collection->merge(
+                $resolver->resolve($component),
+            );
         }
 
-        return new ThemeIrCollection($items);
+        return $collection;
     }
 }
