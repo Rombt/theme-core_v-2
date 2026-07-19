@@ -1,3 +1,37 @@
+Устаревшее, привести в соответствие с результатами антологических исследований:
+    Page
+    Section
+    Layout
+    Composition
+    Composition Graph
+    Slot
+    Design System
+    Design Token
+    Configuration
+    Preset
+    Demo
+    Resolution
+    Capability
+    Registry
+    Renderer
+    Render Model
+    Renderer Mapping
+    Provisioning
+    Installation Profile
+    Content Package
+    Integration
+    Adapter
+
+
+
+
+
+
+
+
+
+
+
 theme-core v-2
 ARCHITECTURAL GLOSSARY
 (v1.0.0)
@@ -20,7 +54,7 @@ Status: Foundational Vocabulary
     Glossary является частью архитектуры системы.
 
     Каждый термин должен иметь одно значение во всех слоях системы.
-    
+
 
 ====================================================================
 2. SYSTEM DOMAIN
@@ -29,10 +63,10 @@ Status: Foundational Vocabulary
     2.1 THEME-CORE V-2
     ================================================================
 
-        theme-core v-2 — Configuration-Driven Theme 
+        theme-core v-2 — Configuration-Driven Theme
             Architecture Compiler для WordPress.
 
-        Система преобразует архитектурное описание темы 
+        Система преобразует архитектурное описание темы
             в набор готовых артефактов WordPress Theme.
 
         Основной продукт системы: WordPress Theme
@@ -43,8 +77,8 @@ Status: Foundational Vocabulary
     ================================================================
 
         Архитектура темы представляет собой декларативную модель темы,
-            описывающую её 
-                структуру, 
+            описывающую её
+                структуру,
                 визуальную систему,
                 композиционные правила,
                 контракты и зависимости,
@@ -54,7 +88,7 @@ Status: Foundational Vocabulary
             единственным источником истины для построения темы.
 
         Архитектура — это источник истины.
-        
+
         Тема — её скомпилированное представление.
 
 
@@ -81,7 +115,7 @@ Status: Foundational Vocabulary
 
     2.4 SITE
     ================================================================
-   
+
         Site — целевая система, для которой создаётся Theme.
 
         В контексте WordPress сайт состоит из:
@@ -100,7 +134,7 @@ Status: Foundational Vocabulary
 
     3.1 PAGE
     ================================================================
-    
+
         Page — compositional architectural unit Theme.
 
         Page определяет:
@@ -149,7 +183,7 @@ Status: Foundational Vocabulary
 
     3.4 COMPOSITION
     ================================================================
-    
+
         Composition — процесс организации архитектурных сущностей
             в единую структуру Theme.
 
@@ -294,10 +328,10 @@ Status: Foundational Vocabulary
 
         Pipeline — multi-stage transformation system.
 
-        Pipeline преобразует архитектурные определения 
+        Pipeline преобразует архитектурные определения
             в готовые Theme Artifacts.
 
-        Pipeline является центральным механизмом 
+        Pipeline является центральным механизмом
             архитектурной компиляции.
 
 
