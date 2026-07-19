@@ -12,6 +12,11 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfigur
 
 final readonly class CompositionsComponentBuilder implements ThemeComponentBuilderInterface
 {
+    public function __construct(
+        private CompositionCollectionBuilder $builder = new CompositionCollectionBuilder(),
+    ) {
+    }
+
     public function supports(
         ConfigurationDomain $domain,
     ): bool {
@@ -27,7 +32,7 @@ final readonly class CompositionsComponentBuilder implements ThemeComponentBuild
         return new ThemeComponent(
             id: new ComponentId('compositions'),
             component: new CompositionsComponent(
-                $configuration,
+                $this->builder->build($configuration),
             ),
         );
     }

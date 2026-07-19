@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Generators;
 
-use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Artifact;
 use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
