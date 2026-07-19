@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Generators;
 
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Artifact;
 use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
-use Rombt\ThemeCore\ThemeIR\ThemeIr;
 use Rombt\ThemeCore\Artifacts\Contracts\CompositionNodeRendererInterface;
-use Rombt\ThemeCore\Artifacts\Renderers\SiteTitleNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\CopyrightNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\NavigationNodeRenderer;
-use Rombt\ThemeCore\Artifacts\Renderers\QueryTitleNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\PostContentNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\PostLoopNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\PostTitleNodeRenderer;
-use Rombt\ThemeCore\Artifacts\Renderers\PostContentNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\QueryTitleNodeRenderer;
+use Rombt\ThemeCore\Artifacts\Renderers\SiteTitleNodeRenderer;
 use Rombt\ThemeCore\Artifacts\Renderers\WidgetsNodeRenderer;
-use Rombt\ThemeCore\Artifacts\Renderers\CopyrightNodeRenderer;
-use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionIr;
-use Rombt\ThemeCore\Resolution\Domains\Compositions\Composition;
-use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionCollection;
-use Rombt\ThemeCore\Resolution\Domains\Compositions\CompositionChild;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrInterface;
+use Rombt\ThemeCore\ThemeIR\Domains\Compositions\CompositionIr;
 
 final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 {
@@ -45,64 +44,62 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
         ];
     }
 
+    public function supports(): string
+    {
+        return CompositionIr::class;
+    }
+
     public function generate(
-        ThemeIr $ir,
+        ThemeIrInterface $ir,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        $domain = $ir->domain('compositions');
+        /** @var CompositionIr $ir */
 
-        if (!$domain instanceof CompositionIr) {
-            return;
-        }
+        $compositions = $ir->configuration();
 
-        $compositions = $domain->compositions();
-
-        foreach ($compositions->all() as $composition) {
-            $destination = $composition->type() === 'template-part'
-                ? sprintf('parts/%s.html', $composition->id())
-                : sprintf('templates/%s.html', $composition->id());
+        foreach ($compositions->compositions() as $id => $composition) {
+            $destination = $composition['type'] === 'template-part'
+                ? sprintf('parts/%s.html', $id)
+                : sprintf('templates/%s.html', $id);
 
             $artifacts->add(
                 new Artifact(
-                    id: new ArtifactId(sprintf('composition-%s', $composition->id())),
+                    id: new ArtifactId(sprintf('composition-%s', $id)),
                     type: ArtifactType::FILE,
                     destination: $destination,
                     content: $this->render($composition, $compositions),
-                )
+                ),
             );
         }
     }
 
     private function render(
-        Composition $composition,
-        CompositionCollection $compositions,
+        array $composition,
+        CompositionsConfiguration $compositions,
     ): string {
         return $this->renderChildren(
-            $composition->children(),
+            $composition['children'] ?? [],
             $compositions,
         );
     }
 
-    /**
-     * @param array<CompositionChild|string> $children
-     */
     private function renderChildren(
         array $children,
-        CompositionCollection $compositions,
+        CompositionsConfiguration $compositions,
     ): string {
         $lines = [];
 
         foreach ($children as $child) {
             if (is_string($child)) {
-                $composition = $compositions->get($child);
+                $composition = $this->findComposition($child, $compositions);
 
                 if (
                     $composition !== null
-                    && $composition->type() === 'template-part'
+                    && $composition['type'] === 'template-part'
                 ) {
                     $lines[] = sprintf(
                         '<!-- wp:template-part {"slug":"%s"} /-->',
-                        $child
+                        $child,
                     );
 
                     continue;
@@ -112,14 +109,15 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 
                 continue;
             }
-            if ($child instanceof CompositionChild) {
+
+            if (is_array($child)) {
                 $lines[] = sprintf(
                     '<!-- %s:start -->',
-                    $child->id(),
+                    $child['id'],
                 );
 
                 $content = $this->renderChildren(
-                    $child->children(),
+                    $child['children'] ?? [],
                     $compositions,
                 );
 
@@ -129,12 +127,19 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 
                 $lines[] = sprintf(
                     '<!-- %s:end -->',
-                    $child->id(),
+                    $child['id'],
                 );
             }
         }
 
         return implode(PHP_EOL . PHP_EOL, $lines);
+    }
+
+    private function findComposition(
+        string $id,
+        CompositionsConfiguration $compositions,
+    ): ?array {
+        return $compositions->compositions()[$id] ?? null;
     }
 
     private function renderNode(string $node): string

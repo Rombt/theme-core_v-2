@@ -10,8 +10,8 @@ use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\AssetRegistrationRendererInterface;
-use Rombt\ThemeCore\Resolution\Domains\Assets\AssetsIr;
-use Rombt\ThemeCore\ThemeIR\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrInterface;
+use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetIr;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
 
 final readonly class FunctionsPhpArtifactGenerator implements ArtifactGeneratorInterface
@@ -22,18 +22,19 @@ final readonly class FunctionsPhpArtifactGenerator implements ArtifactGeneratorI
     ) {
     }
 
+    public function supports(): string
+    {
+        return AssetIr::class;
+    }
+
     public function generate(
-        ThemeIr $ir,
+        ThemeIrInterface $ir,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        $domain = $ir->domain('assets');
-
-        if (!$domain instanceof AssetsIr) {
-            return;
-        }
+        /** @var AssetIr $ir */
 
         $registrations = $this->builder->build(
-            $domain->assets(),
+            $ir->assets(),
         );
 
         $artifacts->add(
@@ -41,9 +42,7 @@ final readonly class FunctionsPhpArtifactGenerator implements ArtifactGeneratorI
                 id: new ArtifactId('functions-php'),
                 type: ArtifactType::FILE,
                 destination: 'functions.php',
-                content: $this->renderer->render(
-                    $registrations,
-                ),
+                content: $this->renderer->render($registrations),
             ),
         );
     }

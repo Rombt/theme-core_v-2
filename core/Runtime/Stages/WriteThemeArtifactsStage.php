@@ -4,52 +4,58 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Runtime\Stages;
 
-use Throwable;
 use RuntimeException;
+use Throwable;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Artifacts\FileArtifactWriter;
-use Rombt\ThemeCore\Artifacts\ThemeBuildPathResolver;
 use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
-use Rombt\ThemeCore\ThemeComponents\ThemeDefinition;
 
 final class WriteThemeArtifactsStage implements StageInterface
 {
     public function __construct(
-        private readonly ConfigurationInterface $configuration
+        private readonly ConfigurationInterface $configuration,
     ) {
     }
 
-    public function execute(ExecutionContext $context, Application $app): StageResult
-    {
+    public function execute(
+        ExecutionContext $context,
+        Application $app,
+    ): StageResult {
         try {
-            $theme = $context->session()->theme();
+            $buildPath = (string) $this->configuration->get('paths.build');
 
-            if (!$theme instanceof ThemeDefinition) {
+            if ($buildPath === '') {
                 throw new RuntimeException(
-                    'Theme definition not loaded.'
+                    'Build path is not configured.',
                 );
             }
 
+            $package = $context->session()->package();
 
-            $themePath = (
-                new ThemeBuildPathResolver((string) $this->configuration->get('paths.build'))
-                )->resolveThemePath($theme);
+            $themePath = sprintf(
+                '%s/%s',
+                rtrim($buildPath, '/\\'),
+                $package
+                    ->package()
+                    ->configuration()['name'],
+            );
 
             $writer = new FileArtifactWriter($themePath);
 
-
-            $writer->write($context->session()->artifacts());
+            $writer->write(
+                $context->session()->artifacts(),
+            );
 
             return new StageResult(
-                success: true
+                success: true,
             );
         } catch (Throwable $e) {
             return new StageResult(
                 success: false,
-                error: $e
+                error: $e,
             );
         }
     }

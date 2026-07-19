@@ -231,7 +231,7 @@ $pipeline = new Pipeline([
     new GenerateIrArtifactsStage(
         new ThemeArtifactGenerator(
             (new ArtifactGeneratorRegistryFactory())->create([
-                new CompositionArtifactGenerator(),
+                new CompositionArtifactGenerator($app),
 
                 new FunctionsPhpArtifactGenerator(
                     new AssetRegistrationBuilder(),

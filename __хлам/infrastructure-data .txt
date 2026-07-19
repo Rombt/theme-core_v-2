@@ -1,0 +1,300 @@
+==================================================
+INFRASTRUCTURE DATA
+==================================================
+
+    Infrastructure Data — это служебный слой данных, который обеспечивает 
+        техническую работу platform architecture.
+
+    Проще говоря:
+
+    Infrastructure — это всё, что нужно системе для 
+        сборки, 
+        доставки, 
+        оптимизации 
+        технического выполнения сайта, 
+    но не относится напрямую к 
+        архитектуре страниц, 
+        контенту, 
+        composition.
+
+--------------------------------------------------
+ГЛАВНАЯ ИДЕЯ INFRASTRUCTURE DATA
+--------------------------------------------------
+
+    Infrastructure отвечает на вопрос:
+        "Что необходимо системе для своей технической работы?"
+
+--------------------------------------------------
+ОЧЕНЬ ВАЖНОЕ ПОНИМАНИЕ
+--------------------------------------------------
+
+    Infrastructure — это НЕ сайт.
+
+    Infrastructure — это НЕ content.
+
+    Infrastructure — это НЕ composition.
+
+    Infrastructure — это технический обслуживающий слой platform.
+
+--------------------------------------------------
+ПРОСТАЯ АНАЛОГИЯ
+--------------------------------------------------
+
+    Если сайт — это здание,
+
+    то Infrastructure —
+        это:
+            электропроводка
+            вентиляция
+            серверная
+            технические коммуникации
+            инженерные системы
+
+    Пользователь обычно их не видит, но без них система работать не сможет.
+
+--------------------------------------------------
+ПРОСТОЙ ПРИМЕР
+--------------------------------------------------
+
+    Когда theme-core v-2 работает, система может:
+        собирать CSS
+        компилировать JS
+        создавать asset manifests
+        строить dependency graphs
+        оптимизировать bundles
+        управлять cache
+
+    Все эти процессы — не относятся напрямую к архитектуре сайта.
+    Это Infrastructure layer.
+
+--------------------------------------------------
+ЧТО ИМЕННО ВХОДИТ В INFRASTRUCTURE DATA
+--------------------------------------------------
+
+    1. ASSET MANIFESTS
+    --------------------------------------------------
+
+        Например:
+            app.js
+            vendor.js
+            hero.css
+            runtime.css
+
+        Система должна знать:
+            где лежат assets
+            какие файлы существуют
+            какие зависимости подключать
+
+    2. BUILD OUTPUTS
+    --------------------------------------------------
+
+        Например:
+            compiled CSS
+            bundled JS
+            optimized assets
+
+    3. DEPENDENCY GRAPHS
+    --------------------------------------------------
+
+        Например:
+            hero.js depends on:
+                runtime.js
+                animation.js
+
+    4. CACHE METADATA
+    --------------------------------------------------
+
+        Например:
+            cached asset versions
+            cache keys
+            invalidation rules
+
+    5. DEPLOYMENT METADATA
+    --------------------------------------------------
+
+        Например:
+            build version
+            deployment target
+            environment settings
+
+    6. RESOURCE MAPS
+    --------------------------------------------------
+
+        Например:
+            which assets belong
+            to which sections/layouts
+
+    7. COMPILATION RESULTS
+    --------------------------------------------------
+
+        Например:
+            generated token CSS
+            generated utility classes
+            generated responsive maps
+
+    8. ENVIRONMENT CONFIGURATION
+    --------------------------------------------------
+
+        Например:
+            development mode
+            production mode
+            debug flags
+
+    9. PERFORMANCE METADATA
+    --------------------------------------------------
+
+        Например:
+            lazy-load rules
+            preload maps
+            optimization manifests
+
+--------------------------------------------------
+ЧТО ВАЖНО ПОНЯТЬ
+--------------------------------------------------
+
+    Infrastructure Data
+    не описывают:
+        как выглядит сайт
+        как устроены страницы
+        какой контент используется
+
+    Infrastructure Data описывают:
+        как platform технически выполняет свою работу.
+
+--------------------------------------------------
+INFRASTRUCTURE НЕ СОДЕРЖИТ
+--------------------------------------------------
+
+    Infrastructure НЕ содержит:
+        page composition
+        section hierarchy
+        content data
+        business content
+        design rules
+
+--------------------------------------------------
+ВАЖНОЕ РАЗДЕЛЕНИЕ
+--------------------------------------------------
+
+    Foundation: architectural rules
+
+    Composition: structural assembly
+
+    Configuration: system choices
+
+    Runtime: execution state
+
+    Infrastructure: technical platform support
+
+--------------------------------------------------
+ПРОСТОЙ ПРИМЕР
+--------------------------------------------------
+
+    FOUNDATION: spacing system exists
+
+    RUNTIME: renderer computes spacing
+
+    INFRASTRUCTURE: compiled spacing tokens.css generated
+
+--------------------------------------------------
+ПОЧЕМУ INFRASTRUCTURE ВАЖЕН
+--------------------------------------------------
+
+    Без Infrastructure layer:
+        assets подключаются хаотично
+        build system становится нестабильной
+        caching ломается
+        deployment становится непредсказуемым
+
+--------------------------------------------------
+INFRASTRUCTURE ДЕЛАЕТ СИСТЕМУ
+--------------------------------------------------
+
+    scalable
+    maintainable
+    deployable
+    optimized
+    production-ready
+
+--------------------------------------------------
+INFRASTRUCTURE И WORDPRESS
+--------------------------------------------------
+
+    В обычных WordPress темах Infrastructure часто:
+        размазан по:
+            webpack configs
+            enqueue functions
+            random build scripts
+            plugins
+            cache layers
+
+--------------------------------------------------
+theme-core v-2 подход
+--------------------------------------------------
+
+    Infrastructure становится:
+        отдельным architectural layer,
+        а не набором случайных build scripts.
+
+--------------------------------------------------
+ЧТО ЭТО ДАЁТ
+--------------------------------------------------
+
+    Это позволяет:
+        централизовать asset architecture
+        управлять build pipeline
+        контролировать dependency graph
+        оптимизировать performance
+        масштабировать platform
+
+--------------------------------------------------
+ВАЖНОЕ УТОЧНЕНИЕ
+--------------------------------------------------
+
+    Infrastructure — это platform-level layer.
+
+    НЕ site-level layer. Это очень важно.
+
+--------------------------------------------------
+ПРИМЕР
+--------------------------------------------------
+
+    Composition может измениться:
+        Hero
+        Features
+        CTA
+
+    Но Infrastructure layer останется тем же:
+        asset pipeline
+        build system
+        cache system
+        deployment rules
+
+--------------------------------------------------
+ПРОСТАЯ МЕНТАЛЬНАЯ МОДЕЛЬ
+--------------------------------------------------
+
+    Если:
+        Foundation = architectural language
+        Composition = structure
+        Content = data
+        Runtime = execution
+
+    то Infrastructure = техническая инженерная система platform.
+
+--------------------------------------------------
+ЕЩЁ ПРОЩЕ
+--------------------------------------------------
+
+    Infrastructure — это backend machinery платформы.
+
+--------------------------------------------------
+КЛЮЧЕВОЙ ВЫВОД
+--------------------------------------------------
+
+    Infrastructure Data — это технический infrastructural layer, который обеспечивает:
+        сборку,
+        оптимизацию,
+        доставку,
+        caching
+        и техническое выполнение всей platform architecture theme-core v-2.
