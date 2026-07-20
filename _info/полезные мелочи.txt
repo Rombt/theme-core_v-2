@@ -1,0 +1,67 @@
+log_trace("MODEL LOAD: {$route}"]);                //!!-!!
+
+$this->log->write('$_GET = ' . print_r($_GET, true));       //!!-!!
+
+
+error_log('$sql = ' . print_r($sql, true));       //!!-!!	
+
+$this->log('$value = ' . print_r($value,true), 2);       //!!-!!
+
+
+console.log('StepClass = '); //!!--!!
+console.dir(StepClass, { depth: null, colors: true }); //!!--!!
+
+echo '$runtimeKernel = ';
+print_r($runtimeKernel);
+echo PHP_EOL;
+
+
+      if (e instanceof AggregateError) {
+      ctx.logger?.debug('************************', {
+        component: '',
+        method: '',
+        action: '',
+        data: {
+          e: e.errors,
+        },
+      });
+      }
+
+
+
+console.error('imageProcessing = ', imageProcessing);
+process.exit(1);
+
+в VSCode ctrl+shift+p
+Developer: Reload Window
+Intelephense: Clear Cache
+
+
+use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
+// !! log !!
+$logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+$logger->dump('$context->session() = ');
+$logger->dump($context->session());
+
+
+======   GPT   ========
+Двигаемся по шагам не переходи к следующему шагу пока я не попрошу тебя об этом. 
+
+Ответы которые содержать код должны строится по такой схеме: относительный путь к файлу потом код этого файла потом краткое пояснение к коду.
+
+Ты постоянно должен помнить что я очень сильно рассчитываю на твою способность быть лаконичным.
+
+Предложи варианты это сделать. Каждому дай краткое пояснение, укажи их плюсы и минусы в контексте данного проекта.
+
+Подробностей не нужно только то что необходимо что бы принять взвешенное решение о дальнейшем направлении разработки
+
+Свой ответ подготовь в отдельном блоке в текстовом формате принятом на данном проекте. Перед блоком укажи название файла
+
+Нужно разобрать код который я тебе дам разбей его на логические блоки каждый такой блок будет шагом
+
+Php не поясняй сосредоточься на архитектурных паттернах и их значении в данном контексте
+
+Ничего не придумывай и не догадываться!! Если у тебя нет достаточной информации для принятия решения или формирования ответа так и скажи!
+
+Напиши сообщение которое тебе нужно отправить что бы восстановить контекст этого чата
