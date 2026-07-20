@@ -6,6 +6,7 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 
 use Throwable;
 use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrBuilderInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
@@ -22,6 +23,11 @@ final readonly class BuildThemeIrStage implements StageInterface
     {
         try {
             $components = $context->session()->getResource(SessionKeys::THEME_COMPONENTS);
+
+            // !! log !!
+            $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+            $logger->dump('BuildThemeIrStage    $components = ');
+            $logger->dump($components);
 
             $themeIr = $this->builder->build($components);
 

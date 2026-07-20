@@ -114,14 +114,14 @@ final class PrettyObjectDumper implements ObjectDumperInterface
         object $value,
         int $depth,
     ): string {
-        if ($this->visited->contains($value)) {
+        if (isset($this->visited[$value])) {
             return sprintf(
                 '%s { *RECURSION* }',
                 $value::class,
             );
         }
 
-        $this->visited->attach($value);
+        $this->visited[$value] = true;
 
         try {
             $reflection = new ReflectionClass($value);
@@ -130,12 +130,10 @@ final class PrettyObjectDumper implements ObjectDumperInterface
             $childIndent = $this->indent($depth + 1);
 
             $lines = [
-                $reflection->getShortName() . ' {',
+            $reflection->getShortName() . ' {',
             ];
 
             foreach ($reflection->getProperties() as $property) {
-                $property->setAccessible(true);
-
                 $lines[] = sprintf(
                     '%s%s: %s',
                     $childIndent,
@@ -154,7 +152,7 @@ final class PrettyObjectDumper implements ObjectDumperInterface
 
             return implode(PHP_EOL, $lines);
         } finally {
-            $this->visited->detach($value);
+            unset($this->visited[$value]);
         }
     }
 
@@ -162,6 +160,10 @@ final class PrettyObjectDumper implements ObjectDumperInterface
         ReflectionProperty $property,
         object $object,
     ): mixed {
+        if (!$property->isInitialized($object)) {
+            return '[uninitialized]';
+        }
+
         return $property->getValue($object);
     }
 

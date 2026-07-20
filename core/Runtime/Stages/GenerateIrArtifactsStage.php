@@ -27,15 +27,15 @@ final class GenerateIrArtifactsStage implements StageInterface
         Application $app
     ): StageResult {
 
-        $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
-        $logger->dump('$context->session() = ');
-        $logger->dump($context->session());
 
 
         try {
-            $ir = $context->session()->getResource(
-                SessionKeys::THEME_IR,
-            );
+            $ir = $context->session()->getResource(SessionKeys::THEME_IR);
+
+            // !! log !!
+            $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+            $logger->dump('GenerateIrArtifactsStage    $ir = ');
+            $logger->dump($ir);
 
             if (!$ir instanceof ThemeIrCollection) {
                 throw new RuntimeException(

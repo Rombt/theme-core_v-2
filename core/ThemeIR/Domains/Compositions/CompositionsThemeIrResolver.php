@@ -25,7 +25,7 @@ final readonly class CompositionsThemeIrResolver implements ThemeIrResolverInter
         return new ThemeIrCollection([
             new CompositionIr(
                 id: new IrId($component->id()->value()),
-                configuration: $compositions->compositions(),
+                compositions: $compositions->compositions(),
             ),
         ]);
     }

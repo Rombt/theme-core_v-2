@@ -21,6 +21,9 @@ use Rombt\ThemeCore\Artifacts\Renderers\WidgetsNodeRenderer;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
 use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrInterface;
 use Rombt\ThemeCore\ThemeIR\Domains\Compositions\CompositionIr;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionCollection;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNodeCollection;
 
 final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 {
@@ -54,16 +57,16 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
     ): void {
         /** @var CompositionIr $ir */
 
-        $compositions = $ir->configuration();
+        $compositions = $ir->compositions();
 
-        foreach ($compositions->compositions() as $id => $composition) {
-            $destination = $composition['type'] === 'template-part'
-                ? sprintf('parts/%s.html', $id)
-                : sprintf('templates/%s.html', $id);
+        foreach ($compositions as $composition) {
+            $destination = $composition->isTemplatePart()
+                ? sprintf('parts/%s.html', $composition->id())
+                : sprintf('templates/%s.html', $composition->id());
 
             $artifacts->add(
                 new Artifact(
-                    id: new ArtifactId(sprintf('composition-%s', $id)),
+                    id: new ArtifactId(sprintf('composition-%s', $composition->id())),
                     type: ArtifactType::FILE,
                     destination: $destination,
                     content: $this->render($composition, $compositions),
@@ -73,62 +76,65 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
     }
 
     private function render(
-        array $composition,
-        CompositionsConfiguration $compositions,
+        Composition $composition,
+        CompositionCollection $compositions,
     ): string {
         return $this->renderChildren(
-            $composition['children'] ?? [],
+            $composition->nodes(),
             $compositions,
         );
     }
 
     private function renderChildren(
-        array $children,
-        CompositionsConfiguration $compositions,
+        CompositionNodeCollection $nodes,
+        CompositionCollection $compositions,
     ): string {
         $lines = [];
 
-        foreach ($children as $child) {
-            if (is_string($child)) {
-                $composition = $this->findComposition($child, $compositions);
+        foreach ($nodes as $node) {
+            $composition = $this->findComposition(
+                $node->id(),
+                $compositions,
+            );
 
-                if (
-                    $composition !== null
-                    && $composition['type'] === 'template-part'
-                ) {
-                    $lines[] = sprintf(
-                        '<!-- wp:template-part {"slug":"%s"} /-->',
-                        $child,
-                    );
-
-                    continue;
-                }
-
-                $lines[] = $this->renderNode($child);
+            if (
+                $composition !== null
+                && $composition->isTemplatePart()
+            ) {
+                $lines[] = sprintf(
+                    '<!-- wp:template-part {"slug":"%s"} /-->',
+                    $node->id(),
+                );
 
                 continue;
             }
 
-            if (is_array($child)) {
-                $lines[] = sprintf(
-                    '<!-- %s:start -->',
-                    $child['id'],
+            if ($node->children()->isEmpty()) {
+                $lines[] = $this->renderNode(
+                    $node->id(),
                 );
 
-                $content = $this->renderChildren(
-                    $child['children'] ?? [],
-                    $compositions,
-                );
-
-                if ($content !== '') {
-                    $lines[] = $content;
-                }
-
-                $lines[] = sprintf(
-                    '<!-- %s:end -->',
-                    $child['id'],
-                );
+                continue;
             }
+
+            $lines[] = sprintf(
+                '<!-- %s:start -->',
+                $node->id(),
+            );
+
+            $content = $this->renderChildren(
+                $node->children(),
+                $compositions,
+            );
+
+            if ($content !== '') {
+                $lines[] = $content;
+            }
+
+            $lines[] = sprintf(
+                '<!-- %s:end -->',
+                $node->id(),
+            );
         }
 
         return implode(PHP_EOL . PHP_EOL, $lines);
@@ -136,9 +142,9 @@ final class CompositionArtifactGenerator implements ArtifactGeneratorInterface
 
     private function findComposition(
         string $id,
-        CompositionsConfiguration $compositions,
-    ): ?array {
-        return $compositions->compositions()[$id] ?? null;
+        CompositionCollection $compositions,
+    ): ?Composition {
+        return $compositions->find($id);
     }
 
     private function renderNode(string $node): string

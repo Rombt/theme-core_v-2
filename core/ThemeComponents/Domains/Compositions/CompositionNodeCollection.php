@@ -36,4 +36,9 @@ final class CompositionNodeCollection implements IteratorAggregate
     {
         return new ArrayIterator($this->nodes);
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->nodes === [];
+    }
 }

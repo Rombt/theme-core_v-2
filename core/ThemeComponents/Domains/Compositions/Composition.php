@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
-final readonly class Composition
+final class Composition
 {
+    private CompositionNodeCollection $nodes;
+
     public function __construct(
-        private string $id,
-        private string $type,
-        private CompositionNodeCollection $nodes,
+        private readonly string $id,
+        private readonly string $type,
     ) {
+        $this->nodes = new CompositionNodeCollection();
     }
 
     public function id(): string
@@ -26,5 +28,16 @@ final readonly class Composition
     public function nodes(): CompositionNodeCollection
     {
         return $this->nodes;
+    }
+
+    public function setNodes(
+        CompositionNodeCollection $nodes,
+    ): void {
+        $this->nodes = $nodes;
+    }
+
+    public function isTemplatePart(): bool
+    {
+        return $this->type === 'template-part';
     }
 }

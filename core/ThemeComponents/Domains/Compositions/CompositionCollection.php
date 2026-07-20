@@ -24,6 +24,18 @@ final class CompositionCollection implements IteratorAggregate
         $this->compositions[] = $composition;
     }
 
+    public function find(
+        string $id,
+    ): ?Composition {
+        foreach ($this->compositions as $composition) {
+            if ($composition->id() === $id) {
+                return $composition;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return Composition[]
      */
