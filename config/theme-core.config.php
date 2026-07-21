@@ -39,4 +39,40 @@ return [
         'path' => 'logs/diagnostic.log',
     ],
 
+    'logo_header_01' => [
+        'type' => [
+            'name' => 'asset',
+        ],
+        'name' => 'Header Logo',
+    ],
+
+    'logo_footer_01' => [
+        'type' => [
+            'name' => 'asset',
+        ],
+        'name' => 'Footer Logo',
+    ],
+
+    'hero_background_01' => [
+        'type' => [
+            'name' => 'asset',
+        ],
+        'name' => 'Hero Background',
+    ],
+
+    'page_header_background_01' => [
+        'type' => [
+            'name' => 'asset',
+        ],
+        'name' => 'Page Header Background',
+    ],
+
+    'cta_background_01' => [
+        'type' => [
+            'name' => 'asset',
+        ],
+        'name' => 'Call To Action Background',
+    ],
+
+
 ];
