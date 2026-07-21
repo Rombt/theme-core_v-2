@@ -41,11 +41,16 @@ final class ConfigurationSchema
                 'fields' => [
                     'packages_path' => [
                         'type' => 'string',
-                        'default' => 'themes',
+                        'required' => true,
                     ],
                     'package' => [
                         'type' => 'string',
                         'required' => true,
+                    ],
+                    'resource_package' => [
+                        'type' => 'string',
+                        'required' => true,
+                        'default' => 'resources',
                     ],
                 ],
             ],
