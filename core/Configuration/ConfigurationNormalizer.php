@@ -51,14 +51,21 @@ final class ConfigurationNormalizer
         }
 
         $packagesPath = $theme['packages_path'] ?? '';
-
         $packagesPath = is_string($packagesPath)
-        || is_int($packagesPath)
-        || is_float($packagesPath)
-        ? (string) $packagesPath
-        : '';
-
+            || is_int($packagesPath)
+            || is_float($packagesPath)
+            ? (string) $packagesPath
+            : '';
         $theme['packages_path'] = $this->normalizePath($packagesPath);
+
+        $resourcePackage = $theme['resource_package'] ?? '';
+        $resourcePackage = is_string($resourcePackage)
+            || is_int($resourcePackage)
+            || is_float($resourcePackage)
+            ? (string) $resourcePackage
+            : '';
+        $theme['resource_package'] = $this->normalizePath($resourcePackage);
+
 
         $configuration['theme'] = $theme;
 
