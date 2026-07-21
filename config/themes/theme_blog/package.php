@@ -24,10 +24,11 @@ return [
     // Theme Specification
 
     'domains' => [
+        'nodes'          => 'nodes.php',
         'compositions'   => 'compositions.php',
         'design-systems' => 'design-system.php',
         'assets'         => 'assets.php',
         'integrations'   => 'integrations.php',
-    ],
+        ],
 
 ];

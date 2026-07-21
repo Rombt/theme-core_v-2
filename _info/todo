@@ -22,135 +22,38 @@
 сначала нужно довести до конца конвейер генерации production-ready темы, а затем смотреть, какие реальные потребности останутся неудовлетворёнными.
 
 
+!!!!!!!!!!!!!!!!!!!!!!!!
 
-предлагаю придерживаться одного очень важного принципа.
+Предлагаемый порядок рефакторинга
 
-Мы не должны генерировать "кусочки HTML". Мы должны генерировать правильные WordPress Block Templates.
+Я бы выполнял изменения не "по слоям", а по направлению потока данных компилятора, чтобы на каждом этапе проект оставался работоспособным.
 
-Это означает, что каждый новый узел Composition мы будем сразу отображать в канонический блок WordPress, а не во временные комментарии. Тогда к концу исследования мы действительно получим работоспособную тему.
+Этап 1. Ввести новый домен Nodes
+создать NodesComponent;
+создать NodeCollection;
+создать Node;
+создать NodeId;
+временно оставить старую Composition.
 
-Я бы двигался именно в таком порядке:
+Результат: появляется новый источник структурных элементов без нарушения существующей логики.
 
-✅ header → wp:template-part
-✅ footer → wp:template-part
-✅ sidebar → wp:template-part
-layout → wp:group (двухколоночная структура страницы)
-content → wp:group
-page-title / archive-title → wp:query-title
-post-loop → полноценный wp:query с wp:post-template
-post-title → wp:post-title
-post-content → wp:post-content
-site-title → wp:site-title
-navigation → wp:navigation
+Этап 2. Перевести Composition на Placement
+создать Placement;
+создать PlacementCollection;
+заменить Composition::nodes() на Composition::placements();
+адаптировать CompositionsComponentBuilder.
 
-На мой взгляд, следующий шаг должен быть именно post-loop.
+Результат: Composition начинает описывать только структуру.
 
-Почему?
+Этап 3. Обновить Theme IR
+добавить Nodes в IR;
+заменить хранение Node внутри Composition на ссылки (NodeId) через Placement.
 
-Потому что именно он превращает index, category и tag из "каркаса" в реально работающие шаблоны WordPress, выводящие список записей. После этого у нас уже появится тема, которую можно активировать и увидеть в работе, а не просто набор структурных файлов.
+Результат: IR отражает новую доменную модель.
 
-Это будет первое серьёзное практическое подтверждение, что Composition способен компилироваться в работающую WordPress-тему.
+Этап 4. Обновить генераторы артефактов
+добавить разрешение Placement → Node;
+адаптировать существующие NodeRenderer;
+убрать старую модель обхода Composition::nodes().
 
-
-
-Убрать из runtime любую загрузку темы через файл:
-
-       Удаляются зависимости:
-
-       ThemeConfigurationLoader
-       ThemeConfiguration
-       ThemeDefinitionFactory
-       config/themeConfig.php
-
-       Вместо этого ThemeDefinition должен приходить из:
-
-       ThemeDefinitionProviderInterface
-
-
-Ориентировочная структура pipeline построения темы:
-       RegisterThemePackagesStage
-              ↓
-       LoadThemeConfigurationStage
-              ↓
-       ValidateThemePackageStage
-              ↓
-       BuildThemeDefinitionStage
-              ↓
-       GenerateThemeArtifactsStage
-              ↓
-       WriteThemeArtifactsStage
-              ↓
-       FinalizeBuildStage
-
-
-
-Application
- ├─ Configuration
- ├─ composition.runtime
- └─ прочие глобальные объекты
-
-Composition Runtime
- ├─ Service Definitions
- ├─ Service Composer
- └─ Service Instances
-
-
-Примеры того что нужно во всём приложении
-       Configuration
-       Clock
-       Environment
-       ProjectRoot
-       BuildSession
-       ApplicationVersion
-       DiagnosticsContext
-
-
-
-
-
-После завершения bootstrap получается примерно такая структура:
-       Application
-       │
-       ├── ApplicationContext
-       │       ├── Configuration
-       │       ├── Diagnostics
-       │       ├── Logger
-       │       ├── Formatter
-       │       └── Writer
-       │
-       ├── composition.runtime
-       │       └── Runtime
-       │
-       └── ContextBuilder
-              (по идее уже больше не нужен)
-
-       И отдельно:
-
-              Kernel
-              │
-              └── KernelContext
-                     ├── status
-                     ├── current
-                     ├── executed
-                     └── exception
-
-
-
-
-    Другими словами
-              Запуск приложения        → один
-              Контекст приложения      → один
-              CompositionRuntime       → один
-              Pipeline                 → просто список Stage их может быть много.
-              Каждый запуск Pipeline   → создаёт свою BuildSession и свой ExecutionContext.
-              BuildSession             → состояние конкретной сборки (theme, resources, artifacts, state, result).
-              ExecutionContext         → окружение выполнения (BuildSession + CompositionRuntime).
-
-              Все операции по сборке темы выполняются Stage внутри Pipeline.
-
-              Выполнение Pipeline происходит в:
-                     ExecutionRuntime::run()
-                            ↓
-                     PipelineExecutor::execute()
-                            ↓
-                     Stage::execute()
+Результат: генерация артефактов начинает использовать новую архитектуру без изменения внешнего поведения.
