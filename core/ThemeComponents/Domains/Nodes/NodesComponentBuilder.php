@@ -30,8 +30,10 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         /** @var NodesConfiguration $configuration */
         $configuration = $domain->configuration();
 
+        $resources = [];
+
         foreach ($configuration->nodes() as $node) {
-            $this->resolver->resolve(
+            $resources[] = $this->resolver->resolve(
                 new Resource(
                     type: $node->type()->name(),
                     id: $node->resource() !== ''
@@ -44,7 +46,8 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         return new ThemeComponent(
             id: new ComponentId('nodes'),
             component: new NodesComponent(
-                $configuration->nodes(),
+                nodes: $configuration->nodes(),
+                resources: new ResolvedResourceCollection($resources),
             ),
         );
     }
