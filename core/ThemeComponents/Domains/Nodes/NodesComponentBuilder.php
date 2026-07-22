@@ -30,9 +30,16 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         /** @var NodesConfiguration $configuration */
         $configuration = $domain->configuration();
 
-        $this->resolver->resolve(
-            $configuration->nodes(),
-        );
+        foreach ($configuration->nodes() as $node) {
+            $this->resolver->resolve(
+                new Resource(
+                    type: $node->type()->name(),
+                    id: $node->resource() !== ''
+                        ? $node->resource()
+                        : $node->id(),
+                ),
+            );
+        }
 
         return new ThemeComponent(
             id: new ComponentId('nodes'),

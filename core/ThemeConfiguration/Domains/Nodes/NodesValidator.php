@@ -11,6 +11,10 @@ final readonly class NodesValidator implements DomainValidatorInterface
 {
     public function validate(ConfigurationDomain $domain): void
     {
-        // TODO: validation will be implemented later
+        // TODO:
+        // - validate required fields;
+        // - validate node type;
+        // - validate processing strategy;
+        // - validate resource references using ResourceResolver.
     }
 }

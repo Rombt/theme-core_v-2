@@ -81,6 +81,7 @@ use Rombt\ThemeCore\ThemeIR\Domains\DesignSystems\DesignSystemsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\Integrations\IntegrationsThemeIrResolver;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodesComponentBuilder;
+use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ConventionResourceResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -209,13 +210,18 @@ $runtimeKernel = new RuntimeKernel(
 );
 
 $buildRoot = $configuration->get('paths.build');
+$resourcePackage = $configuration->get('theme.resource_package');
 
 $pipeline = new Pipeline([
 
     new BuildThemeComponentsStage(
         new ThemeComponentBuilder(
             new ThemeComponentBuilderRegistry([
-                new NodesComponentBuilder(),
+                new NodesComponentBuilder(
+                    new ConventionResourceResolver(
+                        $resourcePackage,
+                    ),
+                ),
                 new TemplatesComponentBuilder(),
                 new CompositionsComponentBuilder(),
                 new AssetsComponentBuilder(),
