@@ -18,13 +18,28 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
         $collection = [];
 
         foreach ($nodes as $id => $node) {
+            /** @var array{name?: string, strategy?: string} $type */
+            $type = is_array($node['type'] ?? null)
+                ? $node['type']
+                : [];
+
             $collection[] = new Node(
                 id: $id,
-                type: $node['type'] ?? [],
+                type: new NodeType(
+                    name: (string) ($type['name'] ?? ''),
+                    strategy: isset($type['strategy'])
+                        ? (string) $type['strategy']
+                        : null,
+                ),
+                resource: (string) ($node['resource'] ?? ''),
                 name: (string) ($node['name'] ?? ''),
-                description: $node['description'] ?? null,
+                description: isset($node['description'])
+                    ? (string) $node['description']
+                    : null,
                 capabilities: array_values($node['capabilities'] ?? []),
-                metadata: $node['metadata'] ?? [],
+                metadata: is_array($node['metadata'] ?? null)
+                    ? $node['metadata']
+                    : [],
             );
         }
 
@@ -45,7 +60,11 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
 
         foreach ($this->nodes as $node) {
             $result[$node->id()] = [
-                'type' => $node->type(),
+                'type' => [
+                    'name' => $node->type()->name(),
+                    'strategy' => $node->type()->strategy(),
+                ],
+                'resource' => $node->resource(),
                 'name' => $node->name(),
                 'description' => $node->description(),
                 'capabilities' => $node->capabilities(),

@@ -7,13 +7,13 @@ namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes;
 final readonly class Node
 {
     /**
-     * @param array<string, mixed> $type
      * @param array<int, string> $capabilities
      * @param array<string, mixed> $metadata
      */
     public function __construct(
         private string $id,
-        private array $type,
+        private NodeType $type,
+        private string $resource,
         private string $name,
         private ?string $description = null,
         private array $capabilities = [],
@@ -26,12 +26,14 @@ final readonly class Node
         return $this->id;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function type(): array
+    public function type(): NodeType
     {
         return $this->type;
+    }
+
+    public function resource(): string
+    {
+        return $this->resource;
     }
 
     public function name(): string
