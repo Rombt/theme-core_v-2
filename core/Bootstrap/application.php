@@ -55,6 +55,8 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsValidator;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsValidator;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodesConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodesValidator;
 use Rombt\ThemeCore\Artifacts\ArtifactGeneratorRegistryFactory;
 use Rombt\ThemeCore\Artifacts\ThemeArtifactGenerator;
 use Rombt\ThemeCore\Runtime\Stages\GenerateIrArtifactsStage;
@@ -192,7 +194,11 @@ $runtimeKernel = new RuntimeKernel(
                         validator: new IntegrationsValidator(),
                     ),
 
-
+                'nodes' => new DomainRegistration(
+                    id: new DomainId('nodes'),
+                    domainClass: NodesConfiguration::class,
+                    validator: new NodesValidator(),
+                ),
 
                 ]),
             ),
