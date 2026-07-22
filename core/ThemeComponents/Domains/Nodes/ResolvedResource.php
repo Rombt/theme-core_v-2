@@ -7,11 +7,16 @@ namespace Rombt\ThemeCore\ThemeComponents\Domains\Nodes;
 final readonly class ResolvedResource
 {
     public function __construct(
+        private Resource $resource,
         private bool $exists,
         private string $absolutePath,
         private string $relativePath,
-        private ResourceType $type,
     ) {
+    }
+
+    public function resource(): Resource
+    {
+        return $this->resource;
     }
 
     public function exists(): bool
@@ -27,10 +32,5 @@ final readonly class ResolvedResource
     public function relativePath(): string
     {
         return $this->relativePath;
-    }
-
-    public function type(): ResourceType
-    {
-        return $this->type;
     }
 }

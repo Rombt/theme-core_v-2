@@ -6,15 +6,15 @@ namespace Rombt\ThemeCore\ThemeComponents\Domains\Nodes;
 
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\Contracts\ResourceResolverInterface;
 
-final class ConventionResourceResolver implements ResourceResolverInterface
+final readonly class ConventionResourceResolver implements ResourceResolverInterface
 {
-    public function resolve(string $resource): ResolvedResource
+    public function resolve(Resource $resource): ResolvedResource
     {
         return new ResolvedResource(
+            resource: $resource,
             exists: false,
             absolutePath: '',
             relativePath: '',
-            type: ResourceType::unknown(),
         );
     }
 }
