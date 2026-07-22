@@ -23,24 +23,25 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
                 ? $node['type']
                 : [];
 
-            $collection[] = new Node(
-                id: $id,
-                type: new NodeType(
-                    name: (string) ($type['name'] ?? ''),
-                    strategy: isset($type['strategy'])
-                        ? (string) $type['strategy']
+                $collection[] = new Node(
+                    id: $id,
+                    type: new NodeType(
+                        name: (string) ($type['name'] ?? ''),
+                        strategy: (string) ($type['strategy'] ?? 'default'),
+                    ),
+                    resource: (string) ($node['resource'] ?? ''),
+                    name: (string) ($node['name'] ?? ''),
+                    strategy: isset($node['strategy'])
+                        ? (string) $node['strategy']
                         : null,
-                ),
-                resource: (string) ($node['resource'] ?? ''),
-                name: (string) ($node['name'] ?? ''),
-                description: isset($node['description'])
-                    ? (string) $node['description']
-                    : null,
-                capabilities: array_values($node['capabilities'] ?? []),
-                metadata: is_array($node['metadata'] ?? null)
-                    ? $node['metadata']
-                    : [],
-            );
+                    description: isset($node['description'])
+                        ? (string) $node['description']
+                        : null,
+                    capabilities: array_values($node['capabilities'] ?? []),
+                    metadata: is_array($node['metadata'] ?? null)
+                        ? $node['metadata']
+                        : [],
+                );
         }
 
         $this->nodes = new NodeCollection($collection);
@@ -66,6 +67,9 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
                 ],
                 'resource' => $node->resource(),
                 'name' => $node->name(),
+                'strategy' => $node->hasStrategyOverride()
+                    ? $node->strategy()
+                    : null,
                 'description' => $node->description(),
                 'capabilities' => $node->capabilities(),
                 'metadata' => $node->metadata(),

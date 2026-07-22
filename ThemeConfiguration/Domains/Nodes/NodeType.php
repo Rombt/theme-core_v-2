@@ -8,7 +8,7 @@ final readonly class NodeType
 {
     public function __construct(
         private string $name,
-        private ?string $strategy = null,
+        private string $strategy = 'default',
     ) {
     }
 
@@ -17,7 +17,7 @@ final readonly class NodeType
         return $this->name;
     }
 
-    public function strategy(): ?string
+    public function strategy(): string
     {
         return $this->strategy;
     }

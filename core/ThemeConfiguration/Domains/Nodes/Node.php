@@ -15,6 +15,7 @@ final readonly class Node
         private NodeType $type,
         private string $resource,
         private string $name,
+        private ?string $strategy = null,
         private ?string $description = null,
         private array $capabilities = [],
         private array $metadata = [],
@@ -60,5 +61,15 @@ final readonly class Node
     public function metadata(): array
     {
         return $this->metadata;
+    }
+
+    public function strategy(): string
+    {
+        return $this->strategy ?? $this->type->strategy();
+    }
+
+    public function hasStrategyOverride(): bool
+    {
+        return $this->strategy !== null;
     }
 }
