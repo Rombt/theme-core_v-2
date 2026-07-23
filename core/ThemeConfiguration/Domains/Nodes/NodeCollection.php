@@ -46,4 +46,16 @@ final readonly class NodeCollection implements IteratorAggregate, Countable
     {
         return $this->nodes;
     }
+
+    public function find(
+        string $id,
+    ): ?Node {
+        foreach ($this->nodes as $node) {
+            if ($node->id() === $id) {
+                return $node;
+            }
+        }
+
+        return null;
+    }
 }

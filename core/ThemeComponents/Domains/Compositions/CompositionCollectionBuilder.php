@@ -6,11 +6,14 @@ namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
 use RuntimeException;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodeCollection;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Exceptions\UnknownCompositionNodeException;
 
 final readonly class CompositionCollectionBuilder
 {
     public function build(
         CompositionsConfiguration $configuration,
+        NodeCollection $nodes,
     ): CompositionCollection {
         $collection = new CompositionCollection();
 
@@ -46,6 +49,7 @@ final readonly class CompositionCollectionBuilder
             $this->resolveReferences(
                 $composition->nodes(),
                 $collection,
+                $nodes,
             );
         }
 
@@ -88,6 +92,7 @@ final readonly class CompositionCollectionBuilder
     private function resolveReferences(
         CompositionNodeCollection $nodes,
         CompositionCollection $compositions,
+        NodeCollection $registeredNodes,
     ): void {
         foreach ($nodes as $node) {
             $composition = $compositions->find(
@@ -95,14 +100,35 @@ final readonly class CompositionCollectionBuilder
             );
 
             if ($composition !== null) {
-                $node->setComposition(
-                    $composition,
+                $node->setComposition($composition);
+
+                $this->resolveReferences(
+                    $node->children(),
+                    $compositions,
+                    $registeredNodes,
                 );
+
+                continue;
             }
 
-            $this->resolveReferences(
-                $node->children(),
-                $compositions,
+            $registeredNode = $registeredNodes->find(
+                $node->id(),
+            );
+
+            if ($registeredNode !== null) {
+                $node->setNode($registeredNode);
+
+                $this->resolveReferences(
+                    $node->children(),
+                    $compositions,
+                    $registeredNodes,
+                );
+
+                continue;
+            }
+
+            throw UnknownCompositionNodeException::forId(
+                $node->id(),
             );
         }
     }
