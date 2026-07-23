@@ -18,12 +18,10 @@ final class ThemeComponentBuilder implements ThemeComponentCollectionBuilderInte
 
         $components = new ThemeComponentCollection();
 
-        foreach ($package->domains()->all() as $domain) {
-            $builder = $this->registry->builderFor($domain);
-
+        foreach ($this->registry->buildersFor($package) as $entry) {
             $components->add(
-                $builder->build(
-                    $domain,
+                $entry['builder']->build(
+                    $entry['domain'],
                     $components,
                 ),
             );

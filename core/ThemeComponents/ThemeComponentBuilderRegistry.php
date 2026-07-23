@@ -6,6 +6,7 @@ namespace Rombt\ThemeCore\ThemeComponents;
 
 use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
+use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
 
 final class ThemeComponentBuilderRegistry
 {
@@ -32,5 +33,38 @@ final class ThemeComponentBuilderRegistry
                 $domain->id()->value(),
             ),
         );
+    }
+
+/**
+ * @return iterable<array{builder: ThemeComponentBuilderInterface, domain: ConfigurationDomain}>
+ */
+    public function buildersFor(
+        ThemeConfigurationPackage $package,
+    ): iterable {
+        $domains = [];
+
+        foreach ($package->domains()->all() as $domain) {
+            $domains[$domain->id()->value()] = $domain;
+        }
+
+        foreach (['nodes', 'compositions'] as $id) {
+            if (!isset($domains[$id])) {
+                continue;
+            }
+
+            yield [
+            'builder' => $this->builderFor($domains[$id]),
+            'domain' => $domains[$id],
+            ];
+
+            unset($domains[$id]);
+        }
+
+        foreach ($domains as $domain) {
+            yield [
+            'builder' => $this->builderFor($domain),
+            'domain' => $domain,
+            ];
+        }
     }
 }
