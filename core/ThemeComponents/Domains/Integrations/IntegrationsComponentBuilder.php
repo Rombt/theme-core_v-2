@@ -9,6 +9,7 @@ use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Integrations\IntegrationsConfiguration;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 final readonly class IntegrationsComponentBuilder implements ThemeComponentBuilderInterface
 {
@@ -20,6 +21,7 @@ final readonly class IntegrationsComponentBuilder implements ThemeComponentBuild
 
     public function build(
         ConfigurationDomain $domain,
+        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var IntegrationsConfiguration $configuration */
         $configuration = $domain->configuration();

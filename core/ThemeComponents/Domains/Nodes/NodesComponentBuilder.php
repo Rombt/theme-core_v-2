@@ -10,6 +10,7 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\Contracts\ResourceResolverInte
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodesConfiguration;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 final readonly class NodesComponentBuilder implements ThemeComponentBuilderInterface
 {
@@ -26,6 +27,7 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
 
     public function build(
         ConfigurationDomain $domain,
+        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var NodesConfiguration $configuration */
         $configuration = $domain->configuration();
@@ -37,8 +39,8 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
                 new Resource(
                     type: $node->type()->name(),
                     id: $node->resource() !== ''
-                        ? $node->resource()
-                        : $node->id(),
+                    ? $node->resource()
+                    : $node->id(),
                 ),
             );
         }

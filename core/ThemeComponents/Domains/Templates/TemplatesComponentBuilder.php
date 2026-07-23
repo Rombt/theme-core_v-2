@@ -9,6 +9,7 @@ use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Templates\TemplatesConfiguration;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 final readonly class TemplatesComponentBuilder implements ThemeComponentBuilderInterface
 {
@@ -17,11 +18,12 @@ final readonly class TemplatesComponentBuilder implements ThemeComponentBuilderI
         return $domain->configuration() instanceof TemplatesConfiguration;
     }
 
-    public function build(ConfigurationDomain $domain): ThemeComponent
-    {
+    public function build(
+        ConfigurationDomain $domain,
+        ThemeComponentCollection $components,
+    ): ThemeComponent {
         /** @var TemplatesConfiguration $configuration */
         $configuration = $domain->configuration();
-
 
         return new ThemeComponent(
             id: new ComponentId('templates'),
