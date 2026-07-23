@@ -35,4 +35,16 @@ final class ThemeComponentCollection implements IteratorAggregate
     {
         return new ArrayIterator($this->components);
     }
+
+    public function find(
+        ComponentId $id,
+    ): ?ThemeComponent {
+        foreach ($this->components as $component) {
+            if ($component->id()->equals($id)) {
+                return $component;
+            }
+        }
+
+        return null;
+    }
 }

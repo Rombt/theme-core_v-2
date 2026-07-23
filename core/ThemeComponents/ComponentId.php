@@ -17,9 +17,9 @@ final readonly class ComponentId
     }
 
     public function equals(
-        ComponentId $other,
+        self $other,
     ): bool {
-        return $this->value === $other->value;
+        return $this->value === $other->value();
     }
 
     public function __toString(): string

@@ -108,7 +108,7 @@ roadmap интеграции домена Nodes в слой Theme Components:
     Composition;
     неизвестный id;
     путь (если позже понадобится).
-Этап 5. Рефакторинг инфраструктуры Theme Components
+++ Этап 5. Рефакторинг инфраструктуры Theme Components
     После исследования домена Nodes стало понятно, что компоненты слоя Theme Components больше не являются независимыми. Они образуют связанный граф зависимостей.
     Необходимо изменить инфраструктуру построения компонентов.
     ++ 5.1. Изменить контракт ThemeComponentBuilderInterface
@@ -146,15 +146,15 @@ roadmap интеграции домена Nodes в слой Theme Components:
 
         В дальнейшем список зависимостей можно будет расширять.
 
-Этап 6. Интеграция Nodes с Compositions
+++ Этап 6. Интеграция Nodes с Compositions
     После изменения инфраструктуры выполнить первую интеграцию доменов.
-    6.1. Изменить CompositionsComponentBuilder
+    ++ 6.1. Изменить CompositionsComponentBuilder
         Builder должен получать уже построенный NodesComponent.
         Из него необходимо получить:
         NodeCollection
         и передать её в
         CompositionCollectionBuilder
-    6.2. Построить полностью связанный граф объектов
+    ++ 6.2. Построить полностью связанный граф объектов
    
         CompositionNode
                 │
