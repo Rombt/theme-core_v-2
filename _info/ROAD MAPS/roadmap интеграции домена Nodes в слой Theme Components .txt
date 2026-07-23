@@ -19,5 +19,148 @@ roadmap интеграции домена Nodes в слой Theme Components:
     запретить создание Composition из несуществующих Nodes. 
 Подготовить инфраструктуру для последующих стадий 
     чтобы Render Preparation и Materialization работали уже с разрешёнными Node и их ресурсами, а не с конфигурацией напрямую. 
-
 пункты обозначенные ++ уже выполнены.
+
+
+
+Интегрировать Nodes с Composition Composition:
+Этап 1. Подготовить модель Composition
+    1.1. Расширить CompositionNode
+        Добавить ссылку на зарегистрированный Node.
+        В результате CompositionNode сможет ссылаться:
+        на вложенную Composition;
+        на зарегистрированный Node.
+        Например:
+            CompositionNode
+                ├── id
+                ├── children
+                ├── composition?
+                └── node?
+        Добавить методы:
+        referencesNode(): bool
+        node(): ?Node
+        setNode(Node $node): void
+    1.2. Определить инвариант CompositionNode
+        После завершения построения компонента каждый CompositionNode обязан удовлетворять одному из условий:
+        composition != null
+        или
+        node != null
+        Третьего варианта быть не должно.
+        Пока это можно обеспечить логикой Builder, без отдельного валидатора.
+Этап 2. Подготовить Nodes для поиска
+    Сейчас NodeCollection уже существует.
+    Нужно убедиться, что она предоставляет быстрый поиск
+    find(string $id): ?Node
+    Если метод уже есть — ничего делать не нужно.
+    Если нет — добавить.
+    Это полностью соответствует роли коллекции.
+Этап 3. Изменить CompositionCollectionBuilder Это основной этап.
+    3.1. Добавить зависимость
+        Builder должен получать
+        NodeCollection
+        наряду с
+        CompositionCollection
+        Теперь Builder сможет разрешать ссылки обоих типов.
+    3.2. Изменить алгоритм третьего прохода
+        Вместо
+        resolve Composition
+        должно стать
+        resolve Composition
+        если нет
+        resolve Node
+        если нет
+        Exception
+        То есть:
+        CompositionNode(id)
+                │
+                ▼
+        Composition ?
+                │
+            yes
+                │
+        setComposition()
+                │
+            no
+                ▼
+        Node ?
+                │
+            yes
+                │
+        setNode()
+                │
+            no
+                ▼
+        UnknownReferenceException
+    3.3. Рекурсивное разрешение остаётся прежним
+    Метод
+    resolveReferences()
+    по-прежнему обходит дерево рекурсивно.
+    Меняется только логика поиска.
+Этап 4. Добавить специализированное исключение
+    Вместо
+    RuntimeException
+    лучше сделать отдельное исключение.
+    Например
+    UnknownCompositionNodeReferenceException
+    или
+    CompositionReferenceNotFoundException
+    Оно должно сообщать:
+    Composition;
+    неизвестный id;
+    путь (если позже понадобится).
+Этап 5. Интеграция в Builder компонентов
+    Сейчас
+    CompositionsComponentBuilder
+    строит компонент самостоятельно.
+    После изменений он должен получать доступ к уже построенному NodesComponent.
+    То есть Builder должен передавать в CompositionCollectionBuilder:
+    CompositionsConfiguration;
+    NodeCollection.
+    Именно здесь произойдёт первая настоящая интеграция двух доменов.
+Этап 6. Проверить получившуюся модель
+    После построения компонента должны выполняться следующие гарантии.
+    Любая ссылка Composition разрешена
+        CompositionNode
+            ↓
+        Composition
+    или отсутствует.
+    Любая ссылка Node разрешена
+    CompositionNode
+        ↓
+    Node
+    или отсутствует.
+    Не существует "висячих" ссылок
+    Такого состояния больше быть не может:
+    CompositionNode(id="hero")
+    где нет:
+    Composition hero;
+    Node hero.
+    Builder обязан завершиться исключением.
+Этап 7. Подготовить фундамент следующих стадий
+    После этих изменений Render Preparation и Materialization смогут работать только с готовой моделью.
+    Им больше не придётся:
+    искать Node;
+    проверять существование Node;
+    обращаться к конфигурации.
+    Они будут получать уже полностью связанный граф объектов:
+        CompositionsComponent
+            │
+            ▼
+        Composition
+            │
+            ▼
+        CompositionNode
+            ├── Composition
+            └── Node
+                │
+                ▼
+        ResolvedResource
+
+    Итоговая последовательность
+    Расширить CompositionNode ссылкой на Node.
+    Убедиться, что NodeCollection поддерживает поиск по id.
+    Передать NodeCollection в CompositionCollectionBuilder.
+    Расширить resolveReferences() для разрешения ссылок на Composition и Node.
+    Добавить специализированное исключение для неразрешённых ссылок.
+    Изменить CompositionsComponentBuilder, чтобы он строил Composition с использованием уже зарегистрированных Node.
+    Проверить, что после построения отсутствуют неразрешённые ссылки.
