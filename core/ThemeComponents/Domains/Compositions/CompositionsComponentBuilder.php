@@ -9,6 +9,8 @@ use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodeCollection;
 
 final readonly class CompositionsComponentBuilder implements ThemeComponentBuilderInterface
 {
@@ -25,6 +27,7 @@ final readonly class CompositionsComponentBuilder implements ThemeComponentBuild
 
     public function build(
         ConfigurationDomain $domain,
+        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var CompositionsConfiguration $configuration */
         $configuration = $domain->configuration();
@@ -32,7 +35,10 @@ final readonly class CompositionsComponentBuilder implements ThemeComponentBuild
         return new ThemeComponent(
             id: new ComponentId('compositions'),
             component: new CompositionsComponent(
-                $this->builder->build($configuration),
+                $this->builder->build(
+                    $configuration,
+                    new NodeCollection(),
+                ),
             ),
         );
     }

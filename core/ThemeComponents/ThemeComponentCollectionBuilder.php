@@ -29,7 +29,10 @@ final class ThemeComponentCollectionBuilder implements ThemeComponentCollectionB
                 }
 
                 $collection->add(
-                    $builder->build($domain)
+                    $builder->build(
+                        $domain,
+                        $collection,
+                    ),
                 );
 
                 break;

@@ -9,6 +9,7 @@ use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsConfiguration;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInterface
 {
@@ -20,6 +21,7 @@ final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInte
 
     public function build(
         ConfigurationDomain $domain,
+        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var AssetsConfiguration $configuration */
         $configuration = $domain->configuration();
