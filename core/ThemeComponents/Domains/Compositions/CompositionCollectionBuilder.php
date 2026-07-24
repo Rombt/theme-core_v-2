@@ -57,7 +57,11 @@ final readonly class CompositionCollectionBuilder
     }
 
     /**
-     * @param array<int, string|array{id:string, children?:array}> $children
+     * @param array<int, array{
+     *     id:string,
+     *     node?:string,
+     *     children?:array
+     * }> $children
      */
     private function buildNodes(
         array $children,
@@ -65,20 +69,21 @@ final readonly class CompositionCollectionBuilder
         $collection = new CompositionNodeCollection();
 
         foreach ($children as $child) {
-            if (is_string($child)) {
-                $collection->add(
-                    new CompositionNode(
-                        id: $child,
-                        children: new CompositionNodeCollection(),
+            if (!is_array($child)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Invalid placement. Expected array, got %s: %s',
+                        gettype($child),
+                        var_export($child, true),
                     ),
                 );
-
-                continue;
             }
+
 
             $collection->add(
                 new CompositionNode(
                     id: $child['id'],
+                    nodeId: $child['node'] ?? null,
                     children: $this->buildNodes(
                         $child['children'] ?? [],
                     ),
@@ -111,24 +116,24 @@ final readonly class CompositionCollectionBuilder
                 continue;
             }
 
-            $registeredNode = $registeredNodes->find(
-                $node->id(),
-            );
-
-            if ($registeredNode !== null) {
-                $node->setNode($registeredNode);
-
-                $this->resolveReferences(
-                    $node->children(),
-                    $compositions,
-                    $registeredNodes,
+            if ($node->nodeId() !== null) {
+                $registeredNode = $registeredNodes->find(
+                    $node->nodeId(),
                 );
 
-                continue;
+                if ($registeredNode === null) {
+                    throw UnknownCompositionNodeException::forId(
+                        $node->nodeId(),
+                    );
+                }
+
+                $node->setNode($registeredNode);
             }
 
-            throw UnknownCompositionNodeException::forId(
-                $node->id(),
+            $this->resolveReferences(
+                $node->children(),
+                $compositions,
+                $registeredNodes,
             );
         }
     }

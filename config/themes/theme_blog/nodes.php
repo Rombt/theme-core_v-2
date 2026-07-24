@@ -11,11 +11,18 @@ return [
         'name' => 'Main Layout',
     ],
 
-    'content_01' => [
+    'post_content_01' => [
         'type' => [
             'name' => 'content',
         ],
         'name' => 'Post Content',
+    ],
+
+    'page_content_01' => [
+        'type' => [
+            'name' => 'content',
+        ],
+        'name' => 'Page Content',
     ],
 
     'query_01' => [
@@ -24,6 +31,14 @@ return [
         ],
         'name' => 'Posts Query',
     ],
+
+    'post_loop_01' => [
+        'type' => [
+            'name' => 'query',
+        ],
+        'name' => 'Post Loop',
+    ],
+
 
     'navigation_01' => [
         'type' => [
@@ -76,5 +91,6 @@ return [
         ],
         'name' => 'Widget Area',
     ],
+
 
 ];

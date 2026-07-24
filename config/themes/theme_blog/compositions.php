@@ -8,8 +8,14 @@ return [
         'type' => 'template-part',
 
         'children' => [
-            'site-title',
-            'navigation',
+            [
+                'id' => 'site-title',
+                'node' => 'site_title_01',
+            ],
+            [
+                'id' => 'navigation',
+                'node' => 'navigation_01',
+            ],
         ],
     ],
 
@@ -17,7 +23,10 @@ return [
         'type' => 'template-part',
 
         'children' => [
-            'copyright',
+            [
+                'id' => 'copyright',
+                'node' => 'copyright_01',
+            ],
         ],
     ],
 
@@ -25,7 +34,10 @@ return [
         'type' => 'template-part',
 
         'children' => [
-            'widgets',
+            [
+                'id' => 'widgets',
+                'node' => 'widgets_01',
+            ],
         ],
     ],
 
@@ -33,27 +45,28 @@ return [
         'type' => 'template',
 
         'children' => [
-            'header',
+            [
+                'id' => 'header',
+            ],
 
             [
                 'id' => 'layout',
+                'node' => 'layout_01',
 
                 'children' => [
-
                     [
-                        'id' => 'content',
-
-                        'children' => [
-                            'page-title',
-                            'post-loop',
-                        ],
+                        'id' => 'post-loop',
+                        'node' => 'post_loop_01',
                     ],
-
-                    'sidebar',
+                    [
+                        'id' => 'sidebar',
+                    ],
                 ],
             ],
 
-            'footer',
+            [
+                'id' => 'footer',
+            ],
         ],
     ],
 
@@ -61,27 +74,65 @@ return [
         'type' => 'template',
 
         'children' => [
-            'header',
+            [
+                'id' => 'header',
+            ],
 
             [
                 'id' => 'layout',
+                'node' => 'layout_01',
 
                 'children' => [
-
                     [
-                        'id' => 'content',
-
-                        'children' => [
-                            'post-title',
-                            'post-content',
-                        ],
+                        'id' => 'post-title',
+                        'node' => 'post_title_01',
                     ],
-
-                    'sidebar',
+                    [
+                        'id' => 'post-content',
+                        'node' => 'post_content_01',
+                    ],
+                    [
+                        'id' => 'sidebar',
+                    ],
                 ],
             ],
 
-            'footer',
+            [
+                'id' => 'footer',
+            ],
+        ],
+    ],
+
+    'page' => [
+        'type' => 'template',
+
+        'children' => [
+            [
+                'id' => 'header',
+            ],
+
+            [
+                'id' => 'layout',
+                'node' => 'layout_01',
+
+                'children' => [
+                    [
+                        'id' => 'page-title',
+                        'node' => 'page_title_01',
+                    ],
+                    [
+                        'id' => 'page-content',
+                        'node' => 'page_content_01',
+                    ],
+                    [
+                        'id' => 'sidebar',
+                    ],
+                ],
+            ],
+
+            [
+                'id' => 'footer',
+            ],
         ],
     ],
 
@@ -89,27 +140,32 @@ return [
         'type' => 'template',
 
         'children' => [
-            'header',
+            [
+                'id' => 'header',
+            ],
 
             [
                 'id' => 'layout',
+                'node' => 'layout_01',
 
                 'children' => [
-
                     [
-                        'id' => 'content',
-
-                        'children' => [
-                            'archive-title',
-                            'post-loop',
-                        ],
+                        'id' => 'archive-title',
+                        'node' => 'archive_title_01',
                     ],
-
-                    'sidebar',
+                    [
+                        'id' => 'post-loop',
+                        'node' => 'post_loop_01',
+                    ],
+                    [
+                        'id' => 'sidebar',
+                    ],
                 ],
             ],
 
-            'footer',
+            [
+                'id' => 'footer',
+            ],
         ],
     ],
 
@@ -117,27 +173,32 @@ return [
         'type' => 'template',
 
         'children' => [
-            'header',
+            [
+                'id' => 'header',
+            ],
 
             [
                 'id' => 'layout',
+                'node' => 'layout_01',
 
                 'children' => [
-
                     [
-                        'id' => 'content',
-
-                        'children' => [
-                            'archive-title',
-                            'post-loop',
-                        ],
+                        'id' => 'archive-title',
+                        'node' => 'archive_title_01',
                     ],
-
-                    'sidebar',
+                    [
+                        'id' => 'post-loop',
+                        'node' => 'post_loop_01',
+                    ],
+                    [
+                        'id' => 'sidebar',
+                    ],
                 ],
             ],
 
-            'footer',
+            [
+                'id' => 'footer',
+            ],
         ],
     ],
 

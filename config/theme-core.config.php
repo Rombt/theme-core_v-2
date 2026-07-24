@@ -21,7 +21,8 @@ return [
         // 'package' => 'theme_2',
         'package' => 'theme_blog',
 
-        'resource_package' => 'resources',
+        // 'resource_package' => 'resources',
+        'resource_package' => 'config\themes\theme_blog\resources',
     ],
 
     'logging' => [
