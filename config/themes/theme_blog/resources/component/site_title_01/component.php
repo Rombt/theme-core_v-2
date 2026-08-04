@@ -14,7 +14,7 @@ $tag = is_front_page() && is_home()
 
 ?>
 
-<<?php echo esc_html($tag); ?> class="wp-block-site-title">
+<<?php echo esc_html($tag); ?> class="wp-block-site-title my-custom-class">
 
     <a
         href="<?php echo esc_url(home_url('/')); ?>"

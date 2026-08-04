@@ -1,0 +1,376 @@
+theme-core v-2
+THEME IR — TEMPLATES MAPPING
+CURRENT DISCUSSION SUMMARY
+(v1.0.0)
+
+Status: Decisions Recorded
+
+==================================================
+1. CONTEXT
+==================================================
+
+    Исследуется mapping между Composition Domain и
+        Templates Domain в процессе построения Theme IR.
+
+    На вход Templates mapping получает Composition, состоящие из CompositionNode.
+
+    CompositionNode может представлять:
+
+        1. реальный Node:
+            node !== null
+
+        2. вложенную Composition:
+            node === null
+            composition !== null
+
+            Исходная модель Templates содержит:
+
+            Template
+            TemplateCollection
+            TemplateNode
+            TemplateTree
+            TemplateTreeBuilder
+            TemplateIdentity
+            TemplatePurpose
+            UserScenario
+            Templates
+
+==================================================
+2. ИСХОДНАЯ МОДЕЛЬ TEMPLATES
+==================================================
+
+    Template содержит:
+
+        identity
+        purpose
+        userScenario
+        tree
+
+    TemplateTree содержит:
+
+        root: TemplateNode
+
+    TemplateNode первоначально содержит:
+
+        source: CompositionNode
+        children: list<TemplateNode>
+
+    TemplateTreeBuilder первоначально рекурсивно
+    преобразует CompositionNode в TemplateNode.
+
+    При этом исходный builder предполагает,
+    что каждый CompositionNode может быть представлен
+    одинаково, однако реальные входные данные показывают,
+    что CompositionNode может содержать либо Node,
+    либо вложенную Composition.
+
+==================================================
+3. ПРИНЯТОЕ НАПРАВЛЕНИЕ MAPPING
+===============================
+
+В ходе обсуждения были рассмотрены различные
+варианты mapping.
+
+Принята комбинация:
+
+Вариант 2 + Вариант 3 + Вариант 6
+
+Эта комбинация признана наиболее подходящей,
+поскольку она позволяет одновременно:
+
+- моделировать Template через пользовательский
+  сценарий;
+
+- сохранять структурное дерево Composition
+  внутри Template;
+
+- использовать TemplateNode как IR-представление
+  элементов Composition.
+
+Иными словами:
+
+Template
+    ↓
+описывает конкретное представление темы
+для определённого пользовательского сценария
+
+TemplateTree
+    ↓
+сохраняет структуру этого представления
+
+TemplateNode
+    ↓
+представляет структурный элемент дерева
+Template IR
+
+==================================================
+4. СЕМАНТИКА CompositionNode С node !== null
+============================================
+
+Если:
+
+CompositionNode
+    node !== null
+    composition === null
+
+то узел является непосредственным структурным
+элементом, представленным конкретным Node.
+
+Такой CompositionNode естественным образом
+mapping'ится в TemplateNode.
+
+Упрощённо:
+
+CompositionNode
+    node = X
+    children = [...]
+
+        ↓
+
+TemplateNode
+    соответствующий X
+    children = [...]
+
+Это базовый случай рекурсивного mapping.
+
+==================================================
+5. ПРОБЛЕМА CompositionNode С node === null
+===========================================
+
+Особое внимание уделено CompositionNode,
+у которого:
+
+node === null
+composition !== null
+
+Например:
+
+CompositionNode
+    id = "sidebar"
+    node = null
+    composition = sidebar
+
+Такой объект НЕ является Node.
+
+Он представляет вложенную Composition.
+
+Поэтому его нельзя трактовать как обычный
+Theme Node и нельзя искусственно сопоставлять
+его с Node из Nodes Domain.
+
+Это принципиальное ограничение mapping.
+
+==================================================
+6. РАССМОТРЕННЫЕ ВАРИАНТЫ
+=========================
+
+Для CompositionNode с:
+
+node === null
+composition !== null
+
+были рассмотрены варианты поведения.
+
+Наиболее подходящими признаны:
+
+B — представить вложенную Composition
+    в TemplateTree как структурный
+    TemplateNode-контейнер;
+
+C — раскрыть вложенную Composition
+    непосредственно внутри дерева Template.
+
+==================================================
+7. ПОЧЕМУ B ПОДХОДИТ
+====================
+
+Вариант B сохраняет факт существования
+вложенной Composition.
+
+Условно:
+
+CompositionNode(sidebar)
+    node = null
+    composition = sidebar
+        |
+        ↓
+TemplateNode
+    source = null
+    children =
+        TemplateNode(widgets)
+
+Таким образом mapping не теряет информацию:
+
+"в этом месте дерева находится
+ отдельная Composition".
+
+Это важно, поскольку Composition является
+частью структурной модели темы.
+
+==================================================
+8. ПОЧЕМУ C ПОДХОДИТ
+====================
+
+Вариант C рассматривает вложенную Composition
+как часть общего дерева Template.
+
+Например:
+
+index
+├── header
+│   ├── site-title
+│   └── navigation
+│
+├── layout
+│   ├── post-loop
+│   └── sidebar
+│       └── widgets
+│
+└── footer
+    └── copyright
+
+После mapping TemplateTree отражает именно
+эту структуру.
+
+Composition перестаёт быть внешним объектом,
+который нужно отдельно разрешать во время
+дальнейшей работы с TemplateTree.
+
+Она становится частью дерева конкретного Template.
+
+==================================================
+9. ПРИНЯТАЯ СЕМАНТИКА B + C
+===========================
+
+Принято направление:
+
+CompositionNode с node !== null
+    →
+TemplateNode, представляющий Node.
+
+CompositionNode с node === null
+и composition !== null
+    →
+TemplateNode, представляющий структурное
+место вложенной Composition, с рекурсивно
+отображённым содержимым Composition.
+
+Таким образом TemplateTree сохраняет:
+
+- реальные Nodes;
+- структурные границы вложенных Compositions;
+- порядок элементов;
+- иерархию;
+- вложенность.
+
+При этом Template Domain не превращает
+Composition в Node.
+
+==================================================
+10. ПРИНЦИПИАЛЬНОЕ ОГРАНИЧЕНИЕ
+==============================
+
+Недопустимо делать mapping:
+
+CompositionNode
+    node = null
+    composition = sidebar
+
+        ↓
+
+TemplateNode
+    source = какой-либо Node
+
+поскольку такого Node в исходном объекте нет.
+
+Это привело бы к смешению понятий:
+
+Composition
+Node
+
+и исказило бы предметную модель.
+
+==================================================
+11. ТЕКУЩАЯ ГИПОТЕЗА О РОЛИ TemplateTree
+========================================
+
+TemplateTree должен отражать структуру конкретного
+представления темы.
+
+При этом он должен быть способен представить
+как непосредственные Nodes, так и структурные
+границы вложенных Compositions.
+
+Следовательно, TemplateTree нельзя сводить
+к простому списку Nodes.
+
+Он является самостоятельным структурным
+представлением Template.
+
+==================================================
+12. ВАЖНЫЙ НЕЗАКРЫТЫЙ ВОПРОС
+============================
+
+Следующим предметом исследования выбран вопрос:
+
+Нужен ли вообще source: CompositionNode
+внутри TemplateNode?
+
+Текущая реализация:
+
+TemplateNode
+    source: CompositionNode
+    children: list<TemplateNode>
+
+может оказаться слишком тесно связана
+с Composition Domain.
+
+Если TemplateNode является уже самостоятельной
+IR-моделью Templates Domain, необходимо проверить,
+действительно ли ему нужен исходный
+CompositionNode как часть собственного состояния.
+
+Этот вопрос пока НЕ решён.
+
+==================================================
+13. ТЕКУЩЕЕ СОСТОЯНИЕ РЕШЕНИЙ
+=============================
+
+Принято:
+
+1. Использовать mapping-подход
+   2 + 3 + 6.
+
+2. Template моделирует конкретное
+   представление темы и его пользовательский
+   сценарий.
+
+3. TemplateTree сохраняет структуру
+   представления.
+
+4. TemplateNode является структурным
+   элементом TemplateTree.
+
+5. CompositionNode с реальным Node
+   отображается в TemplateNode.
+
+6. CompositionNode без Node, но с Composition,
+   не считается Node.
+
+7. Вложенная Composition должна сохраняться
+   в структуре TemplateTree.
+
+8. Для этого принята семантика,
+   объединяющая варианты B + C.
+
+Не решено:
+
+Нужен ли TemplateNode.source:
+CompositionNode вообще.
+
+Следующий шаг исследования:
+
+определить минимальную и правильную
+ответственность TemplateNode и выяснить,
+какие данные CompositionNode действительно
+должны переходить в Template IR.

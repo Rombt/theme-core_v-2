@@ -1,0 +1,51 @@
+ theme-core v-2
+ ENGINEERING TASK
+ THEME IR / TEMPLATES IMPLEMENTATION GOAL
+ Goal
+
+Реализовать концепт Templates на слоях ThemeIR и Artifacts, 
+    обеспечивающий генерацию двух полноценных архитектур WordPress-тем уровня Envato 
+    из одной и той же Theme Configuration.
+
+
+==================================================
+ЦЕЛЕВЫЕ АРХИТЕКТУРЫ
+==================================================
+
+
+    1. Classic Theme + Elementor-first + Hybrid Features
+
+        Результатом генерации должен быть следующий набор файлов:
+
+            style.css
+            functions.php
+            index.php
+            header.php
+            footer.php
+            sidebar.php
+            single.php
+            archive.php
+            category.php
+            404.php
+
+    2. Block Theme + Full Site Editing (FSE) + Hybrid Features
+
+        Результатом генерации должен быть следующий набор файлов:
+
+            style.css
+            functions.php
+            theme.json
+            templates/index.html
+            templates/single.html
+            templates/archive.html
+            templates/category.html
+            templates/404.html
+            parts/header.html
+            parts/footer.html
+            parts/sidebar.html
+
+    Критерий успешного выполнения
+
+    Концепт Templates считается реализованным, если из одной и той же Theme Configuration 
+        система способна сгенерировать любой из указанных наборов файлов 
+        в зависимости от выбранной архитектуры темы.

@@ -1,0 +1,376 @@
+# theme-core v-2
+# ENGINEERING TASK
+# TEMPLATES DOMAIN MAPPING IMPLEMENTATION
+# Composition → Template Tree
+
+Status: Ready for implementation
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Реализовать mapping из Theme Components в Templates Theme IR.
+
+    Mapping должен преобразовывать структуру Compositions в Template Tree,
+        сохраняя семантику каждого CompositionNode и корректно обрабатывая два типа структурных элементов:
+            1. Material Node:
+                CompositionNode.node != null
+                CompositionNode.composition == null
+            2. Nested Composition:
+                CompositionNode.node == null
+                CompositionNode.composition != null
+
+    Цель реализации — получить Template Tree, отражающий структуру исходной Composition
+        без создания альтернативной модели Composition внутри Templates Domain.
+
+==================================================
+2. INPUT
+==================================================
+
+    Mapping получает ThemeComponentCollection, содержащую:
+        - NodesComponent
+        - CompositionsComponent
+
+    NodesComponent является множеством доступных Nodes.
+
+    CompositionsComponent является источником структур Composition и используется для разрешения вложенных
+
+==================================================
+3. OUTPUT
+==================================================
+
+    Результатом mapping является Templates Theme IR:
+
+        Templates
+            └── TemplateCollection
+            └── Template
+            └── TemplateTree
+            └── TemplateNode
+
+==================================================
+4. ОСНОВНОЕ ПРАВИЛО MAPPING
+==================================================
+
+    Каждый CompositionNode преобразуется ровно в один новый экземпляр TemplateNode.
+
+    Даже если несколько CompositionNode ссылаются на одну и ту же Composition,
+        каждый из них должен породить собственный экземпляр TemplateNode.
+
+    TemplateNode сохраняет исходный CompositionNode через:
+
+    TemplateNode::$source
+
+    TemplateNode не должен дублировать семантические данные CompositionNode.
+        Исходный CompositionNode является единственным источником информации
+        о соответствующем элементе структуры.
+
+    Поэтому mapping не должен заменять CompositionNode другим объектом или терять его семантику.
+
+==================================================
+5. MATERIAL NODE
+==================================================
+
+    Для состояния:
+        node != null
+        composition == null
+
+    создаётся один TemplateNode.
+
+    TemplateNode представляет material Node, на который ссылается исходный CompositionNode.
+
+    До создания TemplateNode mapping обязан проверить существование соответствующего
+        Node через NodesComponent.
+
+    При отсутствии Node должна быть сформирована диагностическая ошибка
+        с использованием существующего механизма диагностики проекта.
+
+==================================================
+6. NESTED COMPOSITION
+==================================================
+
+    Для состояния:
+        node == null
+        composition != null
+
+    создаётся один TemplateNode, соответствующий исходному CompositionNode.
+
+    Этот TemplateNode представляет включённую Composition, а не Node.
+
+    Сама вложенная Composition разрешается через CompositionsComponent.
+
+    После успешного разрешения её структура рекурсивно преобразуется в children данного TemplateNode.
+
+    Пример:
+
+        исходные данные
+
+            index
+            ├── header → Composition(header)
+            ├── layout → Node(layout)
+            └── footer → Composition(footer)
+
+        Результат:
+
+            TemplateNode(index)
+            ├── TemplateNode(header)
+            │   ├── TemplateNode(site-title)
+            │   └── TemplateNode(navigation)
+            │
+            ├── TemplateNode(layout)
+            │
+            └── TemplateNode(footer)
+                └── TemplateNode(copyright)
+
+    При этом TemplateNode(header) и TemplateNode(footer)
+        сохраняют соответствующие исходные CompositionNode через source.
+
+==================================================
+7. ЗАПРЕЩЁННОЕ ПОВЕДЕНИЕ
+==================================================
+
+    Нельзя:
+        - рассматривать Nested Composition как обычный Node;
+        - создавать фиктивный Node для Nested Composition;
+        - растворять Nested Composition в children родительского TemplateNode;
+        - терять исходный CompositionNode;
+        - создавать отдельную альтернативную модель Composition в Templates Domain;
+        - использовать NodesComponent для построения структуры Composition;
+        - использовать CompositionsComponent как источник информации о доступных Nodes.
+
+==================================================
+8. VALIDATION
+==================================================
+
+    Validation выполняется во время mapping до создания соответствующего TemplateNode.
+
+    Для каждого CompositionNode допустимо ровно одно из состояний:
+        node != null && composition == null
+
+    или:
+        node == null && composition != null
+
+    Следующие состояния являются некорректными:
+        node == null && composition == null
+        node != null && composition != null
+
+    Mapping должен отклонять такие данные диагностической ошибкой,
+        используя существующий механизм диагностики проекта.
+
+    Если CompositionNode ссылается на отсутствующий Node,
+        mapping должен завершиться диагностической ошибкой.
+
+    Если CompositionNode ссылается на отсутствующую Composition,
+        mapping должен завершиться диагностической ошибкой.
+
+==================================================
+9. ОТВЕТСТВЕННОСТЬ COMPONENTS
+==================================================
+
+    CompositionsComponent:
+        - предоставляет Composition;
+        - предоставляет структуру CompositionNode;
+        - используется для разрешения Nested Composition;
+        - определяет структуру Template Tree.
+
+    NodesComponent:
+        - предоставляет доступные Nodes;
+        - используется исключительно для проверки существования material Node;
+        - не определяет структуру Template Tree;
+        - не участвует в разрешении Nested Composition.
+
+==================================================
+10. ОТВЕТСТВЕННОСТЬ TEMPLATE TREE BUILDER
+=========================================
+
+    TemplateTreeBuilder должен выполнять смысловое преобразование:
+
+        Composition structure
+            ↓
+        Template structure
+
+    Builder получает Composition, которую необходимо преобразовать в Template Tree.
+
+    Первый созданный TemplateNode соответствует переданной Composition
+        и становится корнем результирующего TemplateTree.
+
+    Builder должен:
+
+        1. получить Composition;
+        2. создать соответствующий TemplateNode;
+        3. сделать его корнем TemplateTree;
+        4. обработать каждый CompositionNode;
+        5. определить, является ли он material Node или Nested Composition;
+        6. выполнить необходимую validation;
+        7. создать соответствующий TemplateNode;
+        8. рекурсивно построить children;
+        9. сохранить исходный CompositionNode в каждом TemplateNode.
+
+==================================================
+11. RECURSION
+==================================================
+
+    При Nested Composition mapping должен рекурсивно перейти к структуре разрешённой Composition.
+
+    Алгоритм:
+
+        Composition
+            ↓
+        CompositionNode
+            ↓
+        node?
+            ├── yes
+            │
+            │   validate Node
+            │        ↓
+            │   TemplateNode
+            │
+            └── no
+                ↓
+          composition?
+                ↓
+      resolve Composition
+                ↓
+      validate recursion
+                ↓
+          TemplateNode
+                ↓
+      recursively map children
+
+    Во время рекурсивного обхода builder обязан контролировать стек разрешаемых Composition.
+
+    Если Composition повторно встречается в текущей цепочке обхода, считается, что обнаружена циклическая зависимость.
+
+        Пример:
+
+            A
+            └── B
+                └── C
+                    └── A
+
+    Такая конфигурация является некорректной.
+
+    Builder должен завершить mapping диагностической ошибкой через существующий механизм диагностики проекта.
+
+==================================================
+12. TEMPLATE DOMAIN MODEL
+==================================================
+
+    На данном этапе не добавлять новые сущности только ради Nested Composition.
+
+    Не вводить:
+
+        - NestedCompositionTemplateNode;
+        - CompositionReference;
+        - TemplateComposition;
+        - TemplateInclude;
+        - другие специальные типы без доказанной необходимости.
+
+    Существующая модель:
+
+        TemplateNode
+            source: CompositionNode
+            children: TemplateNode[]
+
+    считается достаточной для первой реализации mapping.
+
+    TemplateNode использует source как единственный источник
+    семантической информации о соответствующем элементе структуры.
+
+    Если реализация выявит реальный недостаток модели,
+    изменение модели оформляется как отдельная архитектурная задача,
+    а не скрывается внутри builder.
+
+==================================================
+13. RESPONSIBILITY BOUNDARIES
+==================================================
+
+    Composition Domain отвечает за:
+
+        - Composition;
+        - CompositionNode;
+        - организацию Composition.
+
+    Templates Domain отвечает за:
+
+        - Template;
+        - TemplateTree;
+        - TemplateNode;
+        - представление Composition в контексте Template.
+
+    Mapping отвечает за преобразование одной предметной модели в другую.
+
+    Mapping не должен переносить ответственность Composition Domain в Templates Domain.
+
+==================================================
+14. EXPECTED RESULT
+==================================================
+
+    После реализации для каждой Composition должна существовать корректная Template Tree, в которой:
+
+        - каждый CompositionNode представлен собственным TemplateNode;
+        - material Nodes представлены как material elements;
+        - Nested Compositions представлены как отдельные структурные элементы;
+        - структура Nested Composition сохранена через children;
+        - исходные CompositionNode сохранены в source;
+        - TemplateNode не дублируют семантику CompositionNode;
+        - material Nodes проверены через NodesComponent;
+        - Nested Compositions разрешены через CompositionsComponent;
+        - циклические Composition диагностируются;
+        - некорректные CompositionNode отклонены.
+
+==================================================
+15. TESTING REQUIREMENTS
+==================================================
+
+    Необходимо проверить минимум следующие случаи:
+
+        1. Composition содержит только material Nodes.
+        2. Composition содержит Nested Composition.
+        3. Nested Composition содержит material Nodes.
+        4. Nested Composition содержит ещё одну Nested Composition.
+        5. Composition содержит несколько независимых Nested Compositions.
+        6. CompositionNode содержит одновременно node и composition.
+        7. CompositionNode не содержит ни node, ни composition.
+        8. CompositionNode ссылается на отсутствующий Node.
+        9. CompositionNode ссылается на отсутствующую Composition.
+        10. После mapping каждый TemplateNode сохраняет соответствующий исходный CompositionNode.
+        11. Две ссылки на одну и ту же Composition создают два независимых TemplateNode.
+        12. Обнаруживается циклическая зависимость Composition.
+
+==================================================
+16. IMPLEMENTATION CONSTRAINT
+==================================================
+
+    На этом этапе реализуется только mapping.
+
+    Не изменять без необходимости:
+        - Composition Domain;
+        - Nodes Domain;
+        - структуру Theme Components;
+        - Template Domain ontology;
+        - другие стадии Theme IR pipeline.
+
+    Если для реализации требуется изменение существующего контракта,
+        сначала необходимо зафиксировать конкретную причину,
+        влияние изменения и оформить изменение как отдельную
+        архитектурную задачу.
+
+==================================================
+17. DEFINITION OF DONE
+==================================================
+
+    Задача считается выполненной, когда:
+        - TemplateTreeBuilder корректно обрабатывает оба типа CompositionNode;
+        - для каждого CompositionNode создаётся отдельный TemplateNode;
+        - корневой Composition представлен корневым TemplateNode;
+        - Nested Composition не маскируется под Node;
+        - структура Nested Composition сохраняется в Template Tree;
+        - исходные CompositionNode доступны через TemplateNode::source;
+        - TemplateNode использует source как единственный источник семантики;
+        - NodesComponent используется только для material Node validation;
+        - CompositionsComponent используется только для Nested Composition resolution;
+        - циклические Composition диагностируются;
+        - некорректные состояния CompositionNode диагностируются;
+        - перечисленные сценарии покрыты тестами;
+        - для реализации не потребовалось вводить новую сущность
+          Template Domain без отдельного архитектурного обоснования.
