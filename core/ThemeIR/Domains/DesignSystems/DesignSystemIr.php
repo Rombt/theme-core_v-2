@@ -6,9 +6,9 @@ namespace Rombt\ThemeCore\ThemeIR\Domains\DesignSystems;
 
 use Rombt\ThemeCore\ThemeConfiguration\Domains\DesignSystems\DesignSystemsConfiguration;
 use Rombt\ThemeCore\ThemeIR\IrId;
-use Rombt\ThemeCore\ThemeIR\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\ThemeConcept;
 
-final readonly class DesignSystemIr extends ThemeIr
+final readonly class DesignSystemIr extends ThemeConcept
 {
     public function __construct(
         IrId $id,

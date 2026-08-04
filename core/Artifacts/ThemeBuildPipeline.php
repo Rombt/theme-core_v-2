@@ -7,7 +7,7 @@ namespace Rombt\ThemeCore\Artifacts;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionFactoryInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactWriterInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
-use Rombt\ThemeCore\ThemeIR\ThemeIrCollection;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
 
 final readonly class ThemeBuildPipeline
 {
@@ -18,12 +18,12 @@ final readonly class ThemeBuildPipeline
     ) {
     }
 
-    public function build(ThemeIrCollection $ir): void
+    public function build(ThemeIr $themeIr): void
     {
         $artifacts = $this->collectionFactory->create();
 
         $this->generator->generate(
-            $ir,
+            $themeIr,
             $artifacts,
         );
 

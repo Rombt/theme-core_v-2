@@ -13,7 +13,7 @@ use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
 use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Session\SessionKeys;
-use Rombt\ThemeCore\ThemeIR\ThemeIrCollection;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
 
 final class GenerateIrArtifactsStage implements StageInterface
 {
@@ -37,7 +37,7 @@ final class GenerateIrArtifactsStage implements StageInterface
             $logger->dump('GenerateIrArtifactsStage    $ir = ');
             $logger->dump($ir);
 
-            if (!$ir instanceof ThemeIrCollection) {
+            if (!$ir instanceof ThemeIr) {
                 throw new RuntimeException(
                     'Theme IR not built.'
                 );

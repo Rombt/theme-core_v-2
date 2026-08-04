@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes;
 
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\MenuDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\SidebarDefinition;
+
 final readonly class Node
 {
     /**
@@ -19,6 +22,8 @@ final readonly class Node
         private ?string $description = null,
         private array $capabilities = [],
         private array $metadata = [],
+        private ?MenuDefinition $menu = null,
+        private ?SidebarDefinition $sidebar = null,
     ) {
     }
 
@@ -61,6 +66,26 @@ final readonly class Node
     public function metadata(): array
     {
         return $this->metadata;
+    }
+
+    public function menu(): ?MenuDefinition
+    {
+        return $this->menu;
+    }
+
+    public function hasMenu(): bool
+    {
+        return $this->menu !== null;
+    }
+
+    public function sidebar(): ?SidebarDefinition
+    {
+        return $this->sidebar;
+    }
+
+    public function hasSidebar(): bool
+    {
+        return $this->sidebar !== null;
     }
 
     public function strategy(): string

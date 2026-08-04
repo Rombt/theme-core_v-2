@@ -6,9 +6,8 @@ namespace Rombt\ThemeCore\ThemeIR;
 
 final readonly class IrId
 {
-    public function __construct(
-        private string $value,
-    ) {
+    public function __construct(private string $value)
+    {
     }
 
     public function value(): string

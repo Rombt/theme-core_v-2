@@ -1,0 +1,57 @@
+Цель практическая проверка полученных Theme Concepts
+
+++ Этап 1. Определение целевого результата
+
+    Зафиксировать минимальный набор файлов коммерческой WordPress-темы:
+
+    style.css
+    functions.php
+    index.php
+    header.php
+    footer.php
+    sidebar.php
+    single.php
+    archive.php
+    category.php
+    404.php
+
+
+++ Этап 2. Выделение Theme Concepts
+    Для каждого файла определить, какие Theme Concepts необходимы для его генерации.
+    Результат этапа — полный перечень Theme Concepts, необходимых MVP.
+
+++ Этап 3. Сопоставление с Configuration Domains
+    Для каждого Theme Concept определить:
+        из каких существующих Configuration Domains он строится;
+            хватает ли существующих данных;
+            требуется ли новый Configuration Domain.
+
+        Результат этапа — матрица соответствия:
+
+            Configuration Domains
+                    ↓
+            Theme Concepts
+
+
+++ Этап 4. Расширение Configuration Domains
+    Добавить только те Configuration Domains, без которых невозможно построить все Theme Concepts MVP.
+    После этого BuildThemeComponentsStage должен предоставлять всю необходимую информацию.
+
+
++- Этап 5. Реализация Theme IR
+    Построить Theme IR исключительно на основе выделенных Theme Concepts.
+
+
+Этап 6. Реализация Artifact Generation
+    Реализовать генерацию артефактов из Theme IR.
+
+
+Этап 7. Генерация файлов темы
+    Реализовать материализацию артефактов в конечные файлы WordPress-темы.
+
+Контрольные точки
+    После завершения дорожной карты должны быть выполнены три условия:
+
+        Все необходимые Theme Concepts существуют.
+        Каждый Theme Concept полностью строится из Configuration Domains.
+        Все целевые файлы темы успешно генерируются автоматически.

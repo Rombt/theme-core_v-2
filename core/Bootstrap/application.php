@@ -234,7 +234,7 @@ $pipeline = new Pipeline([
     new BuildThemeIrStage(
         new ThemeIrBuilder(
             new ThemeIrResolverRegistry([
-                new CompositionsThemeIrResolver(),
+                // new CompositionsThemeIrResolver(), // здесь должен быть ресолвер который преобразует домен Composition в концепт Templates
                 new DesignSystemsThemeIrResolver(),
                 new AssetsThemeIrResolver(),
                 new IntegrationsThemeIrResolver(),

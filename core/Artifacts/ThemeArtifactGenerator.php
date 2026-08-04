@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts;
 
-use Rombt\ThemeCore\Application\Application;
-use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
-use Rombt\ThemeCore\ThemeIR\ThemeIrCollection;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
 
 final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInterface
 {
@@ -18,13 +16,13 @@ final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInt
     }
 
     public function generate(
-        ThemeIrCollection $collection,
+        ThemeIr $themeIr,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        foreach ($collection as $ir) {
+        foreach ($themeIr->all() as $concept) {
             foreach ($this->registry->all() as $generator) {
-                if ($ir instanceof ($generator->supports())) {
-                    $generator->generate($ir, $artifacts);
+                if ($concept instanceof ($generator->supports())) {
+                    $generator->generate($concept, $artifacts);
                 }
             }
         }

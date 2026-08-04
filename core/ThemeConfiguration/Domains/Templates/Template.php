@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Templates;
+namespace Rombt\ThemeCore\ThemeIr\Domains\Templates;
+
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
 
 final readonly class Template
 {
     public function __construct(
         private string $id,
-        private string $composition,
+        private Composition $composition,
     ) {
     }
 
@@ -17,7 +19,7 @@ final readonly class Template
         return $this->id;
     }
 
-    public function composition(): string
+    public function composition(): Composition
     {
         return $this->composition;
     }

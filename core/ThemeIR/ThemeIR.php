@@ -2,19 +2,58 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIR;
+namespace Rombt\ThemeCore\ThemeIr;
 
-use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrInterface;
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
+use RuntimeException;
+use Rombt\ThemeCore\ThemeIr\Contracts\ThemeConceptInterface;
 
-abstract readonly class ThemeIr implements ThemeIrInterface
+final class ThemeIr implements IteratorAggregate
 {
-    public function __construct(
-        private IrId $id,
-    ) {
+    /**
+     * @var array<string, ThemeConceptInterface>
+     */
+    private array $concepts = [];
+
+    public function add(
+        ThemeConceptInterface $concept,
+    ): void {
+        $this->concepts[$concept->id()] = $concept;
     }
 
-    public function id(): IrId
+    public function has(
+        string $id,
+    ): bool {
+        return isset($this->concepts[$id]);
+    }
+
+    public function get(
+        string $id,
+    ): ThemeConceptInterface {
+        if (!$this->has($id)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Theme Concept "%s" not found.',
+                    $id,
+                ),
+            );
+        }
+
+        return $this->concepts[$id];
+    }
+
+    /**
+     * @return array<string, ThemeConceptInterface>
+     */
+    public function all(): array
     {
-        return $this->id;
+        return $this->concepts;
+    }
+
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->concepts);
     }
 }

@@ -9,23 +9,18 @@ use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrBuilderInterface;
 
 final readonly class ThemeIrBuilder implements ThemeIrBuilderInterface
 {
-    public function __construct(
-        private ThemeIrResolverRegistry $registry,
-    ) {
+    public function __construct(private ThemeIrResolverRegistry $registry)
+    {
     }
 
-    public function build(ThemeComponentCollection $components): ThemeIrCollection
+    public function build(ThemeComponentCollection $components): ThemeIr
     {
-        $collection = new ThemeIrCollection();
+        $themeIr = new ThemeIr();
 
-        foreach ($components as $component) {
-            $resolver = $this->registry->resolverFor($component);
-
-            $collection = $collection->merge(
-                $resolver->resolve($component),
-            );
+        foreach ($this->registry->resolvers() as $resolver) {
+            $themeIr->add($resolver->resolve($components));
         }
 
-        return $collection;
+        return $themeIr;
     }
 }

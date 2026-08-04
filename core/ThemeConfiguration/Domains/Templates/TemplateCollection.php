@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Templates;
+namespace Rombt\ThemeCore\ThemeIr\Domains\Templates;
 
 use ArrayIterator;
 use Countable;
@@ -19,11 +19,20 @@ final readonly class TemplateCollection implements IteratorAggregate, Countable
     /**
      * @param iterable<Template> $templates
      */
-    public function __construct(iterable $templates = [])
-    {
+    public function __construct(
+        iterable $templates = [],
+    ) {
         $this->templates = is_array($templates)
             ? $templates
             : iterator_to_array($templates);
+    }
+
+    /**
+     * @return array<Template>
+     */
+    public function all(): array
+    {
+        return $this->templates;
     }
 
     /**
@@ -37,13 +46,5 @@ final readonly class TemplateCollection implements IteratorAggregate, Countable
     public function count(): int
     {
         return count($this->templates);
-    }
-
-    /**
-     * @return array<Template>
-     */
-    public function all(): array
-    {
-        return $this->templates;
     }
 }

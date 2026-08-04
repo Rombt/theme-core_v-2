@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIR\Contracts;
 
-use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
-use Rombt\ThemeCore\ThemeIR\ThemeIrCollection;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 interface ThemeIrResolverInterface
 {
-    public function supports(ThemeComponent $component): bool;
-
-    public function resolve(ThemeComponent $component): ThemeIrCollection;
+    public function resolve(
+        ThemeComponentCollection $components,
+    ): ThemeConceptInterface;
 }

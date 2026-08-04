@@ -4,30 +4,40 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIR\Domains\Assets;
 
+use RuntimeException;
+use Rombt\ThemeCore\ThemeComponents\ComponentId;
 use Rombt\ThemeCore\ThemeComponents\Domains\Assets\AssetsComponent;
-use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
+use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeConceptInterface;
 use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrResolverInterface;
 use Rombt\ThemeCore\ThemeIR\IrId;
-use Rombt\ThemeCore\ThemeIR\ThemeIrCollection;
 
 final readonly class AssetsThemeIrResolver implements ThemeIrResolverInterface
 {
-    public function supports(ThemeComponent $component): bool
-    {
-        return $component->component() instanceof AssetsComponent;
-    }
+    public function resolve(
+        ThemeComponentCollection $components,
+    ): ThemeConceptInterface {
+        $themeComponent = $components->find(
+            new ComponentId('assets'),
+        );
 
-    public function resolve(ThemeComponent $component): ThemeIrCollection
-    {
-        /** @var AssetsComponent $assets */
-        $assets = $component->component();
+        if ($themeComponent === null) {
+            throw new RuntimeException(
+                'Theme component "assets" not found.',
+            );
+        }
 
-        return new ThemeIrCollection([
-            new AssetIr(
-                id: new IrId($component->id()->value()),
-                assets: $assets->assets(),
-            ),
+        $component = $themeComponent->component();
 
-        ]);
+        if (!$component instanceof AssetsComponent) {
+            throw new RuntimeException(
+                'Theme component "assets" must contain AssetsComponent.',
+            );
+        }
+
+        return new AssetIr(
+            id: new IrId('assets'),
+            assets: $component->assets(),
+        );
     }
 }
