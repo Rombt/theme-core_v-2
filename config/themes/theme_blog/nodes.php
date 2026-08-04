@@ -39,12 +39,43 @@ return [
         'name' => 'Post Loop',
     ],
 
-
     'navigation_01' => [
         'type' => [
             'name' => 'component',
         ],
+
         'name' => 'Primary Navigation',
+
+        'menu' => [
+            'location' => 'primary',
+            'label'    => 'Primary Menu',
+        ],
+    ],
+
+    'footer_navigation_01' => [
+        'type' => [
+            'name' => 'component',
+        ],
+
+        'name' => 'Footer Navigation',
+
+        'menu' => [
+            'location' => 'footer',
+            'label'    => 'Footer Menu',
+        ],
+    ],
+
+    'hero_navigation_01' => [
+        'type' => [
+            'name' => 'component',
+        ],
+
+        'name' => 'Hero Navigation',
+
+        'menu' => [
+            'location' => 'hero',
+            'label'    => 'Hero Menu',
+        ],
     ],
 
     'site_title_01' => [
@@ -89,7 +120,18 @@ return [
         'type' => [
             'name' => 'component',
         ],
-        'name' => 'Widget Area',
+
+        'name' => 'Primary Sidebar',
+
+        'sidebar' => [
+            'id'            => 'primary-sidebar',
+            'name'          => 'Primary Sidebar',
+            'description'   => 'Main sidebar displayed on posts and pages.',
+            'before_widget' => '<section id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</section>',
+            'before_title'  => '<h2 class="widget-title">',
+            'after_title'   => '</h2>',
+        ],
     ],
 
 
