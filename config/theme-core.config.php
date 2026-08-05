@@ -19,10 +19,10 @@ return [
 
         // 'package' => 'theme_1',
         // 'package' => 'theme_2',
-        'package' => 'theme_blog',
+        // 'package' => 'theme_blog',
+        'package' => 'theme_blog_v2',
 
-        // 'resource_package' => 'resources',
-        'resource_package' => 'config\themes\theme_blog\resources',
+        'resource_package' => 'config\themes\theme_blog_v2\resources',
     ],
 
     'logging' => [
