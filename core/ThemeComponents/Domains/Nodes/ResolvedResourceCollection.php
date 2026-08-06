@@ -12,22 +12,18 @@ use Traversable;
 final readonly class ResolvedResourceCollection implements IteratorAggregate, Countable
 {
     /**
-     * @var array<ResolvedResource>
+     * @var ResolvedResource[]
      */
     private array $resources;
 
-    /**
-     * @param iterable<ResolvedResource> $resources
-     */
-    public function __construct(iterable $resources = [])
-    {
-        $this->resources = is_array($resources)
-            ? $resources
-            : iterator_to_array($resources);
+    public function __construct(
+        array $resources = [],
+    ) {
+        $this->resources = $resources;
     }
 
     /**
-     * @return Traversable<ResolvedResource>
+     * @return Traversable<int, ResolvedResource>
      */
     public function getIterator(): Traversable
     {
@@ -40,7 +36,7 @@ final readonly class ResolvedResourceCollection implements IteratorAggregate, Co
     }
 
     /**
-     * @return array<ResolvedResource>
+     * @return ResolvedResource[]
      */
     public function all(): array
     {

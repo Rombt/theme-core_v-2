@@ -35,14 +35,16 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         $resources = [];
 
         foreach ($configuration->nodes() as $node) {
-            $resources[] = $this->resolver->resolve(
+            $resolvedResources = $this->resolver->resolve(
                 new Resource(
                     type: $node->type()->name(),
                     id: $node->resource() !== ''
-                    ? $node->resource()
-                    : $node->id(),
+                        ? $node->resource()
+                        : $node->id(),
                 ),
             );
+
+            $resources[] = $resolvedResources->all()[0];
         }
 
         return new ThemeComponent(

@@ -64,16 +64,11 @@ final readonly class TemplatesThemeIrResolver implements ThemeIrResolverInterfac
     private function createTemplate(
         Composition $composition,
     ): Template {
-        $root = $composition->nodes()->all()[0] ?? throw new RuntimeException(
-            sprintf(
-                'Template "%s" must contain a root node.',
-                $composition->id(),
-            ),
-        );
-
         return new Template(
             identity: new TemplateIdentity($composition->id()),
-            tree: $this->treeBuilder->build($root),
+            tree: $this->treeBuilder->build(
+                $composition->nodes(),
+            ),
         );
     }
 }
