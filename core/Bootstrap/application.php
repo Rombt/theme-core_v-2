@@ -76,7 +76,8 @@ use Rombt\ThemeCore\ThemeComponents\Domains\DesignSystems\DesignSystemsComponent
 use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponentBuilder;
 use Rombt\ThemeCore\ThemeIR\ThemeIrBuilder;
 use Rombt\ThemeCore\ThemeIR\ThemeIrResolverRegistry;
-use Rombt\ThemeCore\ThemeIR\Domains\Compositions\CompositionsThemeIrResolver;
+//                  ThemeIR\Domains\Templates\TemplatesThemeIrResolver.php
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplatesThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\DesignSystems\DesignSystemsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\Integrations\IntegrationsThemeIrResolver;
@@ -235,6 +236,7 @@ $pipeline = new Pipeline([
         new ThemeIrBuilder(
             new ThemeIrResolverRegistry([
                 // new CompositionsThemeIrResolver(), // здесь должен быть ресолвер который преобразует домен Composition в концепт Templates
+                new TemplatesThemeIrResolver(),
                 new DesignSystemsThemeIrResolver(),
                 new AssetsThemeIrResolver(),
                 new IntegrationsThemeIrResolver(),

@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIr\Domains\Templates;
 
+use LogicException;
 use RuntimeException;
 use Rombt\ThemeCore\ThemeComponents\ComponentId;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponent;
+use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodesComponent;
+use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ResolvedResource;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateCollection;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateTreeBuilder;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Templates;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplatePurpose;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\UserScenario;
 use Rombt\ThemeCore\ThemeIr\Contracts\ThemeConceptInterface;
 use Rombt\ThemeCore\ThemeIr\Contracts\ThemeIrResolverInterface;
+use Rombt\ThemeCore\ThemeIR\IrId;
 
 final readonly class TemplatesThemeIrResolver implements ThemeIrResolverInterface
 {
@@ -28,46 +32,92 @@ final readonly class TemplatesThemeIrResolver implements ThemeIrResolverInterfac
     public function resolve(
         ThemeComponentCollection $components,
     ): ThemeConceptInterface {
-        $themeComponent = $components->find(
+        $compositionsThemeComponent = $components->find(
             new ComponentId('compositions'),
         );
 
-        if ($themeComponent === null) {
+        if ($compositionsThemeComponent === null) {
             throw new RuntimeException(
                 'Theme component "compositions" not found.',
             );
         }
 
-        $component = $themeComponent->component();
+        $nodesThemeComponent = $components->find(
+            new ComponentId('nodes'),
+        );
 
-        if (!$component instanceof CompositionsComponent) {
+        if ($nodesThemeComponent === null) {
+            throw new RuntimeException(
+                'Theme component "nodes" not found.',
+            );
+        }
+
+        $compositionsComponent = $compositionsThemeComponent->component();
+
+        if (!$compositionsComponent instanceof CompositionsComponent) {
             throw new RuntimeException(
                 'Theme component "compositions" must contain CompositionsComponent.',
             );
         }
 
+        $nodesComponent = $nodesThemeComponent->component();
+
+        if (!$nodesComponent instanceof NodesComponent) {
+            throw new RuntimeException(
+                'Theme component "nodes" must contain NodesComponent.',
+            );
+        }
+
+        $resources = [];
+
+        foreach ($nodesComponent->resources() as $resource) {
+            $resources[$resource->resource()->id()] = $resource;
+        }
+
         $templates = [];
 
-        foreach ($component->compositions() as $composition) {
+        foreach ($compositionsComponent->compositions() as $composition) {
             if ($composition->isTemplatePart()) {
                 continue;
             }
 
-            $templates[] = $this->createTemplate($composition);
+            $templates[] = $this->createTemplate(
+                $composition,
+                function (Node $node) use ($resources): ResolvedResource {
+                    $resourceId = $node->resource() !== ''
+                        ? $node->resource()
+                        : $node->id();
+
+                    if (!isset($resources[$resourceId])) {
+                        throw new LogicException(sprintf(
+                            'Resolved resource "%s" not found.',
+                            $resourceId,
+                        ));
+                    }
+
+                    return $resources[$resourceId];
+                },
+            );
         }
 
-        return new TemplatesThemeConcept(
-            new TemplateCollection($templates),
+        return new Templates(
+            id: new IrId('templates'),
+            templates: new TemplateCollection($templates),
         );
     }
 
+    /**
+     * @param callable(Node): ResolvedResource $nodeResolver
+     */
     private function createTemplate(
         Composition $composition,
+        callable $nodeResolver,
     ): Template {
         return new Template(
             identity: new TemplateIdentity($composition->id()),
             tree: $this->treeBuilder->build(
                 $composition->nodes(),
+                $nodeResolver,
             ),
         );
     }
