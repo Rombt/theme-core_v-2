@@ -6,10 +6,13 @@ namespace Rombt\ThemeCore\ThemeIr;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Traversable;
 use RuntimeException;
 use Rombt\ThemeCore\ThemeIr\Contracts\ThemeConceptInterface;
+use Traversable;
 
+/**
+ * @implements IteratorAggregate<string, ThemeConceptInterface>
+ */
 final class ThemeIr implements IteratorAggregate
 {
     /**
@@ -42,6 +45,29 @@ final class ThemeIr implements IteratorAggregate
         }
 
         return $this->concepts[$id];
+    }
+
+    /**
+     * @template T of ThemeConceptInterface
+     *
+     * @param class-string<T> $contract
+     * @return T
+     */
+    public function concept(
+        string $contract,
+    ): ThemeConceptInterface {
+        foreach ($this->concepts as $concept) {
+            if ($concept instanceof $contract) {
+                return $concept;
+            }
+        }
+
+        throw new RuntimeException(
+            sprintf(
+                'Theme Concept implementing "%s" not found.',
+                $contract,
+            ),
+        );
     }
 
     /**

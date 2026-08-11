@@ -21,9 +21,14 @@ final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInt
     ): void {
         foreach ($themeIr->all() as $concept) {
             foreach ($this->registry->all() as $generator) {
-                if ($concept instanceof ($generator->supports())) {
-                    $generator->generate($concept, $artifacts);
+                if (!($concept instanceof ($generator->supports()))) {
+                    continue;
                 }
+
+                $generator->generate(
+                    $concept,
+                    $artifacts,
+                );
             }
         }
     }

@@ -6,6 +6,7 @@ namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
 
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ResolvedResource;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node;
+use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ValueObjects\ResourceArchitecture;
 
 final readonly class TemplateNode
 {
@@ -29,9 +30,22 @@ final readonly class TemplateNode
         return $this->node;
     }
 
-    public function resource(): ?ResolvedResource
+    public function resource(): ?Resource
     {
-        return $this->resource;
+        if ($this->resource === null) {
+            return null;
+        }
+
+        return new Resource(
+            type: $this->resource->resource()->type(),
+            id: $this->resource->resource()->id(),
+            classic: $this->resource->architecture(
+                ResourceArchitecture::Classic,
+            )?->absolutePath() ?? '',
+            block: $this->resource->architecture(
+                ResourceArchitecture::Block,
+            )?->absolutePath() ?? '',
+        );
     }
 
     /**
@@ -40,5 +54,21 @@ final readonly class TemplateNode
     public function children(): array
     {
         return $this->children;
+    }
+
+    public function classic(): string
+    {
+        return $this->resource()?->classic() ?? '';
+    }
+
+
+    public function block(): string
+    {
+        return $this->resource()?->block() ?? '';
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->children !== [];
     }
 }

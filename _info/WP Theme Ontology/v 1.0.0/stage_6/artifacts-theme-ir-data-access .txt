@@ -1,0 +1,199 @@
+# Artifacts: получение данных из ThemeIR
+
+## Задача
+
+При реализации слоя Artifacts определить и зафиксировать, каким образом
+Artifact Generators получают необходимые им данные из слоя ThemeIR.
+
+ThemeIR на данном этапе считается полностью сформированным и достаточным
+для MVP. Изменять, расширять или перепроектировать API ThemeIR в рамках
+данной задачи не требуется.
+
+Главная архитектурная граница:
+
+    ThemeComponents → ThemeIR → Artifacts
+
+Слой Artifacts не должен напрямую обращаться к ThemeComponents.
+
+---
+
+## Требования
+
+### 1. ThemeIR является единственным источником предметных данных для Artifacts
+
+Artifact Generators должны получать все необходимые им данные исключительно
+через публичный API ThemeIR.
+
+Запрещено передавать в Artifact Generators:
+
+- ThemeComponentCollection;
+- NodesComponent;
+- CompositionsComponent;
+- Node;
+- CompositionNode;
+- ResolvedResource;
+- другие внутренние объекты ThemeComponents.
+
+---
+
+### 2. Необходимо определить точку входа в данные ThemeIR
+
+Для каждого Artifact Generator необходимо определить:
+
+- какой Theme Concept ему требуется;
+- какой объект ThemeIR является естественной единицей обработки;
+- какой минимальный API должен видеть конкретный генератор.
+
+Не следует передавать в конкретный Artifact Generator весь ThemeIr,
+если для его работы достаточно одного Theme Concept или одной сущности
+этого концепта.
+
+---
+
+### 3. Для концепта Templates использовать существующий API ThemeIR
+
+Существующая структура считается заданной:
+
+    ThemeIr
+        └── Templates
+              └── TemplateCollection
+                    └── Template
+                          └── TemplateTree
+                                └── TemplateNode
+
+Artifact layer должен использовать эту структуру как готовый API.
+
+Для генерации одного шаблона естественной единицей передачи данных
+считать `Template`.
+
+Концептуальная схема:
+
+    ThemeIr
+        ↓
+    Templates
+        ↓
+    Template
+        ↓
+    TemplateTree
+        ↓
+    TemplateNode
+
+`TemplateArtifactGenerator` не должен самостоятельно искать или
+разрешать Composition, Node или Resource.
+
+---
+
+### 4. Artifact Generators должны работать с API ThemeIR, а не с его источниками
+
+Например, при работе с `TemplateNode` генератор или renderer может
+использовать публичные методы:
+
+    node()
+    children()
+    classic()
+    block()
+
+Но не должен обращаться к:
+
+    resource()
+    resource()->classic()
+    resource()->block()
+    absolutePath()
+
+если это приводит к прямой работе с инфраструктурой разрешения ресурсов.
+
+Внутреннее устройство ThemeIR при этом не является ответственностью
+Artifacts.
+
+---
+
+### 5. Разделить получение данных и их материализацию
+
+Artifacts должен использовать ThemeIR для получения подготовленных
+предметных данных.
+
+Artifacts отвечает за:
+
+- выбор соответствующего Artifact Generator;
+- обход данных ThemeIR;
+- рендеринг;
+- формирование Artifact;
+- материализацию результата.
+
+ThemeIR отвечает за предоставление своего уже сформированного API.
+
+Не следует переносить в Artifacts логику построения Composition,
+разрешения Node или Resource.
+
+---
+
+### 6. Для Templates учитывать существующее разделение Generator / Renderer
+
+При реализации Templates проверить возможность следующей схемы:
+
+    Templates
+        ↓
+    TemplateArtifactGenerator
+        ↓
+    Template
+        ↓
+    TemplateTree
+        ↓
+    TemplateNodeRenderer
+        ↓
+    Artifact
+
+Для Classic и Block должны использоваться разные renderers,
+если это требуется существующей архитектурой:
+
+    ClassicPhpTemplateNodeRenderer
+    BlockTemplateNodeRenderer
+
+При этом оба renderer работают с `TemplateNode` из ThemeIR и не
+получают данные из ThemeComponents.
+
+---
+
+## Критерий корректности
+
+Решение считается корректным, если выполняется следующее:
+
+    ThemeComponents ──X──> Artifacts
+
+и одновременно:
+
+    ThemeIR ──────────────> Artifacts
+
+При этом конкретный Artifact Generator должен видеть только тот
+минимальный публичный API ThemeIR, который необходим для выполнения
+его задачи.
+
+---
+
+## Что НЕ является задачей
+
+В рамках данной задачи НЕ требуется:
+
+- изменять ThemeIR;
+- добавлять новые Theme Concepts;
+- изменять `Template`;
+- изменять `TemplateTree`;
+- изменять `TemplateNode`;
+- переносить существующую логику ThemeComponents в Artifacts;
+- проектировать новый API ThemeIR.
+
+Нужно только определить и реализовать способ потребления уже
+существующего API ThemeIR слоем Artifacts.
+
+---
+
+## Результат
+
+Результатом работы должен быть согласованный контракт взаимодействия:
+
+    ThemeIR → Artifacts
+
+и его конкретная реализация для концепта Templates.
+
+После этого аналогичный принцип должен использоваться при реализации
+остальных Artifact Generators.

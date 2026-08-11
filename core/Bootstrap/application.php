@@ -76,13 +76,15 @@ use Rombt\ThemeCore\ThemeComponents\Domains\DesignSystems\DesignSystemsComponent
 use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponentBuilder;
 use Rombt\ThemeCore\ThemeIR\ThemeIrBuilder;
 use Rombt\ThemeCore\ThemeIR\ThemeIrResolverRegistry;
-//                  ThemeIR\Domains\Templates\TemplatesThemeIrResolver.php
 use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplatesThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\DesignSystems\DesignSystemsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Domains\Integrations\IntegrationsThemeIrResolver;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodesComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ConventionResourceResolver;
+use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeRenderer;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -247,12 +249,18 @@ $pipeline = new Pipeline([
     new GenerateIrArtifactsStage(
         new ThemeArtifactGenerator(
             (new ArtifactGeneratorRegistryFactory())->create([
+
+                new ClassicTemplateArtifactGenerator(
+                    new ClassicTemplateTreeRenderer(),
+                ),
+                new BlockTemplateArtifactGenerator(),
+
                 // new CompositionArtifactGenerator($app),
 
-                new FunctionsPhpArtifactGenerator(
-                    new AssetRegistrationBuilder(),
-                    new WordPressFunctionsRenderer(),
-                ),
+                // new FunctionsPhpArtifactGenerator(
+                //     new AssetRegistrationBuilder(),
+                //     new WordPressFunctionsRenderer(),
+                // ),
             ])
         )
     ),
