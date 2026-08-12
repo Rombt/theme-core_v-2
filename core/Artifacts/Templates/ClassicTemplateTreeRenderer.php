@@ -32,8 +32,17 @@ final readonly class ClassicTemplateTreeRenderer implements TemplateTreeRenderer
         $content = $node->classic();
 
         foreach ($node->children() as $child) {
-            $content .= PHP_EOL;
-            $content .= $this->renderNode($child);
+            $childContent = $this->renderNode($child);
+
+            if ($childContent === '') {
+                continue;
+            }
+
+            if ($content !== '') {
+                $content .= PHP_EOL;
+            }
+
+            $content .= $childContent;
         }
 
         return $content;

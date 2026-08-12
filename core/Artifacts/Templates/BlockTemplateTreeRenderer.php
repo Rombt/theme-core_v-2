@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
+use LogicException;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateTree;
 
@@ -17,24 +18,33 @@ final readonly class BlockTemplateTreeRenderer implements TemplateTreeRendererIn
             $parts[] = $this->renderNode($node);
         }
 
-        return implode("\n", $parts);
+        return implode(PHP_EOL, $parts);
     }
 
     private function renderNode(TemplateNode $node): string
     {
-        $content = $this->renderResource($node);
+        if (!$node->referencesNode()) {
+            throw new LogicException(
+                'TemplateNode does not reference a Node.',
+            );
+        }
+
+        $content = $node->block();
 
         foreach ($node->children() as $child) {
-            $content .= $this->renderNode($child);
+            $childContent = $this->renderNode($child);
+
+            if ($childContent === '') {
+                continue;
+            }
+
+            if ($content !== '') {
+                $content .= PHP_EOL;
+            }
+
+            $content .= $childContent;
         }
 
         return $content;
-    }
-
-    private function renderResource(TemplateNode $node): string
-    {
-        throw new \LogicException(
-            'Block TemplateNode resource rendering is not implemented yet.',
-        );
     }
 }
