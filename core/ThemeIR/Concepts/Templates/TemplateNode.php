@@ -7,6 +7,7 @@ namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ResolvedResource;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ValueObjects\ResourceArchitecture;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
 
 final readonly class TemplateNode
 {
@@ -16,6 +17,8 @@ final readonly class TemplateNode
     public function __construct(
         private ?Node $node,
         private ?ResolvedResource $resource,
+        private ?Composition $composition = null,
+        private ?int $slot = null,
         private array $children = [],
     ) {
     }
@@ -28,6 +31,21 @@ final readonly class TemplateNode
     public function node(): ?Node
     {
         return $this->node;
+    }
+
+    public function referencesComposition(): bool
+    {
+        return $this->composition !== null;
+    }
+
+    public function composition(): ?Composition
+    {
+        return $this->composition;
+    }
+
+    public function slot(): ?int
+    {
+        return $this->slot;
     }
 
     public function resource(): ?Resource

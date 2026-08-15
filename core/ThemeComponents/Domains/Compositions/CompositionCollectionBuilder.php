@@ -60,6 +60,7 @@ final readonly class CompositionCollectionBuilder
      * @param array<int, array{
      *     id:string,
      *     node?:string,
+     *     slot?:int,
      *     children?:array
      * }> $children
      */
@@ -84,6 +85,7 @@ final readonly class CompositionCollectionBuilder
                 new CompositionNode(
                     id: $child['id'],
                     nodeId: $child['node'] ?? null,
+                    slot: $child['slot'] ?? null,
                     children: $this->buildNodes(
                         $child['children'] ?? [],
                     ),

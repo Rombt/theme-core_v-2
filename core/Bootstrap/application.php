@@ -85,6 +85,8 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ConventionResourceResolver;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeRenderer;
+use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateTreeRenderer;
+use Rombt\ThemeCore\Artifacts\Templates\FileTemplateResourceContentReader;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -251,9 +253,15 @@ $pipeline = new Pipeline([
             (new ArtifactGeneratorRegistryFactory())->create([
 
                 new ClassicTemplateArtifactGenerator(
-                    new ClassicTemplateTreeRenderer(),
+                    new ClassicTemplateTreeRenderer(
+                        new FileTemplateResourceContentReader(),
+                    ),
                 ),
-                new BlockTemplateArtifactGenerator(),
+                new BlockTemplateArtifactGenerator(
+                    new BlockTemplateTreeRenderer(
+                        new FileTemplateResourceContentReader(),
+                    ),
+                ),
 
                 // new CompositionArtifactGenerator($app),
 

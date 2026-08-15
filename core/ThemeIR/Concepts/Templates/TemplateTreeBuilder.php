@@ -51,10 +51,24 @@ final class TemplateTreeBuilder
         callable $nodeResolver,
     ): array {
         if ($compositionNode->referencesComposition()) {
-            return $this->buildNodes(
-                $compositionNode->children(),
-                $nodeResolver,
-            );
+            $composition = $compositionNode->composition();
+
+            if ($composition === null) {
+                return [];
+            }
+
+            return [
+                new TemplateNode(
+                    node: null,
+                    resource: null,
+                    composition: $composition,
+                    slot: $compositionNode->slot(),
+                    children: $this->buildNodes(
+                        $composition->nodes(),
+                        $nodeResolver,
+                    ),
+                ),
+            ];
         }
 
         $node = $compositionNode->node();
@@ -67,6 +81,7 @@ final class TemplateTreeBuilder
             new TemplateNode(
                 node: $node,
                 resource: $nodeResolver($node),
+                slot: $compositionNode->slot(),
                 children: $this->buildNodes(
                     $compositionNode->children(),
                     $nodeResolver,

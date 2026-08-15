@@ -32,9 +32,9 @@ declare(strict_types=1);
 
     <div class="site-header__inner">
 
-        <!-- @slot_1 -->
+        @slot_1
 
-        <!-- @slot_2 -->
+        @slot_2
 
     </div>
 

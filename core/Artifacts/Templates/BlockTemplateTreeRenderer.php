@@ -10,12 +10,21 @@ use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateTree;
 
 final readonly class BlockTemplateTreeRenderer implements TemplateTreeRendererInterface
 {
+    public function __construct(
+        private TemplateResourceContentReaderInterface $resourceContentReader,
+    ) {
+    }
+
     public function render(TemplateTree $tree): string
     {
         $parts = [];
 
         foreach ($tree->roots() as $node) {
-            $parts[] = $this->renderNode($node);
+            $content = $this->renderNode($node);
+
+            if ($content !== '') {
+                $parts[] = $content;
+            }
         }
 
         return implode(PHP_EOL, $parts);
@@ -23,14 +32,43 @@ final readonly class BlockTemplateTreeRenderer implements TemplateTreeRendererIn
 
     private function renderNode(TemplateNode $node): string
     {
-        if (!$node->referencesNode()) {
-            throw new LogicException(
-                'TemplateNode does not reference a Node.',
-            );
+        $content = $this->renderChildren($node);
+
+        $path = $node->block();
+
+        if ($path === '') {
+            return $content;
         }
 
-        $content = $node->block();
+        $content = $this->resourceContentReader->read($path);
 
+        return $this->replaceSlots(
+            $content,
+            $node,
+            $path,
+        );
+    }
+
+    private function renderChildren(TemplateNode $node): string
+    {
+        $parts = [];
+
+        foreach ($node->children() as $child) {
+            $content = $this->renderNode($child);
+
+            if ($content !== '') {
+                $parts[] = $content;
+            }
+        }
+
+        return implode(PHP_EOL, $parts);
+    }
+
+    private function replaceSlots(
+        string $content,
+        TemplateNode $node,
+        string $path,
+    ): string {
         foreach ($node->children() as $child) {
             $childContent = $this->renderNode($child);
 
@@ -38,11 +76,34 @@ final readonly class BlockTemplateTreeRenderer implements TemplateTreeRendererIn
                 continue;
             }
 
-            if ($content !== '') {
-                $content .= PHP_EOL;
+            $slot = $child->slot();
+
+            if ($slot === null) {
+                throw new LogicException(
+                    sprintf(
+                        'TemplateNode child of "%s" does not define a slot.',
+                        $path,
+                    ),
+                );
             }
 
-            $content .= $childContent;
+            $slotMarker = '@slot_' . $slot;
+
+            if (!str_contains($content, $slotMarker)) {
+                throw new LogicException(
+                    sprintf(
+                        'Template resource "%s" does not contain expected slot "%s".',
+                        $path,
+                        $slotMarker,
+                    ),
+                );
+            }
+
+            $content = str_replace(
+                $slotMarker,
+                $childContent,
+                $content,
+            );
         }
 
         return $content;

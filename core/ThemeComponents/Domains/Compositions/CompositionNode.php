@@ -15,6 +15,7 @@ final class CompositionNode
     public function __construct(
         private readonly string $id,
         private readonly ?string $nodeId,
+        private readonly ?int $slot,
         private readonly CompositionNodeCollection $children,
         ?Composition $composition = null,
         ?Node $node = null,
@@ -26,6 +27,11 @@ final class CompositionNode
     public function id(): string
     {
         return $this->id;
+    }
+
+    public function slot(): ?int
+    {
+        return $this->slot;
     }
 
     public function children(): CompositionNodeCollection

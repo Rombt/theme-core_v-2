@@ -8,7 +8,7 @@ if (have_posts()) :
 
         ?>
 
-        <!-- @slot_1 -->
+        @slot_1
 
         <?php
     endwhile;
@@ -17,7 +17,7 @@ if (have_posts()) :
 else :
     ?>
 
-    <!-- @slot_2 -->
+    @slot_2
 
     <?php
 endif;

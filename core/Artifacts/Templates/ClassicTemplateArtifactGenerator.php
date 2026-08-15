@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
-use LogicException;
 use Rombt\ThemeCore\Artifacts\Artifact;
+use Rombt\ThemeCore\Artifacts\ArtifactCollection;
 use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
-use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
+use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
 
 final readonly class ClassicTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
@@ -30,40 +30,28 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
         ArtifactCollectionInterface $artifacts,
     ): void {
         if (!$concept instanceof TemplatesInterface) {
-            throw new LogicException(
-                'Expected Templates concept.',
-            );
+            return;
         }
 
-        foreach ($concept->templates() as $template) {
+        foreach ($concept->templates()->all() as $template) {
             $artifacts->add(
-                new Artifact(
-                    id: new ArtifactId(
-                        sprintf(
-                            'template:%s',
-                            $template->identity()->value(),
-                        ),
-                    ),
-                    type: ArtifactType::FILE,
-                    destination: $this->destination($template),
-                    content: $this->content($template),
-                ),
+                $this->createArtifact($template),
             );
         }
     }
 
-    private function destination(Template $template): string
+    private function createArtifact(Template $template): Artifact
     {
-        return sprintf(
-            '%s.php',
-            $template->identity()->value(),
-        );
-    }
 
-    private function content(Template $template): string
-    {
-        return $this->renderer->render(
-            $template->tree(),
+        return new Artifact(
+            id: new ArtifactId(
+                'template:classic:' . $template->identity()->value(),
+            ),
+            type: ArtifactType::FILE,
+            destination: $template->identity()->value() . '.php',
+            content: $this->renderer->render(
+                $template->tree(),
+            ),
         );
     }
 }

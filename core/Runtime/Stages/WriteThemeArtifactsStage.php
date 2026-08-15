@@ -7,6 +7,8 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 use RuntimeException;
 use Throwable;
 use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
+use Rombt\ThemeCore\Runtime\Session\SessionKeys;
 use Rombt\ThemeCore\Artifacts\FileArtifactWriter;
 use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
@@ -25,6 +27,12 @@ final class WriteThemeArtifactsStage implements StageInterface
         Application $app,
     ): StageResult {
         try {
+            // !! log !!
+            $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+            $logger->dump('WriteThemeArtifactsStage    $artifacts = ');
+            $logger->dump($context->session()->artifacts());
+
+
             $buildPath = (string) $this->configuration->get('paths.build');
 
             if ($buildPath === '') {

@@ -11,10 +11,12 @@ return [
             [
                 'id' => 'site-title',
                 'node' => 'site_title_01',
+                'slot' => 1,
             ],
             [
                 'id' => 'navigation',
                 'node' => 'navigation_01',
+                'slot' => 2,
             ],
         ],
     ],
@@ -57,9 +59,11 @@ return [
                     [
                         'id' => 'post-loop',
                         'node' => 'post_loop_01',
+                        'slot' => 1,
                     ],
                     [
                         'id' => 'sidebar',
+                        'slot' => 2,
                     ],
                 ],
             ],
@@ -86,13 +90,16 @@ return [
                     [
                         'id' => 'post-title',
                         'node' => 'post_title_01',
+                        'slot' => 1,
                     ],
                     [
                         'id' => 'post-content',
                         'node' => 'post_content_01',
+                        'slot' => 2,
                     ],
                     [
                         'id' => 'sidebar',
+                        'slot' => 3,
                     ],
                 ],
             ],
@@ -119,13 +126,16 @@ return [
                     [
                         'id' => 'page-title',
                         'node' => 'page_title_01',
+                        'slot' => 1,
                     ],
                     [
                         'id' => 'page-content',
                         'node' => 'page_content_01',
+                        'slot' => 2,
                     ],
                     [
                         'id' => 'sidebar',
+                        'slot' => 3,
                     ],
                 ],
             ],
@@ -152,13 +162,16 @@ return [
                     [
                         'id' => 'archive-title',
                         'node' => 'archive_title_01',
+                        'slot' => 1,
                     ],
                     [
                         'id' => 'post-loop',
                         'node' => 'post_loop_01',
+                        'slot' => 2,
                     ],
                     [
                         'id' => 'sidebar',
+                        'slot' => 3,
                     ],
                 ],
             ],
@@ -185,19 +198,39 @@ return [
                     [
                         'id' => 'archive-title',
                         'node' => 'archive_title_01',
+                        'slot' => 1,
                     ],
                     [
                         'id' => 'post-loop',
                         'node' => 'post_loop_01',
+                        'slot' => 2,
                     ],
                     [
                         'id' => 'sidebar',
+                        'slot' => 3,
                     ],
                 ],
             ],
 
             [
                 'id' => 'footer',
+            ],
+        ],
+    ],
+
+    'post-loop' => [
+        'type' => 'template-part',
+
+        'children' => [
+            [
+                'id' => 'post-title',
+                'node' => 'post_title_01',
+                'slot' => 1,
+            ],
+            [
+                'id' => 'no-posts',
+                'node' => 'no_posts_01',
+                'slot' => 2,
             ],
         ],
     ],

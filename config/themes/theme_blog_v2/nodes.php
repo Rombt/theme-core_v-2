@@ -39,6 +39,13 @@ return [
         'name' => 'Post Loop',
     ],
 
+    'no_posts_01' => [
+        'type' => [
+            'name' => 'component',
+        ],
+        'name' => 'No Posts',
+    ],
+
     'navigation_01' => [
         'type' => [
             'name' => 'component',
