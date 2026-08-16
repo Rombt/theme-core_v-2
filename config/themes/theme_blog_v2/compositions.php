@@ -35,7 +35,7 @@ return [
     ],
 
     'sidebar' => [
-        'resource' => 'sidebar',
+        'resource' => 'sidebar_01',
         'rendering' => 'sidebar',
 
         'children' => [
@@ -48,6 +48,7 @@ return [
 
     'layout' => [
         'resource' => 'layout_01',
+        'rendering' => 'template-part',
 
         'children' => [
             [
@@ -244,6 +245,24 @@ return [
             [
                 'id' => 'footer',
                 'composition' => 'footer',
+            ],
+        ],
+    ],
+
+    'query' => [
+        'resource' => 'query_01',
+        'rendering' => 'template-part',
+
+        'children' => [
+            [
+                'id' => 'post',
+                'node' => 'post_title_01',
+                'slot' => 1,
+            ],
+            [
+                'id' => 'no-posts',
+                'node' => 'no_posts_01',
+                'slot' => 2,
             ],
         ],
     ],
