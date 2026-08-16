@@ -170,7 +170,6 @@ Status: Architectural Foundation
         всех Composition конфигурационного пакета.
 
     Composition может представлять:
-
         переиспользуемую структурную композицию
             template part
             WordPress template
@@ -191,6 +190,164 @@ Status: Architectural Foundation
 
     Их конкретное назначение определяется
         собственной конфигурацией Composition.
+
+
+    6.1. COMPOSITION DEFAULT CHILDREN AND SLOT OVERRIDE
+    --------------------------------------------------
+
+        Composition имеет собственное объявление,
+            в котором может быть определён
+            набор дочерних элементов по умолчанию.
+
+        Наличие children в объявлении Composition
+            не является обязательным.
+
+        Таким образом, Composition может иметь:
+
+            default children
+
+        или:
+
+            только Resource и rendering.
+
+
+        При использовании Composition
+            в качестве дочернего элемента
+            другой Composition
+            могут быть указаны собственные children.
+
+
+        Children, указанные при конкретном использовании
+            Composition, являются override-набором
+            для соответствующих slots.
+
+
+        Правило разрешения:
+
+            если для slot указан child
+                в конкретном использовании Composition,
+
+            используется этот child.
+
+
+            если override для slot отсутствует,
+
+            используется child
+                из определения Composition.
+
+
+        Таким образом:
+
+            Composition Definition
+                ↓
+            default children
+                ↓
+            Composition Instance
+                ↓
+            slot overrides
+                ↓
+            Resolved Composition Structure
+
+
+        Пример определения:
+
+            layout
+                ├── slot 1 → post-loop
+                └── slot 2 → sidebar
+
+
+        При использовании:
+
+            layout
+                ├── slot 1 → post-title
+                ├── slot 2 → post-content
+                └── slot 3 → sidebar
+
+
+        результатом разрешения является:
+
+            layout
+                ├── slot 1 → post-title
+                ├── slot 2 → post-content
+                └── slot 3 → sidebar
+
+
+        При этом:
+
+            post-title
+            post-content
+
+        заменяют соответствующие default children
+            для указанных slots.
+
+
+        Если override для slot отсутствует,
+            default child сохраняется.
+
+
+        Если Composition не имеет
+            default children,
+
+        она может получить children
+            исключительно при конкретном использовании.
+
+
+        Slot override не изменяет
+            исходное объявление Composition.
+
+        Override действует только
+            в пределах конкретного экземпляра
+            Composition.
+
+
+    6.2. COMPOSITION RESOLUTION SEMANTICS
+    -------------------------------------
+
+        Для каждого экземпляра Composition
+            структура children определяется
+            следующим образом:
+
+            Composition Definition
+                +
+            Composition Instance Overrides
+                ↓
+            Resolved Children
+
+
+        Resolution выполняется
+            по идентификатору slot.
+
+
+        Для каждого slot:
+
+            Instance Child
+                имеет приоритет
+
+            над
+
+            Default Child.
+
+
+        Не переопределённые slots
+            получают Default Child.
+
+
+        Таким образом, Composition
+            является переиспользуемой структурой
+            с возможностью локальной специализации.
+
+
+        Основной принцип:
+
+            Default Composition
+                определяет базовую структуру.
+
+            Composition Instance
+                может заменить её части
+                через slot overrides.
+
+            Исходное определение Composition
+                при этом не изменяется.
 
 
 ==================================================
