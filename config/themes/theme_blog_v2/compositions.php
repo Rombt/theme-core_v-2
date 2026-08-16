@@ -5,7 +5,8 @@ declare(strict_types=1);
 return [
 
     'header' => [
-        'type' => 'template-part',
+        'resource' => 'header',
+        'rendering' => 'header',
 
         'children' => [
             [
@@ -22,7 +23,8 @@ return [
     ],
 
     'footer' => [
-        'type' => 'template-part',
+        'resource' => 'footer',
+        'rendering' => 'footer',
 
         'children' => [
             [
@@ -33,7 +35,8 @@ return [
     ],
 
     'sidebar' => [
-        'type' => 'template-part',
+        'resource' => 'sidebar',
+        'rendering' => 'sidebar',
 
         'children' => [
             [
@@ -43,48 +46,71 @@ return [
         ],
     ],
 
+    'layout' => [
+        'resource' => 'layout_01',
+
+        'children' => [
+            [
+                'id' => 'post-loop',
+                'composition' => 'post-loop',
+                'slot' => 1,
+            ],
+            [
+                'id' => 'sidebar',
+                'composition' => 'sidebar',
+                'slot' => 2,
+            ],
+        ],
+    ],
+
+    'post-loop' => [
+        'resource' => 'post_loop_01',
+        'rendering' => 'template-part',
+
+        'children' => [
+            [
+                'id' => 'post-title',
+                'node' => 'post_title_01',
+                'slot' => 1,
+            ],
+            [
+                'id' => 'no-posts',
+                'node' => 'no_posts_01',
+                'slot' => 2,
+            ],
+        ],
+    ],
+
     'index' => [
-        'type' => 'template',
+        'rendering' => 'template',
 
         'children' => [
             [
                 'id' => 'header',
+                'composition' => 'header',
             ],
-
             [
                 'id' => 'layout',
-                'node' => 'layout_01',
-
-                'children' => [
-                    [
-                        'id' => 'post-loop',
-                        'node' => 'post_loop_01',
-                        'slot' => 1,
-                    ],
-                    [
-                        'id' => 'sidebar',
-                        'slot' => 2,
-                    ],
-                ],
+                'composition' => 'layout',
             ],
-
             [
                 'id' => 'footer',
+                'composition' => 'footer',
             ],
         ],
     ],
 
     'single' => [
-        'type' => 'template',
+        'rendering' => 'template',
 
         'children' => [
             [
                 'id' => 'header',
+                'composition' => 'header',
             ],
-
             [
                 'id' => 'layout',
-                'node' => 'layout_01',
+                'composition' => 'layout',
 
                 'children' => [
                     [
@@ -99,28 +125,29 @@ return [
                     ],
                     [
                         'id' => 'sidebar',
+                        'composition' => 'sidebar',
                         'slot' => 3,
                     ],
                 ],
             ],
-
             [
                 'id' => 'footer',
+                'composition' => 'footer',
             ],
         ],
     ],
 
     'page' => [
-        'type' => 'template',
+        'rendering' => 'template',
 
         'children' => [
             [
                 'id' => 'header',
+                'composition' => 'header',
             ],
-
             [
                 'id' => 'layout',
-                'node' => 'layout_01',
+                'composition' => 'layout',
 
                 'children' => [
                     [
@@ -135,28 +162,29 @@ return [
                     ],
                     [
                         'id' => 'sidebar',
+                        'composition' => 'sidebar',
                         'slot' => 3,
                     ],
                 ],
             ],
-
             [
                 'id' => 'footer',
+                'composition' => 'footer',
             ],
         ],
     ],
 
     'category' => [
-        'type' => 'template',
+        'rendering' => 'template',
 
         'children' => [
             [
                 'id' => 'header',
+                'composition' => 'header',
             ],
-
             [
                 'id' => 'layout',
-                'node' => 'layout_01',
+                'composition' => 'layout',
 
                 'children' => [
                     [
@@ -166,33 +194,34 @@ return [
                     ],
                     [
                         'id' => 'post-loop',
-                        'node' => 'post_loop_01',
+                        'composition' => 'post-loop',
                         'slot' => 2,
                     ],
                     [
                         'id' => 'sidebar',
+                        'composition' => 'sidebar',
                         'slot' => 3,
                     ],
                 ],
             ],
-
             [
                 'id' => 'footer',
+                'composition' => 'footer',
             ],
         ],
     ],
 
     'tag' => [
-        'type' => 'template',
+        'rendering' => 'template',
 
         'children' => [
             [
                 'id' => 'header',
+                'composition' => 'header',
             ],
-
             [
                 'id' => 'layout',
-                'node' => 'layout_01',
+                'composition' => 'layout',
 
                 'children' => [
                     [
@@ -202,35 +231,19 @@ return [
                     ],
                     [
                         'id' => 'post-loop',
-                        'node' => 'post_loop_01',
+                        'composition' => 'post-loop',
                         'slot' => 2,
                     ],
                     [
                         'id' => 'sidebar',
+                        'composition' => 'sidebar',
                         'slot' => 3,
                     ],
                 ],
             ],
-
             [
                 'id' => 'footer',
-            ],
-        ],
-    ],
-
-    'post-loop' => [
-        'type' => 'template-part',
-
-        'children' => [
-            [
-                'id' => 'post-title',
-                'node' => 'post_title_01',
-                'slot' => 1,
-            ],
-            [
-                'id' => 'no-posts',
-                'node' => 'no_posts_01',
-                'slot' => 2,
+                'composition' => 'footer',
             ],
         ],
     ],

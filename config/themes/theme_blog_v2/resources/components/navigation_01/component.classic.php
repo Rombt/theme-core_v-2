@@ -11,10 +11,7 @@ declare(strict_types=1);
 if (has_nav_menu('primary')) :
     ?>
 
-    <nav
-        class="primary-navigation"
-        aria-label="<?php esc_attr_e('Primary Navigation', 'theme'); ?>"
-    >
+    <nav class="primary-navigation" aria-label="<?php esc_attr_e('Primary Navigation', 'theme'); ?>">
 
         <?php
         wp_nav_menu([

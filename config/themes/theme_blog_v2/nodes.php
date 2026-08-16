@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 return [
 
-    'layout_01' => [
-        'type' => [
-            'name' => 'layout',
-        ],
-        'name' => 'Main Layout',
-    ],
-
     'post_content_01' => [
         'type' => [
             'name' => 'content',
         ],
+        'rendering' => 'template-part',
         'name' => 'Post Content',
     ],
 
@@ -22,35 +16,15 @@ return [
         'type' => [
             'name' => 'content',
         ],
+        'rendering' => 'template-part',
         'name' => 'Page Content',
-    ],
-
-    'query_01' => [
-        'type' => [
-            'name' => 'query',
-        ],
-        'name' => 'Posts Query',
-    ],
-
-    'post_loop_01' => [
-        'type' => [
-            'name' => 'query',
-        ],
-        'name' => 'Post Loop',
-    ],
-
-    'no_posts_01' => [
-        'type' => [
-            'name' => 'component',
-        ],
-        'name' => 'No Posts',
     ],
 
     'navigation_01' => [
         'type' => [
             'name' => 'component',
         ],
-
+        'rendering' => 'inline',
         'name' => 'Primary Navigation',
 
         'menu' => [
@@ -63,7 +37,7 @@ return [
         'type' => [
             'name' => 'component',
         ],
-
+        'rendering' => 'inline',
         'name' => 'Footer Navigation',
 
         'menu' => [
@@ -76,7 +50,7 @@ return [
         'type' => [
             'name' => 'component',
         ],
-
+        'rendering' => 'inline',
         'name' => 'Hero Navigation',
 
         'menu' => [
@@ -89,6 +63,7 @@ return [
         'type' => [
             'name' => 'component',
         ],
+        'rendering' => 'inline',
         'name' => 'Site Title',
     ],
 
@@ -96,6 +71,7 @@ return [
         'type' => [
             'name' => 'component',
         ],
+        'rendering' => 'inline',
         'name' => 'Archive Title',
     ],
 
@@ -104,6 +80,7 @@ return [
             'name' => 'component',
             'strategy' => 'custom',
         ],
+        'rendering' => 'template-part',
         'name' => 'Page Title',
     ],
 
@@ -112,6 +89,7 @@ return [
             'name' => 'component',
             'strategy' => 'cached',
         ],
+        'rendering' => 'template-part',
         'name' => 'Post Title',
     ],
 
@@ -120,6 +98,7 @@ return [
             'name' => 'component',
             'strategy' => 'readonly',
         ],
+        'rendering' => 'inline',
         'name' => 'Copyright',
     ],
 
@@ -127,7 +106,7 @@ return [
         'type' => [
             'name' => 'component',
         ],
-
+        'rendering' => 'inline',
         'name' => 'Primary Sidebar',
 
         'sidebar' => [
@@ -140,6 +119,5 @@ return [
             'after_title'   => '</h2>',
         ],
     ],
-
 
 ];
