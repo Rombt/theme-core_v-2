@@ -5,66 +5,85 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
 use RuntimeException;
+use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Compositions\CompositionsConfiguration;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodeCollection;
-use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Exceptions\UnknownCompositionNodeException;
 
 final readonly class CompositionCollectionBuilder
 {
     public function build(
         CompositionsConfiguration $configuration,
-        NodeCollection $nodes,
     ): CompositionCollection {
         $collection = new CompositionCollection();
 
-        // Первый проход — создаём все Composition.
+        $this->buildDefinitions(
+            $configuration,
+            $collection,
+        );
+
+        $this->buildChildren(
+            $configuration,
+            $collection,
+        );
+
+        return $collection;
+    }
+
+    private function buildDefinitions(
+        CompositionsConfiguration $configuration,
+        CompositionCollection $collection,
+    ): void {
         foreach ($configuration->compositions() as $id => $definition) {
+            $rendering = $definition['rendering'] ?? null;
+
+            if ($rendering !== null && !is_string($rendering)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition "%s" rendering must be a string or null.',
+                        $id,
+                    ),
+                );
+            }
+
             $collection->add(
                 new Composition(
                     id: $id,
-                    type: $definition['type'],
+                    resource: $definition['resource'] ?? null,
+                    rendering: $rendering !== null
+                        ? Rendering::from($rendering)
+                        : null,
                 ),
             );
         }
+    }
 
-        // Второй проход — строим дерево узлов.
+    private function buildChildren(
+        CompositionsConfiguration $configuration,
+        CompositionCollection $collection,
+    ): void {
         foreach ($configuration->compositions() as $id => $definition) {
             $composition = $collection->find($id);
 
             if ($composition === null) {
                 throw new RuntimeException(
-                    sprintf('Composition "%s" not found.', $id),
+                    sprintf(
+                        'Composition "%s" not found.',
+                        $id,
+                    ),
                 );
             }
 
-            $composition->setNodes(
-                $this->buildNodes(
+            $composition->setDefaultChildren(
+                $this->buildChildrenCollection(
                     $definition['children'] ?? [],
                 ),
             );
         }
-
-        // Третий проход — разрешаем ссылки.
-        foreach ($collection as $composition) {
-            $this->resolveReferences(
-                $composition->nodes(),
-                $collection,
-                $nodes,
-            );
-        }
-
-        return $collection;
     }
 
     /**
-     * @param array<int, array{
-     *     id:string,
-     *     node?:string,
-     *     slot?:int,
-     *     children?:array
-     * }> $children
+     * @param array<int, array<string, mixed>> $children
      */
-    private function buildNodes(
+    private function buildChildrenCollection(
         array $children,
     ): CompositionNodeCollection {
         $collection = new CompositionNodeCollection();
@@ -73,70 +92,85 @@ final readonly class CompositionCollectionBuilder
             if (!is_array($child)) {
                 throw new RuntimeException(
                     sprintf(
-                        'Invalid placement. Expected array, got %s: %s',
+                        'Invalid composition child. Expected array, got %s.',
                         gettype($child),
-                        var_export($child, true),
                     ),
                 );
             }
 
+            $id = $child['id'] ?? null;
+            $nodeId = $child['node'] ?? null;
+            $compositionId = $child['composition'] ?? null;
+            $slot = $child['slot'] ?? null;
+
+            if (!is_string($id)) {
+                throw new RuntimeException(
+                    'Composition child id must be a string.',
+                );
+            }
+
+            if ($nodeId !== null && !is_string($nodeId)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition child "%s" node must be a string or null.',
+                        $id,
+                    ),
+                );
+            }
+
+            if ($compositionId !== null && !is_string($compositionId)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition child "%s" composition must be a string or null.',
+                        $id,
+                    ),
+                );
+            }
+
+            if ($slot !== null && !is_int($slot)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition child "%s" slot must be a string or null.',
+                        $id,
+                    ),
+                );
+            }
+
+            if ($nodeId !== null && $compositionId !== null) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition child "%s" cannot reference both node and composition.',
+                        $id,
+                    ),
+                );
+            }
+
+            if ($nodeId === null && $compositionId === null) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition child "%s" must reference a node or composition.',
+                        $id,
+                    ),
+                );
+            }
+
+            $overrides = $compositionId !== null
+                ? $this->buildChildrenCollection(
+                    $child['children'] ?? [],
+                )
+                : new CompositionNodeCollection();
 
             $collection->add(
                 new CompositionNode(
-                    id: $child['id'],
-                    nodeId: $child['node'] ?? null,
-                    slot: $child['slot'] ?? null,
-                    children: $this->buildNodes(
-                        $child['children'] ?? [],
-                    ),
+                    id: $id,
+                    nodeId: $nodeId,
+                    compositionId: $compositionId,
+                    slot: $slot,
+                    overrides: $overrides,
                 ),
             );
         }
 
         return $collection;
-    }
-
-    private function resolveReferences(
-        CompositionNodeCollection $nodes,
-        CompositionCollection $compositions,
-        NodeCollection $registeredNodes,
-    ): void {
-        foreach ($nodes as $node) {
-            $composition = $compositions->find(
-                $node->id(),
-            );
-
-            if ($composition !== null) {
-                $node->setComposition($composition);
-
-                $this->resolveReferences(
-                    $node->children(),
-                    $compositions,
-                    $registeredNodes,
-                );
-
-                continue;
-            }
-
-            if ($node->nodeId() !== null) {
-                $registeredNode = $registeredNodes->find(
-                    $node->nodeId(),
-                );
-
-                if ($registeredNode === null) {
-                    throw UnknownCompositionNodeException::forId(
-                        $node->nodeId(),
-                    );
-                }
-
-                $node->setNode($registeredNode);
-            }
-
-            $this->resolveReferences(
-                $node->children(),
-                $compositions,
-                $registeredNodes,
-            );
-        }
     }
 }

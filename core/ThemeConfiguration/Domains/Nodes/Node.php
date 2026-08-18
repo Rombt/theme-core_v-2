@@ -24,6 +24,7 @@ final readonly class Node
         private array $metadata = [],
         private ?MenuDefinition $menu = null,
         private ?SidebarDefinition $sidebar = null,
+        private ?string $rendering = null,
     ) {
     }
 
@@ -96,5 +97,10 @@ final readonly class Node
     public function hasStrategyOverride(): bool
     {
         return $this->strategy !== null;
+    }
+
+    public function rendering(): ?string
+    {
+        return $this->rendering;
     }
 }

@@ -4,24 +4,15 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node;
-
-final class CompositionNode
+final readonly class CompositionNode
 {
-    private ?Composition $composition;
-
-    private ?Node $node;
-
     public function __construct(
-        private readonly string $id,
-        private readonly ?string $nodeId,
-        private readonly ?int $slot,
-        private readonly CompositionNodeCollection $children,
-        ?Composition $composition = null,
-        ?Node $node = null,
+        private string $id,
+        private ?string $nodeId,
+        private ?string $compositionId,
+        private ?int $slot,
+        private CompositionNodeCollection $overrides,
     ) {
-        $this->composition = $composition;
-        $this->node = $node;
     }
 
     public function id(): string
@@ -29,50 +20,23 @@ final class CompositionNode
         return $this->id;
     }
 
+    public function nodeId(): ?string
+    {
+        return $this->nodeId;
+    }
+
+    public function compositionId(): ?string
+    {
+        return $this->compositionId;
+    }
+
     public function slot(): ?int
     {
         return $this->slot;
     }
 
-    public function children(): CompositionNodeCollection
+    public function overrides(): CompositionNodeCollection
     {
-        return $this->children;
-    }
-
-    public function referencesComposition(): bool
-    {
-        return $this->composition !== null;
-    }
-
-    public function composition(): ?Composition
-    {
-        return $this->composition;
-    }
-
-    public function setComposition(
-        Composition $composition,
-    ): void {
-        $this->composition = $composition;
-    }
-
-    public function referencesNode(): bool
-    {
-        return $this->node !== null;
-    }
-
-    public function node(): ?Node
-    {
-        return $this->node;
-    }
-
-    public function setNode(
-        Node $node,
-    ): void {
-        $this->node = $node;
-    }
-
-    public function nodeId(): ?string
-    {
-        return $this->nodeId;
+        return $this->overrides;
     }
 }

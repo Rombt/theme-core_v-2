@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
+use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
+
 final class Composition
 {
-    private CompositionNodeCollection $nodes;
+    private CompositionNodeCollection $defaultChildren;
 
     public function __construct(
         private readonly string $id,
-        private readonly string $type,
+        private readonly ?string $resource,
+        private readonly ?Rendering $rendering,
     ) {
-        $this->nodes = new CompositionNodeCollection();
+        $this->defaultChildren = new CompositionNodeCollection();
     }
 
     public function id(): string
@@ -20,24 +23,24 @@ final class Composition
         return $this->id;
     }
 
-    public function type(): string
+    public function resource(): ?string
     {
-        return $this->type;
+        return $this->resource;
     }
 
-    public function nodes(): CompositionNodeCollection
+    public function rendering(): ?Rendering
     {
-        return $this->nodes;
+        return $this->rendering;
     }
 
-    public function setNodes(
-        CompositionNodeCollection $nodes,
+    public function defaultChildren(): CompositionNodeCollection
+    {
+        return $this->defaultChildren;
+    }
+
+    public function setDefaultChildren(
+        CompositionNodeCollection $defaultChildren,
     ): void {
-        $this->nodes = $nodes;
-    }
-
-    public function isTemplatePart(): bool
-    {
-        return $this->type === 'template-part';
+        $this->defaultChildren = $defaultChildren;
     }
 }

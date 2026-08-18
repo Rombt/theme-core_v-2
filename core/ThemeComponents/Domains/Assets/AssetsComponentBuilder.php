@@ -21,7 +21,6 @@ final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInte
 
     public function build(
         ConfigurationDomain $domain,
-        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var AssetsConfiguration $configuration */
         $configuration = $domain->configuration();

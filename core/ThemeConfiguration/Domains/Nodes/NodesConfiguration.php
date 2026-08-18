@@ -46,17 +46,20 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
             resource: (string) ($node['resource'] ?? ''),
             name: (string) ($node['name'] ?? ''),
             strategy: isset($node['strategy'])
-            ? (string) $node['strategy']
-            : null,
+                ? (string) $node['strategy']
+                : null,
             description: isset($node['description'])
-            ? (string) $node['description']
-            : null,
+                ? (string) $node['description']
+                : null,
             capabilities: array_values($node['capabilities'] ?? []),
             metadata: is_array($node['metadata'] ?? null)
-            ? $node['metadata']
-            : [],
+                ? $node['metadata']
+                : [],
             menu: $this->createMenuDefinition($node),
             sidebar: $this->createSidebarDefinition($node),
+            rendering: isset($node['rendering'])
+                ? (string) $node['rendering']
+                : null,
         );
     }
 

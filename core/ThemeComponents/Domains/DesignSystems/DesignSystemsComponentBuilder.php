@@ -21,7 +21,6 @@ final readonly class DesignSystemsComponentBuilder implements ThemeComponentBuil
 
     public function build(
         ConfigurationDomain $domain,
-        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var DesignSystemsConfiguration $configuration */
         $configuration = $domain->configuration();

@@ -20,9 +20,11 @@ return [
         // 'package' => 'theme_1',
         // 'package' => 'theme_2',
         // 'package' => 'theme_blog',
-        'package' => 'theme_blog_v2',
+        // 'package' => 'theme_blog_v2',
+        'package' => 'theme_blog_v3',
 
-        'resource_package' => 'config\themes\theme_blog_v2\resources',
+        // 'resource_package' => 'config\themes\theme_blog_v2\resources',
+        'resource_package' => 'config\themes\theme_blog_v3\resources',
     ],
 
     'logging' => [

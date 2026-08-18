@@ -1,0 +1,362 @@
+++ Этап 1. Зафиксировать границу ThemeComponents
+
+    Разделить все текущие данные на две категории.
+
+    Остаются в ThemeComponents
+
+    Данные, непосредственно происходящие из Theme Specification:
+
+    - id
+    - type
+    - resource
+    - rendering
+    - children
+    - slot
+    - assets
+    - integrations
+    - design systems
+    - другие декларативные configuration domains
+    Убираются из ThemeComponents
+
+    Всё, что является результатом Resolution:
+
+    - ResolvedResource
+    - ResolvedResourceArchitecture
+    - ResourceResolverInterface
+    - ConventionResourceResolver
+    - абсолютные пути
+    - относительные вычисленные пути
+    - проверка существования файлов
+    - resolved Node references
+    - resolved Composition references
+    - CompositionInstance
+    - другие вычисленные связи
+
+    Результат этапа: чёткий список классов и методов: оставить / изменить / перенести / удалить.
+
+++ Этап 2. Упростить ThemeComponentCollection
+
+    ThemeComponentCollection должна стать контейнером загруженных доменных компонентов.
+
+    Она должна:
+
+    - хранить ThemeComponent;
+    - обеспечивать доступ к ним;
+    - не требовать порядка Resolution;
+    - не содержать resolved state.
+
+    Важно устранить ситуацию:
+
+    NodesComponent
+        ↓
+    должен быть построен
+        ↓
+    CompositionsComponent
+
+    Коллекция должна допускать загрузку декларативных доменов независимо друг от друга.
+
+++ Этап 3. Упростить ThemeComponentBuilderInterface
+
+    Текущий API:
+
+    build(
+        ConfigurationDomain $domain,
+        ThemeComponentCollection $components,
+    ): ThemeComponent
+
+    позволяет builder_ам использовать уже построенные компоненты для Resolution.
+
+    Это нужно устранить.
+
+    Целевое направление:
+
+    ConfigurationDomain
+            ↓
+    ThemeComponentBuilder
+            ↓
+    ThemeComponent
+
+    Builder не должен получать коллекцию для разрешения зависимостей.
+
+    Результат: ThemeComponentBuilder выполняет только преобразование конфигурационного домена в его декларативное представление.
+
+++ Этап 4. Привести Nodes к декларативной модели
+
+    Текущий NodesComponentBuilder выполняет лишнее:
+
+    ConfigurationNode
+        ↓
+    создание Node
+        ↓
+    создание Resource
+        ↓
+    ResourceResolver
+        ↓
+    ResolvedResource
+
+    Должно остаться только:
+
+    ConfigurationNode
+        ↓
+    декларативный Node definition
+
+    Например, информация:
+
+    id
+    type
+    resource
+    rendering
+
+    сохраняется как декларативная.
+
+    Но:
+
+    resource path resolution
+    filesystem inspection
+    architecture-specific resolved paths
+
+    из Nodes убираются.
+
+++ Этап 5. Убрать Resource Resolution из ThemeComponents
+
+    Полностью удалить из ответственности ThemeComponents:
+
+    ResourceResolverInterface
+    ConventionResourceResolver
+    ResolvedResource
+    ResolvedResourceArchitecture
+    ResourceArchitecture resolution
+    is_file()
+    path normalization
+
+    Сама декларация ресурса:
+
+    resource = "site-title"
+
+    может остаться.
+
+    Но ThemeComponents не должен отвечать на вопрос:
+
+    существует ли ресурс?
+    где он расположен?
+    какой classic/block implementation существует?
+
+    Это вопросы Resolution.
+
+++ Этап 6. Привести Compositions к декларативной модели
+
+    Сейчас CompositionsComponentBuilder разрешает ссылки:
+
+    node id
+        ↓
+    Node object
+
+
+    composition id
+        ↓
+    CompositionInstance
+
+    Это нужно убрать.
+
+    В ThemeComponents должна сохраняться исходная декларация:
+
+    Composition
+        id
+        resource
+        rendering
+        children
+            ↓
+            декларативные ссылки
+
+    То есть:
+
+    children:
+        - node: site-title
+        - composition: header
+
+    ещё не превращаются в объектные ссылки.
+
+Этап 7. Убрать Resolution зависимостей из Compositions
+
+Из ThemeComponents необходимо убрать:
+
+UnknownCompositionNodeException
+UnknownCompositionException
+nodesComponent()
+resolveReferences()
+Node object resolution
+Composition object resolution
+
+Проверка и разрешение ссылок должны происходить позже:
+
+ThemeComponentCollection
+        ↓
+Resolution
+        ↓
+Theme IR
+
+Именно Resolution должен превращать декларативное:
+
+node: site-title
+
+в разрешённую связь с конкретным Node.
+
+Этап 8. Пересмотреть CompositionInstance
+
+CompositionInstance в текущем виде является частью resolved structural model.
+
+Если объект:
+
+CompositionInstance
+    ↓
+содержит ссылку на Composition
+    ↓
+содержит resolved children
+    ↓
+содержит resolved overrides
+
+то ему не место в ThemeComponents.
+
+Его нужно убрать из этого слоя и использовать на стадии Resolution / в Theme IR.
+
+При этом сама декларация instance и её overrides должна остаться в ThemeComponents.
+
+Этап 9. Сохранить rendering как декларативное свойство
+
+Rendering остаётся в ThemeComponents.
+
+Допустимые значения:
+
+inline
+template
+header
+footer
+sidebar
+search-form
+template-part
+comments
+
+Но ThemeComponents не интерпретирует их.
+
+Например:
+
+rendering = header
+
+допустимо хранить.
+
+Но:
+
+get_header();
+
+не должно появляться ни в ThemeComponents, ни в Resolution.
+
+Конкретная WordPress materialization выполняется только Artifact Generation.
+
+Этап 10. Пересмотреть ThemeDefinition
+
+Нужно отдельно проверить роль ThemeDefinition.
+
+По текущему коду видно:
+
+ValidatedPackage
+    ↓
+ThemeDefinitionBuilder
+    ↓
+ThemeDefinition
+
+Здесь нужно определить, не является ли ThemeDefinition лишним промежуточным преобразованием между ValidatedPackage и ThemeComponentCollection.
+
+Критерий:
+
+если ThemeDefinition просто агрегирует декларативные данные — он может остаться;
+если он содержит нормализованные или вычисленные данные — это нарушение границы Loader.
+
+Этот этап требует анализа конкретной реализации ThemeDefinition и ThemeDefinitionBuilder.
+
+Этап 11. Перестроить последовательность загрузки
+
+Целевая последовательность:
+
+ValidatedPackage
+        ↓
+ThemeDefinition / Loader
+        ↓
+ThemeComponentCollectionBuilder
+        ↓
+ThemeComponentCollection
+
+Каждый domain builder:
+
+AssetsComponentBuilder
+NodesComponentBuilder
+CompositionsComponentBuilder
+DesignSystemsComponentBuilder
+IntegrationsComponentBuilder
+
+должен независимо преобразовать свой конфигурационный домен.
+
+То есть:
+
+Nodes builder
+    ✗ не ищет Compositions
+
+
+Compositions builder
+    ✗ не ищет Nodes
+
+
+Resource builder
+    ✗ не ищет файлы
+
+
+ThemeComponentCollection
+    ✗ не разрешает зависимости
+Этап 12. Проверить итоговую модель на архитектурный критерий
+
+После каждого изменения проверять:
+
+Можно ли построить ThemeComponentCollection без доступа к файловой системе?
+
+Должно быть:
+
+ДА
+Можно ли построить ThemeComponentCollection без разрешения ссылок?
+ДА
+Можно ли изменить порядок загрузки независимых domains?
+ДА
+Есть ли в ThemeComponentCollection абсолютные пути?
+НЕТ
+Есть ли ResolvedResource?
+НЕТ
+Есть ли объектные resolved-ссылки между Node и Composition?
+НЕТ
+Полностью ли Artifact Generators работают через Theme IR?
+ДА
+Рекомендуемый порядок рефакторинга
+
+Я бы выполнял работу именно так:
+
+1. Инвентаризация текущих классов ThemeComponents
+        ↓
+2. Зафиксировать целевую модель ThemeComponentCollection
+        ↓
+3. Упростить ThemeComponentBuilderInterface
+        ↓
+4. Упростить Nodes
+        ↓
+5. Удалить Resource Resolution
+        ↓
+6. Упростить Compositions
+        ↓
+7. Убрать Composition reference resolution
+        ↓
+8. Пересмотреть CompositionInstance
+        ↓
+9. Проверить ThemeDefinition
+        ↓
+10. Привести ThemeComponentCollectionBuilder
+   и фабрики к новой модели
+        ↓
+11. Удалить ставшие неиспользуемыми классы
+        ↓
+12. Проверить весь слой на отсутствие Resolution

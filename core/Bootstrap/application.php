@@ -87,6 +87,7 @@ use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeRenderer;
 use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateTreeRenderer;
 use Rombt\ThemeCore\Artifacts\Templates\FileTemplateResourceContentReader;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionCollectionBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -222,13 +223,11 @@ $pipeline = new Pipeline([
     new BuildThemeComponentsStage(
         new ThemeComponentBuilder(
             new ThemeComponentBuilderRegistry([
-                new NodesComponentBuilder(
-                    new ConventionResourceResolver(
-                        $resourcePackage,
-                    ),
-                ),
+                new NodesComponentBuilder(),
                 new TemplatesComponentBuilder(),
-                new CompositionsComponentBuilder(),
+                new CompositionsComponentBuilder(
+                    new CompositionCollectionBuilder(),
+                ),
                 new AssetsComponentBuilder(),
                 new DesignSystemsComponentBuilder(),
                 new IntegrationsComponentBuilder(),
@@ -239,8 +238,10 @@ $pipeline = new Pipeline([
     new BuildThemeIrStage(
         new ThemeIrBuilder(
             new ThemeIrResolverRegistry([
-                // new CompositionsThemeIrResolver(), // здесь должен быть ресолвер который преобразует домен Composition в концепт Templates
+                // Compositions используются TemplatesThemeIrResolver
+                // для построения Templates IR concept.
                 new TemplatesThemeIrResolver(),
+
                 new DesignSystemsThemeIrResolver(),
                 new AssetsThemeIrResolver(),
                 new IntegrationsThemeIrResolver(),

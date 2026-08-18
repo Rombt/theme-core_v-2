@@ -55,7 +55,6 @@ final readonly class TemplateNode
         }
 
         return new Resource(
-            type: $this->resource->resource()->type(),
             id: $this->resource->resource()->id(),
             classic: $this->resource->architecture(
                 ResourceArchitecture::Classic,

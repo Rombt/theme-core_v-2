@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Compositions;
 
 use ArrayIterator;
+use Countable;
 use IteratorAggregate;
 use Traversable;
 
-final class CompositionNodeCollection implements IteratorAggregate
+final class CompositionNodeCollection implements IteratorAggregate, Countable
 {
     /**
      * @param CompositionNode[] $nodes
@@ -35,6 +36,11 @@ final class CompositionNodeCollection implements IteratorAggregate
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->nodes);
+    }
+
+    public function count(): int
+    {
+        return count($this->nodes);
     }
 
     public function isEmpty(): bool

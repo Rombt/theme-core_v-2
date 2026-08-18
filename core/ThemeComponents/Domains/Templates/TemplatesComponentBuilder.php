@@ -20,7 +20,6 @@ final readonly class TemplatesComponentBuilder implements ThemeComponentBuilderI
 
     public function build(
         ConfigurationDomain $domain,
-        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var TemplatesConfiguration $configuration */
         $configuration = $domain->configuration();

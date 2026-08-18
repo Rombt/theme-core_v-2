@@ -6,19 +6,14 @@ namespace Rombt\ThemeCore\ThemeComponents\Domains\Nodes;
 
 use Rombt\ThemeCore\ThemeComponents\ComponentId;
 use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
-use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\Contracts\ResourceResolverInterface;
+use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node as ConfigurationNode;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\NodesConfiguration;
-use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 final readonly class NodesComponentBuilder implements ThemeComponentBuilderInterface
 {
-    public function __construct(
-        private ResourceResolverInterface $resolver = new ConventionResourceResolver(),
-    ) {
-    }
-
     public function supports(
         ConfigurationDomain $domain,
     ): bool {
@@ -27,32 +22,50 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
 
     public function build(
         ConfigurationDomain $domain,
-        ThemeComponentCollection $components,
     ): ThemeComponent {
         /** @var NodesConfiguration $configuration */
         $configuration = $domain->configuration();
 
-        $resources = [];
+        $nodes = [];
 
-        foreach ($configuration->nodes() as $node) {
-            $resolvedResources = $this->resolver->resolve(
-                new Resource(
-                    type: $node->type()->name(),
-                    id: $node->resource() !== ''
-                        ? $node->resource()
-                        : $node->id(),
-                ),
+        foreach ($configuration->nodes() as $configurationNode) {
+            $nodes[] = $this->buildNode(
+                $configurationNode,
             );
-
-            $resources[] = $resolvedResources->all()[0];
         }
 
         return new ThemeComponent(
             id: new ComponentId('nodes'),
             component: new NodesComponent(
-                nodes: $configuration->nodes(),
-                resources: new ResolvedResourceCollection($resources),
+                new NodeCollection($nodes),
             ),
+        );
+    }
+
+    private function buildNode(
+        ConfigurationNode $node,
+    ): Node {
+        return new Node(
+            id: $node->id(),
+            type: new NodeType(
+                name: $node->type()->name(),
+                strategy: NodeStrategy::fromString(
+                    $node->type()->strategy(),
+                ),
+            ),
+            resource: $node->resource(),
+            name: $node->name(),
+            strategy: $node->hasStrategyOverride()
+                ? NodeStrategy::fromString($node->strategy())
+                : null,
+            description: $node->description(),
+            capabilities: $node->capabilities(),
+            metadata: $node->metadata(),
+            menu: $node->menu(),
+            sidebar: $node->sidebar(),
+            rendering: $node->rendering() !== null
+                ? Rendering::from($node->rendering())
+                : null,
         );
     }
 }
