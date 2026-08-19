@@ -1,0 +1,313 @@
+theme-core v-2
+RESOURCE REPRESENTATION PATH RESOLUTION
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+Status: Architectural Foundation
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Данный документ фиксирует механизм определения
+        путей к файлам представления Resource
+        для различных архитектур темы.
+
+    Механизм используется слоем Artifacts
+        при подготовке содержимого Theme Artifacts.
+
+    ThemeIR предоставляет идентичность Resource.
+
+    Artifacts на основании этой идентичности
+        и целевой архитектуры определяет путь
+        к соответствующему файлу представления.
+
+
+==================================================
+2. ARCHITECTURAL BOUNDARY
+==================================================
+
+    Архитектурная цепочка:
+
+        ThemeComponents
+            ↓
+        ThemeIR
+            ↓
+        Artifacts
+
+    Artifacts не получает:
+
+        Node
+        CompositionNode
+        Composition
+        ResolvedResource
+        ThemeComponentCollection
+
+    Artifacts работает только с публичным API ThemeIR.
+
+    Для получения идентичности Resource используется:
+
+        TemplateNode
+            ↓
+        resource()
+            ↓
+        Resource
+            ↓
+        value()
+
+
+==================================================
+3. RESOURCE IDENTITY
+==================================================
+
+    Resource::value() возвращает идентичность Resource.
+
+    Примеры:
+
+        header
+        footer
+        sidebar_01
+        layout_01
+        post_loop_01
+        post_title_01
+
+    Идентичность Resource используется
+        как имя каталога соответствующего Resource
+        внутри конфигурационного пакета.
+
+
+==================================================
+4. RESOURCE DIRECTORY STRUCTURE
+==================================================
+
+    Файлы представления Resource располагаются
+    в следующей структуре:
+
+        resources/
+            components/
+                {resource-id}/
+                    classic.php
+                    block.html
+
+    Где:
+        {resource-id}
+
+    является значением:
+        Resource::value()
+
+
+==================================================
+5. CLASSIC REPRESENTATION PATH
+==================================================
+
+    Для Classic Theme путь к файлу представления определяется как:
+
+        resources/components/{resource-id}/classic.php
+
+    Пример:
+        Resource::value() = layout_01
+
+    результат:
+        resources/components/layout_01/classic.php
+
+
+==================================================
+6. BLOCK REPRESENTATION PATH
+==================================================
+
+    Для Block Theme  путь к файлу представления определяется как:
+
+        resources/components/{resource-id}/block.html
+
+    Пример:
+        Resource::value() = layout_01
+
+    результат:
+        resources/components/layout_01/block.html
+
+
+==================================================
+7. PATH RESOLUTION FORMULA
+==================================================
+
+    Общая формула:
+
+        Resource Identity
+            +
+        Target Architecture
+            ↓
+        Resource Representation Path
+
+
+    Для Classic:
+
+        resource-id
+            ↓
+        resources/components/{resource-id}/classic.php
+
+
+    Для Block:
+
+        resource-id
+            ↓
+        resources/components/{resource-id}/block.html
+
+
+==================================================
+8. RESPONSIBILITY OF THEMEIR
+==================================================
+
+    ThemeIR отвечает за предоставление идентичности Resource.
+
+    ThemeIR не обязан предоставлять:
+        абсолютный путь к файлу
+        относительный путь к файлу
+        содержимое файла
+
+    ThemeIR предоставляет:
+        Resource::value()
+
+
+==================================================
+9. RESPONSIBILITY OF ARTIFACTS
+==================================================
+
+    Artifacts отвечает за:
+
+        получение Resource из TemplateNode;
+        получение идентичности через:
+            Resource::value();
+        определение целевой архитектуры;
+        построение пути к соответствующему
+            файлу представления;
+        чтение содержимого файла;
+        использование полученного содержимого
+            при подготовке Artifact.
+
+
+==================================================
+10. RESOURCE CONTENT RESOLUTION
+==================================================
+
+    Процесс получения содержимого Resource:
+
+        TemplateNode
+            ↓
+        resource()
+
+    если Resource отсутствует:
+
+        отдельная стратегия определяется способом rendering.
+
+    если Resource существует:
+
+        Resource
+            ↓
+        value()
+            ↓
+        построение пути
+            ↓
+        файл представления
+            ↓
+        чтение содержимого
+
+
+==================================================
+11. ARCHITECTURE-SPECIFIC REPRESENTATION
+==================================================
+
+    Один Resource может иметь различные представления для разных архитектур.
+
+    Например:
+        layout_01
+            Classic:
+                classic.php
+            Block:
+                block.html
+
+    Идентичность Resource при этом остаётся общей.
+
+    Различие определяется целевой архитектурой
+        Artifact Generation.
+
+
+==================================================
+12. ARTIFACTS AND THE CONFIGURATION PACKAGE
+==================================================
+
+    Artifacts использует соглашение
+        о структуре конфигурационного пакета.
+
+    Это соглашение является частью
+        механизма разрешения представления Resource.
+
+    Artifacts не выполняет повторное разрешение ThemeComponents.
+
+    Artifacts не ищет:
+
+        Node
+        Composition
+        ResolvedResource
+
+    Artifacts получает уже определённую
+        Resource identity из ThemeIR
+        и непосредственно определяет путь к файлу её представления.
+
+
+==================================================
+13. FINAL MODEL
+==================================================
+
+    ThemeIR:
+
+        TemplateNode
+            ↓
+        Resource
+            ↓
+        Resource::value()
+
+    Artifacts:
+
+        Resource identity
+            +
+        Target architecture
+            ↓
+        Representation path
+            ↓
+        Representation content
+            ↓
+        Prepared Artifact
+
+
+==================================================
+14. FINAL PRINCIPLE
+==================================================
+
+    ThemeIR предоставляет предметную
+    идентичность Resource.
+
+    Artifacts определяет технический путь
+    к файлу представления на основании
+    идентичности Resource и соглашения
+    структуры конфигурационного пакета.
+
+    ThemeIR не передаёт Artifacts
+    физические пути и содержимое файлов.
+
+    Artifacts самостоятельно использует соглашение:
+
+        resources/components/{resource-id}/classic.php
+
+    или:
+
+        resources/components/{resource-id}/block.html
+
+    в зависимости от целевой архитектуры.
+
+    Таким образом сохраняется граница:
+
+        ThemeComponents ──X──> Artifacts
+
+    и одновременно:
+
+        ThemeIR ──────────────> Artifacts
