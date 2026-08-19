@@ -1,0 +1,134 @@
+Шаг 1. Инвентаризация Templates Concept
+
+    Анализируем только текущую реализацию:
+
+    Concepts/Templates/
+    Domains/Templates/
+
+    Для каждого класса определяем:
+
+    текущую ответственность;
+    кто его создаёт;
+    кто его использует;
+    является ли он частью целевой модели;
+    содержит ли зависимость от ThemeComponents / ThemeConfiguration;
+    нужен ли после перехода к независимому ThemeIR.
+
+    Результат: таблица:
+
+    Класс	Статус	Решение
+    TemplateNode	проблемный	переработать
+    Resource	частично используется	проверить/доработать
+    TemplateTreeBuilder	смешивает IR и входные модели	переработать
+    ...	...	оставить / удалить / заменить
+    
+Шаг 2. Найти остатки предыдущих моделей
+
+Особенно проверить:
+
+TemplatePurpose;
+UserScenario;
+методы classic() / block();
+referencesNode();
+referencesComposition();
+хранение Node;
+хранение Composition;
+хранение ResolvedResource;
+callable $nodeResolver.
+
+Например, TemplatePurpose и UserScenario в текущем коде вообще нигде не используются. По предоставленному коду это явные кандидаты на удаление, если они не нужны за пределами показанного слоя.
+
+Шаг 3. Зафиксировать целевой контракт Templates Theme IR
+
+До написания кода определить, какие данные Artifact Generators действительно должны получать.
+
+Например, концептуально:
+
+Templates
+ └── Template[]
+      ├── identity
+      └── tree
+           └── TemplateNode[]
+                ├── resource?
+                ├── rendering?
+                ├── slot?
+                └── children[]
+
+Здесь нужно отдельно решить:
+
+нужна ли node identity;
+нужна ли composition identity;
+как представлять ресурс;
+должны ли classic и block быть отдельными полями;
+нужны ли absolutePath или relativePath;
+какие данные требуются генераторам для обхода дерева.
+
+Это ключевой шаг. Сначала контракт, потом реализация.
+
+Шаг 4. Очистить старую модель
+
+После фиксации контракта:
+
+удалить действительно неиспользуемые классы;
+удалить устаревшие API;
+удалить поля, которые больше не принадлежат ThemeIR;
+убрать прямые зависимости TemplateNode от ThemeComponents и ThemeConfiguration.
+
+Цель:
+
+ThemeIr
+    └── Concepts/Templates
+            НЕ зависит от
+                ThemeComponents
+                ThemeConfiguration
+
+При этом сами Resolver и Builder, конечно, могут зависеть от ThemeComponents, поскольку они находятся на границе Resolution.
+
+Шаг 5. Переработать преобразование в Theme IR
+
+TemplatesThemeIrResolver и TemplateTreeBuilder должны выполнять реальное преобразование:
+
+ThemeComponents
+    CompositionNode
+    Node
+    ResolvedResource
+        ↓
+   Resolution
+        ↓
+ThemeIR
+    Template
+    TemplateTree
+    TemplateNode
+    Resource
+
+После завершения build() внутри TemplateTree не должно остаться объектов предыдущих слоёв.
+
+Шаг 6. Проверить дерево на структурных узлах
+
+Отдельно проверить случаи:
+
+узел с ресурсом и без детей;
+узел с ресурсом и детьми;
+структурный Composition-узел без ресурса и с детьми;
+несколько уровней вложенности;
+slot override.
+
+Особенно важен случай №3 — именно он связан с текущей ошибкой архитектуры renderer:
+
+отсутствие resource не означает, что узел пустой; он может быть контейнером для children.
+
+Шаг 7. Только после этого вернуться к Artifacts
+
+Когда Templates Theme IR станет независимым и его контракт будет завершён, проверяем:
+
+Artifact Generator
+        ↓
+получает только ThemeIR
+        ↓
+Renderer
+        ↓
+обходит TemplateNode
+        ↓
+resource + children
+
+Тогда можно корректно доработать Classic и Block renderers, не возвращаясь к ThemeComponents

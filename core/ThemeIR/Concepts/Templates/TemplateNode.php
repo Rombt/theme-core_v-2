@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
 
-use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ResolvedResource;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node;
-use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ValueObjects\ResourceArchitecture;
-use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
+use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
 
 final readonly class TemplateNode
 {
@@ -15,54 +12,44 @@ final readonly class TemplateNode
      * @param list<TemplateNode> $children
      */
     public function __construct(
-        private ?Node $node,
-        private ?ResolvedResource $resource,
-        private ?Composition $composition = null,
-        private ?int $slot = null,
+        private string $id,
+        private ?string $nodeId,
+        private ?string $compositionId,
+        private ?Resource $resource,
+        private Rendering $rendering,
+        private ?int $slot,
         private array $children = [],
     ) {
     }
 
-    public function referencesNode(): bool
+    public function id(): string
     {
-        return $this->node !== null;
+        return $this->id;
     }
 
-    public function node(): ?Node
+    public function nodeId(): ?string
     {
-        return $this->node;
+        return $this->nodeId;
     }
 
-    public function referencesComposition(): bool
+    public function compositionId(): ?string
     {
-        return $this->composition !== null;
+        return $this->compositionId;
     }
 
-    public function composition(): ?Composition
+    public function resource(): ?Resource
     {
-        return $this->composition;
+        return $this->resource;
+    }
+
+    public function rendering(): Rendering
+    {
+        return $this->rendering;
     }
 
     public function slot(): ?int
     {
         return $this->slot;
-    }
-
-    public function resource(): ?Resource
-    {
-        if ($this->resource === null) {
-            return null;
-        }
-
-        return new Resource(
-            id: $this->resource->resource()->id(),
-            classic: $this->resource->architecture(
-                ResourceArchitecture::Classic,
-            )?->absolutePath() ?? '',
-            block: $this->resource->architecture(
-                ResourceArchitecture::Block,
-            )?->absolutePath() ?? '',
-        );
     }
 
     /**
@@ -71,21 +58,5 @@ final readonly class TemplateNode
     public function children(): array
     {
         return $this->children;
-    }
-
-    public function classic(): string
-    {
-        return $this->resource()?->classic() ?? '';
-    }
-
-
-    public function block(): string
-    {
-        return $this->resource()?->block() ?? '';
-    }
-
-    public function hasChildren(): bool
-    {
-        return $this->children !== [];
     }
 }

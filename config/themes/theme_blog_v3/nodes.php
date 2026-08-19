@@ -20,6 +20,18 @@ return [
         'name' => 'Page Content',
     ],
 
+
+
+    'no_posts_01' => [
+        'type' => [
+            'name' => 'component',
+            'strategy' => 'default',
+        ],
+        'rendering' => 'template-part',
+        'name' => 'No Posts',
+    ],
+
+
     'navigation_01' => [
         'type' => [
             'name' => 'component',

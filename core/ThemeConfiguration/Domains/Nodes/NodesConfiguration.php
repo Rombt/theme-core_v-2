@@ -43,7 +43,10 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
                 name: (string) ($type['name'] ?? ''),
                 strategy: (string) ($type['strategy'] ?? 'default'),
             ),
-            resource: (string) ($node['resource'] ?? ''),
+            // resource: (string) ($node['resource'] ?? ''),
+            resource: isset($node['resource'])
+            ? (string) $node['resource']
+            : null,
             name: (string) ($node['name'] ?? ''),
             strategy: isset($node['strategy'])
                 ? (string) $node['strategy']

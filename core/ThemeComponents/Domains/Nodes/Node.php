@@ -17,7 +17,7 @@ final readonly class Node
     public function __construct(
         private string $id,
         private NodeType $type,
-        private string $resource,
+        private ?string $resource,
         private string $name,
         private ?NodeStrategy $strategy = null,
         private ?string $description = null,
@@ -39,7 +39,7 @@ final readonly class Node
         return $this->type;
     }
 
-    public function resource(): string
+    public function resource(): ?string
     {
         return $this->resource;
     }

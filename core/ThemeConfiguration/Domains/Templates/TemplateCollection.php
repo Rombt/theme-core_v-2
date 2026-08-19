@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Domains\Templates;
+namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Templates;
 
 use ArrayIterator;
 use Countable;

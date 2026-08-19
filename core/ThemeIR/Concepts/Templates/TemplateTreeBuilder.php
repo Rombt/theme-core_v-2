@@ -4,89 +4,123 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
 
+use LogicException;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
+use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionCollection;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNode;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNodeCollection;
-use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ResolvedResource;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Node;
+use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodeCollection;
 
-final class TemplateTreeBuilder
+final readonly class TemplateTreeBuilder
 {
-    /**
-     * @param callable(Node): ResolvedResource $nodeResolver
-     */
+    public function __construct(
+        private NodeCollection $nodes,
+        private CompositionCollection $compositions,
+    ) {
+    }
+
     public function build(
-        CompositionNodeCollection $nodes,
-        callable $nodeResolver,
+        Composition $composition,
     ): TemplateTree {
         return new TemplateTree(
-            $this->buildNodes($nodes, $nodeResolver),
+            roots: $this->buildNodes(
+                $composition->defaultChildren(),
+            ),
         );
     }
 
     /**
-     * @param callable(Node): ResolvedResource $nodeResolver
      * @return list<TemplateNode>
      */
     private function buildNodes(
         CompositionNodeCollection $nodes,
-        callable $nodeResolver,
     ): array {
         $result = [];
 
         foreach ($nodes as $node) {
-            foreach ($this->buildNode($node, $nodeResolver) as $templateNode) {
-                $result[] = $templateNode;
-            }
+            $result[] = $this->buildNode($node);
         }
 
         return $result;
     }
 
-    /**
-     * @param callable(Node): ResolvedResource $nodeResolver
-     * @return list<TemplateNode>
-     */
     private function buildNode(
         CompositionNode $compositionNode,
-        callable $nodeResolver,
-    ): array {
-        if ($compositionNode->referencesComposition()) {
-            $composition = $compositionNode->composition();
-
-            if ($composition === null) {
-                return [];
-            }
-
-            return [
-                new TemplateNode(
-                    node: null,
-                    resource: null,
-                    composition: $composition,
-                    slot: $compositionNode->slot(),
-                    children: $this->buildNodes(
-                        $composition->nodes(),
-                        $nodeResolver,
-                    ),
-                ),
-            ];
+    ): TemplateNode {
+        if ($compositionNode->nodeId() !== null) {
+            return $this->buildNodeReference($compositionNode);
         }
 
-        $node = $compositionNode->node();
+        if ($compositionNode->compositionId() !== null) {
+            return $this->buildCompositionReference($compositionNode);
+        }
+
+        throw new LogicException(
+            sprintf(
+                'Composition node "%s" must reference a node or composition.',
+                $compositionNode->id(),
+            ),
+        );
+    }
+
+    private function buildNodeReference(
+        CompositionNode $compositionNode,
+    ): TemplateNode {
+        $node = $this->nodes->find(
+            $compositionNode->nodeId(),
+        );
 
         if ($node === null) {
-            return [];
+            throw new LogicException(
+                sprintf(
+                    'Node "%s" not found.',
+                    $compositionNode->nodeId(),
+                ),
+            );
         }
 
-        return [
-            new TemplateNode(
-                node: $node,
-                resource: $nodeResolver($node),
-                slot: $compositionNode->slot(),
-                children: $this->buildNodes(
-                    $compositionNode->children(),
-                    $nodeResolver,
+        return new TemplateNode(
+            id: $compositionNode->id(),
+            nodeId: $node->id(),
+            compositionId: null,
+            resource: $node->resource() !== null
+                ? new Resource($node->resource())
+                : null,
+            rendering: $node->rendering(),
+            slot: $compositionNode->slot(),
+        );
+    }
+
+    private function buildCompositionReference(
+        CompositionNode $compositionNode,
+    ): TemplateNode {
+        $composition = $this->compositions->find(
+            $compositionNode->compositionId(),
+        );
+
+        if ($composition === null) {
+            throw new LogicException(
+                sprintf(
+                    'Composition "%s" not found.',
+                    $compositionNode->compositionId(),
                 ),
-            ),
-        ];
+            );
+        }
+
+        $children = $compositionNode->overrides()->isEmpty()
+            ? $composition->defaultChildren()
+            : $compositionNode->overrides();
+
+        return new TemplateNode(
+            id: $compositionNode->id(),
+            nodeId: null,
+            compositionId: $composition->id(),
+            resource: $composition->resource() !== null
+                ? new Resource($composition->resource())
+                : null,
+            rendering: $composition->rendering(),
+            slot: $compositionNode->slot(),
+            children: $this->buildNodes($children),
+        );
     }
 }
