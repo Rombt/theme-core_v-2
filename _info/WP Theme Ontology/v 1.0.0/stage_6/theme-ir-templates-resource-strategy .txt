@@ -15,20 +15,8 @@ Theme Core не должен самостоятельно преобразовы
     resources/
     └── component/
         └── site_title_01/
-            ├── classic/
-            │   └── component.php
-            └── block/
-                └── component.html
-
-    Или:
-
-    resources/
-    └── layout/
-        └── layout_01/
-            ├── classic/
-            │   └── layout.php
-            └── block/
-                └── layout.html
+            ├── classic.php
+            └── block.html
 
 
 Один и тот же Node может участвовать в генерации нескольких артефактов.
@@ -59,27 +47,16 @@ Theme Core не должен самостоятельно преобразовы
         ├── README.md
         ├── style.css
         ├── script.js
-        ├── <resource>.classic.php
-        └── <resource>.block.html
+        ├── classic.php
+        └── block.html
 
     Где:
         README.md - Документация Node.
         style.css - Стили Node.
         script.js - Клиентская логика Node.
-        <resource>.classic.php - Представление Node для Classic Theme.
-        <resource>.block.html - Представление Node для Block Theme.
-        resource - определяется типом Node.
+        classic.php - Представление Node для Classic Theme.
+        block.html - Представление Node для Block Theme.
 
-    Например:
-
-        component.classic.php
-        component.block.html
-
-        layout.classic.php
-        layout.block.html
-
-        header.classic.php
-        header.block.html
 
 Причина
 

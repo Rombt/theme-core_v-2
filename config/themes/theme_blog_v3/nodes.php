@@ -9,6 +9,7 @@ return [
             'name' => 'content',
         ],
         'rendering' => 'template-part',
+        'resource' => 'post_content_01',
         'name' => 'Post Content',
     ],
 
@@ -17,6 +18,7 @@ return [
             'name' => 'content',
         ],
         'rendering' => 'template-part',
+        'resource' => 'page_content_01',
         'name' => 'Page Content',
     ],
 
@@ -28,6 +30,7 @@ return [
             'strategy' => 'default',
         ],
         'rendering' => 'template-part',
+        'resource' => 'no_posts_01',
         'name' => 'No Posts',
     ],
 
@@ -37,6 +40,7 @@ return [
             'name' => 'component',
         ],
         'rendering' => 'inline',
+        'resource' => 'navigation_01',
         'name' => 'Primary Navigation',
 
         'menu' => [
@@ -50,6 +54,7 @@ return [
             'name' => 'component',
         ],
         'rendering' => 'inline',
+        'resource' => 'footer_navigation_01',
         'name' => 'Footer Navigation',
 
         'menu' => [
@@ -63,6 +68,7 @@ return [
             'name' => 'component',
         ],
         'rendering' => 'inline',
+        'resource' => 'hero_navigation_01',
         'name' => 'Hero Navigation',
 
         'menu' => [
@@ -76,6 +82,7 @@ return [
             'name' => 'component',
         ],
         'rendering' => 'inline',
+        'resource' => 'site_title_01',
         'name' => 'Site Title',
     ],
 
@@ -84,6 +91,7 @@ return [
             'name' => 'component',
         ],
         'rendering' => 'inline',
+        'resource' => 'archive_title_01',
         'name' => 'Archive Title',
     ],
 
@@ -93,6 +101,7 @@ return [
             'strategy' => 'custom',
         ],
         'rendering' => 'template-part',
+        'resource' => 'page_title_01',
         'name' => 'Page Title',
     ],
 
@@ -102,6 +111,7 @@ return [
             'strategy' => 'cached',
         ],
         'rendering' => 'template-part',
+        'resource' => 'post_title_01',
         'name' => 'Post Title',
     ],
 
@@ -111,6 +121,7 @@ return [
             'strategy' => 'readonly',
         ],
         'rendering' => 'inline',
+        'resource' => 'copyright_01',
         'name' => 'Copyright',
     ],
 
@@ -119,6 +130,7 @@ return [
             'name' => 'component',
         ],
         'rendering' => 'inline',
+        'resource' => 'widgets_01',
         'name' => 'Primary Sidebar',
 
         'sidebar' => [

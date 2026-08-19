@@ -84,6 +84,7 @@ return [
 
     'index' => [
         'rendering' => 'template',
+        'resource' => 'index',
 
         'children' => [
             [
@@ -103,6 +104,7 @@ return [
 
     'single' => [
         'rendering' => 'template',
+        'resource' => 'single',
 
         'children' => [
             [
@@ -140,6 +142,7 @@ return [
 
     'page' => [
         'rendering' => 'template',
+        'resource' => 'page',
 
         'children' => [
             [
@@ -177,6 +180,7 @@ return [
 
     'category' => [
         'rendering' => 'template',
+        'resource' => 'category',
 
         'children' => [
             [
@@ -214,6 +218,7 @@ return [
 
     'tag' => [
         'rendering' => 'template',
+        'resource' => 'tag',
 
         'children' => [
             [
