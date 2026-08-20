@@ -1,0 +1,886 @@
+ARTIFACTS: RENDERING MATERIALIZATION STRATEGY
+(v1.0.0)
+
+Status: Architectural Decision
+
+==================================================
+1. PURPOSE
+==================================================
+
+   Данный документ фиксирует стратегию обработки
+    значений rendering на стадии Artifact Generation.
+
+   Основная цель:
+
+        определить,
+            каким образом TemplateNode из ThemeIR
+                материализуется в Theme Artifacts;
+
+        разделить:
+            непосредственную материализацию содержимого
+                и материализацию через отдельные Artifacts;
+
+        сохранить стандартную WordPress semantics
+            для Classic Theme;
+
+        определить архитектурный принцип
+            для Block Theme.
+   
+
+==================================================
+2. ARCHITECTURAL CONTEXT
+==================================================
+
+
+    Архитектурная граница:
+
+        ThemeComponents
+                ↓
+            ThemeIR
+                ↓
+            Artifacts
+
+    Artifacts получает подготовленные предметные данные
+        исключительно через публичный API ThemeIR.
+
+    Для концепта Templates:
+
+        ThemeIr
+            ↓
+        Templates
+            ↓
+        TemplateCollection
+            ↓
+        Template
+            ↓
+        TemplateTree
+            ↓
+        TemplateNode
+
+
+    TemplateNode содержит информацию,
+        необходимую для принятия решения о способе материализации:
+
+        resource
+        rendering
+        children
+
+
+    Artifacts не выполняет:
+        повторное разрешение Composition;
+        поиск Node;
+        разрешение Resource;
+        изменение структуры ThemeIR.
+
+
+==================================================
+3. RENDERING RESPONSIBILITY
+==================================================
+
+
+    rendering определяет стратегию материализации
+        TemplateNode в Theme Artifacts.
+
+    Для каждого значения rendering
+        должны быть определены два решения:
+
+        1. Создаётся ли отдельный Artifact.
+
+        2. Что материализуется в родительском Artifact.
+
+
+    Общая модель:
+
+        TemplateNode
+            ↓
+        rendering
+            ↓
+        Materialization Strategy
+            ├── Inline Materialization
+            └── Separate Artifact
+                    +
+                Artifact Reference
+
+
+==================================================
+4. GENERAL TREE PROCESSING RULE
+==================================================
+
+    Обработка TemplateTree выполняется
+        рекурсивно.
+
+    Для каждого TemplateNode:
+
+        если rendering = inline:
+
+            node материализуется
+                непосредственно в текущем Artifact;
+
+            children обрабатываются в пределах текущего Artifact.
+
+
+        если rendering ≠ inline:
+            содержимое node и его children
+                не материализуются непосредственно
+                в текущем Artifact;
+
+            текущий Artifact получает reference
+                на отдельный Artifact, соответствующий node.
+
+
+    Отдельный Artifact:
+        материализует собственный resource;
+        самостоятельно обрабатывает children данного node.
+
+    Таким образом:
+
+        Parent Artifact
+            ↓
+        Reference
+
+    и:
+
+        Child Artifact
+            ↓
+        Resource
+            +
+        Children
+
+
+==================================================
+5. INLINE
+==================================================
+
+    rendering = inline
+
+    означает непосредственную материализацию
+        содержимого node в текущем Artifact.
+
+    Отдельный Artifact не создаётся.
+
+    Общая схема:
+
+        render(node)
+            ↓
+        resource content
+            +
+        render(children)
+
+
+    Classic:
+
+        PHP / HTML содержимое Resource
+            +
+        materialized children.
+
+
+    Block:
+
+        block markup Resource
+            +
+        materialized children.
+
+
+    Пример:
+
+        header.php
+            ├── site-title [Inline]
+            └── navigation [Inline]
+
+
+    Результат:
+
+        header.php
+            ├── site-title content
+            └── navigation content
+
+
+    inline является способом материализации,
+        при котором node и его children непосредственно принадлежат
+        текущему Artifact.
+
+
+==================================================
+6. TEMPLATE
+==================================================
+
+    rendering = template
+
+    означает самостоятельный top-level WordPress template.
+
+    Template materializes как самостоятельный Artifact.
+
+    Classic:
+        index.php
+        single.php
+        page.php
+        archive.php
+        category.php
+        tag.php
+        404.php
+
+
+    Block:
+        templates/index.html
+        templates/single.html
+        templates/page.html
+        templates/archive.html
+        templates/category.html
+        templates/tag.html
+        templates/404.html
+
+
+    Template является самостоятельной единицей materialization.
+
+    Template не подключается
+        из родительского Artifact как дочерний элемент.
+
+
+==================================================
+7. HEADER
+==================================================
+
+    rendering = header
+
+    означает отдельную материализацию
+        WordPress header.
+
+    Classic Artifact:
+        header.php
+
+
+    Родительский Classic Artifact:
+        get_header()
+
+
+    Block Artifact:
+        parts/header.html
+
+
+    Родительский Block Artifact:
+        template-part reference со slug header.
+
+
+    Children Header
+        материализуются внутри собственного Header Artifact.
+
+    Пример:
+
+        index
+            └── header [Header]
+                    ├── site-title [Inline]
+                    └── navigation [Inline]
+
+    Результат:
+
+        index.php
+            ↓
+        get_header()
+
+
+        header.php
+            ↓
+        site-title content
+            +
+        navigation content
+
+
+==================================================
+8. FOOTER
+==================================================
+
+
+    rendering = footer
+
+    означает отдельную материализацию
+        WordPress footer.
+
+
+    Classic Artifact:
+        footer.php
+
+
+    Родительский Classic Artifact:
+        get_footer()
+
+
+    Block Artifact:
+        parts/footer.html
+
+
+    Родительский Block Artifact:
+        template-part reference со slug footer.
+
+
+    Children Footer
+        материализуются внутри собственного Footer Artifact.
+
+
+==================================================
+9. SIDEBAR
+==================================================
+
+    rendering = sidebar
+
+    означает отдельную материализацию
+        WordPress sidebar.
+
+    Classic Artifact:
+        sidebar.php
+
+    Родительский Classic Artifact:
+        get_sidebar()
+
+
+    Block Artifact:
+        parts/sidebar.html
+
+
+    Родительский Block Artifact:
+        template-part reference со slug sidebar.
+
+
+    Children Sidebar
+        материализуются внутри собственного Sidebar Artifact.
+
+
+==================================================
+10. SEARCH FORM
+==================================================
+
+    rendering = search-form
+
+    означает использование специальной WordPress search form semantics.
+
+
+    Classic Artifact:
+        searchform.php
+
+
+    Родительский Classic Artifact:
+        get_search_form()
+
+
+    search-form не материализуется
+        через обычный get_template_part().
+
+    Для Block Architecture
+        используется Block-specific materialization.
+
+    Block implementation
+        не обязана иметь прямой файловый аналог
+        searchform.php.
+
+    Конкретная Block materialization
+        определяется Block Artifact Generator.
+
+
+==================================================
+11. TEMPLATE PART
+==================================================
+
+    rendering = template-part
+
+    означает самостоятельную материализацию
+        переиспользуемого Theme Artifact.
+
+    Template Part
+        не должен без необходимости инлайниться в родительский Artifact.
+
+
+    Общая схема:
+
+        Parent Artifact
+            ↓
+        Template Part Reference
+
+
+        Template Part Artifact
+            ↓
+        resource
+            +
+        children
+
+
+    Classic:
+        отдельный PHP Artifact в структуре template parts.
+
+    Например:
+        template-parts/layout.php
+        template-parts/post-loop.php
+
+
+    Родительский Artifact:
+        get_template_part()
+
+
+    Block:
+        parts/<identity>.html
+
+
+    Родительский Artifact:
+        template-part reference.
+
+
+    Children Template Part
+        материализуются внутри собственного Template Part Artifact.
+
+    Пример:
+
+        layout [TemplatePart]
+            ├── post-loop [TemplatePart]
+            └── sidebar [Sidebar]
+
+    Результат:
+
+        layout Artifact
+            ↓
+        reference to post-loop Artifact
+            +
+        sidebar reference
+
+        post-loop Artifact
+            ↓
+        materialization of own children
+
+
+==================================================
+12. COMMENTS
+==================================================
+
+
+    rendering = comments
+
+    означает использование
+        специальной WordPress comments semantics.
+
+
+    Classic Artifact:
+
+        comments.php
+
+
+    Родительский Classic Artifact:
+
+        comments_template()
+
+
+    comments не материализуется
+        через обычный get_template_part().
+
+
+    Children Comments
+        материализуются внутри
+        собственного Comments Artifact.
+
+
+    Для Block Architecture
+        используется Block-specific comments materialization.
+
+    Конкретная стратегия определяется
+        Block Artifact Generator.
+
+
+==================================================
+13. CLASSIC MATERIALIZATION SUMMARY
+==================================================
+
+    inline
+        непосредственная материализация
+            resource
+                +
+            children
+
+
+    template
+        самостоятельный WordPress template file
+
+    header
+
+        header.php
+            +
+        get_header()
+
+
+    footer
+
+        footer.php
+            +
+        get_footer()
+
+
+    sidebar
+
+        sidebar.php
+            +
+        get_sidebar()
+
+
+    search-form
+
+        searchform.php
+            +
+        get_search_form()
+
+
+    template-part
+
+        отдельный template part
+            +
+        get_template_part()
+
+
+    comments
+
+        comments.php
+            +
+        comments_template()
+
+
+==================================================
+14. BLOCK MATERIALIZATION SUMMARY
+==================================================
+
+    inline
+
+        непосредственная материализация
+            block markup
+                +
+            children
+
+
+    template
+
+        templates/<identity>.html
+
+
+    header
+
+        parts/header.html
+            +
+        template-part reference
+
+
+    footer
+
+        parts/footer.html
+            +
+        template-part reference
+
+
+    sidebar
+
+        parts/sidebar.html
+            +
+        template-part reference
+
+
+    template-part
+
+        parts/<identity>.html
+            +
+        template-part reference
+
+
+    search-form
+
+        Block-specific materialization
+
+
+    comments
+
+        Block-specific comments materialization
+
+
+==================================================
+15. GENERATOR AND RENDERER RESPONSIBILITIES
+==================================================
+
+    TemplateArtifactGenerator отвечает за:
+
+        получение Template;
+
+        определение Artifact,
+            соответствующего Template;
+
+        запуск Tree Rendering;
+
+        создание Artifact.
+
+
+    TemplateTreeRenderer отвечает за:
+
+        обход TemplateTree;
+
+        обработку root nodes;
+
+        делегирование обработки
+            отдельных TemplateNode.
+
+
+    TemplateNodeRenderer отвечает за:
+
+        анализ rendering;
+
+        выбор Materialization Strategy;
+
+        непосредственную материализацию Inline;
+
+        создание reference
+            для non-inline rendering.
+
+
+    Artifact Generation отвечает за:
+
+        создание отдельных Artifacts,
+            требуемых стратегией materialization;
+
+        предотвращение дублирования Artifacts;
+
+        определение связей
+            между Artifact references
+            и отдельными Artifacts.
+
+
+==================================================
+16. ARTIFACT RELATIONSHIP PRINCIPLE
+==================================================
+
+    non-inline TemplateNode
+        представляет границу Artifact.
+
+    Parent Artifact
+        не должен напрямую материализовать:
+
+            resource non-inline node;
+
+            children non-inline node.
+
+
+    Вместо этого:
+
+        Parent Artifact
+            ↓
+        Materialization Reference
+            ↓
+        Child Artifact
+
+
+    Child Artifact:
+
+        resource
+            +
+        materialization of children
+
+
+    Это предотвращает:
+
+        дублирование содержимого;
+
+        повторную генерацию одного элемента;
+
+        нарушение WordPress template semantics;
+
+        неявное превращение
+            template-part
+            в inline.
+
+
+==================================================
+17. ARTIFACT UNIQUENESS
+==================================================
+
+    Каждый отдельно материализуемый элемент
+        должен иметь устойчивую Artifact Identity.
+
+    Повторное использование одного и того же
+        отдельно материализуемого элемента
+        не должно создавать дублирующиеся Artifacts.
+
+
+    Концептуально:
+
+        один materializable identity
+            ↓
+        один Artifact
+
+
+    References из нескольких родительских Artifacts
+        могут указывать
+        на один и тот же Artifact.
+
+
+==================================================
+18. THEMEIR BOUNDARY
+==================================================
+
+
+    Artifacts использует только публичные данные ThemeIR,
+        необходимые для materialization.
+
+    Для TemplateNode используются:
+        public rendering API;
+        public resource content API;
+        children.
+
+
+    Artifacts не обращается
+        непосредственно к ThemeComponents для:
+
+            поиска Node;
+
+            поиска Composition;
+
+            разрешения Resource;
+
+            получения структуры children.
+
+
+    ThemeIR предоставляет
+        уже сформированную resolved structure.
+
+
+==================================================
+19. FINAL MATERIALIZATION MODEL
+==================================================
+
+    Общая модель:
+
+        ThemeIR
+            ↓
+        Template
+            ↓
+        TemplateTree
+            ↓
+        TemplateNode
+            ↓
+        rendering
+            ↓
+        Materialization Strategy
+            ├── Inline
+            │       ↓
+            │   Current Artifact
+            │
+            └── Separate Artifact
+                    ↓
+                Artifact Reference
+                    ↓
+                Separate Materialization
+
+
+    Основной принцип:
+
+        ThemeIR определяет, что представляет собой
+            окончательная структура темы.
+
+
+        rendering определяет, каким способом
+            эта структура должна быть материализована.
+
+
+        Artifact Generation определяет, какие физические Artifacts создаются
+            и каким образом они связываются между собой.
+
+
+==================================================
+20. FINAL DECISIONS
+==================================================
+
+
+    Зафиксированы следующие решения:
+
+        1. rendering определяет стратегию materialization.
+
+        2. Для каждого rendering определяется:
+
+            необходимость отдельного Artifact;
+
+            способ представления node в родительском Artifact.
+
+        3. inline не создаёт отдельный Artifact.
+
+        4. inline материализует resource
+            и children непосредственно в текущем Artifact.
+
+        5. Каждый non-inline node
+            представляет потенциальную Artifact boundary.
+
+        6. Parent Artifact не материализует
+            содержимое non-inline node напрямую.
+
+        7. Parent Artifact использует
+            соответствующий Artifact Reference.
+
+        8. Отдельный Artifact самостоятельно
+            материализует собственный resource и children.
+
+        9. template materialизуется
+            как самостоятельный top-level WordPress template.
+
+        10. header использует
+            стандартную header semantics.
+
+        11. footer использует
+            стандартную footer semantics.
+
+        12. sidebar использует
+            стандартную sidebar semantics.
+
+        13. search-form использует
+            специальную search form semantics.
+
+        14. template-part материализуется
+            как отдельный переиспользуемый Artifact.
+
+        15. comments использует
+            специальную comments semantics.
+
+        16. Classic и Block могут использовать
+            разные физические способы materialization для одного значения rendering.
+
+        17. ThemeIR не принимает
+            WordPress-specific materialization decisions.
+
+        18. Все такие решения принимаются
+            исключительно на стадии Artifacts.
+
+        19. Повторное использование
+            одного materializable элемента не должно создавать
+            дублирующиеся Artifacts.
+
+==================================================
+21. FINAL DEFINITION
+==================================================
+
+    rendering является механизмом,
+        определяющим границу
+        и стратегию materialization
+        ThemeIR в Theme Artifacts.
+
+    inline
+        материализуется непосредственно
+        в текущем Artifact.
+
+    non-inline
+        материализуется через отдельный Artifact
+        и соответствующий reference.
+
+    Дети non-inline элемента
+        принадлежат его собственному Artifact,
+        а не Artifact родителя.
+
+    Основная архитектурная формула:
+
+        ThemeIR
+            ↓
+        Resolved Structure
+            ↓
+        rendering
+            ↓
+        Materialization Strategy
+            ↓
+        Artifacts
+            ↓
+        WordPress-specific References
+            ↓
+        WordPress Theme
