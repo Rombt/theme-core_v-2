@@ -1,0 +1,98 @@
+Блок 1. Общая оценка текущей архитектуры
+    Построение дерева — ThemeIR.
+    Materialization дерева — Artifacts/Templates.
+    Диагностика — Infrastructure/Diagnostics.
+    Основная проблема: ClassicTemplateNodeMaterializer сейчас смешивает несколько разных семантик.
+
+    РЕШЕНИЕ
+        Разделить по обязанностям внутри ClassicTemplateNodeMaterializer отдельными приватными методами:
+                materialize()
+                ├── determineNodeStrategy()
+                ├── materializeChildren()
+                ├── materializeStructuralNode()
+                ├── materializeResourceNode()
+                ├── materializeTemplatePartNode()
+                ├── materializeSlots()
+                ├── appendUnslottedChildren()
+                └── diagnose()
+
+
+
+Блок 2. Текущая обработка header/footer/sidebar
+    Ранний возврат get_header(), get_footer(), get_sidebar().
+    Дочернее дерево такого узла не materialize.
+    Нужно определить их роль как возможных границ отдельных artifacts.
+Блок 3. Классификация узлов по стратегии обработки
+    Обычный узел с resource.
+    Structural node без resource.
+    Artifact-boundary node (header/footer/sidebar).
+Блок 4. Стратегия structural node без resource
+    Узел без resource не должен исчезать.
+    Его materialized descendants должны передаваться наверх.
+    Текущая реализация этого поведения в целом правильная.
+Блок 5. Artifact-boundary nodes
+    Для Classic header/footer/sidebar потенциально имеют двойную роль.
+    Их содержимое может формировать отдельный artifact.
+    В родительский artifact при этом должна попадать соответствующая ссылка (get_header() и т. д.).
+Блок 6. Достаточность TemplateMaterializationResult
+    Сейчас результат в основном представляет один content и данные slots.
+    Нужно определить, достаточно ли этого для стратегии, где один узел может порождать дополнительные artifacts.
+    Возможная необходимость результата вида: основной content + дополнительные результаты materialization.
+Блок 7. Проблема $isRoot
+    Текущее поведение header/footer/sidebar зависит от глубины узла.
+    Архитектурно нужно проверить, должна ли стратегия определяться положением узла в дереве или его семантикой.
+Блок 8. Общая последовательность materialization
+    Определение роли узла.
+    Обработка descendants.
+    Разделение slotted/unslotted children.
+    Materialization structural node.
+    Materialization resource node.
+    Отдельная обработка artifact boundaries.
+Блок 9. Обработка неразрешённых slots
+    Сейчас removeUnresolvedSlots() молча удаляет оставшиеся @slot_N.
+    Нужно определить, какие ситуации являются нормальными, warning или error.
+    Materializer не должен скрывать структурные ошибки без диагностики.
+Блок 10. Возможные slot-ошибки
+    Slot в child есть, placeholder в resource отсутствует.
+    Placeholder есть, child отсутствует.
+    Несколько children конфликтуют за один slot.
+    Невалидный slot.
+    Нужно определить реакцию для каждого случая.
+Блок 11. Возможности текущей Diagnostics-инфраструктуры
+    DiagnosticEntry уже содержит level, message, context, metadata и timestamp.
+    DiagnosticContext подходит для контекста materialization.
+    Можно фиксировать template, node, resource, slot и другие данные.
+Блок 12. Недостаток DiagnosticCollector
+    Сейчас он увеличивает только счётчики severity.
+    Сами DiagnosticEntry не сохраняются.
+    Поэтому конкретная причина ошибки в итоговом отчёте теряется.
+Блок 13. Диагностические события materialization
+    Отсутствие resource у structural node.
+    Неразрешённый slot.
+    Slot child отсутствует в resource.
+    Resource file не найден.
+    Для каждого случая нужно определить level и контекст.
+Блок 14. Recoverable и fatal ошибки
+    Recoverable: build может продолжаться.
+    Fatal: artifact корректно построить невозможно.
+    Нужно определить границу между diagnostic warning/error и остановкой build.
+Блок 15. readResource() и диагностика
+    Сейчас при отсутствии или невозможности чтения файла сразу бросается RuntimeException.
+    Нужно определить, должна ли перед этим фиксироваться диагностическая запись.
+Блок 16. Неиспользуемая зависимость Application в ClassicTemplateTreeMaterializer
+    $app передаётся в конструктор.
+    В классе не используется.
+    Нужно решить, является ли это временным следом или лишней зависимостью.
+Блок 17. Nullable Application в ClassicTemplateNodeMaterializer
+    Конструктор принимает ?Application.
+    Но далее $app используется как гарантированно существующий.
+    Сигнатура и фактический контракт противоречат друг другу.
+Блок 18. Неиспользуемый TemplateIdentity
+    Параметр передаётся в materialize().
+    Сейчас фактически не используется.
+    Нужно определить его будущую роль: diagnostics, artifact identity или boundary handling.
+Блок 19. Итоговые архитектурные правила
+    Поведение узла без resource.
+    Поведение обычного resource node.
+    Семантика header/footer/sidebar.
+    Обязательная диагностика структурных проблем вместо их молчаливого скрытия.

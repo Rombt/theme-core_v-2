@@ -88,6 +88,10 @@ use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeRenderer;
 use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateTreeRenderer;
 use Rombt\ThemeCore\Artifacts\Templates\FileTemplateResourceContentReader;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionCollectionBuilder;
+use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateNodeMaterializer;
+use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateTreeMaterializer;
+use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateNodeMaterializer;
+use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeMaterializer;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -136,7 +140,7 @@ $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
         new BuildSessionFactory(
-            new ArtifactCollectionFactory(),
+            new ArtifactCollectionFactory(), //todo при создании артефактов не используется удалить
         ),
         new ExecutionContextFactory(),
         new ExecutionRuntime(
@@ -218,6 +222,7 @@ $runtimeKernel = new RuntimeKernel(
 $buildRoot = $configuration->get('paths.build');
 $resourcePackage = $configuration->get('theme.resource_package');
 
+
 $pipeline = new Pipeline([
 
     new BuildThemeComponentsStage(
@@ -252,26 +257,26 @@ $pipeline = new Pipeline([
     new GenerateIrArtifactsStage(
         new ThemeArtifactGenerator(
             (new ArtifactGeneratorRegistryFactory())->create([
-
                 new ClassicTemplateArtifactGenerator(
                     new ClassicTemplateTreeRenderer(
-                        new FileTemplateResourceContentReader(),
+                        new ClassicTemplateTreeMaterializer(
+                            new ClassicTemplateNodeMaterializer($app),
+                            $app
+                        ),
                     ),
                 ),
+
                 new BlockTemplateArtifactGenerator(
                     new BlockTemplateTreeRenderer(
-                        new FileTemplateResourceContentReader(),
+                        new BlockTemplateTreeMaterializer(
+                            new BlockTemplateNodeMaterializer(
+                                $configuration->get('theme.resource_package'),
+                            ),
+                        ),
                     ),
                 ),
-
-                // new CompositionArtifactGenerator($app),
-
-                // new FunctionsPhpArtifactGenerator(
-                //     new AssetRegistrationBuilder(),
-                //     new WordPressFunctionsRenderer(),
-                // ),
-            ])
-        )
+            ]),
+        ),
     ),
 
     new WriteThemeArtifactsStage(

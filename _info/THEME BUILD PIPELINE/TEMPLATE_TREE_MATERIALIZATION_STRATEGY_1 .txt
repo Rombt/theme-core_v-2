@@ -1,0 +1,1459 @@
+# theme-core v-2
+
+## TEMPLATE NODE AND TREE MATERIALIZATION STRATEGY
+
+### ARCHITECTURAL DESCRIPTION
+
+**v1.1.0**
+
+**Status:** Architectural Foundation
+
+---
+
+## 1. PURPOSE
+
+Данный документ фиксирует стратегию обработки `TemplateNode` и `TemplateTree`
+на стадии **Artifacts**.
+
+Основная цель стадии:
+
+
+ThemeIR
+    ↓
+Materialization
+    ↓
+Artifact Generation
+    ↓
+Production-ready WordPress Theme
+
+
+ThemeIR уже содержит полностью разрешённое композиционное дерево.
+
+Стадия Artifacts:
+
+* не разрешает Composition повторно;
+* не перестраивает `TemplateTree`;
+* не изменяет композиционную структуру;
+* материализует содержимое узлов;
+* определяет границы Artifacts;
+* передаёт материализованные результаты соответствующим Artifact Generators.
+
+---
+
+# 2. INPUT
+
+На вход стадии Artifacts поступает `ThemeIr`.
+
+Для materialization используется прежде всего:
+
+
+ThemeIr
+    ↓
+Templates
+    ↓
+Template
+    ↓
+TemplateTree
+    ↓
+TemplateNode
+
+
+`TemplateNode` содержит:
+
+
+id
+nodeId
+compositionId
+resource
+rendering
+slot
+children
+
+
+При этом:
+
+* `nodeId` может быть `null`, если узел является материализованным экземпляром Composition;
+* `compositionId` может быть `null`, если узел является непосредственным Node;
+* `resource` содержит идентификатор ресурса;
+* `rendering` определяет дальнейшую Artifact semantics;
+* `slot` определяет положение узла относительно непосредственного родителя;
+* `children` содержит уже разрешённых дочерних `TemplateNode`.
+
+### 2.1. Пример входных данных
+
+ThemeIR содержит, в частности:
+
+
+Template: index
+    ├── header
+    │   rendering = Header
+    │   resource = header
+    │   children:
+    │       ├── site-title
+    │       │   rendering = Inline
+    │       │   resource = site_title_01
+    │       │   slot = 1
+    │       │
+    │       └── navigation
+    │           rendering = Inline
+    │           resource = navigation_01
+    │           slot = 2
+    │
+    ├── layout
+    │   rendering = TemplatePart
+    │   resource = layout_01
+    │   children:
+    │       ├── post-loop
+    │       │   rendering = TemplatePart
+    │       │   resource = post_loop_01
+    │       │   slot = 1
+    │       │   children:
+    │       │       ├── post-title
+    │       │       │   resource = post_title_01
+    │       │       │   slot = 1
+    │       │       │
+    │       │       └── no-posts
+    │       │           resource = no_posts_01
+    │       │           slot = 2
+    │       │
+    │       └── sidebar
+    │           rendering = Sidebar
+    │           resource = sidebar_01
+    │           slot = 2
+    │
+    └── footer
+        rendering = Footer
+        resource = footer
+
+
+Таким образом, Artifacts получает **готовое дерево**, а не набор Composition, которые необходимо повторно раскрывать.
+
+---
+
+# 3. THEMEIR INVARIANT
+
+На стадии Artifacts действует следующий инвариант:
+
+> Каждый `TemplateNode`, предназначенный для materialization, должен иметь соответствующий `Resource`.
+
+Если `Resource` отсутствует, это является нарушением контракта ThemeIR и диагностической ошибкой.
+
+Artifacts не должен пытаться самостоятельно искать другой Resource или восстанавливать Composition.
+
+---
+
+# 4. TEMPLATE TREE SEMANTICS
+
+`TemplateTree` является полной декларативной структурой конкретного Template.
+
+Каждый `TemplateNode` представляет конкретный экземпляр Node в контексте конкретного Template.
+
+`Composition` не является отдельным типом materialized node на стадии Artifacts.
+
+`compositionId` лишь указывает, что данный `TemplateNode` был сформирован из Composition.
+
+Например:
+
+
+TemplateNode
+    id = "header"
+    nodeId = null
+    compositionId = "header"
+
+
+является обычным `TemplateNode`, который материализуется по тем же базовым правилам, что и любой другой узел.
+
+---
+
+# 5. TREE TRAVERSAL
+
+Materialization выполняется рекурсивно снизу вверх.
+
+Для каждого Template:
+
+
+TemplateTree
+    ↓
+roots
+    ↓
+materializeNode(root)
+
+
+Для каждого узла:
+
+
+TemplateNode
+    ↓
+materialize children
+    ↓
+validate children
+    ↓
+validate Resource
+    ↓
+load Resource
+    ↓
+resolve child placement
+    ↓
+produce materialized result
+
+
+Порядок обхода дерева не зависит от `rendering`.
+
+`rendering` не определяет traversal algorithm.
+
+---
+
+# 6. MATERIALIZATION RESULT
+
+Результатом обработки `TemplateNode` является не просто строка содержимого.
+
+Materialization должна концептуально возвращать результат, содержащий:
+
+
+MaterializedNode
+    ├── content
+    ├── rendering
+    └── artifact boundary information
+
+
+`content` представляет материализованное содержимое текущего узла.
+
+`artifact boundary information` определяет, должно ли это содержимое:
+
+* быть встроено в содержащий Artifact;
+* использоваться как самостоятельный Artifact;
+* быть представлено родителю через WordPress-specific inclusion mechanism.
+
+Таким образом, **materialization content** и **Artifact boundary** являются связанными, но различными понятиями.
+
+---
+
+# 7. RESOURCE
+
+`Resource` определяет исходное содержимое текущего узла для соответствующей архитектуры.
+
+Общая модель:
+
+
+Resource
+    +
+materialized children
+    ↓
+materialized node content
+
+
+Resource является обязательным для materialization.
+
+Resource не определяет:
+
+* состав дерева;
+* порядок обхода дерева;
+* принадлежность child;
+* rendering semantics.
+
+Эти сведения уже представлены в ThemeIR.
+
+---
+
+# 8. MISSING RESOURCE
+
+Если `TemplateNode` не содержит `Resource`:
+
+
+TemplateNode
+    resource = null
+
+
+то:
+
+1. создаётся `DiagnosticEntry`;
+2. уровень диагностики — `ERROR`;
+3. в контексте указываются как минимум:
+
+   * `template`;
+   * `node`;
+   * `resource`;
+4. текущий узел исключается из materialized result;
+5. его descendants не продвигаются в родителя;
+6. обработка остальных узлов продолжается.
+
+То есть:
+
+
+missing resource
+    ↓
+Diagnostic ERROR
+    ↓
+skip node
+    ↓
+do not promote descendants
+    ↓
+continue materialization
+
+
+Ошибка не должна прерывать обработку остальных Templates.
+
+---
+
+# 9. STRUCTURAL NODE
+
+На стадии Artifacts отсутствует специальная семантика:
+
+
+resource = null
+→ structural container
+
+
+Отсутствие Resource не означает, что узел является прозрачным контейнером.
+
+Напротив:
+
+
+resource = null
+→ ERROR
+→ node skipped
+
+
+Children такого узла не должны автоматически перемещаться в его родителя.
+
+---
+
+# 10. CHILD SLOT SEMANTICS
+
+`slot` принадлежит child относительно его непосредственного parent.
+
+Если:
+
+
+child.slot = N
+
+
+то child может быть размещён только в:
+
+
+@slot_N
+
+
+Resource непосредственного родителя.
+
+Пример:
+
+
+parent
+    resource:
+        <!-- @slot_1 -->
+        <!-- @slot_2 -->
+
+    children:
+        child-A slot=1
+        child-B slot=2
+
+
+Результат:
+
+
+parent resource
+    ↓
+@slot_1 → child-A
+@slot_2 → child-B
+
+
+Slot является явным механизмом позиционирования.
+
+Положение child в массиве `children` само по себе не определяет его slot.
+
+---
+
+# 11. CHILD WITHOUT SLOT
+
+`slot = null` допустим только тогда, когда текущая семантика размещения родителя не требует slot для данного child.
+
+Если child должен размещаться через slot, но `slot` отсутствует:
+
+
+child.slot = null
+
+
+то:
+
+1. создаётся `DiagnosticEntry`;
+2. уровень — `ERROR`;
+3. указываются:
+
+   * `template`;
+   * `parent node`;
+   * `child node`;
+4. child не включается в materialized content родителя;
+5. остальные children продолжают обрабатываться.
+
+То есть:
+
+
+required slot missing
+    ↓
+Diagnostic ERROR
+    ↓
+skip child
+    ↓
+continue remaining children
+
+
+Child никогда не должен автоматически помещаться в произвольный slot.
+
+---
+
+# 12. MISSING PARENT SLOT
+
+Если child содержит:
+
+
+slot = N
+
+
+но Resource родителя не содержит:
+
+
+@slot_N
+
+
+это является ошибкой размещения child.
+
+Например:
+
+
+child.slot = 2
+
+
+а Resource содержит только:
+
+html
+<!-- @slot_1 -->
+
+
+Тогда:
+
+
+missing @slot_2
+    ↓
+Diagnostic ERROR
+    ↓
+child skipped
+    ↓
+parent materialization continues
+
+
+Ошибка отсутствующего parent slot не должна останавливать обработку всего Template.
+
+---
+
+# 13. MULTIPLE CHILDREN IN ONE SLOT
+
+Несколько children могут иметь одинаковый `slot`.
+
+Например:
+
+
+child-A → slot 1
+child-B → slot 1
+child-C → slot 2
+
+
+Это не является ошибкой.
+
+В результате:
+
+
+@slot_1
+    child-A
+    child-B
+
+@slot_2
+    child-C
+
+
+Порядок children внутри одного slot сохраняется согласно их порядку в `children`.
+
+Таким образом:
+
+
+slot
+    ↓
+определяет позицию
+
+
+а:
+
+
+children order
+    ↓
+определяет порядок внутри одного slot
+
+
+---
+
+# 14. SLOT MATERIALIZATION
+
+Для Resource-based node:
+
+
+children
+    ↓
+validate child resources
+    ↓
+validate child slots
+    ↓
+group children by slot
+    ↓
+validate parent placeholders
+    ↓
+replace @slot_N
+    ↓
+remove unused placeholders
+    ↓
+materialized content
+
+
+Каждый допустимый child вставляется только в свой slot.
+
+---
+
+# 15. UNUSED SLOTS
+
+Если Resource содержит:
+
+html
+<!-- @slot_1 -->
+<!-- @slot_2 -->
+<!-- @slot_3 -->
+
+
+но соответствующий child существует только для slot 1:
+
+
+slot 1 → child
+slot 2 → none
+slot 3 → none
+
+
+то незаполненные placeholders не являются ошибкой.
+
+Они материализуются как пустое содержимое.
+
+То есть:
+
+
+@slot_2 → ""
+@slot_3 → ""
+
+
+После materialization placeholders не должны оставаться в production Artifact, если соответствующая архитектура не требует обратного.
+
+---
+
+# 16. CHILD VALIDATION
+
+Каждый child проверяется независимо.
+
+Для child проверяются как минимум:
+
+
+Resource
+slot
+parent Resource
+parent slot placeholder
+
+
+Ошибка одного child не делает автоматически ошибкой остальных children.
+
+Например:
+
+
+parent
+    ├── child-A → valid
+    ├── child-B → missing slot ERROR
+    └── child-C → valid
+
+
+результат:
+
+
+parent
+    ├── child-A
+    └── child-C
+
+diagnostics:
+    ERROR child-B
+
+
+---
+
+# 17. RESOURCE-BASED NODE
+
+Если Resource существует:
+
+
+1. materialize valid children;
+2. исключить children с диагностическими ошибками;
+3. загрузить Resource;
+4. определить slot assignments;
+5. проверить существование соответствующих placeholders;
+6. сгруппировать children по slot;
+7. вставить children в @slot_N;
+8. удалить незаполненные placeholders;
+9. получить materialized content.
+
+
+Полученный результат передаётся дальше в соответствии с `rendering`.
+
+---
+
+# 18. ROOT NODES
+
+Root node не имеет специальной семантики traversal или базового materialization algorithm.
+
+Он обрабатывается тем же алгоритмом:
+
+
+materializeNode(root)
+
+
+Однако root может совпадать с Artifact boundary.
+
+Следовательно, его положение в дереве не меняет правила materialization, но может иметь значение для последующего Artifact Generation.
+
+---
+
+# 19. RENDERING
+
+`Rendering` не определяет порядок обхода дерева.
+
+`Rendering` определяет **способ использования materialized result и Artifact boundary**.
+
+Основные значения, присутствующие во входном ThemeIR:
+
+
+Inline
+TemplatePart
+Header
+Footer
+Sidebar
+
+
+---
+
+# 20. INLINE
+
+
+rendering = Inline
+
+
+означает:
+
+
+materialized content
+    ↓
+используется непосредственно
+в содержащем Artifact
+
+
+Самостоятельный Artifact для Inline node не создаётся.
+
+Пример:
+
+
+header
+    ├── site-title (Inline)
+    └── navigation (Inline)
+
+
+Материализованное содержимое `site-title` и `navigation` используется непосредственно внутри materialization `header`.
+
+---
+
+# 21. TEMPLATE PART
+
+
+rendering = TemplatePart
+
+
+означает самостоятельную Artifact boundary.
+
+Общая семантика:
+
+
+TemplatePart node
+    ↓
+materialized content
+    ↓
+separate Artifact
+
+
+Родитель не должен автоматически инлайнить содержимое Template Part.
+
+Использование Artifact родителем определяется соответствующим Artifact Generator.
+
+Для Classic WordPress конкретный механизм, например `get_template_part(...)`, является уже **Classic-specific Artifact Generation policy**, а не общей materialization semantics.
+
+---
+
+# 22. HEADER
+
+
+rendering = Header
+
+
+означает самостоятельную WordPress Artifact boundary.
+
+Для Classic:
+
+
+Header
+    ↓
+header.php
+
+
+При использовании Header внутри другого Template родительский Artifact должен использовать соответствующий WordPress mechanism для подключения Header.
+
+Конкретный механизм:
+
+php
+get_header()
+
+
+является ответственностью Classic Artifact Generator.
+
+Materializer отвечает за получение содержимого Header, но не за генерацию PHP-вызова WordPress.
+
+---
+
+# 23. FOOTER
+
+
+rendering = Footer
+
+
+означает самостоятельную WordPress Artifact boundary.
+
+Для Classic:
+
+
+Footer
+    ↓
+footer.php
+
+
+Использование Footer родительским Artifact выполняется через соответствующий WordPress mechanism.
+
+Для Classic конкретный вызов:
+
+php
+get_footer()
+
+
+является ответственностью Artifact Generator.
+
+---
+
+# 24. SIDEBAR
+
+
+rendering = Sidebar
+
+
+означает самостоятельную WordPress Artifact boundary.
+
+Для Classic:
+
+
+Sidebar
+    ↓
+sidebar.php
+
+
+Использование Sidebar родительским Artifact выполняется через WordPress-specific mechanism.
+
+Для Classic конкретный вызов:
+
+php
+get_sidebar()
+
+
+является ответственностью Artifact Generator.
+
+---
+
+# 25. ARTIFACT BOUNDARIES
+
+Materialization и Artifact Generation являются связанными, но различными операциями.
+
+Materialization отвечает за:
+
+
+Resource
++
+children
++
+slots
+↓
+correct materialized result
+
+
+Artifact Generation отвечает за:
+
+
+materialized result
++
+rendering
+↓
+WordPress Artifact
+
+
+Rendering определяет границу между inline content и самостоятельным Artifact.
+
+---
+
+# 26. TEMPLATE IDENTITY
+
+`Template.identity` определяет идентичность соответствующего Template Artifact.
+
+Для Classic:
+
+
+index    → index.php
+single   → single.php
+page     → page.php
+category → category.php
+tag      → tag.php
+
+
+и т.д.
+
+Конкретное сопоставление `Template.identity → filename` является ответственностью Classic Artifact Destination Resolver.
+
+---
+
+# 27. TEMPLATE EXAMPLES FROM THE CURRENT THEMEIR
+
+Например:
+
+
+Template: index
+
+roots:
+    header
+    layout
+    footer
+
+
+Это означает, что `index` содержит три root nodes.
+
+При этом:
+
+
+header
+    rendering = Header
+
+
+является Artifact boundary.
+
+
+layout
+    rendering = TemplatePart
+
+
+является Artifact boundary.
+
+
+footer
+    rendering = Footer
+
+
+также является Artifact boundary.
+
+Их children materialize внутри соответствующих узлов, но сами boundary semantics определяются `rendering`.
+
+---
+
+# 28. NESTED MATERIALIZATION
+
+Для:
+
+
+layout
+    └── post-loop
+        ├── post-title
+        └── no-posts
+
+
+materialization выполняется:
+
+
+post-title
+    ↓
+post-loop
+    ↓
+layout
+
+
+Сначала materialize children `post-loop`:
+
+
+post-title → slot 1
+no-posts   → slot 2
+
+
+затем они вставляются в Resource `post-loop`.
+
+Полученный результат становится materialized result `post-loop`.
+
+После этого `post-loop` становится child `layout`:
+
+
+post-loop → slot 1
+
+
+И только затем materialize `layout`.
+
+---
+
+# 29. COMPOSITION IS NOT RE-RESOLVED
+
+Artifacts не должен выполнять:
+
+
+compositionId
+    ↓
+Composition lookup
+    ↓
+Composition expansion
+
+
+ThemeIR уже содержит:
+
+
+TemplateNode
+    ↓
+children
+    ↓
+children
+
+
+Поэтому Artifacts работает только с предоставленным деревом.
+
+---
+
+# 30. DIAGNOSTICS
+
+Diagnostics является частью normal materialization flow.
+
+Ошибки materialization не должны приводить к остановке обработки остальных Templates.
+
+Минимальный контекст:
+
+
+template
+node
+
+
+Для child/slot errors:
+
+
+template
+parent node
+child node
+slot
+
+
+Для Resource errors:
+
+
+template
+node
+resource
+
+
+---
+
+# 31. ERROR POLICY
+
+Основная политика:
+
+
+ERROR
+    +
+skip invalid node/child
+    +
+continue processing
+
+
+Ошибка отдельного node не должна:
+
+* останавливать materialization остальных nodes;
+* останавливать обработку остальных Templates;
+* прерывать выполнение приложения в целом.
+
+Это не означает, что exceptions запрещены внутри реализации.
+
+Если внутренний механизм использует exception, он должен быть обработан на соответствующей границе materialization и преобразован в `DiagnosticEntry`, после чего обработка остальных независимых элементов продолжается.
+
+---
+
+# 32. NODE-LEVEL ERROR
+
+Ошибка дочернего node:
+
+
+child
+    ERROR
+
+
+приводит к:
+
+
+child skipped
+
+
+но не делает автоматически ошибочными соседние children.
+
+Пример:
+
+
+parent
+    ├── A valid
+    ├── B ERROR
+    └── C valid
+
+
+Результат:
+
+
+parent
+    ├── A
+    └── C
+
+
+---
+
+# 33. ROOT / ARTIFACT ERROR
+
+Если ошибка делает невозможной materialization root node, root node также исключается из результата.
+
+Однако это не должно останавливать обработку других root nodes или других Templates.
+
+Например:
+
+
+Template index
+
+roots:
+    header  ERROR
+    layout  valid
+    footer  valid
+
+
+не должно автоматически останавливать:
+
+
+layout
+footer
+
+
+Итоговый build может завершиться с `ERROR` diagnostics, но остальные возможные Artifacts должны быть сформированы.
+
+---
+
+# 34. TREE MATERIALIZATION ALGORITHM
+
+Для каждого Template:
+
+
+Template
+    ↓
+TemplateTree
+    ↓
+for each root
+    ↓
+materializeNode(root)
+
+
+Для каждого Node:
+
+
+1. Получить children.
+
+2. Рекурсивно materialize children.
+
+3. Исключить children,
+   завершившиеся ERROR.
+
+4. Проверить Resource текущего node.
+
+5. Если Resource отсутствует:
+       Diagnostic ERROR
+       skip node
+       do not promote descendants.
+
+6. Загрузить Resource.
+
+7. Проверить slot каждого
+   оставшегося child.
+
+8. Если обязательный slot отсутствует:
+       Diagnostic ERROR
+       skip child.
+
+9. Проверить наличие @slot_N
+   в Resource родителя.
+
+10. Если @slot_N отсутствует:
+        Diagnostic ERROR
+        skip child.
+
+11. Сгруппировать допустимые
+    children по slot.
+
+12. Сохранить порядок
+    children внутри каждого slot.
+
+13. Заменить @slot_N
+    соответствующим materialized content.
+
+14. Удалить незаполненные slots.
+
+15. Получить materialized result
+    текущего node.
+
+16. Передать результат
+    в соответствии с rendering.
+
+
+---
+
+# 35. MATERIALIZATION VS ARTIFACT GENERATION
+
+Общая граница:
+
+
+ThemeIR
+    │
+    ▼
+TemplateTree
+    │
+    ▼
+Node Materialization
+    │
+    ├── Resource
+    ├── children
+    ├── slots
+    └── diagnostics
+    │
+    ▼
+MaterializedNode
+    │
+    ▼
+Rendering / Artifact Boundary
+    │
+    ▼
+Artifact Generator
+    │
+    ▼
+WordPress Theme
+
+
+Materializer не должен самостоятельно генерировать:
+
+
+index.php
+header.php
+footer.php
+sidebar.php
+template-part files
+
+
+если это относится к конкретному Artifact Generator.
+
+---
+
+# 36. ARCHITECTURAL RESPONSIBILITIES
+
+## ThemeIR
+
+Определяет:
+
+
+ЧТО состоит из ЧЕГО
+
+
+и предоставляет:
+
+
+TemplateTree
+TemplateNode
+Resource
+Rendering
+Slot
+
+
+## Materializer
+
+Определяет:
+
+
+КАК СОБРАТЬ содержимое Node
+
+
+на основании:
+
+
+Resource
++
+children
++
+slot
+
+
+и фиксирует ошибки через Diagnostics.
+
+## Rendering
+
+Определяет:
+
+
+КАК используется materialized result
+
+
+и где находится Artifact boundary.
+
+## Artifact Generator
+
+Определяет:
+
+
+В КАКОЙ WordPress Artifact
+попадает materialized result
+
+
+и реализует architecture-specific semantics.
+
+## Destination Resolver
+
+Определяет:
+
+
+КАКОЕ ИМЯ
+получает Artifact
+
+
+например:
+
+
+index → index.php
+single → single.php
+
+
+---
+
+# 37. CURRENT DECISIONS
+
+Зафиксированы следующие решения:
+
+1. ThemeIR предоставляет уже разрешённое полное дерево.
+
+2. Artifacts не выполняет повторное разрешение Composition.
+
+3. `TemplateNode` на стадии Artifacts представляет конкретный узел дерева.
+
+4. `compositionId` не означает необходимость повторного раскрытия Composition.
+
+5. Materialization выполняется рекурсивно снизу вверх.
+
+6. Resource является обязательным для materialization node.
+
+7. Отсутствие Resource является нарушением ThemeIR invariant.
+
+8. Отсутствие Resource → `ERROR` + skip node.
+
+9. Descendants node без Resource не продвигаются в parent.
+
+10. Slot принадлежит child относительно непосредственного parent.
+
+11. Если slot необходим, его отсутствие → `ERROR` + skip child.
+
+12. Если соответствующий `@slot_N` отсутствует в Resource parent → `ERROR` + skip child.
+
+13. Несколько children могут находиться в одном slot.
+
+14. Порядок children внутри одного slot сохраняется.
+
+15. Незаполненный slot не является ошибкой.
+
+16. Незаполненный placeholder удаляется при materialization.
+
+17. Ошибка одного child не останавливает обработку остальных children.
+
+18. Ошибка одного node не останавливает обработку остальных Templates.
+
+19. Root node не имеет специального traversal algorithm.
+
+20. Rendering не определяет порядок обхода дерева.
+
+21. Rendering определяет способ использования materialized result и Artifact boundary.
+
+22. Inline не создаёт самостоятельный Artifact.
+
+23. TemplatePart создаёт самостоятельную Artifact boundary.
+
+24. Header создаёт самостоятельную Artifact boundary.
+
+25. Footer создаёт самостоятельную Artifact boundary.
+
+26. Sidebar создаёт самостоятельную Artifact boundary.
+
+27. Конкретные WordPress mechanisms (`get_header()`, `get_footer()`, `get_sidebar()`, `get_template_part()`) относятся к соответствующему Artifact Generator.
+
+28. Diagnostics является частью normal materialization flow.
+
+29. Ошибки materialization не должны прерывать выполнение приложения в целом.
+
+30. Итоговый build может завершиться с диагностическими `ERROR`, одновременно предоставив максимально полный набор успешно сформированных Artifacts.
+
+---
+
+# 38. FINAL MODEL
+
+
+                    ThemeIR
+                       │
+                       ▼
+                TemplateCollection
+                       │
+                       ▼
+                  TemplateTree
+                       │
+                       ▼
+                  TemplateNode
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+       Resource      Slot       Children
+          │            │            │
+          └────────────┼────────────┘
+                       ▼
+               Node Materialization
+                       │
+          ┌────────────┴────────────┐
+          │                         │
+       valid                     invalid
+          │                         │
+          ▼                         ▼
+ MaterializedNode              Diagnostics
+          │                         │
+          │                    skip node/child
+          ▼
+      Rendering
+          │
+          ▼
+   Artifact Boundary
+          │
+          ▼
+   Artifact Generator
+          │
+          ▼
+ WordPress Artifact
+          │
+          ▼
+ Production Theme
+
+
+---
+
+# 39. FINAL DEFINITION
+
+`TemplateTree` является полной декларативной структурой конкретного Template.
+
+`TemplateNode` представляет конкретный узел этого дерева.
+
+`Resource` определяет исходное содержимое узла.
+
+`children` определяют дочернее содержимое.
+
+`slot` определяет позицию child в Resource непосредственного parent.
+
+Materialization рекурсивно собирает содержимое узлов снизу вверх.
+
+Если Resource отсутствует:
+
+
+ERROR
++
+node skipped
++
+processing continues
+
+
+Если для child отсутствует обязательный slot или отсутствует соответствующий `@slot_N` в Resource parent:
+
+
+ERROR
++
+child skipped
++
+processing continues
+
+
+Никакой некорректный child не должен автоматически помещаться в произвольный slot.
+
+Rendering не изменяет структуру ThemeIR и не определяет порядок обхода дерева.
+
+Rendering определяет, как materialized result используется и где возникает Artifact boundary.
+
+Inline result используется непосредственно в содержащем Artifact.
+
+TemplatePart, Header, Footer и Sidebar являются самостоятельными Artifact boundaries.
+
+Конкретный механизм создания WordPress Artifact является ответственностью соответствующего Artifact Generator.
+
+Таким образом:
+
+
+ThemeIR
+    ↓
+полное разрешённое дерево
+    ↓
+Node Materialization
+    ↓
+Resource + children + slots
+    ↓
+Materialized Results
+    ↓
+Rendering / Artifact Boundaries
+    ↓
+Artifact Generation
+    ↓
+WordPress Theme
+
+
+Основной архитектурный принцип:
+
+
+ThemeIR определяет:
+    ЧТО состоит из ЧЕГО.
+
+Resource определяет:
+    КАК выглядит Node.
+
+Slot определяет:
+    КУДА помещается Child.
+
+Materializer определяет:
+    КАК собрать Node.
+
+Rendering определяет:
+    КАК используется результат
+    и где проходит Artifact Boundary.
+
+Artifact Generator определяет:
+    В КАКОЙ WordPress Artifact
+    материализованный результат
+    должен попасть.
+

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-get_header();
-
 ?>
 
 <main id="primary" class="site-main">
@@ -13,5 +11,3 @@ get_header();
 </main>
 
 <?php
-
-get_footer();

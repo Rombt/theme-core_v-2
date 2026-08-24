@@ -22,8 +22,6 @@ return [
         'name' => 'Page Content',
     ],
 
-
-
     'no_posts_01' => [
         'type' => [
             'name' => 'component',
@@ -33,7 +31,6 @@ return [
         'resource' => 'no_posts_01',
         'name' => 'No Posts',
     ],
-
 
     'navigation_01' => [
         'type' => [

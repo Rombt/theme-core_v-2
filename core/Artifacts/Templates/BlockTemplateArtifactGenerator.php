@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
-use LogicException;
 use Rombt\ThemeCore\Artifacts\Artifact;
-use Rombt\ThemeCore\Artifacts\ArtifactCollection;
 use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
-use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
+use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
+use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplatesInterface;
 
 final readonly class BlockTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
+    /**
+     * @var array<string, string>
+     */
+    private const PART_DESTINATIONS = [
+        'header' => 'parts/header.html',
+        'footer' => 'parts/footer.html',
+        'sidebar' => 'parts/sidebar.html',
+    ];
+
     public function __construct(
         private TemplateTreeRendererInterface $renderer,
     ) {
@@ -34,25 +41,42 @@ final readonly class BlockTemplateArtifactGenerator implements ArtifactGenerator
             return;
         }
 
-        foreach ($concept->templates()->all() as $template) {
+        foreach ($concept->templates() as $template) {
+            $identity = $template->identity()->value();
+
             $artifacts->add(
-                $this->createArtifact($template),
+                new Artifact(
+                    id: new ArtifactId(
+                        sprintf(
+                            'template:block:%s',
+                            $identity,
+                        ),
+                    ),
+                    type: ArtifactType::FILE,
+                    destination: $this->destination($identity),
+                    content: $this->renderer->render($template),
+                    metadata: [
+                        'architecture' => 'block',
+                        'template' => $identity,
+                        'role' => $this->role($identity),
+                    ],
+                ),
             );
         }
     }
 
+    private function destination(
+        string $identity,
+    ): string {
+        return self::PART_DESTINATIONS[$identity]
+            ?? sprintf('templates/%s.html', $identity);
+    }
 
-    private function createArtifact(Template $template): Artifact
-    {
-        return new Artifact(
-            id: new ArtifactId(
-                'template:block:' . $template->identity()->value(),
-            ),
-            type: ArtifactType::FILE,
-            destination: 'templates/' . $template->identity()->value() . '.html',
-            content: $this->renderer->render(
-                $template->tree(),
-            ),
-        );
+    private function role(
+        string $identity,
+    ): string {
+        return isset(self::PART_DESTINATIONS[$identity])
+            ? 'template-part'
+            : 'template';
     }
 }

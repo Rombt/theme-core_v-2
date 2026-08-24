@@ -1,6 +1,12 @@
-<!-- wp:site-title {"level":0,"isLink":true,"className":"my-custom-class"} /-->
-
-<!-- wp:navigation {"overlayMenu":"never","className":"primary-navigation"} /-->
+<!-- wp:group {"tagName":"header","className":"site-header","layout":{"type":"constrained"}} -->
+<header class="wp-block-group site-header">
+  <!-- wp:group {"className":"site-header__inner","layout":{"type":"flex","justifyContent":"space-between","verticalAlignment":"center"}} -->
+  <div class="wp-block-group site-header__inner"><!-- wp:site-title {"level":0,"isLink":true,"className":"my-custom-class"} /-->
+ <!-- wp:navigation {"overlayMenu":"never","className":"primary-navigation"} /-->
+</div>
+  <!-- /wp:group -->
+</header>
+<!-- /wp:group -->
 
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
@@ -16,10 +22,22 @@
 </aside>
 <!-- /wp:group -->
 
+<!-- widgets_01 - block.html -->
+
 </main>
 <!-- /wp:group -->
 
 <!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->
+
+<!-- wp:group {"tagName":"footer","className":"site-footer","layout":{"type":"constrained"}} -->
+<footer class="wp-block-group site-footer">
+    
+</footer>
+<!-- /wp:group -->
+
+
+<!-- "F:\web\theme-core\config\themes\theme_blog_v3\resources/components/footer/classic.php" -->
+<!-- "F:\web\theme-core\config\themes\theme_blog_v2\resources\components\footer\classic.php" -->
 
 <!-- wp:paragraph {"className":"site-copyright"} -->
 <p class="site-copyright">

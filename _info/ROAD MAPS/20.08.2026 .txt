@@ -1,0 +1,441 @@
+Рекомендуемый порядок решения
+    Шаг 1 — определить точные правила materialization
+
+        Сначала окончательно зафиксировать поведение для:
+
+        обычного узла с ресурсом;
+        узла без ресурса;
+        child с slot();
+        child без slot();
+        child с отсутствующим slot;
+        template-part;
+        неразмещённых children.
+
+        Это основа.
+
+    Шаг 2 — исправить ClassicTemplateNodeMaterializer
+
+        Чтобы:
+
+        обычные children materialize-ились inline;
+        template-part не materialize-ился inline в root template;
+        отдельный template-part artifact включал свой root node;
+        неразмещённые children не дублировались.
+
+    Шаг 3 — исправить BlockTemplateNodeMaterializer
+
+        Чтобы:
+
+        обычные children materialize-ились inline;
+        template-part заменялся wp:template-part;
+        inline-копия template-part не появлялась;
+        fallback не подставлял Classic resource;
+        children не дублировались.
+
+    Шаг 4 — исправить генерацию отдельных template-part artifacts
+
+        Чтобы:
+
+        header.php / parts/header.html
+        footer.php / parts/footer.html
+        sidebar.php / parts/sidebar.html
+
+        генерировались из полного корневого TemplateNode, а не только из его children.
+
+    Шаг 5 — определить, какие ThemeIR Templates являются финальными Artifacts
+
+        Отделить:
+
+            финальные WordPress templates
+
+        от:
+
+        внутренних composition templates
+
+        и прекратить автоматическую генерацию layout, query, post-loop, если они не должны быть самостоятельными файлами.
+
+    Шаг 6 — проверить семантику итоговых деревьев
+
+        После исправления механики проверить:
+
+        query;
+        post-loop;
+        no-results;
+        sidebar;
+        header;
+        footer.
+
+
+
+
+1. Неверная стратегия обработки template-part в Classic
+
+Симптомы:
+
+category.php, index.php, page.php, single.php, tag.php содержат полный HTML header, а затем ещё:
+
+get_header();
+
+И аналогично для footer:
+
+get_footer();
+
+после чего непосредственно добавляется содержимое footer.
+
+Одновременно:
+
+header.php содержит только Site Title + Navigation, хотя template header содержит полноценную структуру <html>, <head>, <body>, <header>;
+footer.php содержит только Copyright, хотя footer-композиция должна включать <footer> и дочерние узлы.
+Проблема
+
+Один и тот же template-part одновременно:
+
+materialize-ится inline в родительский template;
+materialize-ится как отдельный PHP-файл;
+вызывается через get_header() / get_footer().
+
+Это фундаментальная ошибка стратегии Classic materialization.
+
+Решать первой.
+
+2. Неверная стратегия обработки template-part в Block
+
+Например, templates/category.html содержит одновременно:
+
+<header>...</header>
+
+и:
+
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+То же происходит с footer.
+
+Проблема
+
+Block template-part также одновременно:
+
+разворачивается inline;
+остаётся отдельным artifact;
+дополнительно вставляется через wp:template-part.
+
+Должна существовать ровно одна стратегия:
+
+либо inline materialization;
+либо ссылка на template part.
+
+Для WordPress Block Theme здесь правильная стратегия — отдельный parts/*.html + wp:template-part.
+
+3. Неправильная materialization обычных дочерних узлов и template-part
+
+Это, вероятно, главный дефект текущих ClassicTemplateNodeMaterializer и BlockTemplateNodeMaterializer.
+
+Нужно окончательно зафиксировать различие:
+
+Обычный дочерний узел
+
+Должен materialize-иться внутрь родительского ресурса.
+
+Например:
+
+header
+├── site-title
+└── navigation
+
+site-title и navigation должны попасть в slot'ы header.
+
+Template-part
+
+Не должен автоматически разворачиваться по той же стратегии.
+
+Для Classic:
+
+get_header();
+
+Для Block:
+
+<!-- wp:template-part {"slug":"header"} /-->
+
+Именно это различие сейчас нарушено.
+
+4. Неразмещённые дочерние узлы обрабатываются некорректно
+
+В текущем результате видно, что дочерние элементы иногда появляются вне ожидаемого контейнера.
+
+Например, в Block:
+
+<aside ...>
+    <!-- wp:template-part {"slug":"sidebar"} /-->
+</aside>
+
+
+<!-- widgets_01 - block.html -->
+
+widgets_01 оказался после закрытия <aside>, хотя логически должен быть внутри него либо должен быть представлен исключительно через template-part.
+
+Это означает, что текущая стратегия:
+
+разместить children в slot'ах, а всё неразмещённое дописать в конец
+
+для некоторых типов узлов семантически неверна.
+
+Нужно определить точное правило для:
+
+children с slot();
+children без slot();
+children с slot, который отсутствует в ресурсе;
+template-part children.
+5. Дублирование Sidebar
+
+Classic layout.php:
+
+<aside class="widget-area">
+    <?php dynamic_sidebar('primary-sidebar'); ?>
+</aside>
+
+а затем ещё:
+
+if (is_active_sidebar('primary-sidebar')) :
+    dynamic_sidebar('primary-sidebar');
+endif;
+
+То есть sidebar materialize-ится дважды.
+
+В Block аналогичная проблема:
+
+<!-- wp:template-part {"slug":"sidebar"} /-->
+
+и затем:
+
+<!-- widgets_01 - block.html -->
+Причина
+
+Один дочерний узел одновременно:
+
+попал в slot родителя;
+дополнительно materialize-ился как неразмещённый child.
+
+Это конкретный дефект алгоритма materialization.
+
+6. Footer materialize-ится неправильно
+
+Classic:
+
+<footer>
+    
+</footer>
+
+
+Copyright
+
+То есть copyright не вставлен внутрь footer.
+
+Block:
+
+<footer ...>
+    
+</footer>
+
+
+Copyright
+
+Проблема та же.
+
+Вероятно, дочерний узел copyright:
+
+либо имеет slot, который не совпадает с placeholder ресурса;
+либо placeholder уже исчезает до обработки;
+либо materializer ошибочно считает child неразмещённым.
+
+Это нужно исправлять вместе с проблемами №3–4.
+
+7. Header и Footer parts генерируются из неправильного уровня дерева
+
+Сейчас:
+
+header.php
+
+Содержит:
+
+site-title
+navigation
+
+но не содержит собственный ресурс Header.
+
+footer.php
+
+Содержит:
+
+copyright
+
+но не содержит собственный ресурс Footer.
+
+Это означает, что при генерации отдельного template-part artifact materializer фактически генерирует children без корневого узла.
+
+Должно быть:
+
+header.php
+└── materialized Header node
+    ├── Site Title
+    └── Navigation
+
+и:
+
+footer.php
+└── materialized Footer node
+    └── Copyright
+8. Генерируются промежуточные Templates, которые, вероятно, не являются WordPress templates
+
+Сейчас создаются:
+
+Classic:
+
+layout.php
+post-loop.php
+query.php
+
+Block:
+
+templates/layout.html
+templates/post-loop.html
+templates/query.html
+
+Нужно проверить семантику TemplateIdentity.
+
+Если layout, query, post-loop — это внутренние композиционные шаблоны, они не должны автоматически становиться финальными WordPress artifacts.
+
+Иначе Artifacts слой ошибочно трактует:
+
+каждый ThemeIR Template
+
+как:
+
+отдельный файл темы.
+
+Это отдельная архитектурная проблема генераторов.
+
+9. Неверное содержимое post-loop и query
+
+Например:
+
+post-loop.php содержит:
+
+Post Title
+No Posts
+
+query.php содержит то же самое.
+
+Это выглядит семантически неправильно:
+
+No Posts обычно принадлежит fallback/no-results ветке;
+Post Title принадлежит post template;
+Query должен управлять циклом;
+Post Loop должен иметь собственную структуру.
+
+То есть текущий результат показывает, что дерево успешно обходится, но семантика композиции пока не проверяется.
+
+Эту проблему следует решать после исправления механики materialization.
+
+10. Classic template одновременно содержит inline Header и get_header()
+
+Это отдельный важный симптом, который нужно явно проверить после исправления №1.
+
+Сейчас:
+
+<!DOCTYPE html>
+<html>
+...
+<header>...</header>
+
+
+get_header();
+
+Даже если исправить template-part artifacts, root template не должен содержать inline содержимое header, если затем вызывается get_header().
+
+Аналогично:
+
+get_footer();
+<footer>...</footer>
+11. Block template одновременно содержит inline part и wp:template-part
+
+То же самое для:
+
+header
+
+и:
+
+footer
+
+После исправления стратегии в финальном Block template должны оставаться ссылки:
+
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+а полное содержимое — только в:
+
+parts/header.html
+12. В Block artifacts попадает Classic resource path
+
+Например:
+
+<!-- "F:\web\theme-core\...\footer\classic.php" -->
+
+Это критическая ошибка выбора архитектурного ресурса.
+
+Block renderer/materializer вообще не должен читать или использовать classic().
+
+Нужно проверить:
+
+BlockTemplateNodeMaterializer;
+BlockTemplateTreeRenderer;
+TemplateResourceContentReader;
+логику fallback при отсутствии block resource.
+
+Если block-ресурс отсутствует, нельзя молча подставлять classic resource.
+
+13. Дублируются диагностические комментарии с путями
+
+В Block output:
+
+<!-- "F:\web\theme-core\..." -->
+
+Причём два пути от разных версий темы:
+
+theme_blog_v3
+theme_blog_v2
+
+Это означает либо:
+
+в итоговый content попадает диагностический результат reader-а;
+reader читает не тот ресурс;
+в ThemeIR/ResolvedResource присутствуют некорректные пути;
+stale resource configuration участвует в сборке.
+
+Нужно отдельно локализовать источник этих комментариев.
+
+14. Смешение ответственности Template Resource и Materializer
+
+По результату видно, что материализация сейчас, вероятно, пытается одновременно решать:
+
+чтение ресурса;
+подстановку детей;
+определение template-part;
+fallback для неразмещённых детей;
+возможно, выбор архитектурного ресурса.
+
+Нужно проверить, чтобы ответственность была разделена:
+
+Resource reader
+    → читает только нужный architecture resource
+
+
+Node materializer
+    → materialize один узел по правилам его render/materialization strategy
+
+
+Tree renderer
+    → обходит дерево
+
+
+Artifact generator
+    → решает, какой Template становится каким artifact
+
+Без этого исправления остальных симптомов будут точечными.
