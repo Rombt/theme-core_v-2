@@ -6,8 +6,6 @@
  * Displays a message when no posts are available.
  */
 
-declare(strict_types=1);
-
 ?>
 
 <p class="no-posts">

@@ -6,8 +6,6 @@
  * Отображает меню футера сайта.
  */
 
-declare(strict_types=1);
-
 if (has_nav_menu('footer')) :
     ?>
 

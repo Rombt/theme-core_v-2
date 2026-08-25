@@ -6,8 +6,6 @@
  * Отображает информацию об авторских правах.
  */
 
-declare(strict_types=1);
-
 ?>
 
 <p class="site-copyright">

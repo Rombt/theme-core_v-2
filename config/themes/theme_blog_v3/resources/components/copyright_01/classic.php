@@ -6,8 +6,6 @@
  * Displays site copyright information.
  */
 
-declare(strict_types=1);
-
 ?>
 
 <p class="site-copyright">

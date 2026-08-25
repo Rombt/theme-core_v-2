@@ -6,8 +6,6 @@
  * Отображает основное меню сайта.
  */
 
-declare(strict_types=1);
-
 if (has_nav_menu('primary')) :
     ?>
 

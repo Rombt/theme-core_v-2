@@ -6,8 +6,6 @@
  * Displays the site footer navigation.
  */
 
-declare(strict_types=1);
-
 if (has_nav_menu('footer')) :
     ?>
 

@@ -6,8 +6,6 @@
  * Displays the primary site navigation.
  */
 
-declare(strict_types=1);
-
 if (has_nav_menu('primary')) :
     ?>
 

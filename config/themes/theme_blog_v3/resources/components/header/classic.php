@@ -6,8 +6,6 @@
  * Defines the overall site header structure.
  */
 
-declare(strict_types=1);
-
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 

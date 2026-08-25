@@ -6,8 +6,6 @@
  * Displays the site hero navigation.
  */
 
-declare(strict_types=1);
-
 if (has_nav_menu('hero')) :
     ?>
 

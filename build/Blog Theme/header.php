@@ -6,8 +6,6 @@
  * Displays the site title.
  */
 
-declare(strict_types=1);
-
 $tag = is_front_page() && is_home()
     ? 'h1'
     : 'p';
@@ -33,8 +31,6 @@ $tag = is_front_page() && is_home()
  *
  * Displays the primary site navigation.
  */
-
-declare(strict_types=1);
 
 if (has_nav_menu('primary')) :
     ?>

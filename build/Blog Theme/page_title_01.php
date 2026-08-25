@@ -6,8 +6,6 @@
  * Displays the title of the current page.
  */
 
-declare(strict_types=1);
-
 if (is_page()) :
     ?>
 

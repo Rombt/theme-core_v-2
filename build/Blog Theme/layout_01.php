@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 ?>
 
@@ -12,8 +12,6 @@ declare(strict_types=1);
  *
  * Displays the current archive title and description.
  */
-
-declare(strict_types=1);
 
 if (is_archive() || is_home() || is_search()) :
     ?>

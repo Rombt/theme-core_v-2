@@ -6,8 +6,6 @@
  * Displays the title of the current post.
  */
 
-declare(strict_types=1);
-
 if (is_singular()) :
     ?>
 

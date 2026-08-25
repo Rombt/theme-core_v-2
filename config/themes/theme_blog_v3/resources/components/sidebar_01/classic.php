@@ -6,8 +6,6 @@
  * Displays the primary widget area.
  */
 
-declare(strict_types=1);
-
 if (is_active_sidebar('primary-sidebar')) :
     ?>
 

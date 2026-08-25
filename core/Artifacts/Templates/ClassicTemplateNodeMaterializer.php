@@ -17,9 +17,9 @@ use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMaterializerInterface
 {
     private string $resourcePackage;
+    private PhpContentNormalizer $normalizer;
 
     private DiagnosticsService $diagnostics;
-
     private LoggerInterface $logger;
 
     public function __construct(
@@ -33,10 +33,11 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             'theme.resource_package',
         );
 
-        $this->diagnostics = $context->get(ApplicationContextKeys::DIAGNOSTICS);
+        $this->normalizer = new PhpContentNormalizer();
 
-            // !! log !!
-            $this->logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+        $this->diagnostics = $context->get(ApplicationContextKeys::DIAGNOSTICS);
+        // !! log !!
+        $this->logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
     }
 
     public function materialize(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
@@ -70,16 +71,17 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             $templateIdentity,
         );
 
+        $content = $this->materializeSlots(
+            $content,
+            $children,
+            $templateIdentity,
+            $node,
+        );
+
         return new TemplateMaterializationResult(
-            $this->materializeSlots(
-                $content,
-                $children,
-                $templateIdentity,
-                $node,
-            ),
+            $this->normalizer->normalize($content),
         );
     }
-
 
 
     /**
@@ -149,21 +151,26 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
-        $content = $this->readResource($node, $templateIdentity,);
+        $content = $this->readResource($node, $templateIdentity);
 
         if ($content === null) {
             return new TemplateMaterializationResult('');
         }
 
-        $children = $this->materializeChildren($node, $templateIdentity);
+        $children = $this->materializeChildren(
+            $node,
+            $templateIdentity,
+        );
+
+        $content = $this->materializeSlots(
+            $content,
+            $children,
+            $templateIdentity,
+            $node,
+        );
 
         return new TemplateMaterializationResult(
-            $this->materializeSlots(
-                $content,
-                $children,
-                $templateIdentity,
-                $node,
-            ),
+            $this->normalizer->normalize($content),
         );
     }
 

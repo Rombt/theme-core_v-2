@@ -11,7 +11,7 @@
  * Elementor управляет содержимым области <main>.
  */
 
-// declare(strict_types=1);
+//
 
 // get_header();
 

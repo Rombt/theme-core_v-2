@@ -6,8 +6,6 @@
  * Отображает заголовок текущей записи.
  */
 
-declare(strict_types=1);
-
 if (is_singular()) :
     ?>
 

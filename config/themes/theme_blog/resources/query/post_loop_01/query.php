@@ -6,8 +6,6 @@
  * Выполняет цикл WordPress и отображает список записей.
  */
 
-declare(strict_types=1);
-
 if (have_posts()) :
     while (have_posts()) :
         the_post();
