@@ -15,11 +15,8 @@ final readonly class ClassicTemplateTreeRenderer implements TemplateTreeRenderer
     ) {
     }
 
-    public function render(
-        Template $template,
-    ): string {
-        return $this->materializer
-            ->materialize($template)
-            ->content();
+    public function render(Template $template): string
+    {
+        return $this->materializer->materialize($template)->content();
     }
 }

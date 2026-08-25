@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
+use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeMaterializerInterface;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
@@ -12,19 +14,29 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
 {
     public function __construct(
         private TemplateNodeMaterializerInterface $nodeMaterializer,
+        private Application $app,
     ) {
     }
 
-    public function materialize(
-        Template $template,
-    ): TemplateMaterializationResult {
+    public function materialize(Template $template): TemplateMaterializationResult
+    {
+        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
+
         $contents = [];
 
+
+        $logger->dump('=============$template==================');
+        $logger->dump($template);
+
         foreach ($template->tree()->roots() as $root) {
-            $result = $this->nodeMaterializer->materialize(
-                $root,
-                $template->identity(),
-            );
+            $logger->dump('===================$root==============================');
+            $logger->dump($root);
+
+            $result = $this->nodeMaterializer->materialize($root, $template->identity());
+
+            $logger->dump('$result = ');
+            $logger->dump($result);
+
 
             if ($result->content() === '') {
                 continue;
@@ -32,6 +44,8 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
 
             $contents[] = $result->content();
         }
+
+        $logger->dump('=============$template end==================');
 
         return new TemplateMaterializationResult(
             $this->joinContents($contents),

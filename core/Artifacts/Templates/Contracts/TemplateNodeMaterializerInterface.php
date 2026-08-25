@@ -13,6 +13,5 @@ interface TemplateNodeMaterializerInterface
     public function materialize(
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
-        bool $isRoot = false,
     ): TemplateMaterializationResult;
 }

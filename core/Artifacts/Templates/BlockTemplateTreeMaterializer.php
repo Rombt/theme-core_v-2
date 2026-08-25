@@ -21,23 +21,40 @@ final readonly class BlockTemplateTreeMaterializer implements TemplateTreeMateri
         $contents = [];
 
         foreach ($template->tree()->roots() as $root) {
-            $content = $this->nodeMaterializer
-                ->materialize(
-                    $root,
-                    $template->identity(),
-                    true,
-                )
-                ->content();
+            $result = $this->nodeMaterializer->materialize(
+                $root,
+                $template->identity(),
+                true,
+            );
 
-            if ($content === '') {
+            if ($result->content() === '') {
                 continue;
             }
 
-            $contents[] = $content;
+            $contents[] = $result->content();
         }
 
         return new TemplateMaterializationResult(
-            implode(PHP_EOL, $contents),
+            $this->joinContents($contents),
+        );
+    }
+
+    /**
+     * @param array<int, string> $contents
+     */
+    private function joinContents(
+        array $contents,
+    ): string {
+        $contents = array_values(
+            array_filter(
+                $contents,
+                static fn (string $content): bool => $content !== '',
+            ),
+        );
+
+        return implode(
+            PHP_EOL . PHP_EOL,
+            $contents,
         );
     }
 }

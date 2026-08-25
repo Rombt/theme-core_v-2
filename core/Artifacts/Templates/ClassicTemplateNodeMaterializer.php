@@ -12,6 +12,7 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMaterializerInterface
 {
@@ -19,59 +20,113 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
 
     private DiagnosticsService $diagnostics;
 
+    private LoggerInterface $logger;
+
     public function __construct(
         ?Application $app,
     ) {
         $context = $app->getContext();
 
-        $configuration = $context->get(
-            ApplicationContextKeys::CONFIGURATION
-        );
+        $configuration = $context->get(ApplicationContextKeys::CONFIGURATION);
 
         $this->resourcePackage = $configuration->get(
-            'theme.resource_package'
+            'theme.resource_package',
         );
 
-        $this->diagnostics = $context->get(
-            ApplicationContextKeys::DIAGNOSTICS
-        );
+        $this->diagnostics = $context->get(ApplicationContextKeys::DIAGNOSTICS);
+
+            // !! log !!
+            $this->logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
     }
 
-    public function materialize(
+    public function materialize(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
+    {
+        return $this->materializeChild($node, $templateIdentity);
+    }
+
+    /**
+     * Materializes a child according to the child's Rendering.
+     *
+     * The parent does not decide how the child is represented.
+     */
+    private function materializeChild(
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
-        bool $isRoot = false,
     ): TemplateMaterializationResult {
-        return match ($this->determineNodeStrategy($node)) {
-            'template-part' => $this->materializeTemplatePartNode(
-                $node,
-                $templateIdentity,
-            ),
 
-            'resource' => $this->materializeResourceNode(
-                $node,
-                $templateIdentity,
-            ),
 
-            'structural' => $this->materializeStructuralNode(
-                $node,
-                $templateIdentity,
-            ),
-        };
+            // !! log !!
+            $this->logger->dump('$node = ');
+            $this->logger->dump($node);
+
+            $this->logger->dump('$templateIdentity = ');
+            $this->logger->dump($templateIdentity);
+
+            $this->logger->dump('$node->rendering()->value = ');
+            $this->logger->dump($node->rendering()->value);
+
+            $this->logger->dump('---------------------');
+
+        switch ($node->rendering()->value) {
+            case 'inline':
+                return $this->materializeResourceNode(
+                    $node,
+                    $templateIdentity,
+                );
+
+            case 'header':
+                return new TemplateMaterializationResult(
+                    '<?php get_header(); ?>',
+                );
+
+            case 'footer':
+                return new TemplateMaterializationResult(
+                    '<?php get_footer(); ?>',
+                );
+
+            case 'sidebar':
+                return new TemplateMaterializationResult(
+                    '<?php get_sidebar(); ?>',
+                );
+
+            case 'template-part':
+                return $this->materializeTemplatePartReference(
+                    $node,
+                    $templateIdentity,
+                );
+
+            default:
+                return $this->materializationError(
+                    $node,
+                    $templateIdentity,
+                    sprintf(
+                        'Unsupported Classic rendering "%s".',
+                        $node->rendering()->value,
+                    ),
+                );
+        }
     }
 
-    private function determineNodeStrategy(
+    private function materializeResourceNode(
         TemplateNode $node,
-    ): string {
-        if ($this->isTemplatePartNode($node)) {
-            return 'template-part';
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $content = $this->readResource($node, $templateIdentity,);
+
+        if ($content === null) {
+            return new TemplateMaterializationResult('');
         }
 
-        if ($node->resource() !== null) {
-            return 'resource';
-        }
+        $children = $this->materializeChildren($node, $templateIdentity);
 
-        return 'structural';
+        return new TemplateMaterializationResult(
+            $this->materializeSlots(
+                $content,
+                $children,
+                $templateIdentity,
+                $node,
+            ),
+        );
     }
 
     /**
@@ -90,11 +145,8 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             $result = $this->materialize(
                 $child,
                 $templateIdentity,
+                false,
             );
-
-            if ($result->content() === '') {
-                continue;
-            }
 
             $children[] = [
                 'node' => $child,
@@ -103,85 +155,6 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         }
 
         return $children;
-    }
-
-    private function materializeStructuralNode(
-        TemplateNode $node,
-        TemplateIdentity $templateIdentity,
-    ): TemplateMaterializationResult {
-        $this->diagnose(
-            DiagnosticLevel::ERROR,
-            'Template node does not contain a resource.',
-            new DiagnosticContext([
-                'template' => $templateIdentity,
-                'node' => $node,
-            ]),
-            [
-                'template' => $templateIdentity,
-                'node' => $node,
-                'resource' => null,
-            ],
-        );
-
-        return new TemplateMaterializationResult('');
-    }
-
-    private function materializeResourceNode(
-        TemplateNode $node,
-        TemplateIdentity $templateIdentity,
-    ): TemplateMaterializationResult {
-        $children = $this->materializeChildren(
-            $node,
-            $templateIdentity,
-        );
-
-        $resource = $node->resource();
-
-        if ($resource === null) {
-            return $this->materializeStructuralNode(
-                $node,
-                $templateIdentity,
-            );
-        }
-
-        $content = $this->readResource(
-            $resource->value(),
-            $templateIdentity,
-            $node,
-        );
-
-        if ($content === null) {
-            return new TemplateMaterializationResult('');
-        }
-
-        return $this->materializeSlots(
-            $content,
-            $children,
-            $templateIdentity,
-            $node,
-        );
-    }
-
-    private function materializeTemplatePartNode(
-        TemplateNode $node,
-        TemplateIdentity $templateIdentity,
-    ): TemplateMaterializationResult {
-        /*
-         * Header, footer, sidebar and template-part are not inlined.
-         *
-         * Their own materialization is handled when their corresponding
-         * Artifact is generated.
-         */
-        if ($node->resource() === null) {
-            return $this->materializeStructuralNode(
-                $node,
-                $templateIdentity,
-            );
-        }
-
-        return new TemplateMaterializationResult(
-            $this->templatePartCall($node),
-        );
     }
 
     /**
@@ -195,9 +168,7 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         array $children,
         TemplateIdentity $templateIdentity,
         TemplateNode $parent,
-    ): TemplateMaterializationResult {
-        $slottedChildren = [];
-
+    ): string {
         foreach ($children as $childData) {
             /** @var TemplateNode $child */
             $child = $childData['node'];
@@ -210,17 +181,13 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             if ($slot === null) {
                 $this->diagnose(
                     DiagnosticLevel::ERROR,
-                    'Template child does not have a required slot.',
-                    new DiagnosticContext([
-                        'template' => $templateIdentity,
-                        'parent' => $parent,
-                        'child' => $child,
-                    ]),
+                    'Template child cannot be materialized because no slot is assigned.',
                     [
                         'template' => $templateIdentity,
                         'parent' => $parent,
                         'child' => $child,
                         'slot' => null,
+                        'architecture' => 'classic',
                     ],
                 );
 
@@ -239,74 +206,139 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
                         'Template child references missing slot "%s".',
                         $placeholder,
                     ),
-                    new DiagnosticContext([
-                        'template' => $templateIdentity,
-                        'parent' => $parent,
-                        'child' => $child,
-                    ]),
                     [
                         'template' => $templateIdentity,
                         'parent' => $parent,
                         'child' => $child,
                         'slot' => $slot,
+                        'architecture' => 'classic',
                     ],
                 );
 
                 continue;
             }
 
-            $slottedChildren[$slot] = $result->content();
-        }
-
-        foreach ($slottedChildren as $slot => $childContent) {
             $content = str_replace(
-                sprintf('@slot_%d', $slot),
-                $childContent,
+                $placeholder,
+                $result->content(),
                 $content,
             );
         }
 
-        $content = $this->removeUnresolvedSlots(
+        /*
+         * Every unused slot is removed.
+         *
+         * We also diagnose it because the Resource declares a slot
+         * for which Template IR supplied no child.
+         */
+        $this->diagnoseUnusedSlots(
             $content,
+            $templateIdentity,
+            $parent,
         );
 
+        return $this->removeUnresolvedSlots($content);
+    }
+
+    private function diagnoseUnusedSlots(
+        string $content,
+        TemplateIdentity $templateIdentity,
+        TemplateNode $parent,
+    ): void {
+        if (
+            preg_match_all(
+                '/@slot_(\d+)/',
+                $content,
+                $matches,
+            ) === false
+        ) {
+            return;
+        }
+
+        foreach ($matches[1] as $slot) {
+            $this->diagnose(
+                DiagnosticLevel::ERROR,
+                sprintf(
+                    'Template resource contains unused slot "@slot_%s".',
+                    $slot,
+                ),
+                [
+                    'template' => $templateIdentity,
+                    'parent' => $parent,
+                    'slot' => (int) $slot,
+                    'architecture' => 'classic',
+                ],
+            );
+        }
+    }
+
+    private function materializeTemplatePartReference(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return $this->materializationError(
+                $node,
+                $templateIdentity,
+                'Template-part reference requires a Resource.',
+            );
+        }
+
+
+            $this->logger->dump('$resource->value() = ');
+            $this->logger->dump($resource->value());
+
         return new TemplateMaterializationResult(
-            $content,
-            $slottedChildren,
+            sprintf(
+                '<?php get_template_part(%s); ?>',
+                var_export(
+                    $resource->value(),
+                    true,
+                ),
+            ),
         );
     }
 
     private function readResource(
-        string $resourceId,
-        TemplateIdentity $templateIdentity,
         TemplateNode $node,
+        TemplateIdentity $templateIdentity,
     ): ?string {
-        $path = rtrim(
-            $this->resourcePackage,
-            '/\\',
-        )
-            . DIRECTORY_SEPARATOR
-            . 'components'
-            . DIRECTORY_SEPARATOR
-            . $resourceId
-            . DIRECTORY_SEPARATOR
-            . 'classic.php';
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            $this->diagnose(
+                DiagnosticLevel::ERROR,
+                'Template node does not contain a Resource.',
+                [
+                    'template' => $templateIdentity,
+                    'node' => $node,
+                    'resource' => null,
+                    'architecture' => 'classic',
+                ],
+            );
+
+            return null;
+        }
+
+        $path = $this->resourcePath(
+            $resource->value(),
+            'classic.php',
+        );
 
         if (!is_file($path)) {
             $this->diagnose(
                 DiagnosticLevel::ERROR,
                 sprintf(
-                    'Classic template resource "%s" was not found.',
+                    'Classic template Resource "%s" was not found.',
                     $path,
                 ),
-                new DiagnosticContext([
-                    'template' => $templateIdentity,
-                    'node' => $node,
-                ]),
                 [
                     'template' => $templateIdentity,
                     'node' => $node,
-                    'resource' => $resourceId,
+                    'resource' => $resource->value(),
+                    'architecture' => 'classic',
                     'path' => $path,
                 ],
             );
@@ -320,17 +352,14 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             $this->diagnose(
                 DiagnosticLevel::ERROR,
                 sprintf(
-                    'Unable to read Classic template resource "%s".',
+                    'Unable to read Classic template Resource "%s".',
                     $path,
                 ),
-                new DiagnosticContext([
-                    'template' => $templateIdentity,
-                    'node' => $node,
-                ]),
                 [
                     'template' => $templateIdentity,
                     'node' => $node,
-                    'resource' => $resourceId,
+                    'resource' => $resource->value(),
+                    'architecture' => 'classic',
                     'path' => $path,
                 ],
             );
@@ -341,63 +370,20 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         return $content;
     }
 
-    private function templatePartCall(
-        TemplateNode $node,
+    private function resourcePath(
+        string $resourceId,
+        string $filename,
     ): string {
-        return match ($node->rendering()->value) {
-            'header' => '<?php get_header(); ?>',
-            'footer' => '<?php get_footer(); ?>',
-            'sidebar' => '<?php get_sidebar(); ?>',
-            'template-part' => $this->templatePartInclude($node),
-            default => '',
-        };
-    }
-
-    private function templatePartInclude(
-        TemplateNode $node,
-    ): string {
-        $resource = $node->resource();
-
-        if ($resource === null) {
-            return '';
-        }
-
-        return sprintf(
-            '<?php get_template_part(%s); ?>',
-            var_export(
-                $resource->value(),
-                true,
-            ),
-        );
-    }
-
-    private function isTemplatePartNode(
-        TemplateNode $node,
-    ): bool {
-        return in_array(
-            $node->rendering()->value,
-            [
-                'header',
-                'footer',
-                'sidebar',
-                'template-part',
-            ],
-            true,
-        );
-    }
-
-    private function diagnose(
-        DiagnosticLevel $level,
-        string $message,
-        DiagnosticContext $context,
-        array $metadata = [],
-    ): void {
-        $this->diagnostics->create(
-            level: $level,
-            message: $message,
-            context: $context,
-            metadata: $metadata,
-        );
+        return rtrim(
+            $this->resourcePackage,
+            '/\\',
+        )
+            . DIRECTORY_SEPARATOR
+            . 'components'
+            . DIRECTORY_SEPARATOR
+            . $resourceId
+            . DIRECTORY_SEPARATOR
+            . $filename;
     }
 
     private function removeUnresolvedSlots(
@@ -408,5 +394,43 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             '',
             $content,
         ) ?? $content;
+    }
+
+    private function materializationError(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+        string $message,
+    ): TemplateMaterializationResult {
+        $this->diagnose(
+            DiagnosticLevel::ERROR,
+            $message,
+            [
+                'template' => $templateIdentity,
+                'node' => $node,
+                'resource' => $node->resource()?->value(),
+                'rendering' => $node->rendering()->value,
+                'architecture' => 'classic',
+            ],
+        );
+
+        return new TemplateMaterializationResult('');
+    }
+
+    /**
+     * @param array<string, mixed> $metadata
+     */
+    private function diagnose(
+        DiagnosticLevel $level,
+        string $message,
+        array $metadata = [],
+    ): void {
+        $context = new DiagnosticContext($metadata);
+
+        $this->diagnostics->create(
+            level: $level,
+            message: $message,
+            context: $context,
+            metadata: $metadata,
+        );
     }
 }

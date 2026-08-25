@@ -269,9 +269,7 @@ $pipeline = new Pipeline([
                 new BlockTemplateArtifactGenerator(
                     new BlockTemplateTreeRenderer(
                         new BlockTemplateTreeMaterializer(
-                            new BlockTemplateNodeMaterializer(
-                                $configuration->get('theme.resource_package'),
-                            ),
+                            new BlockTemplateNodeMaterializer($app),
                         ),
                     ),
                 ),

@@ -25,10 +25,7 @@ final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInt
                     continue;
                 }
 
-                $generator->generate(
-                    $concept,
-                    $artifacts,
-                );
+                $generator->generate($concept, $artifacts);
             }
         }
     }

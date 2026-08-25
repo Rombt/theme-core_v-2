@@ -4,16 +4,37 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
-use RuntimeException;
+use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMaterializerInterface
 {
+    private string $resourcePackage;
+
+    private DiagnosticsService $diagnostics;
+
     public function __construct(
-        private string $resourcePackage,
+        ?Application $app,
     ) {
+        $context = $app->getContext();
+
+        $configuration = $context->get(
+            ApplicationContextKeys::CONFIGURATION,
+        );
+
+        $this->resourcePackage = $configuration->get(
+            'theme.resource_package',
+        );
+
+        $this->diagnostics = $context->get(
+            ApplicationContextKeys::DIAGNOSTICS,
+        );
     }
 
     public function materialize(
@@ -21,8 +42,49 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         TemplateIdentity $templateIdentity,
         bool $isRoot = false,
     ): TemplateMaterializationResult {
-        $slottedChildren = [];
-        $unslottedChildren = [];
+        return match ($this->determineNodeStrategy($node)) {
+            'template-part' => $this->materializeTemplatePartNode(
+                $node,
+                $templateIdentity,
+            ),
+
+            'resource' => $this->materializeResourceNode(
+                $node,
+                $templateIdentity,
+            ),
+
+            'structural' => $this->materializeStructuralNode(
+                $node,
+                $templateIdentity,
+            ),
+        };
+    }
+
+    private function determineNodeStrategy(
+        TemplateNode $node,
+    ): string {
+        if ($this->isExternalTemplatePartNode($node)) {
+            return 'template-part';
+        }
+
+        if ($node->resource() !== null) {
+            return 'resource';
+        }
+
+        return 'structural';
+    }
+
+    /**
+     * @return array<int, array{
+     *     node: TemplateNode,
+     *     result: TemplateMaterializationResult
+     * }>
+     */
+    private function materializeChildren(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): array {
+        $children = [];
 
         foreach ($node->children() as $child) {
             $result = $this->materialize(
@@ -30,109 +92,293 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                 $templateIdentity,
             );
 
-            if ($child->slot() === null) {
-                $unslottedChildren[] = $result->content();
+            $children[] = [
+                'node' => $child,
+                'result' => $result,
+            ];
+        }
+
+        return $children;
+    }
+
+    private function materializeStructuralNode(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $this->diagnose(
+            DiagnosticLevel::ERROR,
+            'Template node does not contain a resource.',
+            [
+                'template' => $templateIdentity,
+                'node' => $node,
+                'resource' => null,
+            ],
+        );
+
+        return new TemplateMaterializationResult('');
+    }
+
+    private function materializeResourceNode(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $content = $this->readResource(
+            $node,
+            $templateIdentity,
+        );
+
+        if ($content === null) {
+            return new TemplateMaterializationResult('');
+        }
+
+        $children = $this->materializeChildren(
+            $node,
+            $templateIdentity,
+        );
+
+        $content = $this->materializeSlots(
+            $content,
+            $children,
+            $templateIdentity,
+            $node,
+        );
+
+        return new TemplateMaterializationResult($content);
+    }
+
+    private function materializeTemplatePartNode(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return $this->materializeStructuralNode(
+                $node,
+                $templateIdentity,
+            );
+        }
+
+        /*
+         * Header, footer and sidebar are generated as independent
+         * WordPress template parts.
+         *
+         * The corresponding resource is materialized when its own
+         * Template Artifact is generated.
+         */
+        return new TemplateMaterializationResult(
+            $this->externalTemplatePartCall($node),
+        );
+    }
+
+    /**
+     * @param array<int, array{
+     *     node: TemplateNode,
+     *     result: TemplateMaterializationResult
+     * }> $children
+     */
+    private function materializeSlots(
+        string $content,
+        array $children,
+        TemplateIdentity $templateIdentity,
+        TemplateNode $parent,
+    ): string {
+        foreach ($children as $childData) {
+            /** @var TemplateNode $child */
+            $child = $childData['node'];
+
+            /** @var TemplateMaterializationResult $result */
+            $result = $childData['result'];
+
+            $slot = $child->slot();
+
+            if ($slot === null) {
+                $this->diagnose(
+                    DiagnosticLevel::ERROR,
+                    'Template child cannot be materialized because no slot is assigned.',
+                    [
+                        'template' => $templateIdentity,
+                        'parent' => $parent,
+                        'child' => $child,
+                        'slot' => null,
+                    ],
+                );
 
                 continue;
             }
 
-            $slottedChildren[$child->slot()] = $result->content();
-        }
+            $placeholder = sprintf(
+                '@slot_%d',
+                $slot,
+            );
 
-        $resource = $node->resource();
+            if (!str_contains($content, $placeholder)) {
+                $this->diagnose(
+                    DiagnosticLevel::ERROR,
+                    sprintf(
+                        'Template child references missing slot "%s".',
+                        $placeholder,
+                    ),
+                    [
+                        'template' => $templateIdentity,
+                        'parent' => $parent,
+                        'child' => $child,
+                        'slot' => $slot,
+                    ],
+                );
 
-        if ($resource === null) {
-            return new TemplateMaterializationResult(
-                $this->joinChildren(
-                    $unslottedChildren,
-                    $slottedChildren,
-                ),
-                $slottedChildren,
+                continue;
+            }
+
+            $content = str_replace(
+                $placeholder,
+                $result->content(),
+                $content,
             );
         }
 
-        $path = rtrim($this->resourcePackage, '/\\')
-            . DIRECTORY_SEPARATOR
-            . 'components'
-            . DIRECTORY_SEPARATOR
-            . $resource->value()
-            . DIRECTORY_SEPARATOR
-            . 'block.html';
+        return $this->removeUnresolvedSlots($content);
+    }
+
+    private function appendUnslottedChildren(
+        string $content,
+        array $children,
+        TemplateIdentity $templateIdentity,
+        TemplateNode $parent,
+    ): string {
+        foreach ($children as $childData) {
+            /** @var TemplateNode $child */
+            $child = $childData['node'];
+
+            if ($child->slot() !== null) {
+                continue;
+            }
+
+            $this->diagnose(
+                DiagnosticLevel::ERROR,
+                'Template child cannot be appended because no slot is assigned.',
+                [
+                    'template' => $templateIdentity,
+                    'parent' => $parent,
+                    'child' => $child,
+                    'slot' => null,
+                ],
+            );
+        }
+
+        return $content;
+    }
+
+    private function readResource(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): ?string {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return null;
+        }
+
+        $path = $this->resourcePath(
+            $resource->value(),
+            'block.html',
+        );
 
         if (!is_file($path)) {
-            throw new RuntimeException(
+            $this->diagnose(
+                DiagnosticLevel::ERROR,
                 sprintf(
                     'Block template resource "%s" was not found.',
                     $path,
                 ),
+                [
+                    'template' => $templateIdentity,
+                    'node' => $node,
+                    'resource' => $resource->value(),
+                    'path' => $path,
+                ],
             );
+
+            return null;
         }
 
         $content = file_get_contents($path);
 
         if ($content === false) {
-            throw new RuntimeException(
+            $this->diagnose(
+                DiagnosticLevel::ERROR,
                 sprintf(
                     'Unable to read Block template resource "%s".',
                     $path,
                 ),
+                [
+                    'template' => $templateIdentity,
+                    'node' => $node,
+                    'resource' => $resource->value(),
+                    'path' => $path,
+                ],
             );
+
+            return null;
         }
 
-        foreach ($slottedChildren as $slot => $childContent) {
-            $content = str_replace(
-                sprintf('@slot_%d', $slot),
-                $childContent,
-                $content,
-            );
+        return $content;
+    }
+
+    private function resourcePath(
+        string $resourceId,
+        string $filename,
+    ): string {
+        return rtrim(
+            $this->resourcePackage,
+            '/\\',
+        )
+            . DIRECTORY_SEPARATOR
+            . 'components'
+            . DIRECTORY_SEPARATOR
+            . $resourceId
+            . DIRECTORY_SEPARATOR
+            . $filename;
+    }
+
+    private function externalTemplatePartCall(
+        TemplateNode $node,
+    ): string {
+        return match ($node->rendering()->value) {
+            'header' => '<!-- wp:template-part {"slug":"header"} /-->',
+            'footer' => '<!-- wp:template-part {"slug":"footer"} /-->',
+            'sidebar' => '<!-- wp:template-part {"slug":"sidebar"} /-->',
+            default => $this->templatePartInclude($node),
+        };
+    }
+
+    private function templatePartInclude(
+        TemplateNode $node,
+    ): string {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return '';
         }
 
-        $content = $this->removeUnresolvedSlots($content);
-
-        $unslottedContent = $this->joinContents(
-            $unslottedChildren,
-        );
-
-        if ($unslottedContent !== '') {
-            $content .= PHP_EOL . $unslottedContent;
-        }
-
-        return new TemplateMaterializationResult(
-            $content,
-            $slottedChildren,
+        return sprintf(
+            '<!-- wp:template-part {"slug":"%s"} /-->',
+            esc_attr($resource->value()),
         );
     }
 
-    /**
-     * @param array<int, string> $unslottedChildren
-     * @param array<int, string> $slottedChildren
-     */
-    private function joinChildren(
-        array $unslottedChildren,
-        array $slottedChildren,
-    ): string {
-        ksort($slottedChildren);
-
-        return $this->joinContents([
-            ...$unslottedChildren,
-            ...array_values($slottedChildren),
-        ]);
-    }
-
-    /**
-     * @param array<int, string> $contents
-     */
-    private function joinContents(
-        array $contents,
-    ): string {
-        $contents = array_values(
-            array_filter(
-                $contents,
-                static fn (string $content): bool => $content !== '',
-            ),
+    private function isExternalTemplatePartNode(
+        TemplateNode $node,
+    ): bool {
+        return in_array(
+            $node->rendering()->value,
+            [
+                'header',
+                'footer',
+                'sidebar',
+            ],
+            true,
         );
-
-        return implode(PHP_EOL, $contents);
     }
 
     private function removeUnresolvedSlots(
@@ -143,5 +389,23 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
             '',
             $content,
         ) ?? $content;
+    }
+
+    /**
+     * @param array<string, mixed> $metadata
+     */
+    private function diagnose(
+        DiagnosticLevel $level,
+        string $message,
+        array $metadata = [],
+    ): void {
+        $context = new DiagnosticContext($metadata);
+
+        $this->diagnostics->create(
+            level: $level,
+            message: $message,
+            context: $context,
+            metadata: $metadata,
+        );
     }
 }

@@ -13,8 +13,6 @@ final class ArtifactGeneratorRegistryFactory
      */
     public function create(iterable $generators): ArtifactGeneratorRegistry
     {
-        return new ArtifactGeneratorRegistry(
-            $generators
-        );
+        return new ArtifactGeneratorRegistry($generators);
     }
 }
