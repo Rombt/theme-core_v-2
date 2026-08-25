@@ -14,4 +14,9 @@ interface TemplateNodeMaterializerInterface
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult;
+
+    public function materializeTemplatePart(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult;
 }

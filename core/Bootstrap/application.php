@@ -223,6 +223,8 @@ $buildRoot = $configuration->get('paths.build');
 $resourcePackage = $configuration->get('theme.resource_package');
 
 
+$classicNodeMaterializer = new ClassicTemplateNodeMaterializer($app);
+
 $pipeline = new Pipeline([
 
     new BuildThemeComponentsStage(
@@ -256,24 +258,26 @@ $pipeline = new Pipeline([
 
     new GenerateIrArtifactsStage(
         new ThemeArtifactGenerator(
-            (new ArtifactGeneratorRegistryFactory())->create([
+            (new ArtifactGeneratorRegistryFactory())->create(
+                [
                 new ClassicTemplateArtifactGenerator(
                     new ClassicTemplateTreeRenderer(
                         new ClassicTemplateTreeMaterializer(
-                            new ClassicTemplateNodeMaterializer($app),
+                            $classicNodeMaterializer,
                             $app
                         ),
                     ),
+                    $classicNodeMaterializer
                 ),
-
-                new BlockTemplateArtifactGenerator(
-                    new BlockTemplateTreeRenderer(
-                        new BlockTemplateTreeMaterializer(
-                            new BlockTemplateNodeMaterializer($app),
+                    new BlockTemplateArtifactGenerator(
+                        new BlockTemplateTreeRenderer(
+                            new BlockTemplateTreeMaterializer(
+                                new BlockTemplateNodeMaterializer($app),
+                            ),
                         ),
                     ),
-                ),
-            ]),
+                    ]
+            ),
         ),
     ),
 
@@ -282,15 +286,15 @@ $pipeline = new Pipeline([
     ),
 
     new FinalizeBuildStage(),
-]);
+    ]);
 
-$result = $runtimeKernel->execute($pipeline);
+    $result = $runtimeKernel->execute($pipeline);
 
 
-echo PHP_EOL;
-echo 'Build Status: ';
-echo $result->getStatus();
-echo PHP_EOL;
+    echo PHP_EOL;
+    echo 'Build Status: ';
+    echo $result->getStatus();
+    echo PHP_EOL;
 
 if ($result->getError() !== null) {
     echo 'Build Error: ';
@@ -305,46 +309,46 @@ if ($result->getError() !== null) {
 */
 
 
-$logger->write(
-    new DiagnosticEntry(
-        level: DiagnosticLevel::INFO,
-        message: 'Project execution completed successfully',
-        context: new DiagnosticContext([
+    $logger->write(
+        new DiagnosticEntry(
+            level: DiagnosticLevel::INFO,
+            message: 'Project execution completed successfully',
+            context: new DiagnosticContext([
             'stage' => 'runtime_finish',
-        ]),
-        metadata: [
+            ]),
+            metadata: [
             'build_status' => $result->getStatus(),
-        ],
-        timestamp: new DateTimeImmutable(),
-    )
-);
+            ],
+            timestamp: new DateTimeImmutable(),
+        )
+    );
 
 /** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
-$diagnostics = $app->getContext()->get(
-    ApplicationContextKeys::DIAGNOSTICS
-);
-
-$diagnosticsFilePath = $configuration->get(
-    'diagnostic.path'
-);
-
-if (!is_string($diagnosticsFilePath)) {
-    throw new RuntimeException(
-        'Configuration key "diagnostic.path" must be string.'
+    $diagnostics = $app->getContext()->get(
+        ApplicationContextKeys::DIAGNOSTICS
     );
-}
 
-$writer = new CompositeWriter([
+    $diagnosticsFilePath = $configuration->get(
+        'diagnostic.path'
+    );
+
+    if (!is_string($diagnosticsFilePath)) {
+        throw new RuntimeException(
+            'Configuration key "diagnostic.path" must be string.'
+        );
+    }
+
+    $writer = new CompositeWriter([
     new ConsoleWriter(),
     new FilesystemWriter($diagnosticsFilePath),
-]);
+    ]);
 
-$reportRenderer = new DiagnosticReportRenderer();
+    $reportRenderer = new DiagnosticReportRenderer();
 
-$writer->write(
-    $reportRenderer->render(
-        $diagnostics->report()
-    )
-);
+    $writer->write(
+        $reportRenderer->render(
+            $diagnostics->report()
+        )
+    );
 
-return $app;
+    return $app;

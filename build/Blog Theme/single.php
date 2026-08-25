@@ -2,4 +2,4 @@
 
 <?php get_template_part('layout_01'); ?>
 
-<?php get_footer(); ?>
+<?php get_footer();

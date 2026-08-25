@@ -20,23 +20,11 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
 
     public function materialize(Template $template): TemplateMaterializationResult
     {
-        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
 
         $contents = [];
 
-
-        $logger->dump('=============$template==================');
-        $logger->dump($template);
-
         foreach ($template->tree()->roots() as $root) {
-            $logger->dump('===================$root==============================');
-            $logger->dump($root);
-
             $result = $this->nodeMaterializer->materialize($root, $template->identity());
-
-            $logger->dump('$result = ');
-            $logger->dump($result);
-
 
             if ($result->content() === '') {
                 continue;
@@ -44,8 +32,6 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
 
             $contents[] = $result->content();
         }
-
-        $logger->dump('=============$template end==================');
 
         return new TemplateMaterializationResult(
             $this->joinContents($contents),
@@ -66,7 +52,7 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
         );
 
         return implode(
-            PHP_EOL . PHP_EOL,
+            "\n\n",
             $contents,
         );
     }

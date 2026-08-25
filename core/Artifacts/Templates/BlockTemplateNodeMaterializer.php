@@ -146,6 +146,44 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         return new TemplateMaterializationResult($content);
     }
 
+    public function materializeTemplatePart(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return $this->materializeStructuralNode(
+                $node,
+                $templateIdentity,
+            );
+        }
+
+        $content = $this->readResource(
+            $node,
+            $templateIdentity,
+        );
+
+        if ($content === null) {
+            return new TemplateMaterializationResult('');
+        }
+
+        $children = $this->materializeChildren(
+            $node,
+            $templateIdentity,
+        );
+
+        return new TemplateMaterializationResult(
+            $this->materializeSlots(
+                $content,
+                $children,
+                $templateIdentity,
+                $node,
+            ),
+        );
+    }
+
+
     private function materializeTemplatePartNode(
         TemplateNode $node,
         TemplateIdentity $templateIdentity,

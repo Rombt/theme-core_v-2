@@ -44,6 +44,44 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         return $this->materializeChild($node, $templateIdentity);
     }
 
+    public function materializeTemplatePart(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
+    {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return $this->materializationError(
+                $node,
+                $templateIdentity,
+                'Template-part artifact requires a Resource.',
+            );
+        }
+
+        $content = $this->readResource(
+            $node,
+            $templateIdentity,
+        );
+
+        if ($content === null) {
+            return new TemplateMaterializationResult('');
+        }
+
+        $children = $this->materializeChildren(
+            $node,
+            $templateIdentity,
+        );
+
+        return new TemplateMaterializationResult(
+            $this->materializeSlots(
+                $content,
+                $children,
+                $templateIdentity,
+                $node,
+            ),
+        );
+    }
+
+
+
     /**
      * Materializes a child according to the child's Rendering.
      *
@@ -81,7 +119,7 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
 
             case 'footer':
                 return new TemplateMaterializationResult(
-                    '<?php get_footer(); ?>',
+                    '<?php get_footer();' . "\n",
                 );
 
             case 'sidebar':

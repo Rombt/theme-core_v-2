@@ -53,7 +53,7 @@ final readonly class BlockTemplateTreeMaterializer implements TemplateTreeMateri
         );
 
         return implode(
-            PHP_EOL . PHP_EOL,
+            "\n\n",
             $contents,
         );
     }
