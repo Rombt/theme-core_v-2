@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Archive Title
- *
- * Displays the current archive title and description.
- */
-
 if (is_archive() || is_home() || is_search()) :
     ?>
 
@@ -19,5 +13,4 @@ if (is_archive() || is_home() || is_search()) :
 
     </header>
 
-    <?php
-endif;
+<?php endif; ?>

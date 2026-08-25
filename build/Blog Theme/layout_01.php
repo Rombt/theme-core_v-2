@@ -1,20 +1,8 @@
-<?php
-
-
-
-?>
-
 <main id="primary" class="site-main">
     <?php
 
-/**
- * Archive Title
- *
- * Displays the current archive title and description.
- */
-
-if (is_archive() || is_home() || is_search()) :
-    ?>
+    if (is_archive() || is_home() || is_search()) :
+        ?>
 
     <header class="page-header">
 
@@ -26,11 +14,8 @@ if (is_archive() || is_home() || is_search()) :
 
     </header>
 
-    <?php
-endif;
+    <?php endif; ?>
 
     <?php get_template_part('post_loop_01'); ?>
     <?php get_sidebar(); ?>
 </main>
-
-<?php

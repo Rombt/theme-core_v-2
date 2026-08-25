@@ -1,12 +1,4 @@
-<?php
-
-/**
- * Header
- *
- * Defines the overall site header structure.
- */
-
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 
 <head>

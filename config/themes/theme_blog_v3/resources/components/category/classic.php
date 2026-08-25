@@ -1,5 +1,3 @@
-<?php
-
 @slot_1
 @slot_2
 @slot_3
