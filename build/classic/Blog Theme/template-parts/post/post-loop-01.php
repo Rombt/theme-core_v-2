@@ -5,7 +5,7 @@ if (have_posts()) :
         the_post();
         ?>
 
-        <?php get_template_part('post_title_01'); ?>
+        <?php get_template_part('post/post-title-01'); ?>
 
         <?php
     endwhile;
@@ -14,7 +14,7 @@ if (have_posts()) :
 else :
     ?>
 
-    <?php get_template_part('no_posts_01'); ?>
+    <?php get_template_part('common/no-posts-01'); ?>
 
     <?php
 endif;

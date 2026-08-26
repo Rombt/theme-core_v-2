@@ -16,7 +16,7 @@ final readonly class TemplateNode
         private string $id,
         private ?string $nodeId,
         private ?string $compositionId,
-        private ?TemplateNodeType $type,
+        private TemplateNodeType $type,
         private ?Resource $resource,
         private Rendering $rendering,
         private ?int $slot,

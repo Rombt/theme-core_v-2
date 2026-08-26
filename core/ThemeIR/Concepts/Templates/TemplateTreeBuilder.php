@@ -119,7 +119,9 @@ final readonly class TemplateTreeBuilder
             id: $compositionNode->id(),
             nodeId: null,
             compositionId: $composition->id(),
-            type: null,
+            type: new TemplateNodeType(
+                $composition->type()->name(),
+            ),
             resource: $composition->resource() !== null
                 ? new Resource($composition->resource())
                 : null,

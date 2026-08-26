@@ -92,6 +92,7 @@ use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateNodeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateTreeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateNodeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeMaterializer;
+use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplatePathResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -222,8 +223,11 @@ $runtimeKernel = new RuntimeKernel(
 $buildRoot = $configuration->get('paths.build');
 $resourcePackage = $configuration->get('theme.resource_package');
 
-
-$classicNodeMaterializer = new ClassicTemplateNodeMaterializer($app);
+$classicTemplatePathResolver = new ClassicTemplatePathResolver();
+$classicNodeMaterializer = new ClassicTemplateNodeMaterializer(
+    $classicTemplatePathResolver,
+    $app
+);
 
 $pipeline = new Pipeline([
 
@@ -267,7 +271,9 @@ $pipeline = new Pipeline([
                             $app
                         ),
                     ),
-                    $classicNodeMaterializer
+                    $classicNodeMaterializer,
+                    $classicTemplatePathResolver,
+                    $app
                 ),
                     new BlockTemplateArtifactGenerator(
                         new BlockTemplateTreeRenderer(

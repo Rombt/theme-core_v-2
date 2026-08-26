@@ -16,6 +16,6 @@ if (is_archive() || is_home() || is_search()) :
 
 <?php endif; ?>
 
-    <?php get_template_part('post_loop_01'); ?>
+    <?php get_template_part('post/post-loop-01'); ?>
     <?php get_sidebar(); ?>
 </main>

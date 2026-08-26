@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
+use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Artifact;
 use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
@@ -11,24 +13,26 @@ use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
+use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class ClassicTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
-    /**
-     * @var array<string, string>
-     */
-    private const PART_DESTINATIONS = [
-        'header' => 'header.php',
-        'footer' => 'footer.php',
-        'sidebar' => 'sidebar.php',
-    ];
+    private DiagnosticsService $diagnostics;
 
     public function __construct(
         private TemplateTreeRendererInterface $renderer,
         private TemplateNodeMaterializerInterface $nodeMaterializer,
+        private ClassicTemplatePathResolver $pathResolver,
+        Application $app,
     ) {
+        $this->diagnostics = $app->getContext()->get(
+            ApplicationContextKeys::DIAGNOSTICS,
+        );
     }
 
     public function supports(): string
@@ -56,12 +60,14 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
                         ),
                     ),
                     type: ArtifactType::FILE,
-                    destination: $this->destination($identity),
+                    destination: $this->pathResolver->templateDestination(
+                        $identity,
+                    ),
                     content: $this->renderer->render($template),
                     metadata: [
                         'architecture' => 'classic',
                         'template' => $identity,
-                        'role' => $this->role($identity),
+                        'role' => 'template',
                     ],
                 ),
             );
@@ -79,7 +85,7 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
      */
     private function generateTemplatePartArtifacts(
         array $nodes,
-        \Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity $templateIdentity,
+        TemplateIdentity $templateIdentity,
         ArtifactCollectionInterface $artifacts,
     ): void {
         foreach ($nodes as $node) {
@@ -101,12 +107,24 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
 
     private function generateTemplatePartArtifact(
         TemplateNode $node,
-        \Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity $templateIdentity,
+        TemplateIdentity $templateIdentity,
         ArtifactCollectionInterface $artifacts,
     ): void {
         $resource = $node->resource();
 
         if ($resource === null) {
+            return;
+        }
+
+        $type = $node->type()->value();
+
+        if (!$this->isSupportedType($type)) {
+            $this->diagnoseUnknownType(
+                $node,
+                $templateIdentity,
+                $type,
+            );
+
             return;
         }
 
@@ -121,8 +139,8 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
                     ),
                 ),
                 type: ArtifactType::FILE,
-                destination: sprintf(
-                    '%s.php',
+                destination: $this->pathResolver->templatePartDestination(
+                    $type,
                     $resourceId,
                 ),
                 content: $this->nodeMaterializer
@@ -162,18 +180,46 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
         );
     }
 
-    private function destination(
-        string $identity,
-    ): string {
-        return self::PART_DESTINATIONS[$identity]
-            ?? sprintf('%s.php', $identity);
+    private function isSupportedType(
+        string $type,
+    ): bool {
+        return in_array(
+            $type,
+            [
+                'layout',
+                'post',
+                'page',
+                'product',
+                'navigation',
+                'form',
+                'common',
+            ],
+            true,
+        );
     }
 
-    private function role(
-        string $identity,
-    ): string {
-        return isset(self::PART_DESTINATIONS[$identity])
-            ? 'template-part'
-            : 'template';
+    private function diagnoseUnknownType(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+        string $type,
+    ): void {
+        $metadata = [
+            'template' => $templateIdentity,
+            'node' => $node,
+            'resource' => $node->resource()?->value(),
+            'type' => $type,
+            'rendering' => $node->rendering()->value,
+            'architecture' => 'classic',
+        ];
+
+        $this->diagnostics->create(
+            level: DiagnosticLevel::ERROR,
+            message: sprintf(
+                'Unknown template node type "%s".',
+                $type,
+            ),
+            context: new DiagnosticContext($metadata),
+            metadata: $metadata,
+        );
     }
 }

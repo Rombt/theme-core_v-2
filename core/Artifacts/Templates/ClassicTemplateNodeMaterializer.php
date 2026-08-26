@@ -23,6 +23,7 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
     private LoggerInterface $logger;
 
     public function __construct(
+        private ClassicTemplatePathResolver $pathResolver,
         ?Application $app,
     ) {
         $context = $app->getContext();
@@ -318,11 +319,26 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             );
         }
 
+        $type = $node->type()->value();
+
+        try {
+            $slug = $this->pathResolver->templatePartSlug(
+                $type,
+                $resource->value(),
+            );
+        } catch (\InvalidArgumentException $exception) {
+            return $this->materializationError(
+                $node,
+                $templateIdentity,
+                $exception->getMessage(),
+            );
+        }
+
         return new TemplateMaterializationResult(
             sprintf(
                 '<?php get_template_part(%s); ?>',
                 var_export(
-                    $resource->value(),
+                    $slug,
                     true,
                 ),
             ),
