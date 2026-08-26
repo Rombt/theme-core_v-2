@@ -3,6 +3,7 @@
 return [
 
     'header' => [
+        'type' => 'layout',
         'resource' => 'header',
         'rendering' => 'header',
 
@@ -21,6 +22,7 @@ return [
     ],
 
     'footer' => [
+        'type' => 'layout',
         'resource' => 'footer',
         'rendering' => 'footer',
 
@@ -33,6 +35,7 @@ return [
     ],
 
     'sidebar' => [
+        'type' => 'layout',
         'resource' => 'sidebar_01',
         'rendering' => 'sidebar',
 
@@ -45,6 +48,7 @@ return [
     ],
 
     'layout' => [
+        'type' => 'layout',
         'resource' => 'layout_01',
         'rendering' => 'template-part',
 
@@ -63,6 +67,7 @@ return [
     ],
 
     'post-loop' => [
+        'type' => 'post',
         'resource' => 'post_loop_01',
         'rendering' => 'template-part',
 
@@ -81,6 +86,7 @@ return [
     ],
 
     'index' => [
+        'type' => 'template',
         'rendering' => 'template',
         'resource' => 'index',
 
@@ -101,6 +107,7 @@ return [
     ],
 
     'single' => [
+        'type' => 'template',
         'rendering' => 'template',
         'resource' => 'single',
 
@@ -139,6 +146,7 @@ return [
     ],
 
     'page' => [
+        'type' => 'template',
         'rendering' => 'template',
         'resource' => 'page',
 
@@ -177,6 +185,7 @@ return [
     ],
 
     'category' => [
+        'type' => 'template',
         'rendering' => 'template',
         'resource' => 'category',
 
@@ -215,6 +224,7 @@ return [
     ],
 
     'tag' => [
+        'type' => 'template',
         'rendering' => 'template',
         'resource' => 'tag',
 
@@ -253,6 +263,7 @@ return [
     ],
 
     'query' => [
+        'type' => 'post',
         'resource' => 'query_01',
         'rendering' => 'template-part',
 
