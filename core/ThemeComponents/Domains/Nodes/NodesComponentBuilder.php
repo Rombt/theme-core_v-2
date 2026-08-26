@@ -48,24 +48,21 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         return new Node(
             id: $node->id(),
             type: new NodeType(
-                name: $node->type()->name(),
-                strategy: NodeStrategy::fromString(
-                    $node->type()->strategy(),
-                ),
+                name: $node->type()->value(),
             ),
             resource: $node->resource(),
             name: $node->name(),
             strategy: $node->hasStrategyOverride()
-                ? NodeStrategy::fromString($node->strategy())
-                : null,
+            ? NodeStrategy::fromString($node->strategy())
+            : null,
             description: $node->description(),
             capabilities: $node->capabilities(),
             metadata: $node->metadata(),
             menu: $node->menu(),
             sidebar: $node->sidebar(),
             rendering: $node->rendering() !== null
-                ? Rendering::from($node->rendering())
-                : null,
+            ? Rendering::from($node->rendering())
+            : null,
         );
     }
 }
