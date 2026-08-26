@@ -10,8 +10,10 @@ final class Composition
 {
     private CompositionNodeCollection $defaultChildren;
 
+
     public function __construct(
         private readonly string $id,
+        private readonly CompositionType $type,
         private readonly ?string $resource,
         private readonly ?Rendering $rendering,
     ) {
@@ -42,5 +44,10 @@ final class Composition
         CompositionNodeCollection $defaultChildren,
     ): void {
         $this->defaultChildren = $defaultChildren;
+    }
+
+    public function type(): CompositionType
+    {
+        return $this->type;
     }
 }

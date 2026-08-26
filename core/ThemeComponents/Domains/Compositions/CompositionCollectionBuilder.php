@@ -33,6 +33,17 @@ final readonly class CompositionCollectionBuilder
         CompositionCollection $collection,
     ): void {
         foreach ($configuration->compositions() as $id => $definition) {
+            $type = $definition['type'] ?? null;
+
+            if (!is_string($type)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Composition "%s" type must be a string.',
+                        $id,
+                    ),
+                );
+            }
+
             $rendering = $definition['rendering'] ?? null;
 
             if ($rendering !== null && !is_string($rendering)) {
@@ -47,6 +58,9 @@ final readonly class CompositionCollectionBuilder
             $collection->add(
                 new Composition(
                     id: $id,
+                    type: new CompositionType(
+                        name: $type,
+                    ),
                     resource: $definition['resource'] ?? null,
                     rendering: $rendering !== null
                         ? Rendering::from($rendering)
@@ -130,7 +144,7 @@ final readonly class CompositionCollectionBuilder
             if ($slot !== null && !is_int($slot)) {
                 throw new RuntimeException(
                     sprintf(
-                        'Composition child "%s" slot must be a string or null.',
+                        'Composition child "%s" slot must be an integer or null.',
                         $id,
                     ),
                 );
