@@ -91,7 +91,7 @@ final readonly class Node
 
     public function strategy(): string
     {
-        return $this->strategy ?? $this->type->strategy();
+        return $this->strategy;
     }
 
     public function hasStrategyOverride(): bool

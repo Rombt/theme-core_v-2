@@ -7,18 +7,12 @@ namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes;
 final readonly class NodeType
 {
     public function __construct(
-        private string $name,
-        private string $strategy = 'default',
+        private string $value,
     ) {
     }
 
-    public function name(): string
+    public function value(): string
     {
-        return $this->name;
-    }
-
-    public function strategy(): string
-    {
-        return $this->strategy;
+        return $this->value;
     }
 }

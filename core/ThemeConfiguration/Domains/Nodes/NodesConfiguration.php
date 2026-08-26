@@ -26,27 +26,19 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
         $this->nodes = new NodeCollection($collection);
     }
 
-
     /**
      * @param array<string, mixed> $node
      */
     private function createNode(string $id, array $node): Node
     {
-        /** @var array{name?: string, strategy?: string} $type */
-        $type = is_array($node['type'] ?? null)
-        ? $node['type']
-        : [];
-
         return new Node(
             id: $id,
             type: new NodeType(
-                name: (string) ($type['name'] ?? ''),
-                strategy: (string) ($type['strategy'] ?? 'default'),
+                value: (string) ($node['type'] ?? ''),
             ),
-            // resource: (string) ($node['resource'] ?? ''),
             resource: isset($node['resource'])
-            ? (string) $node['resource']
-            : null,
+                ? (string) $node['resource']
+                : null,
             name: (string) ($node['name'] ?? ''),
             strategy: isset($node['strategy'])
                 ? (string) $node['strategy']
@@ -65,7 +57,6 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
                 : null,
         );
     }
-
 
     public function nodes(): NodeCollection
     {
@@ -92,20 +83,16 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
     private function nodeToArray(Node $node): array
     {
         return [
-        'type' => [
-            'name' => $node->type()->name(),
-            'strategy' => $node->type()->strategy(),
-        ],
-        'resource' => $node->resource(),
-        'name' => $node->name(),
-        'strategy' => $node->hasStrategyOverride()
-            ? $node->strategy()
-            : null,
-        'description' => $node->description(),
-        'capabilities' => $node->capabilities(),
-        'metadata' => $node->metadata(),
-        'menu' => $this->menuToArray($node),
-        'sidebar' => $this->sidebarToArray($node),
+            'type' => $node->type()->value(),
+            'resource' => $node->resource(),
+            'name' => $node->name(),
+            'strategy' => $node->strategy(),
+            'description' => $node->description(),
+            'capabilities' => $node->capabilities(),
+            'metadata' => $node->metadata(),
+            'menu' => $this->menuToArray($node),
+            'sidebar' => $this->sidebarToArray($node),
+            'rendering' => $node->rendering(),
         ];
     }
 
@@ -124,7 +111,6 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
     {
         return $node->sidebar()?->toArray();
     }
-
 
     /**
      * @param array<string, mixed> $node
@@ -154,8 +140,8 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
             id: (string) ($node['sidebar']['id'] ?? ''),
             name: (string) ($node['sidebar']['name'] ?? ''),
             description: isset($node['sidebar']['description'])
-            ? (string) $node['sidebar']['description']
-            : null,
+                ? (string) $node['sidebar']['description']
+                : null,
         );
     }
 }
