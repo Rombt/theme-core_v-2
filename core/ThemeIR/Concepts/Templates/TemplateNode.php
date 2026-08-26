@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
 
 use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateNodeType;
 
 final readonly class TemplateNode
 {
@@ -15,6 +16,7 @@ final readonly class TemplateNode
         private string $id,
         private ?string $nodeId,
         private ?string $compositionId,
+        private ?TemplateNodeType $type,
         private ?Resource $resource,
         private Rendering $rendering,
         private ?int $slot,
@@ -35,6 +37,11 @@ final readonly class TemplateNode
     public function compositionId(): ?string
     {
         return $this->compositionId;
+    }
+
+    public function type(): TemplateNodeType
+    {
+        return $this->type;
     }
 
     public function resource(): ?Resource

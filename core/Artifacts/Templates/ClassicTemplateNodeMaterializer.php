@@ -94,19 +94,6 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
 
-
-            // !! log !!
-            $this->logger->dump('$node = ');
-            $this->logger->dump($node);
-
-            $this->logger->dump('$templateIdentity = ');
-            $this->logger->dump($templateIdentity);
-
-            $this->logger->dump('$node->rendering()->value = ');
-            $this->logger->dump($node->rendering()->value);
-
-            $this->logger->dump('---------------------');
-
         switch ($node->rendering()->value) {
             case 'inline':
                 return $this->materializeResourceNode(
@@ -330,10 +317,6 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
                 'Template-part reference requires a Resource.',
             );
         }
-
-
-            $this->logger->dump('$resource->value() = ');
-            $this->logger->dump($resource->value());
 
         return new TemplateMaterializationResult(
             sprintf(

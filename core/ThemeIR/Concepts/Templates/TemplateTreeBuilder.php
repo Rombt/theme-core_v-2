@@ -10,6 +10,7 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionCollection;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNode;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNodeCollection;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodeCollection;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateNodeType;
 
 final readonly class TemplateTreeBuilder
 {
@@ -83,9 +84,12 @@ final readonly class TemplateTreeBuilder
             id: $compositionNode->id(),
             nodeId: $node->id(),
             compositionId: null,
+            type: new TemplateNodeType(
+                $node->type()->name(),
+            ),
             resource: $node->resource() !== null
-                ? new Resource($node->resource())
-                : null,
+            ? new Resource($node->resource())
+            : null,
             rendering: $node->rendering(),
             slot: $compositionNode->slot(),
         );
@@ -115,6 +119,7 @@ final readonly class TemplateTreeBuilder
             id: $compositionNode->id(),
             nodeId: null,
             compositionId: $composition->id(),
+            type: null,
             resource: $composition->resource() !== null
                 ? new Resource($composition->resource())
                 : null,
