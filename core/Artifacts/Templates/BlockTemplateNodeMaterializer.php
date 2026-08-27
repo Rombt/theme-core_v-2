@@ -42,36 +42,31 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         TemplateIdentity $templateIdentity,
         bool $isRoot = false,
     ): TemplateMaterializationResult {
-        return match ($this->determineNodeStrategy($node)) {
-            'template-part' => $this->materializeTemplatePartNode(
-                $node,
-                $templateIdentity,
-            ),
-
-            'resource' => $this->materializeResourceNode(
-                $node,
-                $templateIdentity,
-            ),
-
-            'structural' => $this->materializeStructuralNode(
-                $node,
-                $templateIdentity,
-            ),
-        };
-    }
-
-    private function determineNodeStrategy(
-        TemplateNode $node,
-    ): string {
-        if ($this->isExternalTemplatePartNode($node)) {
-            return 'template-part';
+        if ($this->isTemplatePartReference($node)) {
+            return $this->materializeTemplatePartReference($node);
         }
 
         if ($node->resource() !== null) {
-            return 'resource';
+            return $this->materializeResourceNode(
+                $node,
+                $templateIdentity,
+            );
         }
 
-        return 'structural';
+        return $this->materializeStructuralNode(
+            $node,
+            $templateIdentity,
+        );
+    }
+
+    public function materializeTemplatePart(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        return $this->materializeResourceNode(
+            $node,
+            $templateIdentity,
+        );
     }
 
     /**
@@ -87,78 +82,22 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         $children = [];
 
         foreach ($node->children() as $child) {
-            $result = $this->materialize(
-                $child,
-                $templateIdentity,
-            );
-
             $children[] = [
                 'node' => $child,
-                'result' => $result,
+                'result' => $this->materialize(
+                    $child,
+                    $templateIdentity,
+                ),
             ];
         }
 
         return $children;
     }
 
-    private function materializeStructuralNode(
-        TemplateNode $node,
-        TemplateIdentity $templateIdentity,
-    ): TemplateMaterializationResult {
-        $this->diagnose(
-            DiagnosticLevel::ERROR,
-            'Template node does not contain a resource.',
-            [
-                'template' => $templateIdentity,
-                'node' => $node,
-                'resource' => null,
-            ],
-        );
-
-        return new TemplateMaterializationResult('');
-    }
-
     private function materializeResourceNode(
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
-        $content = $this->readResource(
-            $node,
-            $templateIdentity,
-        );
-
-        if ($content === null) {
-            return new TemplateMaterializationResult('');
-        }
-
-        $children = $this->materializeChildren(
-            $node,
-            $templateIdentity,
-        );
-
-        $content = $this->materializeSlots(
-            $content,
-            $children,
-            $templateIdentity,
-            $node,
-        );
-
-        return new TemplateMaterializationResult($content);
-    }
-
-    public function materializeTemplatePart(
-        TemplateNode $node,
-        TemplateIdentity $templateIdentity,
-    ): TemplateMaterializationResult {
-        $resource = $node->resource();
-
-        if ($resource === null) {
-            return $this->materializeStructuralNode(
-                $node,
-                $templateIdentity,
-            );
-        }
-
         $content = $this->readResource(
             $node,
             $templateIdentity,
@@ -183,30 +122,30 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         );
     }
 
-
-    private function materializeTemplatePartNode(
+    private function materializeStructuralNode(
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
-        $resource = $node->resource();
+        $this->diagnose(
+            DiagnosticLevel::ERROR,
+            'Template node does not contain a resource.',
+            [
+                'template' => $templateIdentity,
+                'node' => $node,
+                'resource' => null,
+            ],
+        );
 
-        if ($resource === null) {
-            return $this->materializeStructuralNode(
-                $node,
+        $content = '';
+
+        foreach ($node->children() as $child) {
+            $content .= $this->materialize(
+                $child,
                 $templateIdentity,
-            );
+            )->content();
         }
 
-        /*
-         * Header, footer and sidebar are generated as independent
-         * WordPress template parts.
-         *
-         * The corresponding resource is materialized when its own
-         * Template Artifact is generated.
-         */
-        return new TemplateMaterializationResult(
-            $this->externalTemplatePartCall($node),
-        );
+        return new TemplateMaterializationResult($content);
     }
 
     /**
@@ -276,35 +215,6 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         }
 
         return $this->removeUnresolvedSlots($content);
-    }
-
-    private function appendUnslottedChildren(
-        string $content,
-        array $children,
-        TemplateIdentity $templateIdentity,
-        TemplateNode $parent,
-    ): string {
-        foreach ($children as $childData) {
-            /** @var TemplateNode $child */
-            $child = $childData['node'];
-
-            if ($child->slot() !== null) {
-                continue;
-            }
-
-            $this->diagnose(
-                DiagnosticLevel::ERROR,
-                'Template child cannot be appended because no slot is assigned.',
-                [
-                    'template' => $templateIdentity,
-                    'parent' => $parent,
-                    'child' => $child,
-                    'slot' => null,
-                ],
-            );
-        }
-
-        return $content;
     }
 
     private function readResource(
@@ -379,33 +289,7 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
             . $filename;
     }
 
-    private function externalTemplatePartCall(
-        TemplateNode $node,
-    ): string {
-        return match ($node->rendering()->value) {
-            'header' => '<!-- wp:template-part {"slug":"header"} /-->',
-            'footer' => '<!-- wp:template-part {"slug":"footer"} /-->',
-            'sidebar' => '<!-- wp:template-part {"slug":"sidebar"} /-->',
-            default => $this->templatePartInclude($node),
-        };
-    }
-
-    private function templatePartInclude(
-        TemplateNode $node,
-    ): string {
-        $resource = $node->resource();
-
-        if ($resource === null) {
-            return '';
-        }
-
-        return sprintf(
-            '<!-- wp:template-part {"slug":"%s"} /-->',
-            esc_attr($resource->value()),
-        );
-    }
-
-    private function isExternalTemplatePartNode(
+    private function isTemplatePartReference(
         TemplateNode $node,
     ): bool {
         return in_array(
@@ -414,8 +298,38 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                 'header',
                 'footer',
                 'sidebar',
+                'template-part',
             ],
             true,
+        );
+    }
+
+    private function materializeTemplatePartReference(
+        TemplateNode $node,
+    ): TemplateMaterializationResult {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return new TemplateMaterializationResult('');
+        }
+
+        return new TemplateMaterializationResult(
+            sprintf(
+                '<!-- wp:template-part {"slug":"%s"} /-->',
+                $this->normalizeSlug(
+                    $resource->value(),
+                ),
+            ),
+        );
+    }
+
+    private function normalizeSlug(
+        string $value,
+    ): string {
+        return str_replace(
+            '_',
+            '-',
+            trim($value),
         );
     }
 

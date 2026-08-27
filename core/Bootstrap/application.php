@@ -93,6 +93,7 @@ use Rombt\ThemeCore\Artifacts\Templates\BlockTemplateTreeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateNodeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplatePathResolver;
+use Rombt\ThemeCore\Artifacts\Templates\BlockTemplatePathResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -229,6 +230,8 @@ $classicNodeMaterializer = new ClassicTemplateNodeMaterializer(
     $app
 );
 
+$blockNodeMaterializer = new BlockTemplateNodeMaterializer($app);
+
 $pipeline = new Pipeline([
 
     new BuildThemeComponentsStage(
@@ -264,25 +267,28 @@ $pipeline = new Pipeline([
         new ThemeArtifactGenerator(
             (new ArtifactGeneratorRegistryFactory())->create(
                 [
-                new ClassicTemplateArtifactGenerator(
-                    new ClassicTemplateTreeRenderer(
-                        new ClassicTemplateTreeMaterializer(
-                            $classicNodeMaterializer,
-                            $app
+                    new ClassicTemplateArtifactGenerator(
+                        new ClassicTemplateTreeRenderer(
+                            new ClassicTemplateTreeMaterializer(
+                                $classicNodeMaterializer,
+                                $app,
+                            ),
                         ),
+                        $classicNodeMaterializer,
+                        $classicTemplatePathResolver,
+                        $app,
                     ),
-                    $classicNodeMaterializer,
-                    $classicTemplatePathResolver,
-                    $app
-                ),
+
                     new BlockTemplateArtifactGenerator(
                         new BlockTemplateTreeRenderer(
                             new BlockTemplateTreeMaterializer(
-                                new BlockTemplateNodeMaterializer($app),
+                                $blockNodeMaterializer,
                             ),
                         ),
+                        $blockNodeMaterializer,
+                        new BlockTemplatePathResolver(),
                     ),
-                    ]
+                ],
             ),
         ),
     ),

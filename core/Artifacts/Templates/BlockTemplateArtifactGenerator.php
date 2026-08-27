@@ -9,22 +9,19 @@ use Rombt\ThemeCore\Artifacts\ArtifactId;
 use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
+use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
 use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class BlockTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
-    /**
-     * @var array<string, string>
-     */
-    private const PART_DESTINATIONS = [
-        'header' => 'parts/header.html',
-        'footer' => 'parts/footer.html',
-        'sidebar' => 'parts/sidebar.html',
-    ];
-
     public function __construct(
         private TemplateTreeRendererInterface $renderer,
+        private TemplateNodeMaterializerInterface $nodeMaterializer,
+        private BlockTemplatePathResolver $pathResolver,
     ) {
     }
 
@@ -42,41 +39,145 @@ final readonly class BlockTemplateArtifactGenerator implements ArtifactGenerator
         }
 
         foreach ($concept->templates() as $template) {
-            $identity = $template->identity()->value();
+            $this->generateTemplateArtifact(
+                $template,
+                $artifacts,
+            );
 
-            $artifacts->add(
-                new Artifact(
-                    id: new ArtifactId(
-                        sprintf(
-                            'template:block:%s',
-                            $identity,
-                        ),
-                    ),
-                    type: ArtifactType::FILE,
-                    destination: $this->destination($identity),
-                    content: $this->renderer->render($template),
-                    metadata: [
-                        'architecture' => 'block',
-                        'template' => $identity,
-                        'role' => $this->role($identity),
-                    ],
-                ),
+            $this->generateTemplatePartArtifacts(
+                $template->tree()->roots(),
+                $template->identity(),
+                $artifacts,
             );
         }
     }
 
-    private function destination(
-        string $identity,
-    ): string {
-        return self::PART_DESTINATIONS[$identity]
-            ?? sprintf('templates/%s.html', $identity);
+    private function generateTemplateArtifact(
+        Template $template,
+        ArtifactCollectionInterface $artifacts,
+    ): void {
+        $identity = $template->identity()->value();
+
+        $artifacts->add(
+            new Artifact(
+                id: new ArtifactId(
+                    sprintf(
+                        'template:block:%s',
+                        $identity,
+                    ),
+                ),
+                type: ArtifactType::FILE,
+                destination: $this->pathResolver->templateDestination(
+                    $identity,
+                ),
+                content: $this->renderer->render($template),
+                metadata: [
+                    'architecture' => 'block',
+                    'template' => $identity,
+                    'role' => 'template',
+                ],
+            ),
+        );
     }
 
-    private function role(
-        string $identity,
+    /**
+     * @param array<int, TemplateNode> $nodes
+     */
+    private function generateTemplatePartArtifacts(
+        array $nodes,
+        TemplateIdentity $templateIdentity,
+        ArtifactCollectionInterface $artifacts,
+    ): void {
+        foreach ($nodes as $node) {
+            if ($this->isGeneratedTemplatePart($node)) {
+                $this->generateTemplatePartArtifact(
+                    $node,
+                    $templateIdentity,
+                    $artifacts,
+                );
+            }
+
+            $this->generateTemplatePartArtifacts(
+                $node->children(),
+                $templateIdentity,
+                $artifacts,
+            );
+        }
+    }
+
+    private function generateTemplatePartArtifact(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+        ArtifactCollectionInterface $artifacts,
+    ): void {
+        $resource = $node->resource();
+
+        if ($resource === null) {
+            return;
+        }
+
+        $resourceId = $resource->value();
+
+        $artifacts->add(
+            new Artifact(
+                id: new ArtifactId(
+                    sprintf(
+                        'template-part:block:%s',
+                        $resourceId,
+                    ),
+                ),
+                type: ArtifactType::FILE,
+                destination: $this->templatePartDestination(
+                    $node,
+                    $resourceId,
+                ),
+                content: $this->nodeMaterializer
+                    ->materializeTemplatePart(
+                        $node,
+                        $templateIdentity,
+                    )
+                    ->content(),
+                metadata: [
+                    'architecture' => 'block',
+                    'template' => $templateIdentity->value(),
+                    'resource' => $resourceId,
+                    'role' => 'template-part',
+                ],
+            ),
+        );
+    }
+
+    private function templatePartDestination(
+        TemplateNode $node,
+        string $resourceId,
     ): string {
-        return isset(self::PART_DESTINATIONS[$identity])
-            ? 'template-part'
-            : 'template';
+        return match ($node->rendering()->value) {
+            'header' => $this->pathResolver->templatePartDestination(
+                'header',
+            ),
+
+            'footer' => $this->pathResolver->templatePartDestination(
+                'footer',
+            ),
+
+            default => $this->pathResolver->templatePartDestination(
+                $resourceId,
+            ),
+        };
+    }
+
+    private function isGeneratedTemplatePart(
+        TemplateNode $node,
+    ): bool {
+        return in_array(
+            $node->rendering()->value,
+            [
+                'template-part',
+                'header',
+                'footer',
+                'sidebar',
+            ],
+            true,
+        ) && $node->resource() !== null;
     }
 }
