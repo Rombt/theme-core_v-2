@@ -24,32 +24,45 @@ final class GenerateIrArtifactsStage implements StageInterface
 
     public function execute(
         ExecutionContext $context,
-        Application $app
+        Application $app,
     ): StageResult {
-
-
-
         try {
-            $ir = $context->session()->getResource(SessionKeys::THEME_IR);
+            $session = $context->session();
 
-            // !! log !!
-            $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
-            $logger->dump('GenerateIrArtifactsStage    $ir = ');
+            $ir = $session->getResource(
+                SessionKeys::THEME_IR,
+            );
+
+            $logger = $app->getContext()->get(
+                ApplicationContextKeys::LOGGER,
+            );
+
+            $logger->dump(
+                'GenerateIrArtifactsStage    $ir = ',
+            );
             $logger->dump($ir);
+
+            $logger->dump(
+                '$context->session() = ',
+            );
+            $logger->dump($session);
 
             if (!$ir instanceof ThemeIr) {
                 throw new RuntimeException(
-                    'Theme IR not built.'
+                    'Theme IR not built.',
                 );
             }
 
-            $this->generator->generate($ir, $context->session()->artifacts());
+            $this->generator->generate(
+                $ir,
+                $session->artifacts(),
+                $session->package(),
+            );
 
             return new StageResult(
                 success: true,
                 metadata: [
-                    'artifact_count' => $context
-                        ->session()
+                    'artifact_count' => $session
                         ->artifacts()
                         ->count(),
                 ],

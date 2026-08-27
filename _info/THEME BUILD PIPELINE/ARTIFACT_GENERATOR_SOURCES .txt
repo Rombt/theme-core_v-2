@@ -1,0 +1,430 @@
+ARTIFACT GENERATOR SOURCES
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+Status: Architectural Foundation
+
+==================================================
+1. PURPOSE
+==================================================
+
+   Данный документ фиксирует архитектурное решение
+   по определению источников данных для Artifact
+   Generators.
+
+   Решение предназначено для Artifacts Layer.
+
+   Основная цель:
+
+    обеспечить отдельный Generator для каждого вида Artifact
+
+    не ограничивать Artifacts Layer только данными ThemeIR
+
+    обеспечить возможность генерации Artifact
+    непосредственно из неизменяемых данных Build
+
+    не протягивать неизменяемые данные через промежуточные стадии и слои,
+        которым эти данные не требуются
+
+    сохранить существующие ThemeIR-based Artifact Generators без изменения их
+        предметной ответственности.
+
+
+==================================================
+2. CORE PRINCIPLE
+==================================================
+
+    Каждый Artifact Generator отвечает
+    за генерацию конкретного вида Artifact.
+
+    Artifact Generator работает
+    с определённым источником данных.
+
+    Источник данных НЕ обязан быть ThemeIR.
+
+    Источником может быть:
+
+        ThemeIR
+        ThemeConfigurationPackage
+        другой объект данных,
+        если его использование необходимо
+        для конкретного Artifact Generator.
+
+
+    Таким образом:
+
+        Data Source
+            ↓
+        Artifact Generator
+            ↓
+        Artifact
+            ↓
+        Output File
+
+
+==================================================
+3. DATA SOURCE CLASSIFICATION
+==================================================
+
+    Данные Build разделяются по характеру
+    их участия в pipeline.
+
+    3.1. IMMUTABLE INPUT
+
+        Данные, которые являются входом Build
+        и не изменяются pipeline.
+
+        Основным immutable input является:
+
+            ThemeConfigurationPackage
+
+
+        ThemeConfigurationPackage содержит:
+
+            package metadata
+            configuration domains
+            исходную конфигурацию темы
+
+
+        Эти данные не должны преобразовываться
+        в ThemeIR только для того, чтобы сделать
+        их доступными Artifact Generator.
+
+
+    3.2. DERIVED BUILD DATA
+
+        Данные, которые создаются или преобразуются
+        в процессе выполнения Build.
+
+        Например:
+
+            ThemeComponents
+            ThemeIR
+
+
+        Такие данные могут использоваться
+        соответствующими Artifact Generators
+        после создания на соответствующей стадии.
+
+
+==================================================
+4. ARTIFACT GENERATOR SOURCE
+==================================================
+
+    Artifact Generator должен явно объявлять,
+    с каким типом источника данных он работает.
+
+    Для этого Artifact Generator предоставляет:
+
+        public function source(): string;
+
+
+    Метод source() возвращает class-string
+    источника данных.
+
+    Например:
+
+        ThemeIr::class
+
+    или:
+
+        ThemeConfigurationPackage::class
+
+
+    Source определяет не тип Artifact,
+    а источник данных, необходимый Generator.
+
+
+==================================================
+5. ARTIFACT GENERATOR CONTRACT
+==================================================
+
+    Базовый контракт Artifact Generator:
+
+        interface ArtifactGeneratorInterface
+        {
+            public function source(): string;
+
+            public function generate(
+                object $source,
+                ArtifactCollectionInterface $artifacts,
+            ): void;
+        }
+
+
+    Generator получает только тот источник,
+    который соответствует его source().
+
+    Generator не должен самостоятельно
+    получать данные из BuildSession,
+    Application Context или других глобальных
+    источников состояния.
+
+
+==================================================
+6. EXAMPLE: THEMEIR GENERATOR
+==================================================
+
+    Generator, работающий с ThemeIR:
+
+        public function source(): string
+        {
+            return ThemeIr::class;
+        }
+
+
+    Такой Generator получает ThemeIR
+    и отвечает за создание Artifact
+    на основании соответствующего ThemeIR concept.
+
+
+    Например:
+
+        ClassicTemplateArtifactGenerator
+            ↓
+        ThemeIr
+            ↓
+        Classic template Artifact
+
+
+==================================================
+7. EXAMPLE: THEME CONFIGURATION GENERATOR
+==================================================
+
+    Generator, которому необходимы
+    неизменяемые данные package:
+
+        public function source(): string
+        {
+            return ThemeConfigurationPackage::class;
+        }
+
+
+    Например:
+
+        StyleCssArtifactGenerator
+            ↓
+        ThemeConfigurationPackage
+            ↓
+        style.css
+
+
+    Metadata для style.css:
+
+        name
+        description
+        version
+        author
+        author_uri
+        theme_uri
+        text_domain
+
+
+    не должны проходить через ThemeIR,
+    поскольку ThemeIR не является их
+    семантическим владельцем.
+
+
+==================================================
+8. ARTIFACT GENERATOR REGISTRY
+==================================================
+
+    ArtifactGeneratorRegistry содержит
+    Artifact Generators независимо от их
+    источника данных.
+
+    Например:
+
+        ArtifactGeneratorRegistry
+            │
+            ├── ClassicTemplateArtifactGenerator
+            │       source() = ThemeIr::class
+            │
+            ├── BlockTemplateArtifactGenerator
+            │       source() = ThemeIr::class
+            │
+            └── StyleCssArtifactGenerator
+                    source() = ThemeConfigurationPackage::class
+
+
+    Registry не должен содержать специальных
+    правил для конкретных типов источников.
+
+
+==================================================
+9. THEME ARTIFACT GENERATOR
+==================================================
+
+    ThemeArtifactGenerator является
+    оркестратором Artifact Generators.
+
+    Его ответственность:
+
+        получить доступные источники данных
+
+        определить, какие Generators
+        работают с каждым источником
+
+        передать Generator соответствующий
+        источник
+
+        собрать созданные Artifacts
+        в ArtifactCollection.
+
+
+    ThemeArtifactGenerator НЕ должен:
+
+        преобразовывать ThemeConfigurationPackage
+        в ThemeIR
+
+        изменять immutable input
+
+        содержать специальные правила
+        для style.css, functions.php
+        или других конкретных файлов
+
+        знать внутреннюю структуру
+        конкретного Artifact Generator.
+
+
+==================================================
+10. SOURCE ROUTING
+==================================================
+
+    Источник Generator определяется
+    через source().
+
+    Если:
+
+        $generator->source() === ThemeIr::class
+
+    Generator получает ThemeIR.
+
+    Если:
+
+        $generator->source()
+            === ThemeConfigurationPackage::class
+
+    Generator получает ThemeConfigurationPackage.
+
+
+    Таким образом, routing выполняется
+    по типу источника, а не по имени Artifact.
+
+
+==================================================
+11. BUILD SESSION
+==================================================
+
+    BuildSession является владельцем
+    immutable Build input и derived resources.
+
+    В частности:
+
+        BuildSession
+            │
+            ├── package()
+            │      → ThemeConfigurationPackage
+            │
+            ├── resources
+            │      → derived Build data
+            │
+            └── artifacts()
+                   → generated Artifacts
+
+
+    ThemeArtifactGenerator может использовать
+    необходимые источники из BuildSession,
+    однако конкретные Artifact Generators
+    не должны зависеть непосредственно
+    от BuildSession.
+
+
+==================================================
+12. ARCHITECTURAL RESULT
+==================================================
+
+    Pipeline не обязан протягивать
+    неизменяемые данные через стадии,
+    которые не используют эти данные.
+
+    Вместо этого:
+
+        BuildSession
+             │
+             ├───────────────┐
+             │               │
+             ▼               ▼
+        ThemeConfiguration   ThemeIR
+             │               │
+             ▼               ▼
+        соответствующие   соответствующие
+        Generators        Generators
+             │               │
+             └───────┬───────┘
+                     ▼
+              ArtifactCollection
+
+
+    Каждый Artifact Generator получает
+    непосредственно тот источник,
+    который необходим для его работы.
+
+
+==================================================
+13. ARCHITECTURAL CONSTRAINT
+==================================================
+
+    ThemeIR не должен становиться универсальным
+    контейнером для всех данных, необходимых
+    Artifacts Layer.
+
+    ThemeConfigurationPackage не должен
+    преобразовываться в ThemeIR только ради
+    передачи package metadata Artifact Generator.
+
+    Artifact Generator должен работать
+    с наиболее непосредственным источником
+    необходимых ему данных.
+
+
+==================================================
+14. DESIGN GOAL
+==================================================
+
+    Итоговая архитектура должна позволять
+    добавлять новый Artifact Generator
+    без изменения существующих Generators
+    и без изменения промежуточных стадий,
+    если новый Generator использует уже
+    доступный источник данных.
+
+    Пример:
+
+        добавление StyleCssArtifactGenerator
+
+    не требует:
+
+        изменения ThemeIR
+        добавления metadata в ThemeIR
+        изменения Template Generators
+        преобразования package metadata
+        в derived Build data.
+
+
+==================================================
+15. STATUS
+==================================================
+
+    Данное решение является архитектурным
+    основанием для дальнейшей реализации
+    Artifacts Layer.
+
+    Все новые Artifact Generators должны
+    следовать модели:
+
+        one Artifact type
+            +
+        one declared data source
+            +
+        one dedicated Generator.

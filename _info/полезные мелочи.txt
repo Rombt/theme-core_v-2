@@ -16,6 +16,8 @@ print_r($runtimeKernel);
 echo PHP_EOL;
 
 
+ctx.logger?.info('shortSku = ' + shortSku); //!!--!!
+
       if (e instanceof AggregateError) {
       ctx.logger?.debug('************************', {
         component: '',
