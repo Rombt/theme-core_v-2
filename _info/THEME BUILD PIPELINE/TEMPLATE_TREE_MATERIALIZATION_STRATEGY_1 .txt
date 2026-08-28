@@ -42,12 +42,12 @@ ThemeIR уже содержит полностью разрешённое ком
 
 # 2. INPUT
 
-На вход стадии Artifacts поступает `ThemeIr`.
+На вход стадии Artifacts поступает `ThemeIR`.
 
 Для materialization используется прежде всего:
 
 
-ThemeIr
+ThemeIR
     ↓
 Templates
     ↓
@@ -1456,4 +1456,3 @@ Artifact Generator определяет:
     В КАКОЙ WordPress Artifact
     материализованный результат
     должен попасть.
-

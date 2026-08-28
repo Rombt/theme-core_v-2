@@ -6,7 +6,7 @@ namespace Rombt\ThemeCore\Artifacts\Templates;
 
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
 
 final readonly class ClassicTemplateTreeRenderer implements TemplateTreeRendererInterface
 {

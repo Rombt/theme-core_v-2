@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects;
+namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects;
 
 final readonly class TemplateNodeType
 {

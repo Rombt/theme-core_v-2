@@ -95,17 +95,17 @@ Status: Research
                 ↓
         ThemeComponentCollection
                 ↓
-        ThemeIrBuilder
+        ThemeIRBuilder
                 ↓
-        ThemeIrResolverRegistry
+        ThemeIRResolverRegistry
                 ↓
-            ThemeIrResolver...
+            ThemeIRResolver...
                 ↓
             Theme IR
 
-    ThemeIrBuilder координирует процесс построения Theme IR.
+    ThemeIRBuilder координирует процесс построения Theme IR.
 
-    ThemeIrBuilder не содержит логики преобразования отдельных компонентов.
+    ThemeIRBuilder не содержит логики преобразования отдельных компонентов.
 
     Преобразование выполняют специализированные Resolver.
 
@@ -113,7 +113,7 @@ Status: Research
 7. BUILDER
 ==================================================
 
-ThemeIrBuilder является координатором стадии Resolution.
+ThemeIRBuilder является координатором стадии Resolution.
 
     Builder отвечает за:
         создание Theme IR
@@ -149,7 +149,7 @@ ThemeIrBuilder является координатором стадии Resoluti
 9. REGISTRY
 ==================================================
 
-    ThemeIrResolverRegistry содержит зарегистрированные Resolver.
+    ThemeIRResolverRegistry содержит зарегистрированные Resolver.
 
     Builder не знает, какие Resolver существуют.
 
@@ -181,7 +181,7 @@ ThemeIrBuilder является координатором стадии Resoluti
 
     Добавление нового архитектурного компонента должно состоять из следующих действий.
         создать новый Theme Component
-        создать новый ThemeIrResolver
+        создать новый ThemeIRResolver
         зарегистрировать Resolver
         Builder при этом не изменяется.
 

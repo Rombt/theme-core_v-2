@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr;
+namespace Rombt\ThemeCore\ThemeIR;
 
 use ArrayIterator;
 use IteratorAggregate;
 use RuntimeException;
-use Rombt\ThemeCore\ThemeIr\Contracts\ThemeConceptInterface;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeConceptInterface;
 use Traversable;
 
 /**
  * @implements IteratorAggregate<string, ThemeConceptInterface>
  */
-final class ThemeIr implements IteratorAggregate
+final class ThemeIR implements IteratorAggregate
 {
     /**
      * @var array<string, ThemeConceptInterface>

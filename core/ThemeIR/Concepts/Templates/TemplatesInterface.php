@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
+namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates;
 
-use Rombt\ThemeCore\ThemeIr\Contracts\ThemeConceptInterface;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeConceptInterface;
 
 interface TemplatesInterface extends ThemeConceptInterface
 {

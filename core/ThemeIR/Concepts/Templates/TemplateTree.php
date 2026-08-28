@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
+namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates;
 
 final readonly class TemplateTree
 {

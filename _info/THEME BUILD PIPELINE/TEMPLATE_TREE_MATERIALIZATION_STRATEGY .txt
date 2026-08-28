@@ -34,7 +34,7 @@ Status: Architectural Foundation
 
     На вход стадии Artifacts поступает:
 
-        ThemeIr
+        ThemeIR
             ↓
         Templates
             ↓

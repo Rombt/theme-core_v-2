@@ -11,8 +11,8 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\PackageDiscoveryInterface;
 use Rombt\ThemeCore\ThemeConfiguration\FilesystemPackageDiscovery;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryBuilder;
 use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
-use Rombt\ThemeCore\ThemeIR\ThemeIrBuilder;
-use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrBuilderInterface;
+use Rombt\ThemeCore\ThemeIR\ThemeIRBuilder;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIRBuilderInterface;
 
 final class ThemeConfigurationServiceDefinitionProvider implements ServiceDefinitionProviderInterface
 {

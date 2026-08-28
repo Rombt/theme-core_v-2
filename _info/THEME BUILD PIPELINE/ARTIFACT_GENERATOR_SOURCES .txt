@@ -124,7 +124,7 @@ Status: Architectural Foundation
 
     Например:
 
-        ThemeIr::class
+        ThemeIR::class
 
     или:
 
@@ -169,7 +169,7 @@ Status: Architectural Foundation
 
         public function source(): string
         {
-            return ThemeIr::class;
+            return ThemeIR::class;
         }
 
 
@@ -182,7 +182,7 @@ Status: Architectural Foundation
 
         ClassicTemplateArtifactGenerator
             ↓
-        ThemeIr
+        ThemeIR
             ↓
         Classic template Artifact
 
@@ -238,10 +238,10 @@ Status: Architectural Foundation
         ArtifactGeneratorRegistry
             │
             ├── ClassicTemplateArtifactGenerator
-            │       source() = ThemeIr::class
+            │       source() = ThemeIR::class
             │
             ├── BlockTemplateArtifactGenerator
-            │       source() = ThemeIr::class
+            │       source() = ThemeIR::class
             │
             └── StyleCssArtifactGenerator
                     source() = ThemeConfigurationPackage::class
@@ -296,7 +296,7 @@ Status: Architectural Foundation
 
     Если:
 
-        $generator->source() === ThemeIr::class
+        $generator->source() === ThemeIR::class
 
     Generator получает ThemeIR.
 

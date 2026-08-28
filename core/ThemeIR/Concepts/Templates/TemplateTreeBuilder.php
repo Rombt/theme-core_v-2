@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Concepts\Templates;
+namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates;
 
 use LogicException;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\Composition;
@@ -10,7 +10,7 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionCollection;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNode;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionNodeCollection;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodeCollection;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateNodeType;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateNodeType;
 
 final readonly class TemplateTreeBuilder
 {

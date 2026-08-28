@@ -14,7 +14,7 @@ use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplatesInterface;
-use Rombt\ThemeCore\ThemeIR\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\ThemeIR;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class BlockTemplateArtifactGenerator implements ArtifactGeneratorInterface
@@ -28,14 +28,14 @@ final readonly class BlockTemplateArtifactGenerator implements ArtifactGenerator
 
     public function source(): string
     {
-        return ThemeIr::class;
+        return ThemeIR::class;
     }
 
     public function generate(
         object $source,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        if (!$source instanceof ThemeIr) {
+        if (!$source instanceof ThemeIR) {
             return;
         }
 

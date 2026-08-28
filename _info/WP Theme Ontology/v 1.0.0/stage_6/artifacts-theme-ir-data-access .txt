@@ -44,7 +44,7 @@ Artifact Generators должны получать все необходимые 
 - какой объект ThemeIR является естественной единицей обработки;
 - какой минимальный API должен видеть конкретный генератор.
 
-Не следует передавать в конкретный Artifact Generator весь ThemeIr,
+Не следует передавать в конкретный Artifact Generator весь ThemeIR,
 если для его работы достаточно одного Theme Concept или одной сущности
 этого концепта.
 
@@ -54,7 +54,7 @@ Artifact Generators должны получать все необходимые 
 
 Существующая структура считается заданной:
 
-    ThemeIr
+    ThemeIR
         └── Templates
               └── TemplateCollection
                     └── Template
@@ -68,7 +68,7 @@ Artifact layer должен использовать эту структуру �
 
 Концептуальная схема:
 
-    ThemeIr
+    ThemeIR
         ↓
     Templates
         ↓

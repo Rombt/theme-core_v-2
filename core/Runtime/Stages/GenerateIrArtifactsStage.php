@@ -40,7 +40,7 @@ final class GenerateIrArtifactsStage implements StageInterface
             $logger->dump('$context->session() = ');
             $logger->dump($session);
 
-            if (!$ir instanceof ThemeIr) {
+            if (!$ir instanceof ThemeIR) {
                 throw new RuntimeException('Theme IR not built.');
             }
 

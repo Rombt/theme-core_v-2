@@ -10,8 +10,8 @@ use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterf
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
 use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMaterializerInterface

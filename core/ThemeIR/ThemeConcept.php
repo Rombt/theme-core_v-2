@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr;
+namespace Rombt\ThemeCore\ThemeIR;
 
-use Rombt\ThemeCore\ThemeIr\Contracts\ThemeConceptInterface;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeConceptInterface;
 
 abstract readonly class ThemeConcept implements ThemeConceptInterface
 {

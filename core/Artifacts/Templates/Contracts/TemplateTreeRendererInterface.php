@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates\Contracts;
 
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
 
 interface TemplateTreeRendererInterface
 {

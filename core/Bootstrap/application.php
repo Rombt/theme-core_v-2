@@ -64,7 +64,7 @@ use Rombt\ThemeCore\Artifacts\Generators\CompositionArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Generators\FunctionsPhpArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Renderers\WordPressFunctionsRenderer;
 use Rombt\ThemeCore\WordPress\Assets\AssetRegistrationBuilder;
-use Rombt\ThemeCore\Runtime\Stages\BuildThemeIrStage;
+use Rombt\ThemeCore\Runtime\Stages\BuildThemeIRStage;
 use Rombt\ThemeCore\Runtime\Stages\BuildThemeComponentsStage;
 use Rombt\ThemeCore\ThemeConfiguration\SelectedPackageProvider;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilder;
@@ -74,12 +74,12 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponentBu
 use Rombt\ThemeCore\ThemeComponents\Domains\Templates\TemplatesComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\DesignSystems\DesignSystemsComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponentBuilder;
-use Rombt\ThemeCore\ThemeIR\ThemeIrBuilder;
-use Rombt\ThemeCore\ThemeIR\ThemeIrResolverRegistry;
-use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplatesThemeIrResolver;
-use Rombt\ThemeCore\ThemeIR\Domains\DesignSystems\DesignSystemsThemeIrResolver;
-use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsThemeIrResolver;
-use Rombt\ThemeCore\ThemeIR\Domains\Integrations\IntegrationsThemeIrResolver;
+use Rombt\ThemeCore\ThemeIR\ThemeIRBuilder;
+use Rombt\ThemeCore\ThemeIR\ThemeIRResolverRegistry;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplatesThemeIRResolver;
+use Rombt\ThemeCore\ThemeIR\Domains\DesignSystems\DesignSystemsThemeIRResolver;
+use Rombt\ThemeCore\ThemeIR\Domains\Assets\AssetsThemeIRResolver;
+use Rombt\ThemeCore\ThemeIR\Domains\Integrations\IntegrationsThemeIRResolver;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodesComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\ConventionResourceResolver;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateArtifactGenerator;
@@ -249,16 +249,16 @@ $pipeline = new Pipeline([
         ),
     ),
 
-    new BuildThemeIrStage(
-        new ThemeIrBuilder(
-            new ThemeIrResolverRegistry([
-                // Compositions используются TemplatesThemeIrResolver
+    new BuildThemeIRStage(
+        new ThemeIRBuilder(
+            new ThemeIRResolverRegistry([
+                // Compositions используются TemplatesThemeIRResolver
                 // для построения Templates IR concept.
-                new TemplatesThemeIrResolver(),
+                new TemplatesThemeIRResolver(),
 
-                new DesignSystemsThemeIrResolver(),
-                new AssetsThemeIrResolver(),
-                new IntegrationsThemeIrResolver(),
+                new DesignSystemsThemeIRResolver(),
+                new AssetsThemeIRResolver(),
+                new IntegrationsThemeIRResolver(),
             ]),
         ),
     ),

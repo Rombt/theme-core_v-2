@@ -76,7 +76,7 @@ Templates
 
 Цель:
 
-ThemeIr
+ThemeIR
     └── Concepts/Templates
             НЕ зависит от
                 ThemeComponents
@@ -86,7 +86,7 @@ ThemeIr
 
 Шаг 5. Переработать преобразование в Theme IR
 
-TemplatesThemeIrResolver и TemplateTreeBuilder должны выполнять реальное преобразование:
+TemplatesThemeIRResolver и TemplateTreeBuilder должны выполнять реальное преобразование:
 
 ThemeComponents
     CompositionNode

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIr\Contracts;
+namespace Rombt\ThemeCore\ThemeIR\Contracts;
 
 interface ThemeConceptInterface
 {

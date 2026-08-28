@@ -1,6 +1,6 @@
 THEME-CORE V-2
 АРХИТЕКТУРНАЯ МОДЕЛЬ КОНВЕЙЕРА КОМПИЛЯЦИИ
-ThemeComponentCollection И ThemeIr
+ThemeComponentCollection И ThemeIR
 (v1.0.0)
 
 МЕСТО В АРХИТЕКТУРЕ

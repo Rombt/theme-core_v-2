@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Artifacts\Templates\Contracts;
 
 use Rombt\ThemeCore\Artifacts\Templates\TemplateMaterializationResult;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 interface TemplateNodeMaterializerInterface
 {

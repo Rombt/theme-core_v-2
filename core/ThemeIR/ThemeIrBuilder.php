@@ -13,9 +13,9 @@ final readonly class ThemeIrBuilder implements ThemeIrBuilderInterface
     {
     }
 
-    public function build(ThemeComponentCollection $components): ThemeIr
+    public function build(ThemeComponentCollection $components): ThemeIR
     {
-        $themeIr = new ThemeIr();
+        $themeIr = new ThemeIR();
 
         foreach ($this->registry->resolvers() as $resolver) {
             $themeIr->add($resolver->resolve($components));

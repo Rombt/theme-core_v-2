@@ -9,7 +9,7 @@ use Rombt\ThemeCore\ThemeComponents\ComponentId;
 use Rombt\ThemeCore\ThemeComponents\Domains\Integrations\IntegrationsComponent;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 use Rombt\ThemeCore\ThemeIR\Contracts\ThemeConceptInterface;
-use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrResolverInterface;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIRresolverInterface;
 use Rombt\ThemeCore\ThemeIR\IrId;
 
 final readonly class IntegrationsThemeIrResolver implements ThemeIrResolverInterface
