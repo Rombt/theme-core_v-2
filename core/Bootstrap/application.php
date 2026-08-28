@@ -94,6 +94,9 @@ use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateNodeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplateTreeMaterializer;
 use Rombt\ThemeCore\Artifacts\Templates\ClassicTemplatePathResolver;
 use Rombt\ThemeCore\Artifacts\Templates\BlockTemplatePathResolver;
+use Rombt\ThemeCore\Artifacts\Styles\StyleCssArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Styles\StyleCssContentRenderer;
+use Rombt\ThemeCore\Artifacts\Styles\StyleCssPathResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -287,6 +290,12 @@ $pipeline = new Pipeline([
                         ),
                         $blockNodeMaterializer,
                         new BlockTemplatePathResolver(),
+                    ),
+
+                    new StyleCssArtifactGenerator(
+                        new StyleCssContentRenderer(),
+                        new StyleCssPathResolver(),
+                        $app
                     ),
                 ],
             ),

@@ -19,19 +19,12 @@ final readonly class ArtifactSources implements ArtifactSourcesInterface
 
         $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
 
-        $logger->dump('class ArtifactSources $sources = ');
-        $logger->dump($sources);
-
         foreach ($sources as $source) {
             $logger->dump('SOURCE CLASS = ');
             $logger->dump($source::class);
 
             $indexed[$source::class] = $source;
         }
-
-
-        $logger->dump('class ArtifactSources $indexed = ');
-        $logger->dump($indexed);
 
         $this->sources = $indexed;
     }

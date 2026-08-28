@@ -26,19 +26,11 @@ final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInt
 
         $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
 
-          $logger->dump('$sources = ');
-            $logger->dump($sources);
-
         foreach ($this->registry->all() as $generator) {
             $logger->dump('$generator = ');
             $logger->dump($generator);
 
-            $logger->dump('$generator->source() = ');
-            $logger->dump($generator->source());
             $source = $sources->get($generator->source());
-
-            $logger->dump('$source = ');
-            $logger->dump($source);
 
             if ($source === null) {
                 continue;

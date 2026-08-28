@@ -7,6 +7,7 @@ namespace Rombt\ThemeCore\Runtime\Stages;
 use RuntimeException;
 use Throwable;
 use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\ArtifactCollection;
 use Rombt\ThemeCore\Artifacts\FileArtifactWriter;
 use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
@@ -25,6 +26,8 @@ final class WriteThemeArtifactsStage implements StageInterface
         ExecutionContext $context,
         Application $app,
     ): StageResult {
+        $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
+
         try {
             $buildPath = (string) $this->configuration->get('paths.build');
 
@@ -36,9 +39,7 @@ final class WriteThemeArtifactsStage implements StageInterface
 
             $package = $context->session()->package();
 
-            $themeName = $package
-                ->package()
-                ->configuration()['name'];
+            $themeName = $package->package()->configuration()['name'];
 
             $artifacts = $context->session()->artifacts();
 
@@ -46,17 +47,24 @@ final class WriteThemeArtifactsStage implements StageInterface
             $blockArtifacts = new ArtifactCollection();
 
             foreach ($artifacts as $artifact) {
+                $logger->dump('00 $artifact = ');
+                $logger->dump($artifact);
+
                 $architecture = $artifact->metadata()['architecture'] ?? null;
 
                 if ($architecture === 'classic') {
                     $classicArtifacts->add($artifact);
-
                     continue;
                 }
 
                 if ($architecture === 'block') {
                     $blockArtifacts->add($artifact);
+                    continue;
+                }
 
+                if ($architecture === 'shared') {
+                    $classicArtifacts->add($artifact);
+                    $blockArtifacts->add($artifact);
                     continue;
                 }
 
@@ -70,19 +78,9 @@ final class WriteThemeArtifactsStage implements StageInterface
 
             $buildRoot = rtrim($buildPath, '/\\');
 
-            $classicThemePath = sprintf(
-                '%s/%s/%s',
-                $buildRoot,
-                'classic',
-                $themeName,
-            );
+            $classicThemePath = sprintf('%s/%s/%s', $buildRoot, 'classic', $themeName);
 
-            $blockThemePath = sprintf(
-                '%s/%s/%s',
-                $buildRoot,
-                'block',
-                $themeName,
-            );
+            $blockThemePath = sprintf('%s/%s/%s', $buildRoot, 'block', $themeName);
 
             if ($classicArtifacts->count() > 0) {
                 $classicWriter = new FileArtifactWriter(
