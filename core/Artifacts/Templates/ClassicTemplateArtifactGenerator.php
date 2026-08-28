@@ -16,9 +16,11 @@ use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplatesInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class ClassicTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
@@ -35,48 +37,54 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
         );
     }
 
-    public function supports(): string
+    public function source(): string
     {
-        return TemplatesInterface::class;
+        return ThemeIr::class;
     }
 
     public function generate(
-        object $concept,
+        object $source,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        if (!$concept instanceof TemplatesInterface) {
+        if (!$source instanceof ThemeIr) {
             return;
         }
 
-        foreach ($concept->templates() as $template) {
-            $identity = $template->identity()->value();
+        foreach ($source->all() as $concept) {
+            if (!$concept instanceof TemplatesInterface) {
+                continue;
+            }
 
-            $artifacts->add(
-                new Artifact(
-                    id: new ArtifactId(
-                        sprintf(
-                            'template:classic:%s',
+            foreach ($concept->templates() as $template) {
+                $identity = $template->identity()->value();
+
+                $artifacts->add(
+                    new Artifact(
+                        id: new ArtifactId(
+                            sprintf(
+                                'template:classic:%s',
+                                $identity,
+                            ),
+                        ),
+                        type: ArtifactType::FILE,
+                        destination: $this->pathResolver->templateDestination(
                             $identity,
                         ),
+                        content: $this->renderer->render($template),
+                        metadata: [
+                            'architecture' => 'classic',
+                            'template' => $identity,
+                            'role' => 'template',
+                        ],
                     ),
-                    type: ArtifactType::FILE,
-                    destination: $this->pathResolver->templateDestination(
-                        $identity,
-                    ),
-                    content: $this->renderer->render($template),
-                    metadata: [
-                        'architecture' => 'classic',
-                        'template' => $identity,
-                        'role' => 'template',
-                    ],
-                ),
-            );
+                );
 
-            $this->generateTemplatePartArtifacts(
-                $template->tree()->roots(),
-                $template->identity(),
-                $artifacts,
-            );
+                $this->generateTemplatePartArtifacts(
+                    $template->tree()->roots(),
+                    $template->identity(),
+                    $artifacts,
+                );
+            }
         }
     }
 
@@ -151,7 +159,8 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
                     ->content(),
                 metadata: [
                     'architecture' => 'classic',
-                    'template' => $resourceId,
+                    'template' => $templateIdentity->value(),
+                    'resource' => $resourceId,
                     'role' => 'template-part',
                 ],
             ),

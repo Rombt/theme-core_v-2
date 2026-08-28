@@ -11,10 +11,11 @@ use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\Template;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplateNode;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\TemplatesInterface;
-use Rombt\ThemeCore\ThemeIr\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIR\ThemeIr;
+use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class BlockTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
@@ -25,30 +26,36 @@ final readonly class BlockTemplateArtifactGenerator implements ArtifactGenerator
     ) {
     }
 
-    public function supports(): string
+    public function source(): string
     {
-        return TemplatesInterface::class;
+        return ThemeIr::class;
     }
 
     public function generate(
-        object $concept,
+        object $source,
         ArtifactCollectionInterface $artifacts,
     ): void {
-        if (!$concept instanceof TemplatesInterface) {
+        if (!$source instanceof ThemeIr) {
             return;
         }
 
-        foreach ($concept->templates() as $template) {
-            $this->generateTemplateArtifact(
-                $template,
-                $artifacts,
-            );
+        foreach ($source->all() as $concept) {
+            if (!$concept instanceof TemplatesInterface) {
+                continue;
+            }
 
-            $this->generateTemplatePartArtifacts(
-                $template->tree()->roots(),
-                $template->identity(),
-                $artifacts,
-            );
+            foreach ($concept->templates() as $template) {
+                $this->generateTemplateArtifact(
+                    $template,
+                    $artifacts,
+                );
+
+                $this->generateTemplatePartArtifacts(
+                    $template->tree()->roots(),
+                    $template->identity(),
+                    $artifacts,
+                );
+            }
         }
     }
 

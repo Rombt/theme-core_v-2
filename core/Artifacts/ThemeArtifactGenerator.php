@@ -4,31 +4,53 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts;
 
+use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
+use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
+use Rombt\ThemeCore\Artifacts\Contracts\ArtifactSourcesInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
-use Rombt\ThemeCore\ThemeIR\ThemeIr;
-use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
 
 final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInterface
 {
     public function __construct(
         private ArtifactGeneratorRegistry $registry,
+        private ?Application $app,
     ) {
     }
 
     public function generate(
-        ThemeIr $themeIr,
+        ArtifactSourcesInterface $sources,
         ArtifactCollectionInterface $artifacts,
-        ?ThemeConfigurationPackage $configuration,
     ): void {
-        foreach ($themeIr->all() as $concept) {
-            foreach ($this->registry->all() as $generator) {
-                if (!($concept instanceof ($generator->supports()))) {
-                    continue;
-                }
 
-                $generator->generate($concept, $artifacts);
+        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
+
+          $logger->dump('$sources = ');
+            $logger->dump($sources);
+
+        foreach ($this->registry->all() as $generator) {
+            $logger->dump('$generator = ');
+            $logger->dump($generator);
+
+            $logger->dump('$generator->source() = ');
+            $logger->dump($generator->source());
+            $source = $sources->get($generator->source());
+
+            $logger->dump('$source = ');
+            $logger->dump($source);
+
+            if ($source === null) {
+                continue;
             }
+
+            $logger->dump('AVAILABLE SOURCES = ');
+            $logger->dump($sources->all());
+
+            $generator->generate(
+                $source,
+                $artifacts,
+            );
         }
     }
 }

@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Contracts;
 
-use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
-
 interface ArtifactGeneratorInterface
 {
     /**
+     * Returns the class-string of the data source
+     * required by this generator.
+     *
      * @return class-string
      */
-    public function supports(): string;
+    public function source(): string;
 
     public function generate(
-        object $concept,
+        object $source,
         ArtifactCollectionInterface $artifacts,
     ): void;
 }

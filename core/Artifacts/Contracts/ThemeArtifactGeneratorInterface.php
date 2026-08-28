@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Contracts;
 
-use Rombt\ThemeCore\ThemeConfiguration\ThemeConfigurationPackage;
-use Rombt\ThemeCore\ThemeIR\ThemeIr;
-
 interface ThemeArtifactGeneratorInterface
 {
     public function generate(
-        ThemeIr $themeIr,
+        ArtifactSourcesInterface $sources,
         ArtifactCollectionInterface $artifacts,
-        ?ThemeConfigurationPackage $configuration,
     ): void;
 }

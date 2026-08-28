@@ -290,6 +290,7 @@ $pipeline = new Pipeline([
                     ),
                 ],
             ),
+            $app
         ),
     ),
 
