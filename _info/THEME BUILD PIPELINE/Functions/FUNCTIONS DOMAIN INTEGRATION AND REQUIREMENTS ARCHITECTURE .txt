@@ -1,0 +1,495 @@
+FUNCTIONS DOMAIN INTEGRATION AND REQUIREMENTS ARCHITECTURE
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+
+Status: Architectural Foundation
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Данный документ фиксирует архитектурное решение по формированию PHP runtime requirements
+        для домена `Functions` на основании результатов обработки других доменов.
+
+    Решение определяет:
+
+        откуда Functions получает требования к результирующему `functions.php`
+
+        каким образом эти требования отделяются от собственных деклараций Functions
+
+        на каком этапе формируется semantic model домена Functions
+
+    Основная цель:
+
+        не допустить непосредственного анализа Configuration других доменов доменом Functions
+
+        обеспечить передачу в Functions только тех сведений, которые действительно
+            требуют PHP runtime functionality
+
+        объединить собственные декларации Functions и требования других доменов
+
+        сформировать на этой основе ThemeIR домена Functions
+
+        сохранить архитектурную независимость результирующего `functions.php`.
+
+
+==================================================
+2. CORE PRINCIPLE
+==================================================
+
+    PHP functionality результирующей темы имеет два источника.
+
+    Первый источник:
+        собственные декларации домена Functions.
+
+    Например:
+        setup и другие собственные блоки Functions.
+
+    Второй источник:
+        runtime requirements, возникающие из элементов других доменов.
+
+    Например:
+        Templates
+            navigation
+                menu
+                    ↓
+                menu registration requirement
+
+        Templates
+            sidebar
+                ↓
+            sidebar registration requirement
+
+    Таким образом:
+
+        Functions ThemeIR
+            =
+        собственные Functions declarations
+            +
+        external domain runtime requirements
+
+
+==================================================
+3. DOMAIN RESPONSIBILITY
+==================================================
+
+    Каждый domain element является владельцем собственной семантики.
+
+    Domain element должен определять:
+
+        требуется ли для его реализации PHP runtime functionality
+
+        и если требуется — какое semantic requirement должно быть предоставлено Functions.
+
+    Domain element НЕ должен:
+        формировать готовый PHP-код
+        определять содержимое `functions.php`
+        зависеть от физического файла `functions.php`
+        определять architecture-specific implementation.
+
+
+==================================================
+4. FUNCTIONS RESPONSIBILITY
+==================================================
+
+    Домен Functions не анализирует внутреннюю семантику других доменов.
+
+    Functions НЕ должен:
+        обходить Configuration других доменов
+        искать в них известные поля
+        самостоятельно определять, какие поля требуют PHP functionality
+        содержать правила интерпретации семантики других доменов.
+
+    Functions получает уже сформированные semantic runtime requirements.
+
+    Основная ответственность Functions:
+        принять requirements
+        агрегировать их
+        объединить их с собственными декларациями Functions
+
+        сформировать semantic model домена Functions.
+
+
+==================================================
+5. THEMEIR AS SOURCE
+==================================================
+
+    Runtime requirements не должны извлекаться непосредственно из Theme Configuration.
+
+    Источником должны быть результаты обработки доменов на слое ThemeIR.
+
+    После завершения обработки доменов их результаты сохраняются в Session.
+
+    Таким образом:
+
+        Theme Configuration
+            ↓
+        Theme Components
+            ↓
+        ThemeIR
+            ↓
+        Session
+
+
+    Далее из результатов ThemeIR формируются Functions Runtime Requirements.
+
+
+==================================================
+6. SESSION
+==================================================
+
+    Session является хранилищем результатов выполнения этапов обработки приложения.
+
+    В Session должны быть доступны результаты ThemeIR всех обработанных доменов.
+
+    Например:
+        Templates ThemeIR
+        Assets ThemeIR
+        Integrations ThemeIR
+        Functions declarations ThemeIR
+        ...
+
+    Functions Requirements должны формироваться на основании этих результатов,
+        а не на основании исходных Configuration arrays.
+
+
+==================================================
+7. FUNCTIONS REQUIREMENTS
+==================================================
+
+    Functions Requirement представляет семантическое описание PHP runtime functionality,
+        необходимой для реализации domain element.
+
+    Requirement НЕ содержит:
+        готовый PHP-код
+        архитектурно-зависимую реализацию
+        физический путь `functions.php`.
+
+    Requirement содержит только сведения,
+        необходимые для последующей реализации соответствующей functionality.
+
+    Например:
+        Menu Registration Requirement
+            location = primary
+            label = Primary Menu
+
+        Sidebar Registration Requirement
+
+            id = primary-sidebar
+            name = Primary Sidebar
+            ...
+
+
+==================================================
+8. REQUIREMENTS COLLECTION
+==================================================
+
+    После формирования ThemeIR доменов выполняется этап сбора Functions Requirements.
+
+    Этап:
+        получает результаты ThemeIR из Session
+
+        обходит соответствующие semantic domain models
+
+        получает из них предоставленные runtime requirements
+
+        формирует единую Functions Requirements Collection.
+
+
+    Общая схема:
+
+        Session
+            ↓
+        Domain ThemeIR results
+            ↓
+        Functions Requirements Collection
+
+
+    Functions Requirements Collection является промежуточной semantic model
+        и предназначена для последующего формирования Functions ThemeIR.
+
+
+==================================================
+9. FUNCTIONS THEMEIR
+==================================================
+
+    После формирования Functions Requirements Collection
+        создаётся ThemeIR домена Functions.
+
+    Functions ThemeIR объединяет:
+        собственные декларации Functions
+        runtime requirements, предоставленные другими доменами.
+
+
+    Таким образом:
+
+        Functions declarations
+                +
+        Functions Requirements Collection
+                ↓
+        Functions ThemeIR
+
+
+    Functions ThemeIR является итоговым semantic input для Artifacts Layer.
+
+
+==================================================
+10. ARTIFACT FORMATION
+==================================================
+
+    Artifacts Layer получает Functions ThemeIR.
+
+    На основании Functions ThemeIR и Resource Architecture выполняется:
+
+        выбор архитектурно-зависимой реализации
+
+        materialization Resources
+
+        формирование Functions Artifact.
+
+
+    Общая схема:
+
+        Functions ThemeIR
+            ↓
+        Resource Architecture
+            ↓
+        architecture-specific implementation
+            ↓
+        Functions Artifact
+            ↓
+        functions.php
+
+
+==================================================
+11. EXAMPLE
+==================================================
+
+    Configuration содержит:
+
+        navigation_01
+            menu:
+                location = primary
+                label = Primary Menu
+
+
+    Templates ThemeIR представляет соответствующую semantic information.
+
+    Этот element предоставляет:
+
+        Menu Registration Requirement
+
+
+    Requirements Collection получает:
+
+        Menu Registration Requirement
+            location = primary
+            label = Primary Menu
+
+
+    Аналогично sidebar:
+
+        Sidebar Registration Requirement
+            id = primary-sidebar
+            name = Primary Sidebar
+            ...
+
+
+    После агрегации:
+
+        Functions Requirements Collection
+            ├── Menu Registration Requirement
+            └── Sidebar Registration Requirement
+
+
+    Затем:
+
+        Functions declarations
+            +
+        Requirements Collection
+            ↓
+        Functions ThemeIR
+
+
+    После этого Artifacts Layer реализует соответствующие requirements
+        в выбранной архитектуре.
+
+
+==================================================
+12. SEPARATION OF CONCERNS
+==================================================
+
+    Domain Element отвечает за:
+
+        собственную семантику
+
+        определение необходимости  PHP runtime functionality
+
+        предоставление semantic requirement.
+
+
+    ThemeIR отвечает за:
+
+        semantic representation domain information.
+
+
+    Requirements Collection отвечает за:
+
+        сбор предоставленных runtime requirements.
+
+
+    Functions отвечает за:
+
+        агрегацию собственных деклараций и external requirements
+
+        формирование Functions ThemeIR.
+
+
+    Resources отвечают за:
+
+        конкретную реализацию semantic requirements.
+
+
+    Artifacts Layer отвечает за:
+
+        architecture-specific materialization
+
+        формирование итогового Artifact.
+
+
+==================================================
+13. ARCHITECTURAL DEPENDENCY
+==================================================
+
+    Зависимость должна иметь направление:
+
+        Domain
+            ↓
+        Runtime Requirement
+            ↓
+        Functions
+            ↓
+        Resource
+            ↓
+        Artifact
+
+
+    Не допускается обратное направление:
+
+        Functions
+            ↓
+        анализ другого Domain
+            ↓
+        поиск известных полей.
+
+
+    Functions не должен знать внутреннюю структуру других доменов
+        для определения их runtime requirements.
+
+
+==================================================
+14. TWO SOURCES OF FUNCTIONS
+==================================================
+
+    Итоговый `functions.php` формируется из двух категорий информации:
+
+        1. Functions own declarations
+        2. External domain runtime requirements
+
+
+    При этом обе категории приводятся к единому semantic representation:
+
+        Functions ThemeIR
+
+
+    Итоговая схема:
+
+        Functions declarations
+                    │
+                    │
+        External domain requirements
+                    │
+                    ↓
+            Functions ThemeIR
+                    ↓
+             Artifacts Layer
+                    ↓
+              functions.php
+
+
+==================================================
+15. ARCHITECTURAL CONSTRAINTS
+==================================================
+
+    Не допускается:
+
+        прямое чтение Functions
+        Configuration других доменов
+
+        поиск Functions определённых
+        конфигурационных полей
+        в других доменах
+
+        передача готового PHP-кода
+        из domain elements
+
+        привязка domain elements
+        к физическому файлу `functions.php`
+
+        смешивание semantic requirement
+        и architecture-specific implementation.
+
+    Requirements должны быть
+    архитектурно-независимыми.
+
+
+==================================================
+16. EXTENSIBILITY
+==================================================
+
+    Добавление нового домена не должно требовать изменения
+        базовой логики Functions для анализа структуры нового домена.
+
+    Новый домен должен только  предоставить свои semantic runtime requirements,
+        если они возникают.
+
+    Functions должен работать с requirements как с универсальными semantic inputs.
+
+
+==================================================
+17. RESULT
+==================================================
+
+    Functions является агрегатором PHP runtime requirements темы.
+
+    Domain elements являются источниками semantic runtime requirements.
+
+    Requirements формируются на основании результатов ThemeIR, сохранённых в Session.
+
+    Requirements объединяются с собственными декларациями Functions.
+
+    На основании объединённой модели формируется Functions ThemeIR.
+
+    Functions ThemeIR передаётся в Artifacts Layer для architecture-specific materialization.
+
+    Итоговая архитектура:
+
+        Configuration
+            ↓
+        Theme Components
+            ↓
+        Domain ThemeIR
+            ↓
+        Session
+            ↓
+        Functions Requirements Collection
+            ↓
+        Functions ThemeIR
+            ↓
+        Resources
+            ↓
+        Artifacts
+            ↓
+        functions.php
+
