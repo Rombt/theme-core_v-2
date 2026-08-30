@@ -97,6 +97,8 @@ use Rombt\ThemeCore\Artifacts\Templates\BlockTemplatePathResolver;
 use Rombt\ThemeCore\Artifacts\Styles\StyleCssArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Styles\StyleCssContentRenderer;
 use Rombt\ThemeCore\Artifacts\Styles\StyleCssPathResolver;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsConfiguration;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsValidator;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -215,6 +217,12 @@ $runtimeKernel = new RuntimeKernel(
                     id: new DomainId('nodes'),
                     domainClass: NodesConfiguration::class,
                     validator: new NodesValidator(),
+                ),
+
+                'functions' => new DomainRegistration(
+                    id: new DomainId('functions'),
+                    domainClass: FunctionsConfiguration::class,
+                    validator: new FunctionsValidator(),
                 ),
 
                 ]),

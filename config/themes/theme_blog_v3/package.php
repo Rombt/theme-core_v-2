@@ -29,6 +29,7 @@ return [
         'design-systems' => 'design-system.php',
         'assets'         => 'assets.php',
         'integrations'   => 'integrations.php',
+        'functions'      => 'functions.php',
         ],
 
 ];
