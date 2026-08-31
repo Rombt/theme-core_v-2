@@ -1,0 +1,159 @@
+
+Шаг 1. Разобраться с существующим кодом Functions ThemeComponents и определить точную входную модель для ThemeIR.
+Шаг 2. Спроектировать публичную модель Functions ThemeIR для собственных declarations.
+Шаг 3. Спроектировать RuntimeRequirement и RuntimeRequirementCollection.
+Шаг 4. Определить механизм получения requirements из других Domain ThemeIR через Session.
+Шаг 5. Реализовать Functions ThemeIR и его builder/factory.
+Шаг 6. Интегрировать результат в общий ThemeIR pipeline.
+Шаг 7. Только после этого переходить к Artifacts.
+
+подробнее о каждом:
+
+    ++ 1. Определяем вход Functions ThemeIR
+
+        На вход ThemeIR уже приходит результат ThemeComponents для Functions.
+
+        Сейчас это примерно:
+
+        FunctionsComponent
+            functions
+                FunctionComponent[]
+
+        Каждый FunctionComponent уже содержит семантику декларации и Resource.
+
+        Задача ThemeIR — преобразовать эту компонентную модель в собственную semantic model Functions.
+
+    2. Определяем собственную модель Functions ThemeIR
+
+        Нужно отделить:
+
+        FunctionsComponent
+
+        от:
+
+        Functions ThemeIR
+
+        То есть ThemeComponents — это результат обработки Configuration, а ThemeIR — результат семантического представления, предназначенный для Artifacts.
+
+        Я предлагаю иметь примерно такую концепцию:
+
+        Functions
+            ├── declarations
+            └── requirements
+
+        Где:
+
+        declarations
+            = собственные Function declarations
+
+        requirements
+            = runtime requirements от других доменов
+
+        Причём это две разные категории семантических данных, даже если в дальнейшем они могут материализоваться через один механизм.
+
+    3. Собственные declarations преобразуются напрямую
+
+        Текущий результат:
+
+        setup
+        sidebar
+        navigation
+        hook
+        customizer
+
+        не требует никакого анализа других доменов.
+
+        ThemeIR просто создаёт соответствующие semantic objects:
+
+        FunctionDefinition
+                ↓
+        FunctionDeclaration
+
+        или эквивалентную модель, если мы выберем другое имя.
+
+        Ключевой момент: ThemeIR не должен копировать модель ThemeConfiguration один в один.
+
+        Он должен содержать только те данные, которые нужны следующему слою.
+
+    4. Runtime Requirements вводим как отдельную абстракцию
+
+        Это принципиально важно.
+
+        Например, Templates может предоставить:
+
+        MenuRegistrationRequirement
+
+        а другой домен:
+
+        SidebarRegistrationRequirement
+
+        Functions не должен знать, откуда они пришли.
+
+        Поэтому нам нужен общий контракт примерно такого уровня:
+
+        RuntimeRequirement
+
+        и коллекция:
+
+        RuntimeRequirementCollection
+
+        Тогда:
+
+        Templates ThemeIR
+                ↓
+        MenuRegistrationRequirement
+                ↓
+        Requirements Collection
+                ↓
+        Functions ThemeIR
+
+        Это позволит добавлять новые домены без изменения Functions.
+
+    5. Нужен механизм сбора Requirements
+
+        Здесь появляется отдельный этап между готовыми Domain ThemeIR и Functions ThemeIR:
+
+        Session
+            ↓
+        Domain ThemeIR results
+            ↓
+        Requirements Collector
+            ↓
+        Functions Requirements Collection
+
+        Именно этот механизм должен обходить результаты ThemeIR, получать от них предоставленные requirements и объединять их.
+
+        Важно:
+
+        Functions не должен сам обходить Session и искать нужные данные.
+
+        Лучше иметь отдельный механизм уровня application/pipeline, который говорит:
+
+        "соберите все Functions runtime requirements
+        из результатов обработанных доменов"
+
+    6. Затем собираем Functions ThemeIR
+
+        Получаем:
+
+        FunctionsComponent
+                ↓
+        own declarations
+                │
+                ├──────────────┐
+                │              │
+                ↓              ↓
+        Functions        Requirements
+        declarations     collection
+                │              │
+                └───────┬──────┘
+                        ↓
+                Functions ThemeIR
+
+        Таким образом Functions ThemeIR становится единой точкой semantic input для Artifacts.
+
+    7. И только после этого — Artifacts
+
+        Artifacts уже получает:
+
+        Functions ThemeIR

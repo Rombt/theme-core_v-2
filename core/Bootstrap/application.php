@@ -99,6 +99,7 @@ use Rombt\ThemeCore\Artifacts\Styles\StyleCssContentRenderer;
 use Rombt\ThemeCore\Artifacts\Styles\StyleCssPathResolver;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsValidator;
+use Rombt\ThemeCore\ThemeComponents\Domains\Functions\FunctionsComponentBuilder;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -256,6 +257,7 @@ $pipeline = new Pipeline([
                 new AssetsComponentBuilder(),
                 new DesignSystemsComponentBuilder(),
                 new IntegrationsComponentBuilder(),
+                new FunctionsComponentBuilder(),
             ]),
         ),
     ),
