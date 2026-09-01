@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes;
 
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\MenuDefinition;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\SidebarDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\FunctionDefinition;
 
 final readonly class Node
 {
@@ -22,9 +21,8 @@ final readonly class Node
         private ?string $description = null,
         private array $capabilities = [],
         private array $metadata = [],
-        private ?MenuDefinition $menu = null,
-        private ?SidebarDefinition $sidebar = null,
         private ?string $rendering = null,
+        private ?FunctionDefinition $function = null,
     ) {
     }
 
@@ -69,27 +67,7 @@ final readonly class Node
         return $this->metadata;
     }
 
-    public function menu(): ?MenuDefinition
-    {
-        return $this->menu;
-    }
-
-    public function hasMenu(): bool
-    {
-        return $this->menu !== null;
-    }
-
-    public function sidebar(): ?SidebarDefinition
-    {
-        return $this->sidebar;
-    }
-
-    public function hasSidebar(): bool
-    {
-        return $this->sidebar !== null;
-    }
-
-    public function strategy(): string
+    public function strategy(): ?string
     {
         return $this->strategy;
     }
@@ -102,5 +80,15 @@ final readonly class Node
     public function rendering(): ?string
     {
         return $this->rendering;
+    }
+
+    public function function(): ?FunctionDefinition
+    {
+        return $this->function;
+    }
+
+    public function hasFunction(): bool
+    {
+        return $this->function !== null;
     }
 }

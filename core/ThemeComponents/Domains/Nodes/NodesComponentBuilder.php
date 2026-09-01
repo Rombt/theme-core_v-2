@@ -29,9 +29,7 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         $nodes = [];
 
         foreach ($configuration->nodes() as $configurationNode) {
-            $nodes[] = $this->buildNode(
-                $configurationNode,
-            );
+            $nodes[] = $this->buildNode($configurationNode);
         }
 
         return new ThemeComponent(
@@ -42,9 +40,8 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
         );
     }
 
-    private function buildNode(
-        ConfigurationNode $node,
-    ): Node {
+    private function buildNode(ConfigurationNode $node): Node
+    {
         return new Node(
             id: $node->id(),
             type: new NodeType(
@@ -53,16 +50,15 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
             resource: $node->resource(),
             name: $node->name(),
             strategy: $node->hasStrategyOverride()
-            ? NodeStrategy::fromString($node->strategy())
-            : null,
+                ? NodeStrategy::fromString($node->strategy())
+                : null,
             description: $node->description(),
             capabilities: $node->capabilities(),
             metadata: $node->metadata(),
-            menu: $node->menu(),
-            sidebar: $node->sidebar(),
+            function: $node->function(),
             rendering: $node->rendering() !== null
-            ? Rendering::from($node->rendering())
-            : null,
+                ? Rendering::from($node->rendering())
+                : null,
         );
     }
 }

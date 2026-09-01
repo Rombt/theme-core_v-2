@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Nodes;
 
 use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\MenuDefinition;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\SidebarDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\FunctionDefinition;
 
 final readonly class Node
 {
@@ -23,8 +22,7 @@ final readonly class Node
         private ?string $description = null,
         private array $capabilities = [],
         private array $metadata = [],
-        private ?MenuDefinition $menu = null,
-        private ?SidebarDefinition $sidebar = null,
+        private ?FunctionDefinition $function = null,
         private ?Rendering $rendering = null,
     ) {
     }
@@ -49,6 +47,16 @@ final readonly class Node
         return $this->name;
     }
 
+    public function strategy(): ?NodeStrategy
+    {
+        return $this->strategy;
+    }
+
+    public function hasStrategyOverride(): bool
+    {
+        return $this->strategy !== null;
+    }
+
     public function description(): ?string
     {
         return $this->description;
@@ -70,34 +78,9 @@ final readonly class Node
         return $this->metadata;
     }
 
-    public function menu(): ?MenuDefinition
+    public function function(): ?bool
     {
-        return $this->menu;
-    }
-
-    public function hasMenu(): bool
-    {
-        return $this->menu !== null;
-    }
-
-    public function sidebar(): ?SidebarDefinition
-    {
-        return $this->sidebar;
-    }
-
-    public function hasSidebar(): bool
-    {
-        return $this->sidebar !== null;
-    }
-
-    public function strategy(): NodeStrategy
-    {
-        return $this->strategy;
-    }
-
-    public function hasStrategyOverride(): bool
-    {
-        return $this->strategy !== null;
+        return $this->function;
     }
 
     public function rendering(): ?Rendering

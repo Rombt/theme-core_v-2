@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes;
 
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\ConfigurationDomainInterface;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\MenuDefinition;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\SidebarDefinition;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Nodes\Definitions\FunctionDefinition;
 
 final readonly class NodesConfiguration implements ConfigurationDomainInterface
 {
@@ -50,11 +49,25 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
             metadata: is_array($node['metadata'] ?? null)
                 ? $node['metadata']
                 : [],
-            menu: $this->createMenuDefinition($node),
-            sidebar: $this->createSidebarDefinition($node),
             rendering: isset($node['rendering'])
                 ? (string) $node['rendering']
                 : null,
+            function: $this->createFunctionDefinition($node['function'] ?? null),
+        );
+    }
+
+    /**
+     * @param mixed $function
+     */
+    private function createFunctionDefinition(mixed $function): ?FunctionDefinition
+    {
+        if (!is_array($function)) {
+            return null;
+        }
+
+        return new FunctionDefinition(
+            enabled: (bool) ($function['enabled'] ?? false),
+            order: (int) ($function['order'] ?? 0),
         );
     }
 
@@ -71,77 +84,19 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
         $result = [];
 
         foreach ($this->nodes as $node) {
-            $result[$node->id()] = $this->nodeToArray($node);
+            $result[$node->id()] = [
+                'type' => $node->type()->value(),
+                'resource' => $node->resource(),
+                'name' => $node->name(),
+                'strategy' => $node->strategy(),
+                'description' => $node->description(),
+                'capabilities' => $node->capabilities(),
+                'metadata' => $node->metadata(),
+                'rendering' => $node->rendering(),
+                'function' => $node->function()?->toArray(),
+            ];
         }
 
         return $result;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function nodeToArray(Node $node): array
-    {
-        return [
-            'type' => $node->type()->value(),
-            'resource' => $node->resource(),
-            'name' => $node->name(),
-            'strategy' => $node->strategy(),
-            'description' => $node->description(),
-            'capabilities' => $node->capabilities(),
-            'metadata' => $node->metadata(),
-            'menu' => $this->menuToArray($node),
-            'sidebar' => $this->sidebarToArray($node),
-            'rendering' => $node->rendering(),
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function menuToArray(Node $node): ?array
-    {
-        return $node->menu()?->toArray();
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function sidebarToArray(Node $node): ?array
-    {
-        return $node->sidebar()?->toArray();
-    }
-
-    /**
-     * @param array<string, mixed> $node
-     */
-    private function createMenuDefinition(array $node): ?MenuDefinition
-    {
-        if (!is_array($node['menu'] ?? null)) {
-            return null;
-        }
-
-        return new MenuDefinition(
-            location: (string) ($node['menu']['location'] ?? ''),
-            label: (string) ($node['menu']['label'] ?? ''),
-        );
-    }
-
-    /**
-     * @param array<string, mixed> $node
-     */
-    private function createSidebarDefinition(array $node): ?SidebarDefinition
-    {
-        if (!is_array($node['sidebar'] ?? null)) {
-            return null;
-        }
-
-        return new SidebarDefinition(
-            id: (string) ($node['sidebar']['id'] ?? ''),
-            name: (string) ($node['sidebar']['name'] ?? ''),
-            description: isset($node['sidebar']['description'])
-                ? (string) $node['sidebar']['description']
-                : null,
-        );
     }
 }
