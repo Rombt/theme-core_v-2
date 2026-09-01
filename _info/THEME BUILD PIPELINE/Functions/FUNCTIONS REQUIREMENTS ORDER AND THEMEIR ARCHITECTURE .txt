@@ -1,0 +1,502 @@
+FUNCTIONS REQUIREMENTS ORDER AND THEMEIR ARCHITECTURE
+ARCHITECTURAL DESCRIPTION
+(v1.0.0)
+
+Status: Architectural Foundation
+
+==================================================
+1. PURPOSE
+==================================================
+
+   Данный документ фиксирует архитектурное решение по 
+    формированию и упорядочиванию `Functions Requirements` на слое ThemeIR.
+
+   Решение определяет:
+
+        как узлы других доменов сообщают о необходимости
+            PHP runtime functionality
+
+        каким образом создаётся `FunctionRequirement`
+
+        какие данные содержит `FunctionRequirement`
+
+        каким образом определяется порядок Requirements
+
+        каким образом Requirements становятся частью
+            итогового `Functions ThemeIR`.
+
+   Основная цель:
+
+        обеспечить формирование полного набора PHP runtime requirements
+
+        сохранить порядок, заданный автором Theme Configuration
+
+        передать в Artifacts Layer минимально необходимую
+            и архитектурно-независимую информацию.
+
+==================================================
+2. FUNCTIONS THEMEIR STRUCTURE
+==================================================
+
+    Домен `Functions` на слое ThemeIR состоит из двух разделов:
+
+        declarations
+
+        requirements
+
+
+    Итоговая структура:
+
+        Functions
+            ├── declarations
+            │       └── FunctionDeclarationCollection
+            │
+            └── requirements
+                    └── FunctionsRequirementsCollection
+
+
+    `declarations` содержит собственные декларации
+        домена Functions.
+
+    `requirements` содержит PHP runtime requirements,
+        предоставленные узлами других доменов.
+
+==================================================
+3. FUNCTIONS REQUIREMENTS SOURCE
+==================================================
+
+    Формирование `requirements` выполняется после того,
+        как все остальные необходимые домены ThemeIR уже построены и сохранены в Session.
+
+    Functions не анализирует исходные Configuration arrays других доменов.
+
+    Источником являются уже сформированные
+        semantic ThemeIR concepts, доступные через Session.
+
+
+    Общая схема:
+
+        Theme Configuration
+            ↓
+        Theme Components
+            ↓
+        Domain ThemeIR
+            ↓
+        Session
+            ↓
+        Functions Requirements formation
+            ↓
+        Functions ThemeIR
+
+==================================================
+4. FUNCTION DECLARATION IN NODE
+==================================================
+
+    Возможность узла предоставить PHP runtime functionality
+        задаётся в Configuration Package специальной декларацией `function`.
+
+    `function` является не простым boolean-флагом,
+        а декларацией параметров Function Requirement.
+
+
+    Предлагаемая структура:
+
+        'function' => [
+            'enabled' => true,
+            'order' => 50,
+        ]
+
+
+    Поле `enabled` определяет:
+
+        должен ли для данного узла быть создан Functions Requirement.
+
+
+    Поле `order` определяет:
+        относительный порядок Requirement
+            в результирующей Functions Requirements Collection.
+
+==================================================
+5. REQUIREMENT CREATION
+==================================================
+
+    При формировании Functions Requirements
+        система обходит уже созданные ThemeIR concepts
+        и соответствующие им узлы.
+
+    Для каждого узла проверяется его декларация `function`.
+
+    Если:
+
+        function.enabled === true
+
+    создаётся `FunctionRequirement`.
+
+
+    Если:
+
+        function.enabled !== true
+
+    FunctionRequirement для данного узла не создаётся.
+
+
+    Таким образом:
+
+        Node
+            ↓
+        function.enabled
+            ↓
+        FunctionRequirement
+
+==================================================
+6. FUNCTION REQUIREMENT
+==================================================
+
+    `FunctionRequirement` является
+        архитектурно-независимой semantic model.
+
+    Он не содержит готовый PHP-код.
+
+    Он не содержит архитектурную реализацию.
+
+    Он не содержит путь к файлу Resource.
+
+
+    Минимальный состав:
+
+        FunctionRequirement
+            ├── resource: Resource
+            └── order: int
+
+
+    `resource` определяет Resource,
+        который должен быть материализован
+        на Artifacts Layer.
+
+    `order` определяет положение Requirement
+        относительно других Requirements.
+
+==================================================
+7. RESOURCE
+==================================================
+
+    `Resource` в ThemeIR содержит только
+        идентификатор Resource.
+
+    Например:
+
+        Resource {
+            value: 'navigation_01'
+        }
+
+
+    ThemeIR не разрешает Resource в физический файл реализации.
+
+    Architecture-specific resolution выполняется только на Artifacts Layer.
+
+
+    Для Function Requirement Resource может иметь
+        архитектурные реализации:
+
+        components/navigation_01/
+            function.classic.php
+            function.block.html
+
+
+    Таким образом:
+
+        FunctionRequirement
+            ↓
+        Resource
+            ↓
+        Artifacts Layer
+            ↓
+        function.classic.php
+        или
+        function.block.html
+
+==================================================
+8. MINIMAL INFORMATION PRINCIPLE
+==================================================
+
+    FunctionRequirement должен содержать только те данные,
+        которые необходимы Artifacts Layer
+        для последующей материализации.
+
+    На текущем этапе приняты:
+        resource
+        order
+
+    Ссылка на исходный Node
+        в FunctionRequirement не требуется.
+
+    Другие данные Node
+        не переносятся в Requirement,
+        если они не нужны Artifacts Layer.
+
+==================================================
+9. REQUIREMENT ORDER
+    ==================================================
+
+    Порядок Requirements задаётся автором темы
+        в Configuration Package.
+
+    Поле:
+        function.order
+
+    является частью декларации порядка.
+
+
+    Используется диапазон:
+        0 ... 100
+
+
+    Чем меньше значение `order`,
+        тем раньше Requirement должен быть размещён
+        в итоговой Functions Requirements Collection.
+
+
+    Пример:
+        order = 10
+        order = 50
+        order = 90
+
+
+    Результирующий порядок:
+        10
+        50
+        90
+
+==================================================
+10. EQUAL ORDER
+==================================================
+
+    Одинаковые значения `order`
+        являются допустимыми.
+
+    Если несколько Requirements имеют одинаковый `order`,
+        применяется детерминированное дополнительное правило:
+
+        сохраняется порядок их появления
+            в исходной Configuration / последовательности обработки узлов.
+
+
+    Таким образом, сортировка является:
+
+        primary:
+            order ASC
+
+        secondary:
+            original declaration order ASC
+
+
+    Это обеспечивает стабильный и предсказуемый результат.
+
+==================================================
+11. REQUIREMENTS COLLECTION
+==================================================
+
+    Все созданные `FunctionRequirement` собираются в:
+        FunctionsRequirementsCollection
+
+
+    Collection должна сохранять установленный порядок Requirements.
+
+    Общая схема:
+
+        ThemeIR concepts
+            ↓
+        function.enabled === true
+            ↓
+        FunctionRequirement
+            ↓
+        order
+            ↓
+        FunctionsRequirementsCollection
+
+==================================================
+12. FUNCTIONS THEMEIR FORMATION
+==================================================
+
+Формирование домена Functions выполняется
+    после построения остальных необходимых доменов ThemeIR.
+
+На момент формирования Functions
+    результаты остальных доменов уже находятся в Session.
+
+
+Functions формируется из двух независимых источников:
+    собственные declarations
+    runtime requirements
+
+
+Итог:
+
+    Functions
+        ├── declarations
+        │
+        └── requirements
+
+
+После формирования Functions
+    результат сохраняется в Session.
+
+==================================================
+13. ARTIFACTS RESPONSIBILITY
+==================================================
+
+    Artifacts Layer получает уже сформированный
+        Functions ThemeIR.
+
+    Artifacts Layer не определяет:
+        какие узлы требуют PHP functionality
+        почему был создан Requirement
+        какой порядок был выбран автором темы
+        какие домены породили Requirement.
+
+
+    Artifacts Layer использует:
+
+        Resource  order
+
+        и другие данные Functions ThemeIR, если они будут добавлены в дальнейшем.
+
+    Для каждого Requirement Artifacts Layer
+        выбирает соответствующую архитектурную реализацию Resource:
+
+        Classic:
+            function.classic.php
+
+        Block:
+            function.block.html
+
+
+    После materialization содержимое Requirements
+        формирует результирующий:
+
+        functions.php
+
+==================================================
+14. MODULARITY
+==================================================
+
+    Механизм формирования Requirements
+        не должен содержать информацию о конкретном наборе модулей.
+
+    Core не должен заранее знать:
+        какие существуют типы узлов
+        какие существуют функции
+        сколько существует меню
+        сколько существует sidebars
+        какие дополнительные модули появятся в будущем.
+
+
+    Модуль самостоятельно определяет:
+        требуется ли ему PHP runtime functionality
+        какой Resource её реализует
+        порядок этой functionality.
+
+
+    Добавление нового модуля
+        не должно требовать изменения
+        механизма Functions.
+
+==================================================
+15. EXTENSIBILITY
+==================================================
+
+    Для добавления новой функциональности
+        автор темы должен иметь возможность:
+            добавить соответствующий Resource
+            добавить или изменить соответствующий Node в Configuration Package
+
+            установить:
+                function.enabled = true
+                function.order = ...
+
+    После этого существующий pipeline
+        автоматически должен включить соответствующий FunctionRequirement
+        в Functions ThemeIR.
+
+
+    Базовый механизм Functions при этом не должен изменяться.
+
+==================================================
+16. COMPLETE FLOW
+==================================================
+
+    Итоговый pipeline:
+
+        Configuration Package
+            ↓
+        Theme Components
+            ↓
+        Domain ThemeIR
+            ↓
+        Session
+            ↓
+        all other ThemeIR concepts available
+            ↓
+        Functions Requirement formation
+            ↓
+        inspect function declaration
+            ↓
+        function.enabled === true
+            ↓
+        FunctionRequirement
+            ├── Resource
+            └── order
+            ↓
+        FunctionsRequirementsCollection
+            ↓
+        sort by order ASC
+            ↓
+        Functions ThemeIR
+            ├── declarations
+            └── requirements
+            ↓
+        Session
+            ↓
+        Artifacts Layer
+            ↓
+        Resource Architecture
+            ↓
+        function.classic.php
+        function.block.html
+            ↓
+        functions.php
+
+==================================================
+17. ARCHITECTURAL RESULT
+==================================================
+
+    Принято следующее архитектурное решение:
+
+        `function` в Node является декларацией необходимости PHP runtime functionality.
+
+        `function.enabled` определяет, создавать ли Requirement.
+
+        `function.order` определяет,  где Requirement располагается 
+            относительно остальных Requirements.
+
+        `FunctionRequirement` содержит:
+            Resource
+            order
+
+
+        `FunctionsRequirementsCollection` содержит все созданные Requirements 
+            в детерминированном порядке.
+
+
+        `Functions` на ThemeIR содержит:
+            declarations
+            requirements
+
+
+        Functions формируется последним после построения остальных необходимых
+            ThemeIR domains.
+
+
+        Artifacts Layer отвечает за архитектурную материализацию Resources
+            и формирование итогового `functions.php`.
+
