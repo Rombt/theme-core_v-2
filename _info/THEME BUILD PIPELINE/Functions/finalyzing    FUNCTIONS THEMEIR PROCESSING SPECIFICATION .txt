@@ -1,0 +1,468 @@
+FUNCTIONS THEMEIR PROCESSING SPECIFICATION
+ENGINEERING SPECIFICATION
+(v1.0.0)
+
+Status: Implementation Contract
+
+==================================================
+1. SCOPE
+==================================================
+
+    Данный документ определяет точный алгоритм построения 
+        `Functions ThemeIR`.
+
+    Спецификация определяет:
+
+    источник Functions declarations
+
+    источник external Function Requirements
+
+    порядок выполнения этапов
+
+    контракт источников Requirements
+
+    правила создания FunctionRequirement
+
+    правила сортировки Requirements
+
+    структуру результата Functions ThemeIR
+
+    момент сохранения результата в Session.
+
+==================================================
+2. PRECONDITION
+==================================================
+
+    До начала обработки Functions должны быть завершены все ThemeIR-домены, 
+        являющиеся источниками Function Requirements.
+
+    Результаты этих доменов должны быть сохранены в Session.
+
+    Functions НЕ обрабатывается до завершения этих доменов.
+
+==================================================
+3. INPUTS
+==================================================
+
+    Обработка Functions получает два независимых источника данных:
+
+    A. Functions Configuration
+    B. ThemeIR Concepts из Session
+
+
+    A. Functions Configuration
+
+        Используется исключительно для формирования:
+
+            FunctionDeclarationCollection
+
+
+    B. ThemeIR Concepts
+
+        Используются исключительно для формирования:
+
+            FunctionsRequirementsCollection
+
+    Functions НЕ читает Configuration других доменов.
+
+==================================================
+4. FUNCTIONS DECLARATIONS
+==================================================
+
+    Functions declarations строятся из Configuration домена `functions`.
+
+    Результатом является: FunctionDeclarationCollection
+
+    Каждая декларация содержит семантические данные,
+        необходимые для её последующей реализации через Resource.
+
+
+    Для декларации `setup`:
+        type
+        resource
+        name
+
+    являются structural fields.
+
+    Остальные поля являются semantic payload.
+
+==================================================
+5. SETUP RESOURCE RESOLUTION
+==================================================
+
+    Для каждого semantic sub-block `setup` применяется
+        следующее правило выбора Resource:
+
+        if sub-block contains resource:
+            use sub-block resource
+
+        otherwise:
+            use root setup resource
+
+    Root setup resource является обязательным.
+
+    Таким образом:
+
+        setup.resource
+            =
+        default Resource
+
+
+    Собственный `sub-block.resource` имеет приоритет над root setup resource.
+
+==================================================
+6. EXTERNAL REQUIREMENT SOURCES
+==================================================
+
+    External Function Requirements формируются
+        исключительно из ThemeIR Concepts.
+
+    Каждый Concept, который может предоставлять
+        Function Requirements, обязан предоставлять публичный метод:
+
+        components(): iterable
+
+    `components()` является единым контрактом между Concept и FunctionRequirementCollector.
+
+    Collector НЕ знает конкретный тип Concept и НЕ знает внутреннюю структуру Concept.
+
+==================================================
+7. COMPONENT CONTRACT
+==================================================
+
+    Каждый element, возвращаемый `components()`,
+        является кандидатом на Function Requirement.
+
+    Element должен предоставлять доступ к своей Function declaration.
+
+    Семантический контракт элемента:
+
+        function(): ?FunctionDefinition
+
+    Результат:
+
+        null = element не предоставляет Function Requirement
+
+        FunctionDefinition = element может предоставить Function Requirement
+
+    FunctionRequirementCollector не определяет, почему конкретный element предоставляет FunctionDefinition.
+
+==================================================
+8. FUNCTION DEFINITION
+==================================================
+
+    `FunctionDefinition` является декларацией runtime requirement конкретного element.
+
+    Минимальный контракт:
+
+        enabled(): bool
+        resource(): Resource
+        order(): int
+
+
+    `FunctionDefinition` НЕ содержит:
+
+        PHP-код
+
+        architecture-specific implementation
+
+        путь к Resource file
+
+        путь к functions.php.               
+
+==================================================
+9. REQUIREMENT CREATION
+==================================================
+
+    Для каждого element из каждого `components()` выполняется:
+
+        definition = element.function()
+
+    Если:
+
+        definition === null
+
+    Requirement НЕ создаётся.
+
+
+    Если:
+
+        definition.enabled() === false
+
+    Requirement НЕ создаётся.
+
+
+    Если:
+
+        definition.enabled() === true
+
+    создаётся:
+
+        FunctionRequirement(
+            resource = definition.resource(),
+            order = definition.order()
+        )
+
+==================================================
+10. REQUIREMENT COLLECTION
+==================================================
+
+    Все созданные FunctionRequirement помещаются в:
+
+        FunctionsRequirementsCollection
+
+
+    Collection формируется до создания Functions ThemeIR.
+
+==================================================
+11. ORIGINAL ORDER
+==================================================
+
+    Каждому создаваемому Requirement назначается implicit `sequence`.
+
+    `sequence` определяется порядком обхода:
+
+        1. Concept
+        2. component внутри Concept
+
+    `sequence` НЕ является частью публичной модели FunctionRequirement.
+
+    `sequence` используется только для обеспечения стабильного порядка при одинаковом `order`.
+
+==================================================
+12. REQUIREMENT SORTING
+==================================================
+
+    После формирования всех Requirements Collection сортируется по двум ключам:
+
+        primary:
+            order ASC
+
+        secondary:
+            original sequence ASC
+
+
+    Пример:
+        A: order 50, sequence 1
+        B: order 10, sequence 2
+        C: order 50, sequence 3
+
+    Результат:
+        B
+        A
+        C
+
+==================================================
+13. ORDER VALIDATION
+==================================================
+
+    `order` обязан находиться в диапазоне:
+
+        0 ... 100
+
+
+    Значение вне диапазона является некорректной Function Definition.
+
+==================================================
+14. FUNCTIONS THEMEIR
+==================================================
+
+    После завершения двух независимых этапов:
+
+        FunctionDeclarationCollection
+        FunctionsRequirementsCollection
+
+    создаётся:
+        Functions ThemeIR
+
+
+    Структура:
+
+        Functions
+            ├── declarations
+            │     └── FunctionDeclarationCollection
+            │
+            └── requirements
+                └── FunctionsRequirementsCollection
+
+
+    Declarations и Requirements НЕ объединяются в одну коллекцию.
+
+==================================================
+15. SESSION STORAGE
+==================================================
+
+    После успешного создания Functions ThemeIR он сохраняется в Session.
+
+    После этого Session содержит:
+
+        Functions ThemeIR
+
+
+    Functions ThemeIR является последним результатом ThemeIR pipeline.
+
+==================================================
+16. COMPLETE ALGORITHM
+==================================================
+
+    Algorithm:
+
+        1. Read Functions Configuration.
+
+        2. Build FunctionDeclarationCollection.
+
+        3. Resolve root/sub-block Resources
+        according to setup Resource inheritance rules.
+
+        4. Read ThemeIR domain results from Session.
+
+        5. For each ThemeIR Concept:
+
+            obtain components()
+
+        6. For each returned component:
+
+            obtain function()
+
+        7. If function() === null:
+
+            continue
+
+        8. If function.enabled() === false:
+
+            continue
+
+        9. Validate function.order.
+
+    10. Create FunctionRequirement:
+
+            resource = function.resource()
+            order    = function.order()
+
+    11. Add Requirement to collection
+        preserving original sequence.
+
+    12. Sort Requirements:
+
+            order ASC
+            sequence ASC
+
+    13. Create Functions ThemeIR:
+
+            declarations
+            requirements
+
+    14. Save Functions ThemeIR to Session.
+
+==================================================
+17. RESPONSIBILITY BOUNDARIES
+==================================================
+
+    Theme Configuration:
+        declares Functions functionality.
+
+    ThemeIR Concept:
+        exposes its own requirement candidates
+        through `components()`.
+
+    Component:
+        exposes its FunctionDefinition
+        through `function()`.
+
+    FunctionDefinition:
+        declares:
+            enabled
+            resource
+            order
+
+    FunctionRequirementCollector:
+
+        discovers and creates Requirements.
+
+    FunctionsRequirementsCollection:
+
+        stores and orders Requirements.
+
+    Functions ThemeIR:
+
+        aggregates:
+
+            declarations
+            requirements
+
+    Resource:
+
+        identifies implementation.
+
+    Artifacts Layer:
+
+        resolves Resource Architecture and materializes the final Artifact.
+
+==================================================
+18. FORBIDDEN BEHAVIOUR
+==================================================
+
+    FunctionRequirementCollector MUST NOT:
+
+        inspect Configuration arrays
+
+        inspect fields specific to another Concept
+
+        contain instanceof checks for concrete Concepts
+
+        use Reflection to discover FunctionDefinitions
+
+        resolve Resource Architecture
+
+        read Resource files
+
+        generate PHP code.
+
+
+    Functions ThemeIR MUST NOT:
+
+        contain architecture-specific implementation
+
+        contain generated PHP code
+
+        resolve physical Resource paths.
+
+==================================================
+19. ARCHITECTURAL RESULT
+==================================================
+
+    The complete processing chain is:
+
+        Configuration
+            ↓
+        Theme Components
+            ↓
+        Domain ThemeIR
+            ↓
+        Session
+            ↓
+        FunctionRequirementCollector
+            ↓
+        components()
+            ↓
+        function()
+            ↓
+        FunctionDefinition
+            ↓
+        FunctionRequirement
+            ├── Resource
+            └── order
+            ↓
+        FunctionsRequirementsCollection
+            ↓
+        Functions ThemeIR
+            ├── FunctionDeclarationCollection
+            └── FunctionsRequirementsCollection
+            ↓
+        Session
+            ↓
+        Artifacts Layer
+            ↓
+        Resource Architecture
+            ↓
+        functions.php
