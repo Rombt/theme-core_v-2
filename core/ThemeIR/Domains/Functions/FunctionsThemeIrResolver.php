@@ -6,36 +6,53 @@ namespace Rombt\ThemeCore\ThemeIR\Domains\Functions;
 
 use LogicException;
 use Rombt\ThemeCore\ThemeComponents\ComponentId;
-use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentInterface;
-use Rombt\ThemeCore\ThemeComponents\Domains\Functions\FunctionComponent;
 use Rombt\ThemeCore\ThemeComponents\Domains\Functions\FunctionsComponent;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionDeclaration;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionDeclarationCollection;
+use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionRequirementCollector;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Functions;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\ValueObjects\FunctionType;
-use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrResolverInterface;
+use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrFinalResolverInterface;
 use Rombt\ThemeCore\ThemeIR\IrId;
+use Rombt\ThemeCore\ThemeIR\ThemeIR;
 
-final readonly class FunctionsThemeIrResolver implements ThemeIrResolverInterface
+final readonly class FunctionsThemeIrResolver implements ThemeIrFinalResolverInterface
 {
+    public function __construct(
+        private FunctionRequirementCollector $requirementCollector,
+    ) {
+    }
+
     public function resolve(
         ThemeComponentCollection $components,
+        ThemeIR $themeIr,
     ): Functions {
         $component = $this->getComponent($components);
 
         $declarations = [];
 
         foreach ($component->functions() as $function) {
+            $resource = $function->resource();
+
+            if ($resource === null) {
+                throw new LogicException(
+                    sprintf(
+                        'Function "%s" must define a resource.',
+                        $function->id(),
+                    ),
+                );
+            }
+
             $declarations[] = new FunctionDeclaration(
                 id: $function->id(),
                 type: new FunctionType(
                     $function->type(),
                 ),
-                resource: $function->resource() !== null
-                    ? new Resource($function->resource())
-                    : null,
+                resource: new Resource(
+                    $resource,
+                ),
                 name: $function->name(),
                 description: $function->description(),
                 configuration: $function->configuration(),
@@ -46,6 +63,9 @@ final readonly class FunctionsThemeIrResolver implements ThemeIrResolverInterfac
             id: new IrId('functions'),
             declarations: new FunctionDeclarationCollection(
                 $declarations,
+            ),
+            requirements: $this->requirementCollector->collect(
+                $themeIr,
             ),
         );
     }

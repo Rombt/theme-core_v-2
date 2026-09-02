@@ -101,6 +101,7 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsValidator;
 use Rombt\ThemeCore\ThemeComponents\Domains\Functions\FunctionsComponentBuilder;
 use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionsThemeIrResolver;
+use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionRequirementCollector;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -265,20 +266,24 @@ $pipeline = new Pipeline([
 
     new BuildThemeIRStage(
         new ThemeIRBuilder(
-            new ThemeIRResolverRegistry([
-                // Compositions используются TemplatesThemeIRResolver
-                // для построения Templates IR concept.
-                new TemplatesThemeIRResolver(),
+            new ThemeIRResolverRegistry(
+                resolvers: [
+                    // Compositions используются TemplatesThemeIRResolver
+                    // для построения Templates IR concept.
+                    new TemplatesThemeIRResolver(),
 
-                new DesignSystemsThemeIRResolver(),
-                new AssetsThemeIRResolver(),
-                new IntegrationsThemeIRResolver(),
-
-                new FunctionsThemeIrResolver(),
-            ]),
+                    new DesignSystemsThemeIRResolver(),
+                    new AssetsThemeIRResolver(),
+                    new IntegrationsThemeIRResolver(),
+                ],
+                finalResolvers: [
+                    new FunctionsThemeIrResolver(
+                        new FunctionRequirementCollector(),
+                    ),
+                ],
+            ),
         ),
     ),
-
     new GenerateIrArtifactsStage(
         new ThemeArtifactGenerator(
             (new ArtifactGeneratorRegistryFactory())->create(
