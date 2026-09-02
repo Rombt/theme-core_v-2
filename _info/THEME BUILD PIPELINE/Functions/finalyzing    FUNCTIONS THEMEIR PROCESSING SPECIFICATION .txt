@@ -120,9 +120,9 @@ Status: Implementation Contract
     Каждый Concept, который может предоставлять
         Function Requirements, обязан предоставлять публичный метод:
 
-        components(): iterable
+        functionComponents(): iterable
 
-    `components()` является единым контрактом между Concept и FunctionRequirementCollector.
+    `functionComponents()` является единым контрактом между Concept и FunctionRequirementCollector.
 
     Collector НЕ знает конкретный тип Concept и НЕ знает внутреннюю структуру Concept.
 
@@ -130,7 +130,7 @@ Status: Implementation Contract
 7. COMPONENT CONTRACT
 ==================================================
 
-    Каждый element, возвращаемый `components()`,
+    Каждый element, возвращаемый `functionComponents()`,
         является кандидатом на Function Requirement.
 
     Element должен предоставлять доступ к своей Function declaration.
@@ -174,7 +174,7 @@ Status: Implementation Contract
 9. REQUIREMENT CREATION
 ==================================================
 
-    Для каждого element из каждого `components()` выполняется:
+    Для каждого element из каждого `functionComponents()` выполняется:
 
         definition = element.function()
 
@@ -318,7 +318,7 @@ Status: Implementation Contract
 
         5. For each ThemeIR Concept:
 
-            obtain components()
+            obtain functionComponents()
 
         6. For each returned component:
 
@@ -363,7 +363,7 @@ Status: Implementation Contract
 
     ThemeIR Concept:
         exposes its own requirement candidates
-        through `components()`.
+        through `functionComponents()`.
 
     Component:
         exposes its FunctionDefinition
@@ -443,7 +443,7 @@ Status: Implementation Contract
             ↓
         FunctionRequirementCollector
             ↓
-        components()
+        functionComponents()
             ↓
         function()
             ↓
