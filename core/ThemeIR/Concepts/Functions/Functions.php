@@ -12,6 +12,7 @@ final readonly class Functions extends ThemeConcept implements FunctionsInterfac
     public function __construct(
         IrId $id,
         private FunctionDeclarationCollection $declarations,
+        private FunctionRequirementCollection $requirements,
     ) {
         parent::__construct($id);
     }
@@ -19,5 +20,10 @@ final readonly class Functions extends ThemeConcept implements FunctionsInterfac
     public function declarations(): FunctionDeclarationCollection
     {
         return $this->declarations;
+    }
+
+    public function requirements(): FunctionRequirementCollection
+    {
+        return $this->requirements;
     }
 }

@@ -17,4 +17,12 @@ abstract readonly class ThemeConcept implements ThemeConceptInterface
     {
         return $this->id->value();
     }
+
+    /**
+     * @return list<\Rombt\ThemeCore\ThemeIR\Contracts\FunctionComponentInterface>
+     */
+    public function functionComponents(): array
+    {
+        return [];
+    }
 }
