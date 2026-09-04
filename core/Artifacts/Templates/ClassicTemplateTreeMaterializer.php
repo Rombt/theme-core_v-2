@@ -14,7 +14,6 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
 {
     public function __construct(
         private TemplateNodeMaterializerInterface $nodeMaterializer,
-        private Application $app,
     ) {
     }
 

@@ -18,6 +18,11 @@ return [
                 'node' => 'navigation_01',
                 'slot' => 2,
             ],
+            [
+                'id' => 'id_hero_navigation_01',
+                'node' => 'hero_navigation_01',
+                'slot' => 2,
+            ],
         ],
     ],
 
@@ -30,6 +35,12 @@ return [
             [
                 'id' => 'copyright',
                 'node' => 'copyright_01',
+                'slot' => 2,
+            ],
+            [
+                'id' => 'id_footer_navigation_01',
+                'node' => 'footer_navigation_01',
+                'slot' => 1,
             ],
         ],
     ],

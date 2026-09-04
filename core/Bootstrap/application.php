@@ -291,8 +291,7 @@ $pipeline = new Pipeline([
                     new ClassicTemplateArtifactGenerator(
                         new ClassicTemplateTreeRenderer(
                             new ClassicTemplateTreeMaterializer(
-                                $classicNodeMaterializer,
-                                $app,
+                                $classicNodeMaterializer
                             ),
                         ),
                         $classicNodeMaterializer,
@@ -337,8 +336,18 @@ $pipeline = new Pipeline([
     echo PHP_EOL;
 
 if ($result->getError() !== null) {
+    $error = $result->getError();
+
     echo 'Build Error: ';
-    echo $result->getError()->getMessage();
+    echo $error->getMessage();
+    echo PHP_EOL;
+
+    echo 'File: ';
+    echo $error->getFile();
+    echo PHP_EOL;
+
+    echo 'Line: ';
+    echo $error->getLine();
     echo PHP_EOL;
 }
 

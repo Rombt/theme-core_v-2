@@ -17,25 +17,22 @@ final readonly class TemplateTreeBuilder
     public function __construct(
         private NodeCollection $nodes,
         private CompositionCollection $compositions,
+        private NodeFunctionDefinitionCollection $functionDefinitions,
     ) {
     }
 
-    public function build(
-        Composition $composition,
-    ): TemplateTree {
+    public function build(Composition $composition): TemplateTree
+    {
         return new TemplateTree(
-            roots: $this->buildNodes(
-                $composition->defaultChildren(),
-            ),
+            roots: $this->buildNodes($composition->defaultChildren()),
         );
     }
 
     /**
      * @return list<TemplateNode>
      */
-    private function buildNodes(
-        CompositionNodeCollection $nodes,
-    ): array {
+    private function buildNodes(CompositionNodeCollection $nodes): array
+    {
         $result = [];
 
         foreach ($nodes as $node) {
@@ -67,9 +64,7 @@ final readonly class TemplateTreeBuilder
     private function buildNodeReference(
         CompositionNode $compositionNode,
     ): TemplateNode {
-        $node = $this->nodes->find(
-            $compositionNode->nodeId(),
-        );
+        $node = $this->nodes->find($compositionNode->nodeId());
 
         if ($node === null) {
             throw new LogicException(
@@ -88,8 +83,11 @@ final readonly class TemplateTreeBuilder
                 $node->type()->name(),
             ),
             resource: $node->resource() !== null
-            ? new Resource($node->resource())
-            : null,
+                ? new Resource($node->resource())
+                : null,
+            function: $this->functionDefinitions->find(
+                $node->id(),
+            ),
             rendering: $node->rendering(),
             slot: $compositionNode->slot(),
         );
@@ -125,6 +123,7 @@ final readonly class TemplateTreeBuilder
             resource: $composition->resource() !== null
                 ? new Resource($composition->resource())
                 : null,
+            function: null,
             rendering: $composition->rendering(),
             slot: $compositionNode->slot(),
             children: $this->buildNodes($children),

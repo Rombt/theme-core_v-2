@@ -31,13 +31,6 @@ final readonly class StyleCssArtifactGenerator implements ArtifactGeneratorInter
     public function generate(object $source, ArtifactCollectionInterface $artifacts): void
     {
 
-        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
-
-        $logger->dump('$source = ');
-        $logger->dump($source);
-        $logger->dump('$artifacts = ');
-        $logger->dump($artifacts);
-
         if (!$source instanceof ThemeConfigurationPackage) {
             return;
         }

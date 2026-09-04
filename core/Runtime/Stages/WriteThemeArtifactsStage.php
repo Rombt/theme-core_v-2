@@ -47,9 +47,6 @@ final class WriteThemeArtifactsStage implements StageInterface
             $blockArtifacts = new ArtifactCollection();
 
             foreach ($artifacts as $artifact) {
-                $logger->dump('00 $artifact = ');
-                $logger->dump($artifact);
-
                 $architecture = $artifact->metadata()['architecture'] ?? null;
 
                 if ($architecture === 'classic') {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts;
 
-use Rombt\ThemeCore\Application\Application;
-use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactSourcesInterface;
@@ -13,10 +11,8 @@ use Rombt\ThemeCore\Artifacts\Contracts\ThemeArtifactGeneratorInterface;
 
 final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInterface
 {
-    public function __construct(
-        private ArtifactGeneratorRegistry $registry,
-        private ?Application $app,
-    ) {
+    public function __construct(private ArtifactGeneratorRegistry $registry)
+    {
     }
 
     public function generate(
@@ -24,20 +20,12 @@ final readonly class ThemeArtifactGenerator implements ThemeArtifactGeneratorInt
         ArtifactCollectionInterface $artifacts,
     ): void {
 
-        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
-
         foreach ($this->registry->all() as $generator) {
-            $logger->dump('$generator = ');
-            $logger->dump($generator);
-
             $source = $sources->get($generator->source());
 
             if ($source === null) {
                 continue;
             }
-
-            $logger->dump('AVAILABLE SOURCES = ');
-            $logger->dump($sources->all());
 
             $generator->generate(
                 $source,

@@ -78,7 +78,7 @@ final readonly class Node
         return $this->metadata;
     }
 
-    public function function(): ?bool
+    public function function(): ?FunctionDefinition
     {
         return $this->function;
     }

@@ -8,9 +8,8 @@ use Rombt\ThemeCore\ThemeIR\Contracts\ThemeConceptInterface;
 
 abstract readonly class ThemeConcept implements ThemeConceptInterface
 {
-    public function __construct(
-        private IrId $id,
-    ) {
+    public function __construct(private IrId $id)
+    {
     }
 
     public function id(): string

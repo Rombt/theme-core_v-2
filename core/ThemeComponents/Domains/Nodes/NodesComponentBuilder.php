@@ -44,9 +44,7 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
     {
         return new Node(
             id: $node->id(),
-            type: new NodeType(
-                name: $node->type()->value(),
-            ),
+            type: new NodeType(name: $node->type()->value()),
             resource: $node->resource(),
             name: $node->name(),
             strategy: $node->hasStrategyOverride()
@@ -55,7 +53,7 @@ final readonly class NodesComponentBuilder implements ThemeComponentBuilderInter
             description: $node->description(),
             capabilities: $node->capabilities(),
             metadata: $node->metadata(),
-            function: $node->function(),
+            function: $node->functionDefinition(),
             rendering: $node->rendering() !== null
                 ? Rendering::from($node->rendering())
                 : null,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates;
 
+use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
 use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateNodeType;
 
@@ -18,6 +19,7 @@ final readonly class TemplateNode
         private ?string $compositionId,
         private TemplateNodeType $type,
         private ?Resource $resource,
+        private ?FunctionDefinition $function,
         private Rendering $rendering,
         private ?int $slot,
         private array $children = [],
@@ -47,6 +49,11 @@ final readonly class TemplateNode
     public function resource(): ?Resource
     {
         return $this->resource;
+    }
+
+    public function function(): ?FunctionDefinition
+    {
+        return $this->function;
     }
 
     public function rendering(): Rendering

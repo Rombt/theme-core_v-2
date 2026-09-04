@@ -82,7 +82,7 @@ final readonly class Node
         return $this->rendering;
     }
 
-    public function function(): ?FunctionDefinition
+    public function functionDefinition(): ?FunctionDefinition
     {
         return $this->function;
     }

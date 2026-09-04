@@ -25,10 +25,8 @@ final readonly class FunctionsThemeIrResolver implements ThemeIrFinalResolverInt
     ) {
     }
 
-    public function resolve(
-        ThemeComponentCollection $components,
-        ThemeIR $themeIr,
-    ): Functions {
+    public function resolve(ThemeComponentCollection $components, ThemeIR $themeIr): Functions
+    {
         $component = $this->getComponent($components);
 
         $declarations = [];
@@ -70,12 +68,9 @@ final readonly class FunctionsThemeIrResolver implements ThemeIrFinalResolverInt
         );
     }
 
-    private function getComponent(
-        ThemeComponentCollection $components,
-    ): FunctionsComponent {
-        $themeComponent = $components->find(
-            new ComponentId('functions'),
-        );
+    private function getComponent(ThemeComponentCollection $components): FunctionsComponent
+    {
+        $themeComponent = $components->find(new ComponentId('functions'));
 
         if ($themeComponent === null) {
             throw new LogicException(

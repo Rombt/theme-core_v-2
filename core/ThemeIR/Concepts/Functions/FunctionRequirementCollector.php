@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeIR\Concepts\Functions;
 
 use LogicException;
-use Rombt\ThemeCore\ThemeIR\Contracts\FunctionRequirementSourceInterface;
+use Rombt\ThemeCore\ThemeIR\Contracts\FunctionComponentsProviderInterface;
 use Rombt\ThemeCore\ThemeIR\ThemeIR;
 
 final readonly class FunctionRequirementCollector
 {
-    public function collect(
-        ThemeIR $themeIr,
-    ): FunctionRequirementCollection {
+    public function collect(ThemeIR $themeIr): FunctionRequirementCollection
+    {
+
         $requirements = [];
         $sequence = 0;
 
         foreach ($themeIr as $concept) {
-            if (!$concept instanceof FunctionRequirementSourceInterface) {
+            if (!$concept instanceof FunctionComponentsProviderInterface) {
                 continue;
             }
 
@@ -53,8 +53,25 @@ final readonly class FunctionRequirementCollector
             }
         }
 
+        /**
+         * Remove duplicate function requirements.
+         *
+         * One function resource must produce exactly one requirement.
+         */
+        $uniqueRequirements = [];
+
+        foreach ($requirements as $item) {
+            $resource = $item['requirement']->resource()->value();
+
+            if (isset($uniqueRequirements[$resource])) {
+                continue;
+            }
+
+            $uniqueRequirements[$resource] = $item;
+        }
+
         usort(
-            $requirements,
+            $uniqueRequirements,
             static function (array $a, array $b): int {
                 $orderComparison = $a['requirement']->order()
                     <=> $b['requirement']->order();
@@ -68,7 +85,7 @@ final readonly class FunctionRequirementCollector
         );
 
         return new FunctionRequirementCollection(
-            array_column($requirements, 'requirement'),
+            array_column($uniqueRequirements, 'requirement'),
         );
     }
 }

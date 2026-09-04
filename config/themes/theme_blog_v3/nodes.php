@@ -31,7 +31,7 @@ return [
 
         'function' => [
             'enabled' => true,
-            'order' => 50,
+            'order' => 30,
         ],
     ],
 
@@ -43,7 +43,7 @@ return [
 
         'function' => [
             'enabled' => true,
-            'order' => 50,
+            'order' => 35,
         ],
     ],
 
@@ -55,7 +55,7 @@ return [
 
         'function' => [
             'enabled' => true,
-            'order' => 50,
+            'order' => 40,
         ],
     ],
 
@@ -102,7 +102,7 @@ return [
 
         'function' => [
             'enabled' => true,
-            'order' => 50,
+            'order' => 60,
         ],
     ],
 
