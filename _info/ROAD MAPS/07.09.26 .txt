@@ -1,0 +1,135 @@
+1. Входные данные
+
+    Artifacts Layer получает:
+
+    Functions
+    ├── declarations: FunctionDeclarationCollection
+    └── requirements: FunctionsRequirementsCollection
+
+    Functions ThemeIR является единственным semantic input для формирования Functions Artifact.
+
+2. Источники содержимого
+
+    Функциональность functions.php имеет два источника:
+
+    FunctionDeclarationCollection — собственные декларации Functions.
+    FunctionsRequirementsCollection — runtime requirements, полученные от других ThemeIR-доменов.
+
+    Оба источника должны быть материализованы на Artifacts Layer.
+
+3. Resource Resolution
+
+    Для каждого FunctionDeclaration и FunctionRequirement необходимо:
+
+        получить Resource;
+        определить выбранную ResourceArchitecture;
+        найти соответствующую архитектурную реализацию Resource;
+        получить содержимое реализации;
+        включить его в итоговый Artifact.
+
+    ThemeIR не содержит физического пути Resource — его разрешение выполняется исключительно на Artifacts Layer.
+
+4. Поддерживаемые архитектуры
+
+    Должны поддерживаться:
+
+        Classic
+            function.classic.php
+
+        Block
+            function.block.html
+
+    При этом итоговым Artifact в обоих случаях является:
+
+        functions.php
+
+5. Порядок материализации
+
+    FunctionRequirement.order уже определён на ThemeIR.
+    FunctionDeclaration.configuration.order уже определён на ThemeIR.
+
+    Artifacts Layer не должен заново вычислять порядок.
+
+    Requirements должны использоваться в таком порядке:
+        чем меньше значение поля FunctionRequirement.order и FunctionDeclaration.configuration.order 
+            тем ближе к началу файла находятся их реализации
+
+6. Формирование functions.php
+
+    Необходимо реализовать Artifact Generator домена Functions, который:
+
+        Functions ThemeIR
+                ↓
+        Function Declarations
+                +
+        Function Requirements
+                ↓
+        Resource Resolution
+                ↓
+        Architecture-specific Resource
+                ↓
+        Materialization
+                ↓
+        functions.php
+
+    При отсутствии деклараций/requirements должен формироваться минимальный пустой functions.php.
+
+7. Архитектурные границы
+
+    Artifacts Layer не должен:
+
+        читать Theme Configuration;
+        анализировать другие ThemeIR-домены;
+        определять, зачем создан FunctionRequirement;
+        вычислять FunctionRequirement;
+        определять enabled;
+        изменять order;
+        искать семантические зависимости между Requirements;
+        содержать правила интерпретации Configuration.
+
+    Его ответственность:
+
+        выбрать архитектурную реализацию Resource → материализовать её → сформировать Artifact.
+
+8. Интеграция с существующей архитектурой Artifacts
+
+    Реализация должна следовать существующему механизму Artifacts Layer:
+
+        ArtifactGeneratorInterface;
+        Artifact;
+        ArtifactCollection;
+        ArtifactGeneratorRegistry;
+        существующий механизм Resource resolution;
+        существующий механизм чтения содержимого Resource;
+        существующий FileArtifactWriter.
+
+    Не следует вводить отдельный механизм генерации файлов, если существующая инфраструктура Artifacts уже решает соответствующую задачу.
+
+9. Результат
+
+    После реализации должен существовать генератор, способный 
+        получить:
+            Functions ThemeIR
+
+        создать:
+            functions.php
+            с материализованными:
+                Function declarations
+                +
+                Function requirements
+
+                для выбранной ResourceArchitecture.
+
+    Ключевой архитектурный принцип реализации:
+
+        Functions ThemeIR
+                ↓
+            Resource
+                ↓
+        Resource Architecture
+                ↓
+        implementation
+                ↓
+        functions.php
+
+    При этом никаких изменений в уже реализованном Functions ThemeIR, ThemeComponents или других доменах ThemeIR не требуется.
