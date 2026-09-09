@@ -76,10 +76,10 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
         $logger->dump($contents);
 
         if ($contents === []) {
-            return "<?php\n\ndeclare(strict_types=1);\n";
+            return "<?php\n\n";
         }
 
-        return "<?php\n\ndeclare(strict_types=1);\n\n"
+        return "<?php\n\n"
         . implode("\n\n", $contents)
         . "\n";
     }
