@@ -41,26 +41,28 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
     public function render(FunctionsInterface $functions): string
     {
+        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
+
         $items = $this->collectItems($functions);
+
+        $logger->dump('00 $items = ');
+        $logger->dump($items);
 
         usort(
             $items,
-            static function (array $a, array $b): int {
-                $orderComparison = $a['order'] <=> $b['order'];
-
-                if ($orderComparison !== 0) {
-                    return $orderComparison;
-                }
-
-                return $a['sequence'] <=> $b['sequence'];
-            },
+            static fn(array $a, array $b): int =>
+            $a['order'] <=> $b['order'],
         );
+
+        $logger->dump('11 $items = ');
+        $logger->dump($items);
 
         $contents = [];
 
         foreach ($items as $item) {
             $content = $this->readResource(
                 $item['resource'],
+                $item['resourceType'],
             );
 
             if ($content === null || trim($content) === '') {
@@ -70,26 +72,28 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
             $contents[] = trim($content);
         }
 
+        $logger->dump('$contents = ');
+        $logger->dump($contents);
+
         if ($contents === []) {
             return "<?php\n\ndeclare(strict_types=1);\n";
         }
 
         return "<?php\n\ndeclare(strict_types=1);\n\n"
-            . implode("\n\n", $contents)
-            . "\n";
+        . implode("\n\n", $contents)
+        . "\n";
     }
 
     /**
-     * @return array<int, array{
-     *     resource: Resource,
-     *     order: int,
-     *     sequence: int
-     * }>
-     */
+    * @return array<int, array{
+    *     resource: Resource,
+    *     resourceType: string,
+    *     order: int
+    * }>
+    */
     private function collectItems(FunctionsInterface $functions): array
     {
         $items = [];
-        $sequence = 0;
 
         foreach ($functions->declarations() as $declaration) {
             $configuration = $declaration->configuration();
@@ -101,46 +105,45 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
             $items[] = [
             'resource' => $resource,
+            'resourceType' => 'functions',
             'order' => (int) ($configuration['order'] ?? 0),
-            'sequence' => $sequence++,
             ];
         }
 
         foreach ($functions->requirements() as $requirement) {
             $items[] = [
             'resource' => $requirement->resource(),
+            'resourceType' => 'components',
             'order' => $requirement->order(),
-            'sequence' => $sequence++,
             ];
         }
 
         return $items;
     }
 
-    private function readResource(Resource $resource): ?string
-    {
 
+    private function readResource(Resource $resource, string $resourceType): ?string
+    {
         $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
-        $logger->dump('ClassicFunctionsContentRenderer    $resource = ');
-        $logger->dump($resource);
 
         $resourceId = $resource->value();
 
-        $path = $this->resourcePath(
-            $resourceId,
-            'function.classic.php',
-        );
+        $path = $this->resolveResourcePath($resource, $resourceType);
 
         if (!is_file($path)) {
+            $logger->dump('ClassicFunctionsContentRenderer    $path = ');
+            $logger->dump($path);
+
             $this->diagnose(
                 sprintf(
                     'Classic function resource "%s" was not found.',
                     $path,
                 ),
                 [
-                'resource' => $resourceId,
-                'architecture' => 'classic',
-                'path' => $path,
+                    'resource' => $resourceId,
+                    'resourceType' => $resourceType,
+                    'architecture' => 'classic',
+                    'path' => $path,
                 ],
             );
 
@@ -156,9 +159,10 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
                     $path,
                 ),
                 [
-                'resource' => $resourceId,
-                'architecture' => 'classic',
-                'path' => $path,
+                    'resource' => $resourceId,
+                    'resourceType' => $resourceType,
+                    'architecture' => 'classic',
+                    'path' => $path,
                 ],
             );
 
@@ -168,21 +172,45 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
         return $content;
     }
 
-    private function resourcePath(
-        string $resourceId,
-        string $filename,
+    private function resolveResourcePath(
+        Resource $resource,
+        string $resourceType,
     ): string {
-        return rtrim(
-            $this->resourcePackage,
-            '/\\',
-        )
+        $resourceId = $resource->value();
+
+        return match ($resourceType) {
+            'functions' => $this->functionsResourcePath($resourceId),
+            'components' => $this->componentResourcePath($resourceId),
+            default => throw new LogicException(
+                sprintf('Unknown function resource type "%s".', $resourceType),
+            ),
+        };
+    }
+
+    private function functionsResourcePath(string $resourceId): string
+    {
+        return
+            rtrim($this->resourcePackage, '/\\')
+            . DIRECTORY_SEPARATOR
+            . 'functions'
+            . DIRECTORY_SEPARATOR
+            . $resourceId
+            . DIRECTORY_SEPARATOR
+            . $resourceId . '.classic.php';
+    }
+
+    private function componentResourcePath(string $resourceId): string
+    {
+        return
+            rtrim($this->resourcePackage, '/\\')
             . DIRECTORY_SEPARATOR
             . 'components'
             . DIRECTORY_SEPARATOR
             . $resourceId
             . DIRECTORY_SEPARATOR
-            . $filename;
+            . 'function.classic.php';
     }
+
 
     /**
      * @param array<string, mixed> $metadata

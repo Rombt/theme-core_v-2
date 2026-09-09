@@ -62,7 +62,7 @@ final readonly class ClassicFunctionsArtifactGenerator implements ArtifactGenera
             );
         }
 
-        $logger->dump('ClassicFunctionsArtifactGenerator    $artifacts = ');
-        $logger->dump($artifacts);
+        // $logger->dump('ClassicFunctionsArtifactGenerator    $artifacts = ');
+        // $logger->dump($artifacts);
     }
 }

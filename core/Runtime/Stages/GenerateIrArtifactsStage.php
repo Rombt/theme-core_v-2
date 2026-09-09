@@ -33,8 +33,8 @@ final class GenerateIrArtifactsStage implements StageInterface
 
             $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
-            // $logger->dump('GenerateIrArtifactsStage    $ir = ');
-            // $logger->dump($ir);
+            $logger->dump('GenerateIrArtifactsStage    $ir = ');
+            $logger->dump($ir);
 
             // $logger->dump('ThemeIR::class = ');
             // $logger->dump(ThemeIR::class);

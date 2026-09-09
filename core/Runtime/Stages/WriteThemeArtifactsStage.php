@@ -27,10 +27,7 @@ final class WriteThemeArtifactsStage implements StageInterface
         Application $app,
     ): StageResult {
         $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
-        $session = $context->session();
 
-            // $logger->dump('WriteThemeArtifactsStage    $session = ');
-            // $logger->dump($session);
 
         try {
             $buildPath = (string) $this->configuration->get('paths.build');
@@ -46,6 +43,10 @@ final class WriteThemeArtifactsStage implements StageInterface
             $themeName = $package->package()->configuration()['name'];
 
             $artifacts = $context->session()->artifacts();
+
+
+            $logger->dump('WriteThemeArtifactsStage    $artifacts = ');
+            $logger->dump($artifacts);
 
             $classicArtifacts = new ArtifactCollection();
             $blockArtifacts = new ArtifactCollection();
