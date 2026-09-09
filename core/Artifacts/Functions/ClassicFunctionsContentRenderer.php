@@ -69,7 +69,7 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
                 continue;
             }
 
-            $contents[] = trim($content);
+            $contents[] = $this->normalizeResourceContent($content);
         }
 
         $logger->dump('$contents = ');
@@ -209,6 +209,21 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
             . $resourceId
             . DIRECTORY_SEPARATOR
             . 'function.classic.php';
+    }
+
+    private function normalizeResourceContent(string $content): string
+    {
+        $content = trim($content);
+
+        if ($content === '') {
+            return '';
+        }
+
+        if (str_starts_with($content, '<?php')) {
+            $content = substr($content, 5);
+        }
+
+        return trim($content);
     }
 
 

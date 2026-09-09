@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-<?php
-
 add_action('after_setup_theme', static function (): void {
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
@@ -23,21 +21,15 @@ add_action('after_setup_theme', static function (): void {
     $GLOBALS['content_width'] = 1200;
 });
 
-<?php
-
 register_nav_menu(
     'primary',
     'Primary Menu',
 );
 
-<?php
-
 register_nav_menu(
     'footer',
     'Footer Menu',
 );
-
-<?php
 
 register_nav_menu(
     'hero',
