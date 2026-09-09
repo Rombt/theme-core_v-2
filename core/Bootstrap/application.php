@@ -102,6 +102,11 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsValidator;
 use Rombt\ThemeCore\ThemeComponents\Domains\Functions\FunctionsComponentBuilder;
 use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionsThemeIrResolver;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionRequirementCollector;
+use Rombt\ThemeCore\Artifacts\Functions\BlockFunctionsArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Functions\BlockFunctionsContentRenderer;
+use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsContentRenderer;
+use Rombt\ThemeCore\Artifacts\Functions\FunctionsPathResolver;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -314,6 +319,23 @@ $pipeline = new Pipeline([
                         new StyleCssPathResolver(),
                         $app
                     ),
+
+                    new ClassicFunctionsArtifactGenerator(
+                        new ClassicFunctionsContentRenderer(
+                            $app,
+                        ),
+                        new FunctionsPathResolver(),
+                        $app,
+                    ),
+
+                    new BlockFunctionsArtifactGenerator(
+                        new BlockFunctionsContentRenderer(
+                            $app,
+                        ),
+                        new FunctionsPathResolver(),
+                    ),
+
+
                 ],
             ),
             $app

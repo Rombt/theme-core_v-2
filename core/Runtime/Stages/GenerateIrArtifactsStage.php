@@ -18,9 +18,8 @@ use Rombt\ThemeCore\ThemeIR\ThemeIR;
 
 final class GenerateIrArtifactsStage implements StageInterface
 {
-    public function __construct(
-        private readonly ThemeArtifactGeneratorInterface $generator,
-    ) {
+    public function __construct(private readonly ThemeArtifactGeneratorInterface $generator)
+    {
     }
 
     public function execute(ExecutionContext $context, Application $app): StageResult
@@ -34,8 +33,14 @@ final class GenerateIrArtifactsStage implements StageInterface
 
             $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
-            $logger->dump('GenerateIrArtifactsStage    $ir = ');
-            $logger->dump($ir);
+            // $logger->dump('GenerateIrArtifactsStage    $ir = ');
+            // $logger->dump($ir);
+
+            // $logger->dump('ThemeIR::class = ');
+            // $logger->dump(ThemeIR::class);
+
+            // $logger->dump('$ir::class = ');
+            // $logger->dump($ir::class);
 
             if (!$ir instanceof ThemeIR) {
                 throw new RuntimeException('Theme IR not built.');
@@ -43,17 +48,15 @@ final class GenerateIrArtifactsStage implements StageInterface
 
             $sources = new ArtifactSources(
                 [
-                $session->package(),
-                $ir,
+                    $session->package(),
+                    $ir,
 
                 ],
                 $app
             );
 
-            $this->generator->generate(
-                $sources,
-                $session->artifacts(),
-            );
+            $this->generator->generate($sources, $session->artifacts());
+
 
             return new StageResult(
                 success: true,

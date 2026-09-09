@@ -133,3 +133,4 @@
         functions.php
 
     При этом никаких изменений в уже реализованном Functions ThemeIR, ThemeComponents или других доменах ThemeIR не требуется.
+

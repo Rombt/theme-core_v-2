@@ -14,8 +14,5 @@ interface ArtifactGeneratorInterface
      */
     public function source(): string;
 
-    public function generate(
-        object $source,
-        ArtifactCollectionInterface $artifacts,
-    ): void;
+    public function generate(object $source, ArtifactCollectionInterface $artifacts): void;
 }

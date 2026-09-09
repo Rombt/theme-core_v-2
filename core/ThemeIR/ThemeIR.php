@@ -20,21 +20,18 @@ final class ThemeIR implements IteratorAggregate
      */
     private array $concepts = [];
 
-    public function add(
-        ThemeConceptInterface $concept,
-    ): void {
+    public function add(ThemeConceptInterface $concept): void
+    {
         $this->concepts[$concept->id()] = $concept;
     }
 
-    public function has(
-        string $id,
-    ): bool {
+    public function has(string $id): bool
+    {
         return isset($this->concepts[$id]);
     }
 
-    public function get(
-        string $id,
-    ): ThemeConceptInterface {
+    public function get(string $id): ThemeConceptInterface
+    {
         if (!$this->has($id)) {
             throw new RuntimeException(
                 sprintf(
@@ -53,9 +50,8 @@ final class ThemeIR implements IteratorAggregate
      * @param class-string<T> $contract
      * @return T
      */
-    public function concept(
-        string $contract,
-    ): ThemeConceptInterface {
+    public function concept(string $contract): ThemeConceptInterface
+    {
         foreach ($this->concepts as $concept) {
             if ($concept instanceof $contract) {
                 return $concept;
