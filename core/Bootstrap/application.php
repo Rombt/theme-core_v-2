@@ -295,9 +295,7 @@ $pipeline = new Pipeline([
                 [
                     new ClassicTemplateArtifactGenerator(
                         new ClassicTemplateTreeRenderer(
-                            new ClassicTemplateTreeMaterializer(
-                                $classicNodeMaterializer
-                            ),
+                            new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
                         ),
                         $classicNodeMaterializer,
                         $classicTemplatePathResolver,

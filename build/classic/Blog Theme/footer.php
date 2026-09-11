@@ -1,30 +1,13 @@
-<?php
-
 /**
- * Copyright
+ * Footer
  *
- * Displays site copyright information.
+ * Displays the site footer.
  */
 
 ?>
 
-<p class="site-copyright">
-
-    &copy;
-    <?php echo esc_html(wp_date('Y')); ?>
-
-    <a href="<?php echo esc_url(home_url('/')); ?>">
-        <?php bloginfo('name'); ?>
-    </a>
-
-    <?php esc_html_e('All rights reserved.', 'theme'); ?>
-
-</p>
-
-
-<?php
-
-/**
+<footer class="site-footer">
+    /**
  * Footer Navigation
  *
  * Displays the site footer navigation.
@@ -51,3 +34,27 @@ if (has_nav_menu('footer')) :
 
     <?php
 endif;
+?>
+    /**
+ * Copyright
+ *
+ * Displays site copyright information.
+ */
+
+?>
+
+<p class="site-copyright">
+
+    &copy;
+    <?php echo esc_html(wp_date('Y')); ?>
+
+    <a href="<?php echo esc_url(home_url('/')); ?>">
+        <?php bloginfo('name'); ?>
+    </a>
+
+    <?php esc_html_e('All rights reserved.', 'theme'); ?>
+
+</p>
+?>
+</footer>
+?>

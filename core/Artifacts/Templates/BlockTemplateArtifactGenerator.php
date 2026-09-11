@@ -54,6 +54,7 @@ final readonly class BlockTemplateArtifactGenerator implements ArtifactGenerator
                     $template->tree()->roots(),
                     $template->identity(),
                     $artifacts,
+                    true,
                 );
             }
         }
@@ -94,9 +95,13 @@ final readonly class BlockTemplateArtifactGenerator implements ArtifactGenerator
         array $nodes,
         TemplateIdentity $templateIdentity,
         ArtifactCollectionInterface $artifacts,
+        bool $isRoot = false,
     ): void {
         foreach ($nodes as $node) {
-            if ($this->isGeneratedTemplatePart($node)) {
+            if (
+                !$isRoot
+                && $this->isGeneratedTemplatePart($node)
+            ) {
                 $this->generateTemplatePartArtifact(
                     $node,
                     $templateIdentity,

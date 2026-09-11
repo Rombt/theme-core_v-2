@@ -16,15 +16,16 @@ use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplatesInterface;
 use Rombt\ThemeCore\ThemeIR\ThemeIR;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final readonly class ClassicTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {
     private DiagnosticsService $diagnostics;
+    private LoggerInterface $logger;
 
     public function __construct(
         private TemplateTreeRendererInterface $renderer,
@@ -32,8 +33,14 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
         private ClassicTemplatePathResolver $pathResolver,
         Application $app,
     ) {
-        $this->diagnostics = $app->getContext()->get(
+        $context = $app->getContext();
+
+        $this->diagnostics = $context->get(
             ApplicationContextKeys::DIAGNOSTICS,
+        );
+
+        $this->logger = $context->get(
+            ApplicationContextKeys::LOGGER,
         );
     }
 
@@ -57,6 +64,11 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
 
             foreach ($concept->templates() as $template) {
                 $identity = $template->identity()->value();
+
+                $this->logger->dump(
+                    'ClassicTemplateArtifactGenerator $template = ',
+                );
+                $this->logger->dump($template);
 
                 $artifacts->add(
                     new Artifact(
@@ -83,6 +95,7 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
                     $template->tree()->roots(),
                     $template->identity(),
                     $artifacts,
+                    true,
                 );
             }
         }
@@ -95,9 +108,13 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
         array $nodes,
         TemplateIdentity $templateIdentity,
         ArtifactCollectionInterface $artifacts,
+        bool $isRoot = false,
     ): void {
         foreach ($nodes as $node) {
-            if ($this->isGeneratedTemplatePart($node)) {
+            if (
+                !$isRoot
+                && $this->isGeneratedTemplatePart($node)
+            ) {
                 $this->generateTemplatePartArtifact(
                     $node,
                     $templateIdentity,
@@ -171,22 +188,7 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
         TemplateNode $node,
     ): bool {
         return $node->rendering()->value === 'template-part'
-            && $node->resource() !== null
-            && !$this->isStructuralTemplatePart($node);
-    }
-
-    private function isStructuralTemplatePart(
-        TemplateNode $node,
-    ): bool {
-        return in_array(
-            $node->rendering()->value,
-            [
-                'header',
-                'footer',
-                'sidebar',
-            ],
-            true,
-        );
+            && $node->resource() !== null;
     }
 
     private function isSupportedType(

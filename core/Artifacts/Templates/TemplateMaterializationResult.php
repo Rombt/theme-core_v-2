@@ -9,10 +9,8 @@ final readonly class TemplateMaterializationResult
     /**
      * @param array<int, string> $slots
      */
-    public function __construct(
-        private string $content,
-        private array $slots = [],
-    ) {
+    public function __construct(private string $content, private array $slots = [])
+    {
     }
 
     public function content(): string

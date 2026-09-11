@@ -1,6 +1,28 @@
-<?php
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
 
-/**
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+
+<?php wp_body_open(); ?>
+
+<header
+    id="masthead"
+    class="site-header"
+>
+
+    <div class="site-header__inner">
+
+        /**
  * Site Title
  *
  * Displays the site title.
@@ -22,11 +44,9 @@ $tag = is_front_page() && is_home()
     </a>
 
 </<?php echo esc_html($tag); ?>>
+?>
 
-
-<?php
-
-/**
+        /**
  * Primary Navigation
  *
  * Displays the primary site navigation.
@@ -50,11 +70,9 @@ if (has_nav_menu('primary')) :
 
     <?php
 endif;
+?>
 
-
-<?php
-
-/**
+        /**
  * Hero Navigation
  *
  * Displays the site hero navigation.
@@ -81,3 +99,9 @@ if (has_nav_menu('hero')) :
 
     <?php
 endif;
+?>
+
+    </div>
+
+</header>
+?>

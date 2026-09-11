@@ -21,7 +21,7 @@ return [
             [
                 'id' => 'id_hero_navigation_01',
                 'node' => 'hero_navigation_01',
-                'slot' => 2,
+                'slot' => 3,
             ],
         ],
     ],
@@ -45,16 +45,13 @@ return [
         ],
     ],
 
+    //ещвщ перенести в тщвуі
     'sidebar' => [
         'type' => 'layout',
         'resource' => 'sidebar_01',
         'rendering' => 'sidebar',
 
         'children' => [
-            [
-                'id' => 'widgets',
-                'node' => 'widgets_01',
-            ],
         ],
     ],
 
@@ -105,14 +102,17 @@ return [
             [
                 'id' => 'header',
                 'composition' => 'header',
+                'slot' => 1,
             ],
             [
                 'id' => 'layout',
                 'composition' => 'layout',
+                'slot' => 2,
             ],
             [
                 'id' => 'footer',
                 'composition' => 'footer',
+                'slot' => 3,
             ],
         ],
     ],
@@ -126,10 +126,12 @@ return [
             [
                 'id' => 'header',
                 'composition' => 'header',
+                'slot' => 1,
             ],
             [
                 'id' => 'layout',
                 'composition' => 'layout',
+                'slot' => 2,
 
                 'children' => [
                     [
@@ -152,6 +154,7 @@ return [
             [
                 'id' => 'footer',
                 'composition' => 'footer',
+                'slot' => 3,
             ],
         ],
     ],
@@ -165,10 +168,12 @@ return [
             [
                 'id' => 'header',
                 'composition' => 'header',
+                'slot' => 1,
             ],
             [
                 'id' => 'layout',
                 'composition' => 'layout',
+                'slot' => 2,
 
                 'children' => [
                     [
@@ -191,6 +196,7 @@ return [
             [
                 'id' => 'footer',
                 'composition' => 'footer',
+                'slot' => 3,
             ],
         ],
     ],
@@ -204,10 +210,12 @@ return [
             [
                 'id' => 'header',
                 'composition' => 'header',
+                'slot' => 1,
             ],
             [
                 'id' => 'layout',
                 'composition' => 'layout',
+                'slot' => 2,
 
                 'children' => [
                     [
@@ -230,6 +238,7 @@ return [
             [
                 'id' => 'footer',
                 'composition' => 'footer',
+                'slot' => 3,
             ],
         ],
     ],
@@ -243,10 +252,12 @@ return [
             [
                 'id' => 'header',
                 'composition' => 'header',
+                'slot' => 1,
             ],
             [
                 'id' => 'layout',
                 'composition' => 'layout',
+                'slot' => 2,
 
                 'children' => [
                     [
@@ -269,6 +280,7 @@ return [
             [
                 'id' => 'footer',
                 'composition' => 'footer',
+                'slot' => 3,
             ],
         ],
     ],

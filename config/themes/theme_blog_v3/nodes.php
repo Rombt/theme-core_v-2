@@ -94,6 +94,12 @@ return [
         'name' => 'Copyright',
     ],
 
+    'sidebar' => [
+        'type' => 'layout',
+        'resource' => 'sidebar_01',
+        'rendering' => 'sidebar',
+    ],
+
     'widgets_01' => [
         'type' => 'common',
         'rendering' => 'inline',

@@ -55,6 +55,8 @@ final class GenerateIrArtifactsStage implements StageInterface
                 $app
             );
 
+            $logger->dump('GenerateIrArtifactsStage    $sources = ');
+            $logger->dump($sources);
             $this->generator->generate($sources, $session->artifacts());
 
 

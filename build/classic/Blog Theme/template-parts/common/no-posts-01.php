@@ -1,5 +1,3 @@
-<?php
-
 /**
  * No Posts
  *
@@ -11,3 +9,4 @@
 <p class="no-posts">
     <?php esc_html_e('No posts found.', 'theme'); ?>
 </p>
+?>

@@ -1,5 +1,3 @@
-<?php
-
 /**
  * Post Title
  *
@@ -19,3 +17,4 @@ if (is_singular()) :
 
     <?php
 endif;
+?>

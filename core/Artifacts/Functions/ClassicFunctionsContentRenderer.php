@@ -41,12 +41,9 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
     public function render(FunctionsInterface $functions): string
     {
-        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
+        // $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
 
         $items = $this->collectItems($functions);
-
-        $logger->dump('00 $items = ');
-        $logger->dump($items);
 
         usort(
             $items,
@@ -54,8 +51,6 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
             $a['order'] <=> $b['order'],
         );
 
-        $logger->dump('11 $items = ');
-        $logger->dump($items);
 
         $contents = [];
 
@@ -71,9 +66,6 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
             $contents[] = $this->normalizeResourceContent($content);
         }
-
-        $logger->dump('$contents = ');
-        $logger->dump($contents);
 
         if ($contents === []) {
             return "<?php\n\n";
@@ -124,16 +116,13 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
     private function readResource(Resource $resource, string $resourceType): ?string
     {
-        $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
+        // $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
 
         $resourceId = $resource->value();
 
         $path = $this->resolveResourcePath($resource, $resourceType);
 
         if (!is_file($path)) {
-            $logger->dump('ClassicFunctionsContentRenderer    $path = ');
-            $logger->dump($path);
-
             $this->diagnose(
                 sprintf(
                     'Classic function resource "%s" was not found.',

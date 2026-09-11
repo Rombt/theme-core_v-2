@@ -24,7 +24,9 @@ final readonly class TemplateTreeBuilder
     public function build(Composition $composition): TemplateTree
     {
         return new TemplateTree(
-            roots: $this->buildNodes($composition->defaultChildren()),
+            roots: [
+                $this->buildComposition($composition),
+            ],
         );
     }
 
@@ -127,6 +129,28 @@ final readonly class TemplateTreeBuilder
             rendering: $composition->rendering(),
             slot: $compositionNode->slot(),
             children: $this->buildNodes($children),
+        );
+    }
+
+    private function buildComposition(
+        Composition $composition,
+    ): TemplateNode {
+        return new TemplateNode(
+            id: $composition->id(),
+            nodeId: null,
+            compositionId: $composition->id(),
+            type: new TemplateNodeType(
+                $composition->type()->name(),
+            ),
+            resource: $composition->resource() !== null
+            ? new Resource($composition->resource())
+            : null,
+            function: null,
+            rendering: $composition->rendering(),
+            slot: null,
+            children: $this->buildNodes(
+                $composition->defaultChildren(),
+            ),
         );
     }
 }

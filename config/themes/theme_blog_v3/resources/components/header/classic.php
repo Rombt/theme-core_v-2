@@ -26,6 +26,8 @@
 
         @slot_2
 
+        @slot_3
+
     </div>
 
 </header>

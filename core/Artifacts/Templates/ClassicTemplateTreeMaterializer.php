@@ -9,21 +9,29 @@ use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeMaterializerInterface;
 use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
+use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMaterializerInterface
 {
+    private LoggerInterface $logger;
+
     public function __construct(
         private TemplateNodeMaterializerInterface $nodeMaterializer,
+        Application $app,
     ) {
+
+        $this->logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
     }
 
     public function materialize(Template $template): TemplateMaterializationResult
     {
-
         $contents = [];
 
         foreach ($template->tree()->roots() as $root) {
-            $result = $this->nodeMaterializer->materialize($root, $template->identity());
+            $result = $this->nodeMaterializer->materializeTemplatePart(
+                $root,
+                $template->identity(),
+            );
 
             if ($result->content() === '') {
                 continue;
@@ -40,9 +48,8 @@ final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMate
     /**
      * @param array<int, string> $contents
      */
-    private function joinContents(
-        array $contents,
-    ): string {
+    private function joinContents(array $contents): string
+    {
         $contents = array_values(
             array_filter(
                 $contents,

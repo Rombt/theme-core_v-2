@@ -21,10 +21,9 @@ final readonly class BlockTemplateTreeMaterializer implements TemplateTreeMateri
         $contents = [];
 
         foreach ($template->tree()->roots() as $root) {
-            $result = $this->nodeMaterializer->materialize(
+            $result = $this->nodeMaterializer->materializeTemplatePart(
                 $root,
                 $template->identity(),
-                true,
             );
 
             if ($result->content() === '') {

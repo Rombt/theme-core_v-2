@@ -1,5 +1,3 @@
-<?php
-
 /**
  * Page Title
  *
@@ -19,3 +17,4 @@ if (is_page()) :
 
     <?php
 endif;
+?>
