@@ -299,7 +299,7 @@ $pipeline = new Pipeline([
                     new ClassicTemplateArtifactGenerator(
                         new ClassicTemplateTreeRenderer(
                             new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
-                            new PhpParserContentNormalizer(),
+                            new PhpParserContentNormalizer($configuration),
                         ),
                         $classicNodeMaterializer,
                         $classicTemplatePathResolver,

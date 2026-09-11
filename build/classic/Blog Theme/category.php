@@ -1,5 +1,4 @@
-<?php
+<?php get_header(); ?>
+<?php get_template_part('layout/layout-01'); ?>
+<?php get_footer();
 
-get_header();
-get_template_part('layout/layout-01');
-get_footer();

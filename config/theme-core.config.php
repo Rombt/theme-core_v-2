@@ -26,7 +26,8 @@ return [
     ],
 
     'php_parser' => [
-        'format' => 'pretty_print',
+        // 'format' => 'pretty_print',
+        'format' => 'format_preserving',
     ],
 
     'logging' => [
