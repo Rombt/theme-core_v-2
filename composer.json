@@ -20,7 +20,8 @@
     }
   ],
   "require": {
-    "php": "^8.4"
+    "php": "^8.4",
+    "nikic/php-parser": "^5.8"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",

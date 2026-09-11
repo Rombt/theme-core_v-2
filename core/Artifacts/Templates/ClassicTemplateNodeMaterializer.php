@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Templates;
 
+use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
@@ -17,43 +19,64 @@ use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMaterializerInterface
 {
     private string $resourcePackage;
-    private PhpContentNormalizer $normalizer;
+
+    private ParserFactory $parserFactory;
+    private Standard $prettyPrinter;
 
     private DiagnosticsService $diagnostics;
     private LoggerInterface $logger;
 
-    public function __construct(private ClassicTemplatePathResolver $pathResolver, ?Application $app)
-    {
+    public function __construct(
+        private ClassicTemplatePathResolver $pathResolver,
+        ?Application $app,
+    ) {
         $context = $app->getContext();
 
-        $configuration = $context->get(ApplicationContextKeys::CONFIGURATION);
+        $configuration = $context->get(
+            ApplicationContextKeys::CONFIGURATION,
+        );
 
         $this->resourcePackage = $configuration->get(
             'theme.resource_package',
         );
 
-        $this->normalizer = new PhpContentNormalizer();
+        $this->parserFactory = new ParserFactory();
+        $this->prettyPrinter = new Standard();
 
-        $this->diagnostics = $context->get(ApplicationContextKeys::DIAGNOSTICS);
+        $this->diagnostics = $context->get(
+            ApplicationContextKeys::DIAGNOSTICS,
+        );
 
-        $this->logger = $context->get(ApplicationContextKeys::LOGGER);
+        $this->logger = $context->get(
+            ApplicationContextKeys::LOGGER,
+        );
     }
 
-    public function materialize(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
-    {
-        return $this->materializeChild($node, $templateIdentity);
+    public function materialize(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        return $this->materializeChild(
+            $node,
+            $templateIdentity,
+        );
     }
 
-    public function materializeTemplatePart(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
-    {
-
+    public function materializeTemplatePart(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
         $resource = $node->resource();
 
-        $this->logger->dump('ClassicTemplateNodeMaterializer    $node = ');
+        $this->logger->dump(
+            'ClassicTemplateNodeMaterializer    $node = ',
+        );
         $this->logger->dump($node);
-        $this->logger->dump('ClassicTemplateNodeMaterializer    $resource = ');
-        $this->logger->dump($resource);
 
+        $this->logger->dump(
+            'ClassicTemplateNodeMaterializer    $resource = ',
+        );
+        $this->logger->dump($resource);
 
         if ($resource === null) {
             return $this->materializationError(
@@ -63,9 +86,14 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             );
         }
 
-        $content = $this->readResource($node, $templateIdentity);
+        $content = $this->readResource(
+            $node,
+            $templateIdentity,
+        );
 
-        $this->logger->dump('ClassicTemplateNodeMaterializer  materializeTemplatePart  00 $content = ');
+        $this->logger->dump(
+            'ClassicTemplateNodeMaterializer  materializeTemplatePart  00 $content = ',
+        );
         $this->logger->dump($content);
 
         if ($content === null) {
@@ -86,27 +114,31 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
             $node,
         );
 
-        $this->logger->dump('ClassicTemplateNodeMaterializer  materializeTemplatePart  11 $content = ');
+        $this->logger->dump(
+            'ClassicTemplateNodeMaterializer  materializeTemplatePart  11 $content = ',
+        );
         $this->logger->dump($content);
 
-
         return new TemplateMaterializationResult(
-            $this->normalizer->normalize($content),
+            $this->normalizeWithPhpParser($content),
         );
     }
-
 
     /**
      * Materializes a child according to the child's Rendering.
      *
      * The parent does not decide how the child is represented.
      */
-    private function materializeChild(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
-    {
-
+    private function materializeChild(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
         switch ($node->rendering()->value) {
             case 'inline':
-                return $this->materializeResourceNode($node, $templateIdentity);
+                return $this->materializeResourceNode(
+                    $node,
+                    $templateIdentity,
+                );
 
             case 'header':
                 return new TemplateMaterializationResult(
@@ -141,13 +173,19 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         }
     }
 
-    private function materializeResourceNode(TemplateNode $node, TemplateIdentity $templateIdentity): TemplateMaterializationResult
-    {
-        $content = $this->readResource($node, $templateIdentity);
+    private function materializeResourceNode(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): TemplateMaterializationResult {
+        $content = $this->readResource(
+            $node,
+            $templateIdentity,
+        );
 
-        $this->logger->dump('ClassicTemplateNodeMaterializer  materializeResourceNode  $content = ');
+        $this->logger->dump(
+            'ClassicTemplateNodeMaterializer  materializeResourceNode  $content = ',
+        );
         $this->logger->dump($content);
-
 
         if ($content === null) {
             return new TemplateMaterializationResult('');
@@ -155,11 +193,21 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
 
         $content = $this->prepareResourceContent($content);
 
-        $children = $this->materializeChildren($node, $templateIdentity);
+        $children = $this->materializeChildren(
+            $node,
+            $templateIdentity,
+        );
 
-        $content = $this->materializeSlots($content, $children, $templateIdentity, $node);
+        $content = $this->materializeSlots(
+            $content,
+            $children,
+            $templateIdentity,
+            $node,
+        );
 
-        return new TemplateMaterializationResult($this->normalizer->normalize($content));
+        return new TemplateMaterializationResult(
+            $this->normalizeWithPhpParser($content),
+        );
     }
 
     /**
@@ -168,8 +216,10 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
      *     result: TemplateMaterializationResult
      * }>
      */
-    private function materializeChildren(TemplateNode $node, TemplateIdentity $templateIdentity): array
-    {
+    private function materializeChildren(
+        TemplateNode $node,
+        TemplateIdentity $templateIdentity,
+    ): array {
         $children = [];
 
         foreach ($node->children() as $child) {
@@ -194,8 +244,12 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
      *     result: TemplateMaterializationResult
      * }> $children
      */
-    private function materializeSlots(string $content, array $children, TemplateIdentity $templateIdentity, TemplateNode $parent): string
-    {
+    private function materializeSlots(
+        string $content,
+        array $children,
+        TemplateIdentity $templateIdentity,
+        TemplateNode $parent,
+    ): string {
         foreach ($children as $childData) {
             /** @var TemplateNode $child */
             $child = $childData['node'];
@@ -245,15 +299,13 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
                 continue;
             }
 
-            $content = str_replace($placeholder, $result->content(), $content);
+            $content = str_replace(
+                $placeholder,
+                $result->content(),
+                $content,
+            );
         }
 
-        /*
-         * Every unused slot is removed.
-         *
-         * We also diagnose it because the Resource declares a slot
-         * for which Template IR supplied no child.
-         */
         $this->diagnoseUnusedSlots(
             $content,
             $templateIdentity,
@@ -288,38 +340,26 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         return $content . "\n?>";
     }
 
-    private function normalizeResourceContent(string $content): string
+    private function normalizeWithPhpParser(string $content): string
     {
-        $content = $this->normalizer->normalize($content);
+        $parser = $this->parserFactory
+            ->createForNewestSupportedVersion();
 
-        $content = rtrim($content);
+        try {
+            $ast = $parser->parse($content);
+        } catch (\Throwable $exception) {
+            $this->logger->dump(
+                'PhpParser error: ' . $exception->getMessage(),
+            );
 
-        if ($content === '') {
-            return '';
+            return $content;
         }
 
-        if ($this->isPhpContextOpen($content)) {
-            $content .= "\n?>";
+        if ($ast === null) {
+            return $content;
         }
 
-        return $content;
-    }
-
-    private function isPhpContextOpen(string $content): bool
-    {
-        $tokens = token_get_all($content);
-
-        if ($tokens === []) {
-            return false;
-        }
-
-        $lastToken = end($tokens);
-
-        if (!is_array($lastToken)) {
-            return false;
-        }
-
-        return $lastToken[0] === T_OPEN_TAG;
+        return $this->prettyPrinter->prettyPrintFile($ast);
     }
 
     private function materializeTemplatePartReference(
@@ -476,7 +516,6 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
 
         return new TemplateMaterializationResult('');
     }
-
 
     private function diagnoseUnusedSlots(
         string $content,

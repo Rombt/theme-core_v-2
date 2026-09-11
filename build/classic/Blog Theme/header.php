@@ -34,16 +34,24 @@ $tag = is_front_page() && is_home()
 
 ?>
 
-<<?php echo esc_html($tag); ?> class="wp-block-site-title my-custom-class">
+<<?php 
+echo esc_html($tag);
+?> class="wp-block-site-title my-custom-class">
 
     <a
-        href="<?php echo esc_url(home_url('/')); ?>"
+        href="<?php 
+echo esc_url(home_url('/'));
+?>"
         rel="home"
     >
-        <?php bloginfo('name'); ?>
+        <?php 
+bloginfo('name');
+?>
     </a>
 
-</<?php echo esc_html($tag); ?>>
+</<?php 
+echo esc_html($tag);
+?>>
 ?>
 
         /**
