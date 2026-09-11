@@ -79,6 +79,16 @@ final class ConfigurationSchema
                 ],
             ],
 
+            'php_parser' => [
+                'required' => true,
+                'fields' => [
+                    'format' => [
+                        'type' => 'string',
+                        'default' => 'pretty_print',
+                    ],
+                ],
+            ],
+
             'logging' => [
                 'required' => true,
                 'fields' => [
