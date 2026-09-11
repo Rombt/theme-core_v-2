@@ -1,3 +1,5 @@
+<?php
+
 /**
  * Footer
  *
@@ -7,7 +9,9 @@
 ?>
 
 <footer class="site-footer">
-    /**
+    <?php
+
+/**
  * Footer Navigation
  *
  * Displays the site footer navigation.
@@ -34,8 +38,10 @@ if (has_nav_menu('footer')) :
 
     <?php
 endif;
-?>
-    /**
+
+    <?php
+
+/**
  * Copyright
  *
  * Displays site copyright information.
@@ -46,23 +52,14 @@ endif;
 <p class="site-copyright">
 
     &copy;
-    <?php 
-echo esc_html(wp_date('Y'));
-?>
+    <?php echo esc_html(wp_date('Y')); ?>
 
-    <a href="<?php 
-echo esc_url(home_url('/'));
-?>">
-        <?php 
-bloginfo('name');
-?>
+    <a href="<?php echo esc_url(home_url('/')); ?>">
+        <?php bloginfo('name'); ?>
     </a>
 
-    <?php 
-esc_html_e('All rights reserved.', 'theme');
-?>
+    <?php esc_html_e('All rights reserved.', 'theme'); ?>
 
 </p>
-?>
+
 </footer>
-?>

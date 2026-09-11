@@ -107,6 +107,7 @@ use Rombt\ThemeCore\Artifacts\Functions\BlockFunctionsContentRenderer;
 use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsContentRenderer;
 use Rombt\ThemeCore\Artifacts\Functions\FunctionsPathResolver;
+use Rombt\ThemeCore\Artifacts\Templates\PhpParserContentNormalizer;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -243,6 +244,8 @@ $runtimeKernel = new RuntimeKernel(
 $buildRoot = $configuration->get('paths.build');
 $resourcePackage = $configuration->get('theme.resource_package');
 
+
+
 $classicTemplatePathResolver = new ClassicTemplatePathResolver();
 $classicNodeMaterializer = new ClassicTemplateNodeMaterializer(
     $classicTemplatePathResolver,
@@ -296,6 +299,7 @@ $pipeline = new Pipeline([
                     new ClassicTemplateArtifactGenerator(
                         new ClassicTemplateTreeRenderer(
                             new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
+                            new PhpParserContentNormalizer(),
                         ),
                         $classicNodeMaterializer,
                         $classicTemplatePathResolver,
@@ -347,7 +351,8 @@ $pipeline = new Pipeline([
     new FinalizeBuildStage(),
     ]);
 
-    $result = $runtimeKernel->execute($pipeline);
+
+$result = $runtimeKernel->execute($pipeline);
 
 
     echo PHP_EOL;

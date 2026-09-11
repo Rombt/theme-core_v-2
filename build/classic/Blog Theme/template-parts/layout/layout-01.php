@@ -1,5 +1,7 @@
 <main id="primary" class="site-main">
-    if (is_archive() || is_home() || is_search()) :
+    <?php
+
+if (is_archive() || is_home() || is_search()) :
     ?>
 
     <header class="page-header">
@@ -13,7 +15,7 @@
     </header>
 
 <?php endif; ?>
+
     <?php get_template_part('post/post-loop-01'); ?>
     <?php get_sidebar(); ?>
 </main>
-?>

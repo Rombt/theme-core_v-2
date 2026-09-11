@@ -24,3 +24,4 @@ if (has_nav_menu('primary')) :
 
     <?php
 endif;
+?>

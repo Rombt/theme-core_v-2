@@ -7,4 +7,3 @@ get_sidebar();
 ?>
     
 </main>
-?>

@@ -10,12 +10,18 @@ use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
 
 final readonly class ClassicTemplateTreeRenderer implements TemplateTreeRendererInterface
 {
-    public function __construct(private TemplateTreeMaterializerInterface $materializer)
-    {
+    public function __construct(
+        private TemplateTreeMaterializerInterface $materializer,
+        private PhpParserContentNormalizer $normalizer,
+    ) {
     }
 
     public function render(Template $template): string
     {
-        return $this->materializer->materialize($template)->content();
+        $content = $this->materializer
+            ->materialize($template)
+            ->content();
+
+        return $this->normalizer->normalize($content);
     }
 }
