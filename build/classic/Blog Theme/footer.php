@@ -20,10 +20,7 @@
 	if ( has_nav_menu( 'footer' ) ) :
 		?>
 
-	<nav
-		class="footer-navigation"
-		aria-label="<?php esc_attr_e( 'Footer Navigation', 'theme' ); ?>"
-	>
+	<nav class="footer-navigation" aria-label="<?php esc_attr_e( 'Footer Navigation', 'theme' ); ?>">
 
 		<?php
 		wp_nav_menu(
@@ -51,17 +48,17 @@ endif;
 
 	?>
 
-<p class="site-copyright">
+	<p class="site-copyright">
 
-	&copy;
-	<?php echo esc_html( wp_date( 'Y' ) ); ?>
+		&copy;
+		<?php echo esc_html( wp_date( 'Y' ) ); ?>
 
-	<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-		<?php bloginfo( 'name' ); ?>
-	</a>
+		<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<?php bloginfo( 'name' ); ?>
+		</a>
 
-	<?php esc_html_e( 'All rights reserved.', 'theme' ); ?>
+		<?php esc_html_e( 'All rights reserved.', 'theme' ); ?>
 
-</p>
+	</p>
 
 </footer>

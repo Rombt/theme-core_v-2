@@ -15,8 +15,11 @@ use Rombt\ThemeCore\Runtime\Session\SessionKeys;
 
 final readonly class FormatThemeStage implements StageInterface {
 
+	/**
+	 * @param list<ThemeFormatterInterface> $formatters
+	 */
 	public function __construct(
-		private ThemeFormatterInterface $formatter,
+		private array $formatters,
 	) {
 	}
 
@@ -36,7 +39,9 @@ final readonly class FormatThemeStage implements StageInterface {
 			}
 
 			/** @var list<string> $themePaths */
-			$this->formatter->format( $themePaths );
+			foreach ( $this->formatters as $formatter ) {
+				$formatter->format( $themePaths );
+			}
 
 			return new StageResult(
 				success: true,

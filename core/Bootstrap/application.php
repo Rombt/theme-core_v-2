@@ -111,9 +111,7 @@ use Rombt\ThemeCore\Artifacts\Functions\FunctionsPathResolver;
 use Rombt\ThemeCore\Artifacts\Templates\PhpParserContentNormalizer;
 use Rombt\ThemeCore\Runtime\Stages\FormatThemeStage;
 use Rombt\ThemeCore\Runtime\Process\ExternalProcessRunner;
-use Rombt\ThemeCore\Runtime\Formatters\PrettierThemeFormatter;
-use Rombt\ThemeCore\Runtime\Formatters\PhpCsFixerThemeFormatter;
-use Rombt\ThemeCore\Runtime\Formatters\PrettierHtmlThemeFormatter;
+use Rombt\ThemeCore\Runtime\Formatters\HtmlBeautifyThemeFormatter;
 use Rombt\ThemeCore\Runtime\Formatters\PhpcbfThemeFormatter;
 
 require_once dirname( __DIR__ ) . '/../vendor/autoload.php';
@@ -362,23 +360,17 @@ $pipeline = new Pipeline(
 		),
 
 		new FormatThemeStage(
-			// new PrettierThemeFormatter(
-			// new ExternalProcessRunner(),
-			// $app,
-			// )
-			// new PhpCsFixerThemeFormatter(
-			//  new ExternalProcessRunner(),
-			//  $app,
-			// )
-			// new  PrettierHtmlThemeFormatter(
-			// new ExternalProcessRunner(),
-			// $app,
-			// )
+			array(
+				new HtmlBeautifyThemeFormatter(
+					new ExternalProcessRunner(),
+					$app,
+				),
+				new PhpcbfThemeFormatter(
+					new ExternalProcessRunner(),
+					$app,
+				),
 
-			new PhpcbfThemeFormatter(
-				new ExternalProcessRunner(),
-				$app,
-			)
+			),
 		),
 
 		new FinalizeBuildStage(),

@@ -4,4 +4,3 @@ something 1
 something 2
 <?php
 get_footer();
-
