@@ -6,8 +6,7 @@
  * Displays the title of the current post.
  */
 
-if (is_singular()) :
-    ?>
+if (is_singular()): ?>
 
     <header class="entry-header">
 
@@ -17,5 +16,4 @@ if (is_singular()) :
 
     </header>
 
-    <?php
-endif;
+    <?php endif;

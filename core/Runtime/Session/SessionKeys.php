@@ -12,4 +12,5 @@ final class SessionKeys
     public const VALIDATED_PACKAGE = 'theme.validated_package';
     public const THEME_COMPONENTS = 'theme.components';
     public const THEME_IR = 'theme.ir';
+    public const THEME_BUILD_PATHS = 'theme.build_paths';
 }

@@ -1,8 +1,5 @@
 <main id="primary" class="site-main">
-    <?php
-
-if (is_archive() || is_home() || is_search()) :
-    ?>
+    <?php if (is_archive() || is_home() || is_search()): ?>
 
     <header class="page-header">
 
@@ -10,7 +7,10 @@ if (is_archive() || is_home() || is_search()) :
             <?php the_archive_title(); ?>
         </h1>
 
-        <?php the_archive_description('<div class="archive-description">', '</div>'); ?>
+        <?php the_archive_description(
+            '<div class="archive-description">',
+            '</div>',
+        ); ?>
 
     </header>
 

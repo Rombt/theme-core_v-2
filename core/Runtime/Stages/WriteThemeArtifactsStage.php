@@ -11,9 +11,10 @@ use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\ArtifactCollection;
 use Rombt\ThemeCore\Artifacts\FileArtifactWriter;
 use Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface;
-use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Context\ExecutionContext;
+use Rombt\ThemeCore\Runtime\Contracts\StageInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
+use Rombt\ThemeCore\Runtime\Session\SessionKeys;
 
 final class WriteThemeArtifactsStage implements StageInterface
 {
@@ -28,7 +29,6 @@ final class WriteThemeArtifactsStage implements StageInterface
     ): StageResult {
         $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
-
         try {
             $buildPath = (string) $this->configuration->get('paths.build');
 
@@ -38,14 +38,12 @@ final class WriteThemeArtifactsStage implements StageInterface
                 );
             }
 
-            $package = $context->session()->package();
-
+            $session = $context->session();
+            $package = $session->package();
             $themeName = $package->package()->configuration()['name'];
+            $artifacts = $session->artifacts();
 
-            $artifacts = $context->session()->artifacts();
-
-
-            $logger->dump('WriteThemeArtifactsStage    $artifacts = ');
+            $logger->dump('WriteThemeArtifactsStage    $artifacts = ',);
             $logger->dump($artifacts);
 
             $classicArtifacts = new ArtifactCollection();
@@ -80,18 +78,31 @@ final class WriteThemeArtifactsStage implements StageInterface
 
             $buildRoot = rtrim($buildPath, '/\\');
 
-            $classicThemePath = sprintf('%s/%s/%s', $buildRoot, 'classic', $themeName);
+            $classicThemePath = sprintf(
+                '%s/%s/%s',
+                $buildRoot,
+                'classic',
+                $themeName,
+            );
 
-            $blockThemePath = sprintf('%s/%s/%s', $buildRoot, 'block', $themeName);
+            $blockThemePath = sprintf(
+                '%s/%s/%s',
+                $buildRoot,
+                'block',
+                $themeName,
+            );
+
+            /** @var list<string> $themeBuildPaths */
+            $themeBuildPaths = [];
 
             if ($classicArtifacts->count() > 0) {
                 $classicWriter = new FileArtifactWriter(
                     $classicThemePath,
                 );
 
-                $classicWriter->write(
-                    $classicArtifacts,
-                );
+                $classicWriter->write($classicArtifacts);
+
+                $themeBuildPaths[] = $classicThemePath;
             }
 
             if ($blockArtifacts->count() > 0) {
@@ -99,10 +110,15 @@ final class WriteThemeArtifactsStage implements StageInterface
                     $blockThemePath,
                 );
 
-                $blockWriter->write(
-                    $blockArtifacts,
-                );
+                $blockWriter->write($blockArtifacts);
+
+                $themeBuildPaths[] = $blockThemePath;
             }
+
+            $session->setResource(
+                SessionKeys::THEME_BUILD_PATHS,
+                $themeBuildPaths,
+            );
 
             return new StageResult(
                 success: true,

@@ -21,7 +21,8 @@
   ],
   "require": {
     "php": "^8.4",
-    "nikic/php-parser": "^5.8"
+    "nikic/php-parser": "^5.8",
+    "symfony/process": "^8.1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^4.0",

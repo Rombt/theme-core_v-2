@@ -2,11 +2,9 @@
 
     <?php the_content(); ?>
 
-    <?php
-    wp_link_pages([
+    <?php wp_link_pages([
         'before' => '<nav class="page-links">',
-        'after'  => '</nav>',
-    ]);
-    ?>
+        'after' => '</nav>',
+    ]); ?>
 
 </article>

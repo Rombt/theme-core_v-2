@@ -27,3 +27,4 @@ if (has_nav_menu('footer')) :
 
     <?php
 endif;
+?>

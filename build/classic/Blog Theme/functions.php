@@ -49,15 +49,9 @@ add_action('wp_enqueue_scripts', static function (): void {
     );
 });
 
-register_nav_menu(
-    'primary',
-    'Primary Menu',
-);
+register_nav_menu('primary', 'Primary Menu');
 
-register_nav_menu(
-    'footer',
-    'Footer Menu',
-);
+register_nav_menu('footer', 'Footer Menu');
 
 add_action('enqueue_block_editor_assets', static function (): void {
     wp_enqueue_script(
@@ -69,30 +63,33 @@ add_action('enqueue_block_editor_assets', static function (): void {
     );
 });
 
-register_nav_menu(
-    'hero',
-    'Hero Menu',
-);
+register_nav_menu('hero', 'Hero Menu');
 
 add_action('widgets_init', static function (): void {
     register_sidebar([
-        'id'            => 'primary-sidebar',
-        'name'          => __('Primary Sidebar', 'blog-theme'),
-        'description'   => __('Main sidebar displayed on posts and pages.', 'blog-theme'),
+        'id' => 'primary-sidebar',
+        'name' => __('Primary Sidebar', 'blog-theme'),
+        'description' => __(
+            'Main sidebar displayed on posts and pages.',
+            'blog-theme',
+        ),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title">',
-        'after_title'   => '</h2>',
+        'after_widget' => '</section>',
+        'before_title' => '<h2 class="widget-title">',
+        'after_title' => '</h2>',
     ]);
 
     register_sidebar([
-        'id'            => 'footer-sidebar',
-        'name'          => __('Footer Sidebar', 'blog-theme'),
-        'description'   => __('Widget area displayed in the footer.', 'blog-theme'),
+        'id' => 'footer-sidebar',
+        'name' => __('Footer Sidebar', 'blog-theme'),
+        'description' => __(
+            'Widget area displayed in the footer.',
+            'blog-theme',
+        ),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title">',
-        'after_title'   => '</h2>',
+        'after_widget' => '</section>',
+        'before_title' => '<h2 class="widget-title">',
+        'after_title' => '</h2>',
     ]);
 });
 
@@ -113,19 +110,13 @@ add_filter('excerpt_more', static function (): string {
 });
 
 add_action('init', static function (): void {
-    register_block_style(
-        'core/image',
-        [
-            'name'  => 'rounded',
-            'label' => __('Rounded', 'blog-theme'),
-        ],
-    );
+    register_block_style('core/image', [
+        'name' => 'rounded',
+        'label' => __('Rounded', 'blog-theme'),
+    ]);
 
-    register_block_style(
-        'core/button',
-        [
-            'name'  => 'outline',
-            'label' => __('Outline', 'blog-theme'),
-        ],
-    );
+    register_block_style('core/button', [
+        'name' => 'outline',
+        'label' => __('Outline', 'blog-theme'),
+    ]);
 });

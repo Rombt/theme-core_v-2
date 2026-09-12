@@ -6,8 +6,7 @@
  * Displays the primary widget area.
  */
 
-if (is_active_sidebar('primary-sidebar')) :
-    ?>
+if (is_active_sidebar('primary-sidebar')): ?>
 
     <aside
         class="widget-area"
