@@ -1,5 +1,8 @@
 <main id="primary" class="site-main">
-    <?php if (is_archive() || is_home() || is_search()): ?>
+    <?php
+
+if (is_archive() || is_home() || is_search()) :
+    ?>
 
     <header class="page-header">
 

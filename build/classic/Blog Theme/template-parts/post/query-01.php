@@ -11,7 +11,7 @@ if (have_posts()):
 
     the_posts_navigation();
 else:
-     ?>
+    ?>
 
     <?php get_template_part('common/no-posts-01'); ?>
 

@@ -22,13 +22,19 @@
 
     <div class="site-header__inner">
 
-        <?php /**
-         * Site Title
-         *
-         * Displays the site title.
-         */
+        <?php
 
-        $tag = is_front_page() && is_home() ? 'h1' : 'p'; ?>
+/**
+ * Site Title
+ *
+ * Displays the site title.
+ */
+
+        $tag = is_front_page() && is_home()
+        ? 'h1'
+        : 'p';
+
+        ?>
 
 <<?php echo esc_html($tag); ?> class="wp-block-site-title my-custom-class">
 
@@ -42,51 +48,65 @@
 </<?php echo esc_html($tag); ?>>
 
 
-        <?php /**
-         * Primary Navigation
-         *
-         * Displays the primary site navigation.
-         */
+        <?php
 
-        if (has_nav_menu('primary')): ?>
+/**
+ * Primary Navigation
+ *
+ * Displays the primary site navigation.
+ */
+
+        if (has_nav_menu('primary')) :
+            ?>
 
     <nav class="primary-navigation" aria-label="<?php esc_attr_e('Primary Navigation', 'theme'); ?>">
 
-        <?php wp_nav_menu([
+            <?php
+                wp_nav_menu([
             'theme_location' => 'primary',
-            'container' => false,
-            'menu_class' => 'menu',
-            'fallback_cb' => false
-        ]); ?>
+            'container'      => false,
+            'menu_class'     => 'menu',
+            'fallback_cb'    => false,
+                ]);
+            ?>
 
     </nav>
 
-    <?php endif; ?>
+            <?php
+        endif;
+        ?>
 
 
-        <?php /**
-         * Hero Navigation
-         *
-         * Displays the site hero navigation.
-         */
+        <?php
 
-        if (has_nav_menu('hero')): ?>
+/**
+ * Hero Navigation
+ *
+ * Displays the site hero navigation.
+ */
+
+        if (has_nav_menu('hero')) :
+            ?>
 
     <nav
         class="hero-navigation"
         aria-label="<?php esc_attr_e('Hero Navigation', 'theme'); ?>"
     >
 
-        <?php wp_nav_menu([
+            <?php
+                wp_nav_menu([
             'theme_location' => 'hero',
-            'container' => false,
-            'menu_class' => 'menu',
-            'fallback_cb' => false
-        ]); ?>
+            'container'      => false,
+            'menu_class'     => 'menu',
+            'fallback_cb'    => false,
+                ]);
+            ?>
 
     </nav>
 
-    <?php endif; ?>
+            <?php
+        endif;
+        ?>
 
 
     </div>

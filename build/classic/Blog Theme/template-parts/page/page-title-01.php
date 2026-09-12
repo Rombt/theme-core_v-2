@@ -6,7 +6,8 @@
  * Displays the title of the current page.
  */
 
-if (is_page()): ?>
+if (is_page()) :
+    ?>
 
     <header class="entry-header">
 
@@ -16,4 +17,5 @@ if (is_page()): ?>
 
     </header>
 
-    <?php endif;
+    <?php
+endif;

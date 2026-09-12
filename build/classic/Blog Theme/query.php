@@ -1,8 +1,10 @@
 <?php
 
-if (have_posts()):
-    while (have_posts()):
-        the_post(); ?>
+if (have_posts()) :
+    while (have_posts()) :
+        the_post();
+
+        ?>
 
     <?php get_template_part('post/post-title-01'); ?>
 
@@ -10,8 +12,8 @@ if (have_posts()):
     endwhile;
 
     the_posts_navigation();
-else:
-     ?>
+else :
+    ?>
 
     <?php get_template_part('common/no-posts-01'); ?>
 
