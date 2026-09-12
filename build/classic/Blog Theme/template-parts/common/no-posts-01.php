@@ -8,6 +8,4 @@
 
 ?>
 
-<p class="no-posts">
-    <?php esc_html_e('No posts found.', 'theme'); ?>
-</p>
+<p class="no-posts"><?php esc_html_e('No posts found.', 'theme'); ?></p>

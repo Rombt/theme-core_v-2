@@ -12,7 +12,6 @@
       "Tests\\": "tests/"
     }
   },
-
   "authors": [
     {
       "name": "Rombt",
@@ -25,20 +24,25 @@
     "symfony/process": "^8.1"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^4.0",
+    "squizlabs/php_codesniffer": "^3.13.5",
     "friendsofphp/php-cs-fixer": "^3.95",
     "phpunit/phpunit": "^13.1",
     "phpstan/phpstan": "^2.1.30",
-    "deptrac/deptrac": "^4.1"
+    "deptrac/deptrac": "^4.1",
+    "wp-coding-standards/wpcs": "^3.0"
   },
-
   "scripts": {
-      "test": "phpunit",
-      "analyse": "phpstan analyse",
-      "deptrac": "deptrac analyse",
-        "qa": [
-          "composer test > logs/phpunit.log 2>&1",
-          "composer analyse > logs/phpstan.log 2>&1"
-        ]
+    "test": "phpunit",
+    "analyse": "phpstan analyse",
+    "deptrac": "deptrac analyse",
+    "qa": [
+      "composer test > logs/phpunit.log 2>&1",
+      "composer analyse > logs/phpstan.log 2>&1"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }

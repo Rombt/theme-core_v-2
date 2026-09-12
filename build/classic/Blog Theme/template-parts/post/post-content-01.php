@@ -7,6 +7,6 @@
         'before' => '<nav class="page-links">',
         'after'  => '</nav>',
     ]);
-?>
+    ?>
 
 </article>
