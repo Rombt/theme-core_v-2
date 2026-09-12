@@ -13,39 +13,39 @@ use Rombt\ThemeCore\Runtime\Contracts\ThemeFormatterInterface;
 use Rombt\ThemeCore\Runtime\Result\StageResult;
 use Rombt\ThemeCore\Runtime\Session\SessionKeys;
 
-final readonly class FormatThemeStage implements StageInterface
-{
-    public function __construct(
-        private ThemeFormatterInterface $formatter,
-    ) {
-    }
+final readonly class FormatThemeStage implements StageInterface {
 
-    public function execute(
-        ExecutionContext $context,
-        Application $app,
-    ): StageResult {
-        try {
-            $themePaths = $context
-                ->session()
-                ->getResource(SessionKeys::THEME_BUILD_PATHS);
+	public function __construct(
+		private ThemeFormatterInterface $formatter,
+	) {
+	}
 
-            if (!is_array($themePaths)) {
-                throw new RuntimeException(
-                    'Theme build paths are not available.',
-                );
-            }
+	public function execute(
+		ExecutionContext $context,
+		Application $app,
+	): StageResult {
+		try {
+			$themePaths = $context
+				->session()
+				->getResource( SessionKeys::THEME_BUILD_PATHS );
 
-            /** @var list<string> $themePaths */
-            $this->formatter->format($themePaths);
+			if ( ! is_array( $themePaths ) ) {
+				throw new RuntimeException(
+					'Theme build paths are not available.',
+				);
+			}
 
-            return new StageResult(
-                success: true,
-            );
-        } catch (Throwable $e) {
-            return new StageResult(
-                success: false,
-                error: $e,
-            );
-        }
-    }
+			/** @var list<string> $themePaths */
+			$this->formatter->format( $themePaths );
+
+			return new StageResult(
+				success: true,
+			);
+		} catch ( Throwable $e ) {
+			return new StageResult(
+				success: false,
+				error: $e,
+			);
+		}
+	}
 }

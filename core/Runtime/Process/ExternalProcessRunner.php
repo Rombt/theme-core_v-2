@@ -8,24 +8,24 @@ use RuntimeException;
 use Rombt\ThemeCore\Runtime\Contracts\ExternalProcessRunnerInterface;
 use Symfony\Component\Process\Process;
 
-final class ExternalProcessRunner implements ExternalProcessRunnerInterface
-{
-    public function run(array $command): void
-    {
-        $process = new Process($command);
+final class ExternalProcessRunner implements ExternalProcessRunnerInterface {
 
-        $process->run();
+	public function run( array $command ): void {
+		$process = new Process( $command );
 
-        if ($process->isSuccessful()) {
-            return;
-        }
+		$process->run();
 
-        throw new RuntimeException(
-            sprintf(
-                "External process failed with exit code %s.\n%s",
-                $process->getExitCode(),
-                trim($process->getErrorOutput()),
-            ),
-        );
-    }
+		if ( $process->isSuccessful() ) {
+			return;
+		}
+
+		throw new RuntimeException(
+			sprintf(
+				"External process failed with exit code %s.\nSTDOUT:\n%s\nSTDERR:\n%s",
+				$process->getExitCode(),
+				trim( $process->getOutput() ),
+				trim( $process->getErrorOutput() ),
+			),
+		);
+	}
 }

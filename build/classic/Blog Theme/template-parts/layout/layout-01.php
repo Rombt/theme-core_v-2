@@ -1,14 +1,21 @@
 <main id="primary" class="site-main">
-  <?php if (is_archive() || is_home() || is_search()) : ?>
+	<?php
 
-  <header class="page-header">
-    <h1 class="wp-block-query-title"><?php the_archive_title(); ?></h1>
+	if ( is_archive() || is_home() || is_search() ) :
+		?>
 
-    <?php the_archive_description('
-    <div class="archive-description">', '</div>
-    '); ?>
-  </header>
+	<header class="page-header">
 
-  <?php endif; ?> <?php get_template_part('post/post-loop-01'); ?> <?php
-  get_sidebar(); ?>
+		<h1 class="wp-block-query-title">
+			<?php the_archive_title(); ?>
+		</h1>
+
+		<?php the_archive_description( '<div class="archive-description">', '</div>' ); ?>
+
+	</header>
+
+	<?php endif; ?>
+
+	<?php get_template_part( 'post/post-loop-01' ); ?>
+	<?php get_sidebar(); ?>
 </main>

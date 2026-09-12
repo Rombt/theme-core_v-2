@@ -9,41 +9,42 @@ use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Runtime\Contracts\ExternalProcessRunnerInterface;
 use Rombt\ThemeCore\Runtime\Contracts\ThemeFormatterInterface;
 
-final readonly class PhpCsFixerThemeFormatter implements ThemeFormatterInterface
-{
-    public function __construct(
-        private ExternalProcessRunnerInterface $processRunner,
-        private Application $app,
-    ) {
-    }
+final readonly class PhpCsFixerThemeFormatter implements ThemeFormatterInterface {
 
-    /**
-     * @param list<string> $themePaths
-     */
-    public function format(array $themePaths): void
-    {
-        $projectRoot = $this->app
-            ->getContext()
-            ->get(ApplicationContextKeys::PROJECT_ROOT);
+	public function __construct(
+		private ExternalProcessRunnerInterface $processRunner,
+		private Application $app,
+	) {
+	}
 
-        $configPath = $projectRoot->value()
-            . DIRECTORY_SEPARATOR . 'core'
-            . DIRECTORY_SEPARATOR . 'Runtime'
-            . DIRECTORY_SEPARATOR . 'Formatters'
-            . DIRECTORY_SEPARATOR . '.php-cs-fixer.php';
+	/**
+	 * @param list<string> $themePaths
+	 */
+	public function format( array $themePaths ): void {
+		$projectRoot = $this->app
+			->getContext()
+			->get( ApplicationContextKeys::PROJECT_ROOT );
 
-        $phpCsFixerPath = $projectRoot->value()
-            . DIRECTORY_SEPARATOR . 'vendor'
-            . DIRECTORY_SEPARATOR . 'bin'
-            . DIRECTORY_SEPARATOR . 'php-cs-fixer.bat';
+		$configPath = $projectRoot->value()
+			. DIRECTORY_SEPARATOR . 'core'
+			. DIRECTORY_SEPARATOR . 'Runtime'
+			. DIRECTORY_SEPARATOR . 'Formatters'
+			. DIRECTORY_SEPARATOR . '.php-cs-fixer.php';
 
-        foreach ($themePaths as $themePath) {
-            $this->processRunner->run([
-                $phpCsFixerPath,
-                'fix',
-                '--config=' . $configPath,
-                $themePath,
-            ]);
-        }
-    }
+		$phpCsFixerPath = $projectRoot->value()
+			. DIRECTORY_SEPARATOR . 'vendor'
+			. DIRECTORY_SEPARATOR . 'bin'
+			. DIRECTORY_SEPARATOR . 'php-cs-fixer.bat';
+
+		foreach ( $themePaths as $themePath ) {
+			$this->processRunner->run(
+				array(
+					$phpCsFixerPath,
+					'fix',
+					'--config=' . $configPath,
+					$themePath,
+				)
+			);
+		}
+	}
 }
