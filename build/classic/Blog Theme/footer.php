@@ -24,7 +24,7 @@
             'theme_location' => 'footer',
             'container' => false,
             'menu_class' => 'menu',
-            'fallback_cb' => false,
+            'fallback_cb' => false
         ]); ?>
 
     </nav>

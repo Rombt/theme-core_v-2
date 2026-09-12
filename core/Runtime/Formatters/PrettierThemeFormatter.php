@@ -26,17 +26,25 @@ final readonly class PrettierThemeFormatter implements ThemeFormatterInterface
         $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
 
         $projectRoot = $this->app->getContext()->get(ApplicationContextKeys::PROJECT_ROOT);
+        $configPath = $projectRoot->value()
+        . DIRECTORY_SEPARATOR . 'core'
+        . DIRECTORY_SEPARATOR . 'Runtime'
+        . DIRECTORY_SEPARATOR . 'Formatters'
+        . DIRECTORY_SEPARATOR . '.prettierrc';
 
-        $logger->dump('$projectRoot = ',);
+        $logger->dump('$projectRoot = ');
         $logger->dump($projectRoot);
+        $logger->dump('$configPath = ');
+        $logger->dump($configPath);
 
         foreach ($themePaths as $themePath) {
             $this->processRunner->run([
                 'npx',
                 'prettier',
                 '--plugin=@prettier/plugin-php',
+                '--parser=php',
                 '--config',
-                'core/Runtime/Formatters/.prettierrc',
+                $configPath,
                 '--write',
                 $themePath,
             ]);
