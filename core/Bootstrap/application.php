@@ -14,6 +14,7 @@ use Rombt\ThemeCore\Bootstrap\Bootstrappers\CreateLoggerBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\FinalizeApplicationContextBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\LoadConfigurationBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetInternalEncodingBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetProjectRootBootstrapper;
 use Rombt\ThemeCore\Bootstrap\Kernel;
 use Rombt\ThemeCore\Bootstrap\KernelContext;
 use Rombt\ThemeCore\Composition\Assembler\RuntimeAssembler;
@@ -108,6 +109,9 @@ use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsContentRenderer;
 use Rombt\ThemeCore\Artifacts\Functions\FunctionsPathResolver;
 use Rombt\ThemeCore\Artifacts\Templates\PhpParserContentNormalizer;
+use Rombt\ThemeCore\Runtime\Stages\FormatThemeStage;
+use Rombt\ThemeCore\Runtime\Formatters\PrettierThemeFormatter;
+use Rombt\ThemeCore\Runtime\Process\ExternalProcessRunner;
 
 require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
@@ -128,6 +132,7 @@ $bootstrapRegistry->register(CreateDiagnosticsBootstrapper::class);
 $bootstrapRegistry->register(CreateLoggerBootstrapper::class);
 $bootstrapRegistry->register(CompositionBootstrapper::class);
 $bootstrapRegistry->register(FinalizeApplicationContextBootstrapper::class);
+$bootstrapRegistry->register(SetProjectRootBootstrapper::class);
 
 $kernel = new Kernel(
     $app,
@@ -346,6 +351,13 @@ $pipeline = new Pipeline([
 
     new WriteThemeArtifactsStage(
         $configuration
+    ),
+
+    new FormatThemeStage(
+        new PrettierThemeFormatter(
+            new ExternalProcessRunner(),
+            $app,
+        )
     ),
 
     new FinalizeBuildStage(),
