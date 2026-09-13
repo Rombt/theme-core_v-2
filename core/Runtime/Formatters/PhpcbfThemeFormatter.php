@@ -33,6 +33,10 @@ final readonly class PhpcbfThemeFormatter implements ThemeFormatterInterface {
 			. DIRECTORY_SEPARATOR . 'phpcbf.bat';
 
 		$configPath = $projectRootPath
+			. DIRECTORY_SEPARATOR . 'core'
+			. DIRECTORY_SEPARATOR . 'Runtime'
+			. DIRECTORY_SEPARATOR . 'Formatters'
+			. DIRECTORY_SEPARATOR . 'conf'
 			. DIRECTORY_SEPARATOR . '.phpcs.xml';
 
 		foreach ( $themePaths as $themePath ) {

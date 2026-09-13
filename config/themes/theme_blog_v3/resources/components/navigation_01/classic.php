@@ -6,22 +6,24 @@
  * Displays the primary site navigation.
  */
 
-if (has_nav_menu('primary')) :
-    ?>
+if ( has_nav_menu( 'primary' ) ) :
+	?>
 
-    <nav class="primary-navigation" aria-label="<?php esc_attr_e('Primary Navigation', 'theme'); ?>">
+	<nav class="primary-navigation" aria-label="<?php esc_attr_e( 'Primary Navigation', 'theme' ); ?>">
 
-        <?php
-        wp_nav_menu([
-            'theme_location' => 'primary',
-            'container'      => false,
-            'menu_class'     => 'menu',
-            'fallback_cb'    => false,
-        ]);
-        ?>
+		<?php
+		wp_nav_menu(
+			array(
+				'theme_location' => 'primary',
+				'container'      => false,
+				'menu_class'     => 'menu',
+				'fallback_cb'    => false,
+			)
+		);
+		?>
 
-    </nav>
+	</nav>
 
-    <?php
+	<?php
 endif;
 ?>

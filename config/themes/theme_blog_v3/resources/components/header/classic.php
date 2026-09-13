@@ -15,7 +15,10 @@
 
 <?php wp_body_open(); ?>
 
-<header id="masthead" class="site-header">
+<header
+	id="masthead"
+	class="site-header"
+>
 
 	<div class="site-header__inner">
 
