@@ -1,46 +1,17 @@
 <?xml version="1.0"?>
 <ruleset name="WordPressTheme">
 
-    <description>Custom ruleset for WordPress theme development</description>
+    <description>
+        Custom ruleset for theme-core v-2 project
+        but it are not finished
+    </description>
 
     <!-- Проверяем только PHP -->
     <arg name="extensions" value="php" />
 
-    <!-- Основные стандарты WP -->
-    <rule ref="WordPress">
-        <exclude name="WordPress.NamingConventions.ValidVariableName" />
-        <exclude name="WordPress.Files.FileName" />
+    <rule ref="PSR12">
+        <exclude name="PSR12.Files.FileHeader.HeaderPosition" />
     </rule>
-    <rule ref="WordPress-Extra" />
-    <rule ref="WordPress-Docs">
-        <exclude name="Squiz.Commenting" />
-        <exclude name="Generic.Commenting.DocComment.MissingShort" />
-    </rule>
-
-
-    <rule ref="WordPress.Security.EscapeOutput">
-        <properties>
-            <property name="customEscapingFunctions" type="array">
-                <element value="rmbt_get_redux_field" />
-            </property>
-        </properties>
-
-        <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped" />
-    </rule>
-
-
-    <!-- Дополнительные правила (необязательно, но полезно ) -->
-    <rule ref="Generic.PHP.NoSilencedErrors" />
-    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
-
-    <rule ref="WordPress.Security.EscapeOutput">
-        <properties>
-            <property name="customEscapingFunctions" type="array">
-                <element value="rmbt_get_redux_field" />
-            </property>
-        </properties>
-    </rule>
-
 
     <!-- Исключеаем обход этих каталогов-->
     <exclude-pattern>vendor/*</exclude-pattern>
@@ -50,7 +21,5 @@
     <exclude-pattern>assets/css/*</exclude-pattern>
     <exclude-pattern>*.js</exclude-pattern>
 
-    <!-- todo найти class-tgm-plugin-activation.php который будет соответствовать требованиям phpcs -->
-    <exclude-pattern>app/src/inc/functions/class-tgm-plugin-activation.php</exclude-pattern>
 
 </ruleset>

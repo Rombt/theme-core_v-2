@@ -8,24 +8,26 @@ use RuntimeException;
 use Rombt\ThemeCore\Runtime\Contracts\ExternalProcessRunnerInterface;
 use Symfony\Component\Process\Process;
 
-final class ExternalProcessRunner implements ExternalProcessRunnerInterface {
+final class ExternalProcessRunner implements ExternalProcessRunnerInterface
+{
+    public function run(array $command): void
+    {
 
-	public function run( array $command ): void {
-		$process = new Process( $command );
+        $process = new Process($command);
+        $process->setTimeout(null);  // т.к. по умолчанию выполнение процесса не может длится более 60 секунд
+        $process->run();
 
-		$process->run();
+        if ($process->isSuccessful()) {
+            return;
+        }
 
-		if ( $process->isSuccessful() ) {
-			return;
-		}
-
-		throw new RuntimeException(
-			sprintf(
-				"External process failed with exit code %s.\nSTDOUT:\n%s\nSTDERR:\n%s",
-				$process->getExitCode(),
-				trim( $process->getOutput() ),
-				trim( $process->getErrorOutput() ),
-			),
-		);
-	}
+        throw new RuntimeException(
+            sprintf(
+                "External process failed with exit code %s.\nSTDOUT:\n%s\nSTDERR:\n%s",
+                $process->getExitCode(),
+                trim($process->getOutput()),
+                trim($process->getErrorOutput()),
+            ),
+        );
+    }
 }

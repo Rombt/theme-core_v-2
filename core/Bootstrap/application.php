@@ -114,7 +114,7 @@ use Rombt\ThemeCore\Runtime\Process\ExternalProcessRunner;
 use Rombt\ThemeCore\Runtime\Formatters\HtmlBeautifyThemeFormatter;
 use Rombt\ThemeCore\Runtime\Formatters\PhpcbfThemeFormatter;
 
-require_once dirname( __DIR__ ) . '/../vendor/autoload.php';
+require_once dirname(__DIR__) . '/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -126,26 +126,26 @@ $app = new Application();
 
 $bootstrapRegistry = new BootstrapRegistry();
 
-$bootstrapRegistry->register( CreateApplicationContextBuilderBootstrapper::class );
-$bootstrapRegistry->register( SetInternalEncodingBootstrapper::class );
-$bootstrapRegistry->register( LoadConfigurationBootstrapper::class );
-$bootstrapRegistry->register( CreateDiagnosticsBootstrapper::class );
-$bootstrapRegistry->register( CreateLoggerBootstrapper::class );
-$bootstrapRegistry->register( CompositionBootstrapper::class );
-$bootstrapRegistry->register( FinalizeApplicationContextBootstrapper::class );
-$bootstrapRegistry->register( SetProjectRootBootstrapper::class );
+$bootstrapRegistry->register(CreateApplicationContextBuilderBootstrapper::class);
+$bootstrapRegistry->register(SetInternalEncodingBootstrapper::class);
+$bootstrapRegistry->register(LoadConfigurationBootstrapper::class);
+$bootstrapRegistry->register(CreateDiagnosticsBootstrapper::class);
+$bootstrapRegistry->register(CreateLoggerBootstrapper::class);
+$bootstrapRegistry->register(CompositionBootstrapper::class);
+$bootstrapRegistry->register(FinalizeApplicationContextBootstrapper::class);
+$bootstrapRegistry->register(SetProjectRootBootstrapper::class);
 
 $kernel = new Kernel(
-	$app,
-	$bootstrapRegistry,
-	new BootstrapperFactory(),
-	new KernelContext(),
-	dirname( __DIR__, 2 ),
+    $app,
+    $bootstrapRegistry,
+    new BootstrapperFactory(),
+    new KernelContext(),
+    dirname(__DIR__, 2),
 );
 
 $kernel->bootstrap();
 $definitions        = $kernel->context()->getServiceDefinitions();
-$compositionRuntime = ( new RuntimeAssembler( $app ) )->assemble( $definitions );
+$compositionRuntime = ( new RuntimeAssembler($app) )->assemble($definitions);
 
 /*
 |--------------------------------------------------------------------------
@@ -153,253 +153,253 @@ $compositionRuntime = ( new RuntimeAssembler( $app ) )->assemble( $definitions )
 |--------------------------------------------------------------------------
 */
 /** @var \Rombt\ThemeCore\Configuration\Contracts\ConfigurationInterface $configuration */
-$configuration = $app->getContext()->get( ApplicationContextKeys::CONFIGURATION );
+$configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
 
 /** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
-$logger = $app->getContext()->get( ApplicationContextKeys::LOGGER );
+$logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
 
 $runtimeKernel = new RuntimeKernel(
-	new BuildRunner(
-		new BuildSessionFactory(
-			new ArtifactCollectionFactory(), // todo при создании артефактов не используется удалить
-		),
-		new ExecutionContextFactory(),
-		new ExecutionRuntime(
-			new BuildResultFactory(),
-			new PipelineExecutor(),
-		),
-		$compositionRuntime,
-		new SelectedPackageProvider(
-			$configuration,
-			new RegistryPackageSelector(
-				$compositionRuntime->packageRegistry(),
-			),
-			new PackageLoader(
-				new DomainRegistry(
-					array(
+    new BuildRunner(
+        new BuildSessionFactory(
+            new ArtifactCollectionFactory(), // todo при создании артефактов не используется удалить
+        ),
+        new ExecutionContextFactory(),
+        new ExecutionRuntime(
+            new BuildResultFactory(),
+            new PipelineExecutor(),
+        ),
+        $compositionRuntime,
+        new SelectedPackageProvider(
+            $configuration,
+            new RegistryPackageSelector(
+                $compositionRuntime->packageRegistry(),
+            ),
+            new PackageLoader(
+                new DomainRegistry(
+                    array(
 
-						// !! здесь добавлять домены которые может обрабатывать приложение
+                        // !! здесь добавлять домены которые может обрабатывать приложение
 
-						'templates'      => new DomainRegistration(
-							id: new DomainId( 'templates' ),
-							domainClass: TemplatesConfiguration::class,
-							validator: new TemplatesValidator(),
-						),
+                        'templates'      => new DomainRegistration(
+                            id: new DomainId('templates'),
+                            domainClass: TemplatesConfiguration::class,
+                            validator: new TemplatesValidator(),
+                        ),
 
-						'entities'       => new DomainRegistration(
-							id: new DomainId( 'entities' ),
-							domainClass: EntitiesConfiguration::class,
-							validator: new EntitiesValidator(),
-						),
+                        'entities'       => new DomainRegistration(
+                            id: new DomainId('entities'),
+                            domainClass: EntitiesConfiguration::class,
+                            validator: new EntitiesValidator(),
+                        ),
 
-						'compositions'   => new DomainRegistration(
-							id: new DomainId( 'compositions' ),
-							domainClass: CompositionsConfiguration::class,
-							validator: new CompositionsValidator(),
-						),
+                        'compositions'   => new DomainRegistration(
+                            id: new DomainId('compositions'),
+                            domainClass: CompositionsConfiguration::class,
+                            validator: new CompositionsValidator(),
+                        ),
 
-						'queries'        => new DomainRegistration(
-							id: new DomainId( 'queries' ),
-							domainClass: QueriesConfiguration::class,
-							validator: new QueriesValidator(),
-						),
+                        'queries'        => new DomainRegistration(
+                            id: new DomainId('queries'),
+                            domainClass: QueriesConfiguration::class,
+                            validator: new QueriesValidator(),
+                        ),
 
-						'workflows'      => new DomainRegistration(
-							id: new DomainId( 'workflows' ),
-							domainClass: WorkflowsConfiguration::class,
-							validator: new WorkflowsValidator(),
-						),
+                        'workflows'      => new DomainRegistration(
+                            id: new DomainId('workflows'),
+                            domainClass: WorkflowsConfiguration::class,
+                            validator: new WorkflowsValidator(),
+                        ),
 
-						'design-systems' => new DomainRegistration(
-							id: new DomainId( 'design-systems' ),
-							domainClass: DesignSystemsConfiguration::class,
-							validator: new DesignSystemsValidator(),
-						),
+                        'design-systems' => new DomainRegistration(
+                            id: new DomainId('design-systems'),
+                            domainClass: DesignSystemsConfiguration::class,
+                            validator: new DesignSystemsValidator(),
+                        ),
 
-						'assets'         => new DomainRegistration(
-							id: new DomainId( 'assets' ),
-							domainClass: AssetsConfiguration::class,
-							validator: new AssetsValidator(),
-						),
+                        'assets'         => new DomainRegistration(
+                            id: new DomainId('assets'),
+                            domainClass: AssetsConfiguration::class,
+                            validator: new AssetsValidator(),
+                        ),
 
-						'integrations'   => new DomainRegistration(
-							id: new DomainId( 'integrations' ),
-							domainClass: IntegrationsConfiguration::class,
-							validator: new IntegrationsValidator(),
-						),
+                        'integrations'   => new DomainRegistration(
+                            id: new DomainId('integrations'),
+                            domainClass: IntegrationsConfiguration::class,
+                            validator: new IntegrationsValidator(),
+                        ),
 
-						'nodes'          => new DomainRegistration(
-							id: new DomainId( 'nodes' ),
-							domainClass: NodesConfiguration::class,
-							validator: new NodesValidator(),
-						),
+                        'nodes'          => new DomainRegistration(
+                            id: new DomainId('nodes'),
+                            domainClass: NodesConfiguration::class,
+                            validator: new NodesValidator(),
+                        ),
 
-						'functions'      => new DomainRegistration(
-							id: new DomainId( 'functions' ),
-							domainClass: FunctionsConfiguration::class,
-							validator: new FunctionsValidator(),
-						),
+                        'functions'      => new DomainRegistration(
+                            id: new DomainId('functions'),
+                            domainClass: FunctionsConfiguration::class,
+                            validator: new FunctionsValidator(),
+                        ),
 
-					)
-				),
-			),
-		),
-		$app,
-	),
+                    )
+                ),
+            ),
+        ),
+        $app,
+    ),
 );
 
-$buildRoot       = $configuration->get( 'paths.build' );
-$resourcePackage = $configuration->get( 'theme.resource_package' );
+$buildRoot       = $configuration->get('paths.build');
+$resourcePackage = $configuration->get('theme.resource_package');
 
 
 
 $classicTemplatePathResolver = new ClassicTemplatePathResolver();
 $classicNodeMaterializer     = new ClassicTemplateNodeMaterializer(
-	$classicTemplatePathResolver,
-	$app
+    $classicTemplatePathResolver,
+    $app
 );
 
-$blockNodeMaterializer = new BlockTemplateNodeMaterializer( $app );
+$blockNodeMaterializer = new BlockTemplateNodeMaterializer($app);
 
 $pipeline = new Pipeline(
-	array(
+    array(
 
-		new BuildThemeComponentsStage(
-			new ThemeComponentBuilder(
-				new ThemeComponentBuilderRegistry(
-					array(
-						new NodesComponentBuilder(),
-						new TemplatesComponentBuilder(),
-						new CompositionsComponentBuilder(
-							new CompositionCollectionBuilder(),
-						),
-						new AssetsComponentBuilder(),
-						new DesignSystemsComponentBuilder(),
-						new IntegrationsComponentBuilder(),
-						new FunctionsComponentBuilder(),
-					)
-				),
-			),
-		),
+        new BuildThemeComponentsStage(
+            new ThemeComponentBuilder(
+                new ThemeComponentBuilderRegistry(
+                    array(
+                        new NodesComponentBuilder(),
+                        new TemplatesComponentBuilder(),
+                        new CompositionsComponentBuilder(
+                            new CompositionCollectionBuilder(),
+                        ),
+                        new AssetsComponentBuilder(),
+                        new DesignSystemsComponentBuilder(),
+                        new IntegrationsComponentBuilder(),
+                        new FunctionsComponentBuilder(),
+                    )
+                ),
+            ),
+        ),
 
-		new BuildThemeIRStage(
-			new ThemeIRBuilder(
-				new ThemeIRResolverRegistry(
-					resolvers: array(
-						// Compositions используются TemplatesThemeIRResolver
-						// для построения Templates IR concept.
-						new TemplatesThemeIRResolver(),
+        new BuildThemeIRStage(
+            new ThemeIRBuilder(
+                new ThemeIRResolverRegistry(
+                    resolvers: array(
+                        // Compositions используются TemplatesThemeIRResolver
+                        // для построения Templates IR concept.
+                        new TemplatesThemeIRResolver(),
 
-						new DesignSystemsThemeIRResolver(),
-						new AssetsThemeIRResolver(),
-						new IntegrationsThemeIRResolver(),
-					),
-					finalResolvers: array(
-						new FunctionsThemeIrResolver(
-							new FunctionRequirementCollector(),
-						),
-					),
-				),
-			),
-		),
-		new GenerateIrArtifactsStage(
-			new ThemeArtifactGenerator(
-				( new ArtifactGeneratorRegistryFactory() )->create(
-					array(
-						new ClassicTemplateArtifactGenerator(
-							new ClassicTemplateTreeRenderer(
-								new ClassicTemplateTreeMaterializer( $classicNodeMaterializer, $app ),
-								new PhpParserContentNormalizer( $configuration ),
-							),
-							$classicNodeMaterializer,
-							$classicTemplatePathResolver,
-							$app,
-						),
+                        new DesignSystemsThemeIRResolver(),
+                        new AssetsThemeIRResolver(),
+                        new IntegrationsThemeIRResolver(),
+                    ),
+                    finalResolvers: array(
+                        new FunctionsThemeIrResolver(
+                            new FunctionRequirementCollector(),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        new GenerateIrArtifactsStage(
+            new ThemeArtifactGenerator(
+                ( new ArtifactGeneratorRegistryFactory() )->create(
+                    array(
+                        new ClassicTemplateArtifactGenerator(
+                            new ClassicTemplateTreeRenderer(
+                                new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
+                                new PhpParserContentNormalizer($configuration),
+                            ),
+                            $classicNodeMaterializer,
+                            $classicTemplatePathResolver,
+                            $app,
+                        ),
 
-						new BlockTemplateArtifactGenerator(
-							new BlockTemplateTreeRenderer(
-								new BlockTemplateTreeMaterializer(
-									$blockNodeMaterializer,
-								),
-							),
-							$blockNodeMaterializer,
-							new BlockTemplatePathResolver(),
-						),
+                        new BlockTemplateArtifactGenerator(
+                            new BlockTemplateTreeRenderer(
+                                new BlockTemplateTreeMaterializer(
+                                    $blockNodeMaterializer,
+                                ),
+                            ),
+                            $blockNodeMaterializer,
+                            new BlockTemplatePathResolver(),
+                        ),
 
-						new StyleCssArtifactGenerator(
-							new StyleCssContentRenderer(),
-							new StyleCssPathResolver(),
-							$app
-						),
+                        new StyleCssArtifactGenerator(
+                            new StyleCssContentRenderer(),
+                            new StyleCssPathResolver(),
+                            $app
+                        ),
 
-						new ClassicFunctionsArtifactGenerator(
-							new ClassicFunctionsContentRenderer(
-								$app,
-							),
-							new FunctionsPathResolver(),
-							$app,
-						),
+                        new ClassicFunctionsArtifactGenerator(
+                            new ClassicFunctionsContentRenderer(
+                                $app,
+                            ),
+                            new FunctionsPathResolver(),
+                            $app,
+                        ),
 
-						new BlockFunctionsArtifactGenerator(
-							new BlockFunctionsContentRenderer(
-								$app,
-							),
-							new FunctionsPathResolver(),
-						),
+                        new BlockFunctionsArtifactGenerator(
+                            new BlockFunctionsContentRenderer(
+                                $app,
+                            ),
+                            new FunctionsPathResolver(),
+                        ),
 
 
-					),
-				),
-				$app
-			),
-		),
+                    ),
+                ),
+                $app
+            ),
+        ),
 
-		new WriteThemeArtifactsStage(
-			$configuration
-		),
+        new WriteThemeArtifactsStage(
+            $configuration
+        ),
 
-		new FormatThemeStage(
-			array(
-				new HtmlBeautifyThemeFormatter(
-					new ExternalProcessRunner(),
-					$app,
-				),
-				new PhpcbfThemeFormatter(
-					new ExternalProcessRunner(),
-					$app,
-				),
+        new FormatThemeStage(
+            array(
+                new HtmlBeautifyThemeFormatter(
+                    new ExternalProcessRunner(),
+                    $app,
+                ),
+                new PhpcbfThemeFormatter(
+                    new ExternalProcessRunner(),
+                    $app,
+                ),
 
-			),
-		),
+            ),
+        ),
 
-		new FinalizeBuildStage(),
-	)
+        new FinalizeBuildStage(),
+    )
 );
 
 
-$result = $runtimeKernel->execute( $pipeline );
+$result = $runtimeKernel->execute($pipeline);
 
 
-	echo PHP_EOL;
-	echo 'Build Status: ';
-	echo $result->getStatus();
-	echo PHP_EOL;
+    echo PHP_EOL;
+    echo 'Build Status: ';
+    echo $result->getStatus();
+    echo PHP_EOL;
 
-if ( $result->getError() !== null ) {
-	$error = $result->getError();
+if ($result->getError() !== null) {
+    $error = $result->getError();
 
-	echo 'Build Error: ';
-	echo $error->getMessage();
-	echo PHP_EOL;
+    echo 'Build Error: ';
+    echo $error->getMessage();
+    echo PHP_EOL;
 
-	echo 'File: ';
-	echo $error->getFile();
-	echo PHP_EOL;
+    echo 'File: ';
+    echo $error->getFile();
+    echo PHP_EOL;
 
-	echo 'Line: ';
-	echo $error->getLine();
-	echo PHP_EOL;
+    echo 'Line: ';
+    echo $error->getLine();
+    echo PHP_EOL;
 }
 
 /*
@@ -409,50 +409,50 @@ if ( $result->getError() !== null ) {
 */
 
 
-	$logger->write(
-		new DiagnosticEntry(
-			level: DiagnosticLevel::INFO,
-			message: 'Project execution completed successfully',
-			context: new DiagnosticContext(
-				array(
-					'stage' => 'runtime_finish',
-				)
-			),
-			metadata: array(
-				'build_status' => $result->getStatus(),
-			),
-			timestamp: new DateTimeImmutable(),
-		)
-	);
+    $logger->write(
+        new DiagnosticEntry(
+            level: DiagnosticLevel::INFO,
+            message: 'Project execution completed successfully',
+            context: new DiagnosticContext(
+                array(
+                    'stage' => 'runtime_finish',
+                )
+            ),
+            metadata: array(
+                'build_status' => $result->getStatus(),
+            ),
+            timestamp: new DateTimeImmutable(),
+        )
+    );
 
-	/** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
-	$diagnostics = $app->getContext()->get(
-		ApplicationContextKeys::DIAGNOSTICS
-	);
+    /** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
+    $diagnostics = $app->getContext()->get(
+        ApplicationContextKeys::DIAGNOSTICS
+    );
 
-	$diagnosticsFilePath = $configuration->get(
-		'diagnostic.path'
-	);
+    $diagnosticsFilePath = $configuration->get(
+        'diagnostic.path'
+    );
 
-	if ( ! is_string( $diagnosticsFilePath ) ) {
-		throw new RuntimeException(
-			'Configuration key "diagnostic.path" must be string.'
-		);
-	}
+    if (! is_string($diagnosticsFilePath)) {
+        throw new RuntimeException(
+            'Configuration key "diagnostic.path" must be string.'
+        );
+    }
 
-	$writer = new CompositeWriter(
-		array(
-			new ConsoleWriter(),
-			new FilesystemWriter( $diagnosticsFilePath ),
-		)
-	);
+    $writer = new CompositeWriter(
+        array(
+            new ConsoleWriter(),
+            new FilesystemWriter($diagnosticsFilePath),
+        )
+    );
 
-	$reportRenderer = new DiagnosticReportRenderer();
+    $reportRenderer = new DiagnosticReportRenderer();
 
-	$writer->write(
-		$reportRenderer->render(
-			$diagnostics->report()
-		)
-	);
+    $writer->write(
+        $reportRenderer->render(
+            $diagnostics->report()
+        )
+    );
 
-	return $app;
+    return $app;
