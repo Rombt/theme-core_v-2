@@ -65,11 +65,6 @@ final readonly class ClassicTemplateArtifactGenerator implements ArtifactGenerat
             foreach ($concept->templates() as $template) {
                 $identity = $template->identity()->value();
 
-                $this->logger->dump(
-                    'ClassicTemplateArtifactGenerator $template = ',
-                );
-                $this->logger->dump($template);
-
                 $artifacts->add(
                     new Artifact(
                         id: new ArtifactId(
