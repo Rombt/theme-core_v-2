@@ -26,10 +26,58 @@
                 ├── fonts/
                 └── images/
     
-    - модель Resource для multi-file Assets;
-    - зависимости Assets;
-    - использование Assets другими ThemeIR concepts;
+    ++ модель Resource для multi-file Assets;
+        Asset 
+            ├── type 
+            ├── ... 
+            └── resource     
+            ├── path     
+            └── files[]  
+
+            files[] = физические файлы Resource  
+
+    ++ зависимости Assets;
+        Asset
+        ├── type
+        ├── dependencies[]
+        ├── resource
+        └── ...
+
+        Asset dependency — это зависимость одного логического Asset от другого логического Asset.
+
+    ++ использование Assets другими ThemeIR concepts;
+
+        Templates ────────┐
+        Functions ────────┼──→ Assets ──→ Resources
+        Integrations ─────┘
+                            │
+                            └──→ Asset dependencies
+        При этом:
+            Templates могут ссылаться на Assets;
+            Functions могут требовать Assets;
+            Integrations могут требовать Assets;
+            новые ThemeIR concepts в будущем также могут стать потребителями;
+            потребитель хранит ссылку/требование к Asset, а не Resource;
+            Asset не знает, кто его использует;
+            materialization остаётся исключительно ответственностью Artifacts/build infrastructure.
+
+        Assets являются самостоятельным ThemeIR concept и 
+            могут использоваться другими ThemeIR concepts посредством ссылок на Asset. 
+            Потребители работают с идентичностью Asset, а не с его Resource. 
+            Asset не хранит информацию о своих потребителях.
+
+
     - архитектурные различия materialization;
+        Asset описывает логический ресурс независимо от архитектуры. 
+            Архитектурная materialization определяется Artifacts layer.
+            для каждой архитектуры своя реализация.
+
     - специальные WordPress resources;
+        Специальные WordPress resources не становятся отдельными базовыми Asset types. 
+        Они являются специализированным использованием существующего Asset type.
+
     - правила валидации `dest_path`;
+        dest_path — всегда относительный POSIX-путь внутри корня materialized theme.
+
     - необходимость дополнительных свойств Asset.
+        пока не до

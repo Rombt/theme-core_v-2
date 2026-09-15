@@ -1,0 +1,580 @@
+THEME-CORE V-2
+ASSETS DOMAIN RESEARCH
+STAGE 2
+
+ASSET MODEL AND RELATIONSHIPS
+(v1.0.0)
+
+Status: Research Summary
+Status: Decisions Accepted
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Данный документ фиксирует результаты исследования
+        фундаментальной модели Asset и её взаимодействия
+        с другими частями ThemeIR.
+
+    Исследование направлено на определение:
+
+        - точного перечня поддерживаемых Asset types;
+        - модели single-file и multi-file Assets;
+        - структуры `resources/assets/`;
+        - модели Resource;
+        - зависимостей Assets;
+        - использования Assets другими ThemeIR concepts;
+        - архитектурной независимости Asset;
+        - специальных WordPress resources;
+        - правил `dest_path`;
+        - модели расширяемой Asset configuration.
+
+==================================================
+2. SUPPORTED ASSET TYPES
+==================================================
+
+    На текущем этапе проект поддерживает четыре
+        фундаментальных Asset types:
+
+        - style;
+        - script;
+        - font;
+        - image.
+
+    Данный перечень является минимальным практическим
+        набором.
+
+    Asset type определяется семантикой и способом
+        использования ресурса, а не физическим форматом файла.
+
+    Поэтому отдельными Asset types НЕ являются:
+
+        - svg;
+        - png;
+        - jpg;
+        - webp;
+        - json;
+        - xml;
+        - video;
+        - audio;
+        - logo;
+        - favicon;
+        - icon;
+        - screenshot.
+
+    На текущем этапе дополнительные типы не вводятся
+        без появления реальной практической необходимости.
+
+    Новые Asset types могут быть добавлены в будущем,
+        если для них появится самостоятельная семантика
+        или собственная модель materialization.
+
+==================================================
+3. ASSET TYPE VS FILE FORMAT
+==================================================
+
+    Asset type не должен определять физическое расширение
+        файла.
+
+    Например:
+
+        logo.svg
+        logo.png
+        logo.webp
+
+    могут быть представлены одним и тем же:
+
+        type = image
+
+    Аналогично физический формат файла является
+        характеристикой Resource, а не самостоятельным
+        Asset type.
+
+    Разделение на Asset types должно существовать только
+        там, где оно имеет практическое архитектурное
+        или эксплуатационное значение.
+
+==================================================
+4. LOGICAL ASSET AND PHYSICAL FILES
+==================================================
+
+    Asset представляет один логический ресурс.
+
+    Один логический Asset может материализовываться
+        в один или несколько физических файлов.
+
+    Поэтому single-file Asset является частным случаем
+        multi-file Asset.
+
+    Примеры:
+
+        Image Asset
+            └── logo.svg
+
+        Font Asset
+            ├── regular.woff2
+            ├── italic.woff2
+            └── bold.woff2
+
+    Создание отдельного Asset для каждого физического
+        файла не требуется, если эти файлы представляют
+        один логический ресурс.
+
+    Формальное правило:
+
+        Asset = one logical resource
+
+        Resource = one or more physical files
+
+==================================================
+5. RESOURCES DIRECTORY STRUCTURE
+==================================================
+
+    Для исходных ресурсов принимается структура:
+
+        resources/
+        └── assets/
+            ├── styles/
+            ├── scripts/
+            ├── fonts/
+            └── images/
+
+    Организация верхнего уровня определяется Asset type.
+
+    Внутри соответствующего каталога Resource может
+        содержать один или несколько физических файлов.
+
+    Пример:
+
+        resources/assets/
+        ├── styles/
+        │   └── theme/
+        │       └── theme.css
+        │
+        ├── scripts/
+        │   └── navigation/
+        │       └── navigation.js
+        │
+        ├── fonts/
+        │   └── inter/
+        │       ├── regular.woff2
+        │       ├── italic.woff2
+        │       └── bold.woff2
+        │
+        └── images/
+            └── logo/
+                └── logo.svg
+
+    Данная структура является физической организацией
+        исходных ресурсов и не определяет структуру
+        итоговой WordPress Theme.
+
+==================================================
+6. RESOURCE MODEL
+==================================================
+
+    Resource представляет физическое содержимое
+        логического Asset.
+
+    Базовая модель:
+
+        Resource
+        ├── path
+        └── files[]
+
+    Где:
+
+        path
+            путь к Resource в исходной структуре ресурсов;
+
+        files[]
+            набор физических файлов Resource.
+
+    `files[]` представляет физические файлы Resource.
+
+    Resource из одного файла:
+
+        files[]
+            └── file
+
+    Resource из нескольких файлов:
+
+        files[]
+            ├── file
+            ├── file
+            └── file
+
+    Resource не содержит Asset type.
+
+    Asset type принадлежит Asset:
+
+        Asset
+        ├── type
+        └── resource
+            ├── path
+            └── files[]
+
+    Это предотвращает дублирование семантики между
+        Asset и Resource.
+
+==================================================
+7. ASSET DEPENDENCIES
+==================================================
+
+    Asset может зависеть от других Assets.
+
+    Зависимость определяется между логическими Assets,
+        а не между физическими файлами.
+
+    Модель:
+
+        Asset
+        ├── type
+        ├── dependencies[]
+        └── resource
+
+    `dependencies[]` содержит ссылки на другие логические
+        Assets.
+
+    Пример:
+
+        navigation-script
+            ↓
+        utility-script
+
+    или:
+
+        theme-style
+            ↓
+        base-style
+
+    Asset dependency является архитектурно независимой.
+
+    Зависимости не должны моделироваться как зависимости
+        физических файлов.
+
+==================================================
+8. ASSETS AND OTHER THEMEIR CONCEPTS
+==================================================
+
+    Assets являются самостоятельным ThemeIR concept.
+
+    Другие ThemeIR concepts могут ссылаться на Assets.
+
+        Templates ────────┐
+        Functions ────────┼──→ Assets ──→ Resources
+        Integrations ─────┘
+                             │
+                             └──→ Asset dependencies
+
+    На текущем этапе потребителями Assets являются:
+
+        - Templates;
+        - Functions;
+        - Integrations.
+
+    Новые ThemeIR concepts в будущем также могут
+        стать потребителями Assets.
+
+    Потребитель хранит ссылку или требование к Asset,
+        а не доступ к Resource.
+
+    Потребитель работает с идентичностью Asset.
+
+    Asset не хранит информацию о своих потребителях.
+
+    Таким образом направление зависимости имеет вид:
+
+        Consumer
+            ↓
+        Asset
+            ↓
+        Resource
+
+    При этом:
+
+        Asset
+            ↓
+        Asset dependency
+
+    также является допустимой связью.
+
+==================================================
+9. ARCHITECTURAL INDEPENDENCE
+==================================================
+
+    Asset является architecture-independent.
+
+    Asset не должен содержать:
+
+        - Classic-specific information;
+        - Block-specific information;
+        - PHP-specific materialization;
+        - HTML-specific materialization;
+        - WordPress enqueue implementation;
+        - architecture-specific destination rules.
+
+    Один Asset IR может использоваться для различных
+        архитектур темы:
+
+        Asset IR
+            ├──→ Classic Artifacts
+            └──→ Block Artifacts
+
+    Архитектурные различия materialization определяются
+        Artifacts layer.
+
+    Asset описывает логический ресурс.
+
+    Artifacts layer определяет, каким образом этот ресурс
+        должен быть материализован для конкретной архитектуры.
+
+==================================================
+10. SPECIAL WORDPRESS RESOURCES
+==================================================
+
+    Специальные WordPress resources не создают отдельные
+        фундаментальные Asset types.
+
+    Например:
+
+        logo
+        favicon
+        icon
+        theme screenshot
+
+    могут оставаться:
+
+        type = image
+
+    при этом их специальное назначение может быть
+        представлено дополнительной семантикой Asset.
+
+    Таким образом:
+
+        image + purpose = logo
+
+    предпочтительнее, чем:
+
+        type = logo
+
+    Причина:
+
+        Asset type определяет фундаментальную семантику
+            ресурса,
+
+        purpose / role определяет его назначение.
+
+    Специальная WordPress materialization должна
+        выполняться соответствующим consumer или
+        Artifacts layer.
+
+==================================================
+11. DEST_PATH
+==================================================
+
+    `dest_path` представляет путь назначения внутри
+        итоговой WordPress Theme.
+
+    `dest_path` НЕ является:
+
+        - абсолютным путём файловой системы;
+        - путём относительно project root;
+        - путём относительно `resources/`;
+        - произвольным filesystem path.
+
+    `dest_path` должен быть относительным POSIX-путём
+        внутри корня materialized Theme.
+
+    Допустимый принцип:
+
+        css/theme.css
+        js/navigation.js
+        images/logo.svg
+        fonts/inter/regular.woff2
+
+    Недопустимые формы:
+
+        /var/www/theme/style.css
+        C:\theme\style.css
+        ../style.css
+        ../../style.css
+
+    При валидации должны быть запрещены:
+
+        - абсолютные пути;
+        - `..`;
+        - выход за root destination;
+        - ведущий `/`;
+        - Windows drive prefix;
+        - пустой путь;
+        - недопустимые path components.
+
+    Правило:
+
+        `dest_path` = relative POSIX path inside theme root.
+
+    Окончательная модель назначения файлов для multi-file
+        Resource должна быть согласована с моделью
+        Resource materialization и не должна искусственно
+        усложнять Asset.
+
+==================================================
+12. ASSET CONFIGURATION
+==================================================
+
+    Asset допускает необязательную:
+
+        configuration?
+
+    Итоговая модель Asset:
+
+        Asset
+        ├── id
+        ├── type
+        ├── dependencies[]
+        ├── resource
+        │   ├── path
+        │   └── files[]
+        └── configuration?
+
+    `configuration` является расширяемой декларативной
+        структурой key-value.
+
+    Её схема НЕ фиксируется базовой моделью Asset.
+
+    Добавление нового configuration property не должно
+        требовать изменения класса Asset или другой
+        фундаментальной модели приложения.
+
+    Пример:
+
+        configuration:
+            strategy: defer
+            in_footer: true
+            custom_option: value
+
+    Конкретный компонент, ответственный за соответствующий
+        Asset type или способ использования Asset,
+        интерпретирует необходимые ему значения.
+
+    Неизвестные configuration properties не должны
+        требовать изменения базовой Asset model.
+
+    Configuration не должна становиться универсальным
+        контейнером для любых данных.
+
+    В неё следует помещать только дополнительную
+        type-specific или usage-specific семантику,
+        для которой существует реальная практическая
+        необходимость.
+
+==================================================
+13. FINAL ASSET MODEL
+==================================================
+
+    На текущем этапе принимается следующая концептуальная
+        модель:
+
+        Asset
+        ├── id
+        ├── type
+        ├── dependencies[]
+        ├── resource
+        │   ├── path
+        │   └── files[]
+        └── configuration?
+
+    Где:
+
+        id
+            идентичность логического Asset;
+
+        type
+            один из поддерживаемых Asset types:
+
+                - style;
+                - script;
+                - font;
+                - image;
+
+        dependencies[]
+            ссылки на другие логические Assets;
+
+        resource
+            физический ресурс Asset;
+
+        resource.path
+            путь Resource в исходной структуре;
+
+        resource.files[]
+            один или несколько физических файлов Resource;
+
+        configuration?
+            необязательная расширяемая декларативная
+                конфигурация.
+
+==================================================
+14. ARCHITECTURAL PRINCIPLES
+==================================================
+
+    Принятые решения формируют следующие основные
+        принципы Assets Domain:
+
+        1. Asset представляет логический ресурс,
+           а не физический файл.
+
+        2. Один Asset может состоять из одного или
+           нескольких физических файлов.
+
+        3. Resource отвечает за физическое содержимое
+           Asset.
+
+        4. Asset type не является расширением файла.
+
+        5. Asset dependencies связывают логические Assets.
+
+        6. Другие ThemeIR concepts ссылаются на Asset,
+           а не непосредственно на Resource.
+
+        7. Asset не знает своих потребителей.
+
+        8. Asset остаётся architecture-independent.
+
+        9. Архитектурная materialization выполняется
+           Artifacts layer.
+
+       10. Специальные WordPress назначения не требуют
+           новых фундаментальных Asset types.
+
+       11. `dest_path` является относительным POSIX-путём
+           внутри итоговой Theme.
+
+       12. `configuration` является расширяемой структурой
+           и не требует изменения базовой модели Asset
+           при добавлении новых параметров.
+
+==================================================
+15. CURRENT STATUS
+==================================================
+
+    Основная концептуальная модель Assets Domain
+        для текущего этапа определена.
+
+    Зафиксированы:
+
+        - четыре базовых Asset types;
+        - single-file / multi-file Resource model;
+        - структура `resources/assets/`;
+        - Asset dependencies;
+        - взаимодействие Assets с ThemeIR concepts;
+        - architecture-independent Asset model;
+        - подход к WordPress-specific resources;
+        - базовые правила `dest_path`;
+        - extensible Asset configuration.
+
+    Дальнейшее исследование должно быть направлено
+        не на расширение модели без необходимости,
+        а на проверку её практической применимости
+        в конкретных Assets configuration и
+        Artifacts materialization scenarios.
