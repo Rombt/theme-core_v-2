@@ -1,0 +1,479 @@
+THEME-CORE V-2
+ASSETS DOMAIN RESEARCH
+STAGE 10
+
+ASSET DECLARATION MODEL
+(v1.0.0)
+
+Status: Architecture Decision
+
+==================================================
+1. PURPOSE
+==================================================
+
+   Данный документ фиксирует принятую модель декларации
+   Asset в configuration package темы.
+
+   Модель определяет:
+
+    - структуру `assets.php`;
+    - идентичность Asset;
+    - тип Asset;
+    - ресурсную реализацию Asset;
+    - конечный путь Asset в итоговой теме;
+    - отображаемое имя Asset;
+    - связь Asset с механизмом генерации `functions.php`.
+
+   Модель должна сохранять единые стандарты декларации,
+    используемые другими доменами Theme Core.
+
+==================================================
+2. ASSETS CONFIGURATION CHANNEL
+==================================================
+
+    `assets.php` является configuration channel
+        для декларативного описания Assets темы.
+
+    Через `assets.php` конфигурация определяет:
+
+        - какие Assets существуют в теме;
+        - какой тип имеет каждый Asset;
+        - какая resource implementation соответствует Asset;
+        - где Asset должен находиться в итоговой теме;
+        - человекочитаемое имя Asset;
+        - требуется ли Asset дополнительная Function Requirement.
+
+    Assets Domain не выполняет физические операции
+        непосредственно на этапе чтения конфигурации.
+
+==================================================
+3. ASSET DECLARATION STRUCTURE
+==================================================
+
+Базовая декларация Asset имеет следующую структуру:
+
+    'asset_id' => [
+        'type' => '...',
+        'resource' => '...',
+        'dest_path' => '...',
+        'name' => '...',
+
+        'function' => [
+            'enabled' => true,
+            'order' => 30,
+        ],
+    ],
+
+Поля:
+
+    asset_id
+        Системная идентичность Asset.
+
+    type
+        Определяет, что представляет Asset.
+
+    resource
+        Идентифицирует resource implementation,
+        используемую для материализации Asset.
+
+    dest_path
+        Определяет конечный путь физического файла
+        относительно корня итоговой WordPress Theme.
+
+    name
+        Человекочитаемое имя Asset.
+
+    function
+        Необязательная Function Requirement,
+        определяющая необходимость формирования
+        соответствующего кода для `functions.php`.
+
+==================================================
+4. ASSET IDENTITY
+==================================================
+
+    Ключ верхнего уровня декларации является
+        идентичностью Asset.
+
+    Например:
+
+        'theme_style' => [
+            ...
+        ],
+
+    `theme_style` является идентификатором Asset,
+        используемым внутри системы Resolution и ThemeIR.
+
+    Идентичность Asset должна быть независима
+        от физического имени файла.
+
+==================================================
+5. ASSET TYPE
+==================================================
+
+    Поле:
+
+        'type' => 'style',
+
+    определяет тип ресурса.
+
+    `type` отвечает на вопрос:
+
+        "Что представляет собой данный Asset?"
+
+    Примеры типов:
+
+        - style;
+        - script;
+        - font;
+        - image;
+        - svg;
+        - video;
+        - audio;
+        - data.
+
+    Точный перечень поддерживаемых типов является
+        отдельным предметом исследования Assets Domain.
+
+    `type` не должен определять физический путь
+        или способ материализации Asset.
+
+==================================================
+6. RESOURCE IMPLEMENTATION
+==========================
+
+Поле:
+
+    'resource' => 'theme_style',
+
+определяет resource implementation Asset.
+
+Resource implementation представляет физический
+    ресурс или набор физических ресурсов,
+    используемых для материализации Asset.
+
+Таким образом:
+
+    Asset
+        ↓
+    resource
+        ↓
+    physical resource implementation
+
+`resource` не определяет конечный путь файла
+    в итоговой теме.
+
+==================================================
+7. DESTINATION PATH
+===================
+
+Поле:
+
+    'dest_path' => 'assets/css/theme.css',
+
+определяет путь, по которому Asset должен быть
+    размещён в итоговой WordPress Theme.
+
+Путь задаётся:
+
+    - относительно корня итоговой темы;
+    - без абсолютного пути файловой системы;
+    - независимо от конкретной архитектуры
+      materialization infrastructure.
+
+Например:
+
+    'dest_path' => 'assets/css/theme.css'
+
+означает:
+
+    Theme Root
+        └── assets/
+            └── css/
+                └── theme.css
+
+Приложение не должно жёстко кодировать стандартные
+    директории для CSS, JavaScript, fonts, images
+    или других ресурсов.
+
+Конкретное расположение Asset определяется
+    декларацией Asset через `dest_path`.
+
+==================================================
+8. NAME
+=======
+
+Поле:
+
+    'name' => 'Theme Styles',
+
+содержит человекочитаемое имя Asset.
+
+`name` предназначен для идентификации Asset
+    в диагностике, логах, интерфейсах и других
+    местах, где требуется читаемое описание.
+
+`name` не участвует в определении физического
+    расположения Asset.
+
+==================================================
+9. FUNCTION REQUIREMENT
+=======================
+
+Asset может декларативно определить необходимость
+    формирования кода для `functions.php`.
+
+Для этого используется существующий в Theme Core
+    механизм Function Requirement:
+
+    'function' => [
+        'enabled' => true,
+        'order' => 30,
+    ],
+
+Данный механизм является общим механизмом приложения
+    и не является специальным механизмом Assets Domain.
+
+Asset только декларирует Function Requirement.
+
+Последующая обработка выполняется через существующий
+    Functions Domain и Functions ThemeIR.
+
+Параметр:
+
+    enabled
+        Определяет, требуется ли Function Requirement.
+
+    order
+        Определяет порядок Function Requirement
+        в итоговом `functions.php`.
+
+Например:
+
+    'theme_style' => [
+        'type' => 'style',
+        'resource' => 'theme_style',
+        'dest_path' => 'assets/css/theme.css',
+        'name' => 'Theme Styles',
+
+        'function' => [
+            'enabled' => true,
+            'order' => 30,
+        ],
+    ],
+
+концептуально означает:
+
+    Asset
+        │
+        ├── physical resource
+        │       ↓
+        │   assets/css/theme.css
+        │
+        └── Function Requirement
+                ↓
+            Functions ThemeIR
+                ↓
+            functions.php
+
+Assets Domain не должен создавать отдельный механизм
+    генерации `functions.php`.
+
+==================================================
+10. ASSET WITHOUT FUNCTION REQUIREMENT
+======================================
+
+Не каждый Asset требует Function Requirement.
+
+Например:
+
+    'theme_logo' => [
+        'type' => 'image',
+        'resource' => 'theme_logo',
+        'dest_path' => 'assets/images/logo.svg',
+        'name' => 'Theme Logo',
+    ],
+
+может быть материализован как физический файл
+    без добавления кода в `functions.php`.
+
+Такой Asset может использоваться непосредственно
+    шаблонами, CSS, JavaScript или другими механизмами
+    итоговой темы.
+
+==================================================
+11. DECLARATION EXAMPLE
+=======================
+
+Пример принятой модели:
+
+    <?php
+
+    return [
+
+        'theme_style' => [
+            'type' => 'style',
+            'resource' => 'theme_style',
+            'dest_path' => 'assets/css/theme.css',
+            'name' => 'Theme Styles',
+
+            'function' => [
+                'enabled' => true,
+                'order' => 30,
+            ],
+        ],
+
+        'frontend_script' => [
+            'type' => 'script',
+            'resource' => 'frontend_script',
+            'dest_path' => 'assets/js/frontend.js',
+            'name' => 'Frontend Script',
+
+            'function' => [
+                'enabled' => true,
+                'order' => 40,
+            ],
+        ],
+
+        'theme_font' => [
+            'type' => 'font',
+            'resource' => 'theme_font',
+            'dest_path' => 'assets/fonts/inter.woff2',
+            'name' => 'Theme Font',
+        ],
+
+        'theme_logo' => [
+            'type' => 'image',
+            'resource' => 'theme_logo',
+            'dest_path' => 'assets/images/logo.svg',
+            'name' => 'Theme Logo',
+        ],
+
+    ];
+
+==================================================
+12. PROCESSING MODEL
+====================
+
+Обработка Asset должна следовать общему pipeline
+    Theme Core:
+
+    assets.php
+        ↓
+    Assets Resolution
+        ↓
+    Assets ThemeIR
+        ↓
+    Artifact Generation
+        ↓
+    Artifact Collection
+        ↓
+    Artifact Writing
+        ↓
+    готовая WordPress Theme
+
+На этапе Assets Resolution декларация преобразуется
+    в нормализованное представление Asset для ThemeIR.
+
+ThemeIR должен содержать информацию, необходимую
+    последующим слоям для материализации Asset.
+
+==================================================
+13. SEPARATION OF RESPONSIBILITIES
+==================================
+
+Asset Declaration отвечает на вопросы:
+
+    - какой Asset существует;
+    - что он представляет;
+    - какая resource implementation используется;
+    - куда он должен быть помещён;
+    - требуется ли Function Requirement.
+
+Assets Resolution отвечает за:
+
+    - чтение деклараций;
+    - валидацию;
+    - нормализацию;
+    - разрешение Resource;
+    - формирование Asset ThemeIR.
+
+Artifacts Layer отвечает за:
+
+    - архитектурную интерпретацию Asset ThemeIR;
+    - создание соответствующих Artifacts;
+    - подготовку результата к материализации.
+
+Materialization infrastructure отвечает за:
+
+    - физическое создание директорий;
+    - копирование ресурсов;
+    - трансформацию ресурсов;
+    - запись файлов;
+    - другие операции публикации.
+
+Functions Domain отвечает за:
+
+    - обработку Function Requirements;
+    - формирование соответствующего содержимого
+      `functions.php`.
+
+==================================================
+14. FUNDAMENTAL SEPARATION
+==========================
+
+В модели Assets необходимо сохранять разделение
+    следующих понятий:
+
+    type
+        Что представляет Asset.
+
+    resource
+        Какая реализация Asset используется.
+
+    dest_path
+        Где Asset должен находиться в итоговой теме.
+
+    function
+        Требуется ли дополнительная функциональность
+        в `functions.php`.
+
+Эти понятия не должны объединяться в одно свойство.
+
+В частности, `type` не должен определять:
+
+    - конечный путь Asset;
+    - структуру директорий;
+    - необходимость Function Requirement;
+    - способ физической материализации.
+
+==================================================
+15. CURRENT ARCHITECTURE DECISION
+=================================
+
+На текущем этапе для Asset принят следующий
+    базовый контракт:
+
+    Asset
+    ├── id
+    ├── type
+    ├── resource
+    ├── dest_path
+    ├── name
+    └── function
+        ├── enabled
+        └── order
+
+`dest_path` принят как имя свойства,
+    определяющего конечный относительный путь
+    Asset в итоговой WordPress Theme.
+
+`integration` как отдельное свойство Asset
+    на текущем этапе не вводится.
+
+Причина:
+
+    необходимость дополнительного PHP-кода уже
+    выражается существующим универсальным механизмом
+    Function Requirement.
+

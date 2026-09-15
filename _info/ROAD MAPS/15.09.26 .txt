@@ -1,0 +1,35 @@
+Для домена Assets найти ответы на эти вопросы
+
+    ++ точный перечень поддерживаемых Asset types;
+        AssetType
+        ├── style
+        ├── script
+        ├── font
+        └── image
+
+
+    ++ может ли один Asset состоять из нескольких физических файлов;
+        Asset представляет один логический ресурс. 
+            Один логический Asset может материализовываться в один или несколько физических файлов. 
+            Множественность относится к модели Resource, а не непосредственно к Asset.
+                  Asset
+                    ↓
+                Resource
+                    ↓
+                ResourceFile[]
+
+    ++ структура `resources/assets/`;
+        resources/
+            └── assets/
+                ├── styles/
+                ├── scripts/
+                ├── fonts/
+                └── images/
+    
+    - модель Resource для multi-file Assets;
+    - зависимости Assets;
+    - использование Assets другими ThemeIR concepts;
+    - архитектурные различия materialization;
+    - специальные WordPress resources;
+    - правила валидации `dest_path`;
+    - необходимость дополнительных свойств Asset.
