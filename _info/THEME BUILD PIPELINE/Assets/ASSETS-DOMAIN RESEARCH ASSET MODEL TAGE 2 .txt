@@ -578,3 +578,24 @@ Status: Decisions Accepted
         а на проверку её практической применимости
         в конкретных Assets configuration и
         Artifacts materialization scenarios.
+
+
+
+Так же нужно учитывать что структура Resource для Asset должна учитывать архитектуры тем:
+
+assets/<asset_type>/<asset_id>/
+├── block/
+│   ├── <files>
+│   └── function.block.php      # если требуется
+├── classic/
+│   ├── <files>
+│   └── function.classic.php    # если требуется
+└── README.md
+
+Правила:
+
+README.md — описание Asset.
+block/ — всё, что относится к Block architecture.
+classic/ — всё, что относится к Classic architecture.
+function.block.php / function.classic.php — только если Asset требует PHP-регистрации или интеграции в functions.php.
+Физические файлы находятся непосредственно в соответствующей архитектурной директории.
