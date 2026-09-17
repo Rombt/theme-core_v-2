@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Assets;
 
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\ConfigurationDomainInterface;
-use Rombt\ThemeCore\ThemeConfiguration\Contracts\IrExportableInterface;
 
 final readonly class AssetsConfiguration implements
     ConfigurationDomainInterface
@@ -20,17 +19,56 @@ final readonly class AssetsConfiguration implements
         $collection = [];
 
         foreach ($assets as $id => $asset) {
-            $collection[] = new Asset(
-                id: $id,
-                type: (string) ($asset['type'] ?? ''),
-                entry: (string) ($asset['entry'] ?? ''),
-                dependencies: array_values(
-                    $asset['dependencies'] ?? [],
-                ),
-            );
+            $collection[] = $this->createAsset($id, $asset);
         }
 
         $this->assets = new AssetCollection($collection);
+    }
+
+    private function createAsset(
+        string $id,
+        array $asset,
+    ): Asset {
+        return new Asset(
+            id: $id,
+            type: new AssetType(
+                (string) ($asset['type'] ?? ''),
+            ),
+            resource: $this->createResource(
+                $asset['resource'] ?? null,
+            ),
+            destPath: (string) ($asset['dest_path'] ?? ''),
+            name: (string) ($asset['name'] ?? ''),
+            dependencies: array_values(
+                $asset['dependencies'] ?? [],
+            ),
+            configuration: is_array($asset['configuration'] ?? null)
+                ? $asset['configuration']
+                : [],
+        );
+    }
+
+    private function createResource(
+        mixed $resource,
+    ): Resource {
+        if (!is_array($resource)) {
+            return new Resource(
+                path: (string) $resource,
+            );
+        }
+
+        $files = [];
+
+        foreach ($resource['files'] ?? [] as $file) {
+            $files[] = new ResourceFile(
+                path: (string) $file,
+            );
+        }
+
+        return new Resource(
+            path: (string) ($resource['path'] ?? ''),
+            files: $files,
+        );
     }
 
     public function assets(): AssetCollection
@@ -47,9 +85,19 @@ final readonly class AssetsConfiguration implements
 
         foreach ($this->assets as $asset) {
             $result[$asset->id()] = [
-                'type' => $asset->type(),
-                'entry' => $asset->entry(),
+                'type' => $asset->type()->value(),
+                'resource' => [
+                    'path' => $asset->resource()->path(),
+                    'files' => array_map(
+                        static fn(ResourceFile $file): string
+                            => $file->path(),
+                        $asset->resource()->files(),
+                    ),
+                ],
+                'dest_path' => $asset->destPath(),
+                'name' => $asset->name(),
                 'dependencies' => $asset->dependencies(),
+                'configuration' => $asset->configuration(),
             ];
         }
 

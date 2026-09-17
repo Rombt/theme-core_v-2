@@ -8,12 +8,16 @@ final readonly class Asset
 {
     /**
      * @param array<int, string> $dependencies
+     * @param array<string, mixed> $configuration
      */
     public function __construct(
         private string $id,
-        private string $type,
-        private string $entry,
+        private AssetType $type,
+        private Resource $resource,
+        private string $destPath,
+        private string $name = '',
         private array $dependencies = [],
+        private array $configuration = [],
     ) {
     }
 
@@ -22,14 +26,24 @@ final readonly class Asset
         return $this->id;
     }
 
-    public function type(): string
+    public function type(): AssetType
     {
         return $this->type;
     }
 
-    public function entry(): string
+    public function resource(): Resource
     {
-        return $this->entry;
+        return $this->resource;
+    }
+
+    public function destPath(): string
+    {
+        return $this->destPath;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
     }
 
     /**
@@ -38,5 +52,13 @@ final readonly class Asset
     public function dependencies(): array
     {
         return $this->dependencies;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function configuration(): array
+    {
+        return $this->configuration;
     }
 }

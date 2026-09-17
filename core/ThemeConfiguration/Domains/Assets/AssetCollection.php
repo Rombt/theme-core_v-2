@@ -27,7 +27,7 @@ final readonly class AssetCollection implements IteratorAggregate, Countable
     }
 
     /**
-     * @return Traversable<Asset>
+     * @return Traversable<int, Asset>
      */
     public function getIterator(): Traversable
     {
@@ -45,5 +45,16 @@ final readonly class AssetCollection implements IteratorAggregate, Countable
     public function all(): array
     {
         return $this->assets;
+    }
+
+    public function find(string $id): ?Asset
+    {
+        foreach ($this->assets as $asset) {
+            if ($asset->id() === $id) {
+                return $asset;
+            }
+        }
+
+        return null;
     }
 }
