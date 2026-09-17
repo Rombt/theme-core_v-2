@@ -359,19 +359,20 @@ $pipeline = new Pipeline(
             $configuration
         ),
 
-        new FormatThemeStage(
-            array(
-                new HtmlBeautifyThemeFormatter(
-                    new ExternalProcessRunner(),
-                    $app,
-                ),
-                new PhpcbfThemeFormatter(
-                    new ExternalProcessRunner(),
-                    $app,
-                ),
+        // отключил на время разработки доменов что бы не мешало
+        // new FormatThemeStage(
+        //     array(
+        //         new HtmlBeautifyThemeFormatter(
+        //             new ExternalProcessRunner(),
+        //             $app,
+        //         ),
+        //         new PhpcbfThemeFormatter(
+        //             new ExternalProcessRunner(),
+        //             $app,
+        //         ),
 
-            ),
-        ),
+        //     ),
+        // ),
 
         new FinalizeBuildStage(),
     )
