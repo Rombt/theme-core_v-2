@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeComponents\Domains\Assets;
 
 use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentInterface;
-use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetCollection;
 
 final readonly class AssetsComponent implements ThemeComponentInterface
 {

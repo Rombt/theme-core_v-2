@@ -8,8 +8,8 @@ use Rombt\ThemeCore\ThemeComponents\ComponentId;
 use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentBuilderInterface;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponent;
 use Rombt\ThemeCore\ThemeConfiguration\ConfigurationDomain;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\Asset as ConfigurationAsset;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\AssetsConfiguration;
-use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 
 final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInterface
 {
@@ -25,11 +25,44 @@ final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInte
         /** @var AssetsConfiguration $configuration */
         $configuration = $domain->configuration();
 
+        $assets = [];
+
+        foreach ($configuration->assets() as $configurationAsset) {
+            $assets[] = $this->buildAsset($configurationAsset);
+        }
+
         return new ThemeComponent(
             id: new ComponentId('assets'),
             component: new AssetsComponent(
-                $configuration->assets(),
+                new AssetCollection($assets),
             ),
+        );
+    }
+
+    private function buildAsset(
+        ConfigurationAsset $asset,
+    ): Asset {
+        $files = [];
+
+        foreach ($asset->resource()->files() as $file) {
+            $files[] = new AssetResourceFile(
+                path: $file->path(),
+            );
+        }
+
+        return new Asset(
+            id: $asset->id(),
+            name: $asset->name(),
+            type: AssetType::from(
+                $asset->type()->value(),
+            ),
+            resource: new AssetResource(
+                path: $asset->resource()->path(),
+                files: $files,
+            ),
+            destPath: $asset->destPath(),
+            dependencies: $asset->dependencies(),
+            configuration: $asset->configuration(),
         );
     }
 }
