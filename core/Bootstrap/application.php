@@ -109,6 +109,10 @@ use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsContentRenderer;
 use Rombt\ThemeCore\Artifacts\Functions\FunctionsPathResolver;
 use Rombt\ThemeCore\Artifacts\Templates\PhpParserContentNormalizer;
+use Rombt\ThemeCore\Artifacts\Assets\AssetArtifactGenerator;
+use Rombt\ThemeCore\Artifacts\Assets\AssetContentRenderer;
+use Rombt\ThemeCore\Artifacts\Assets\AssetPathResolver;
+use Rombt\ThemeCore\Artifacts\Assets\AssetResourceReader;
 use Rombt\ThemeCore\Runtime\Stages\FormatThemeStage;
 use Rombt\ThemeCore\Runtime\Process\ExternalProcessRunner;
 use Rombt\ThemeCore\Runtime\Formatters\HtmlBeautifyThemeFormatter;
@@ -303,6 +307,7 @@ $pipeline = new Pipeline(
                 ),
             ),
         ),
+
         new GenerateIrArtifactsStage(
             new ThemeArtifactGenerator(
                 ( new ArtifactGeneratorRegistryFactory() )->create(
@@ -333,6 +338,26 @@ $pipeline = new Pipeline(
                             $app
                         ),
 
+                        new AssetArtifactGenerator(
+                            new AssetResourceReader(
+                                $app,
+                                'classic',
+                            ),
+                            new AssetContentRenderer(),
+                            new AssetPathResolver(),
+                            'classic',
+                        ),
+
+                        new AssetArtifactGenerator(
+                            new AssetResourceReader(
+                                $app,
+                                'block',
+                            ),
+                            new AssetContentRenderer(),
+                            new AssetPathResolver(),
+                            'block',
+                        ),
+
                         new ClassicFunctionsArtifactGenerator(
                             new ClassicFunctionsContentRenderer(
                                 $app,
@@ -347,7 +372,6 @@ $pipeline = new Pipeline(
                             ),
                             new FunctionsPathResolver(),
                         ),
-
 
                     ),
                 ),

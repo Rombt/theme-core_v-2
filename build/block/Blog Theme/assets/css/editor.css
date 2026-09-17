@@ -1,0 +1,21 @@
+/*
+ * Theme Editor Styles
+ */
+
+.theme-editor-ready {
+    font-family: Arial, sans-serif;
+}
+
+.theme-editor-ready .editor-styles-wrapper {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 2rem;
+}
+
+.theme-editor-ready .editor-post-title__input {
+    line-height: 1.2;
+}
+
+.theme-editor-ready .editor-styles-wrapper a {
+    color: #2563eb;
+}

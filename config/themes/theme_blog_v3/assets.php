@@ -210,8 +210,7 @@ return [
             'resource' => [
                 'path' => 'assets/fonts',
                 'files' => [
-                    'primary.woff2',
-                    'primary.woff',
+                    'Audiowide-Regular.ttf',
                 ],
             ],
             'dest_path' => 'assets/fonts',
@@ -229,8 +228,7 @@ return [
             'resource' => [
                 'path' => 'assets/fonts',
                 'files' => [
-                    'primary-bold.woff2',
-                    'primary-bold.woff',
+                    'DynaPuff-VariableFont_wdth,wght.ttf',
                 ],
             ],
             'dest_path' => 'assets/fonts',
@@ -359,7 +357,8 @@ return [
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
-                    'background.jpg',
+                    'background.webp',
+                    'background.jpeg',
                 ],
             ],
             'dest_path' => 'assets/images',
@@ -375,8 +374,10 @@ return [
             'resource' => [
                 'path' => 'assets/images/demo',
                 'files' => [
+                    'hero.avif',
                     'hero.jpg',
                     'about.jpg',
+                    'post.webp',
                     'post.jpg',
                 ],
             ],

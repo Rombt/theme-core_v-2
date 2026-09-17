@@ -43,9 +43,6 @@ final class WriteThemeArtifactsStage implements StageInterface
             $themeName = $package->package()->configuration()['name'];
             $artifacts = $session->artifacts();
 
-            $logger->dump('WriteThemeArtifactsStage    $artifacts = ',);
-            $logger->dump($artifacts);
-
             $classicArtifacts = new ArtifactCollection();
             $blockArtifacts = new ArtifactCollection();
 

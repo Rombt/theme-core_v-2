@@ -1,0 +1,77 @@
+/*
+Theme Name: Blog Theme
+Description: Demo stylesheet for the Theme Core v-2 Block architecture.
+Version: 1.0.0
+*/
+
+/* Base */
+
+:root {
+    --color-primary: #2563eb;
+    --color-text: #1f2937;
+    --color-muted: #6b7280;
+    --color-background: #ffffff;
+    --color-border: #e5e7eb;
+    --container-width: 1200px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    color: var(--color-text);
+    background: var(--color-background);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Links */
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Layout */
+
+.wp-site-blocks {
+    width: min(100% - 2rem, var(--container-width));
+    margin-inline: auto;
+}
+
+/* Navigation */
+
+.wp-block-navigation {
+    margin-block: 1rem;
+}
+
+/* Content */
+
+.wp-block-post-title {
+    line-height: 1.2;
+}
+
+.wp-block-post-date,
+.wp-block-post-author {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+}
+
+/* Footer */
+
+.wp-block-site-footer {
+    border-top: 1px solid var(--color-border);
+    margin-top: 3rem;
+    padding-block: 2rem;
+    color: var(--color-muted);
+}
