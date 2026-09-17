@@ -12,8 +12,7 @@ return [
 
     'styles' => [
 
-        [
-            'id' => 'theme',
+        'theme' => [
             'type' => 'style',
             'resource' => [
                 'path' => 'assets/css',
@@ -21,6 +20,8 @@ return [
                     'style.css',
                 ],
             ],
+            'dest_path' => 'assets/css',
+            'dependencies' => [],
             'configuration' => [
                 'handle' => 'theme-style',
                 'enqueue' => true,
@@ -32,14 +33,17 @@ return [
             ],
         ],
 
-        [
-            'id' => 'editor',
+        'editor' => [
             'type' => 'style',
             'resource' => [
                 'path' => 'assets/css',
                 'files' => [
                     'editor.css',
                 ],
+            ],
+            'dest_path' => 'assets/css',
+            'dependencies' => [
+                'theme',
             ],
             'configuration' => [
                 'handle' => 'theme-editor',
@@ -53,14 +57,17 @@ return [
             ],
         ],
 
-        [
-            'id' => 'elementor',
+        'elementor' => [
             'type' => 'style',
             'resource' => [
                 'path' => 'assets/css',
                 'files' => [
                     'elementor.css',
                 ],
+            ],
+            'dest_path' => 'assets/css',
+            'dependencies' => [
+                'theme',
             ],
             'configuration' => [
                 'handle' => 'theme-elementor',
@@ -84,8 +91,7 @@ return [
 
     'scripts' => [
 
-        [
-            'id' => 'theme',
+        'theme' => [
             'type' => 'script',
             'resource' => [
                 'path' => 'assets/js',
@@ -93,6 +99,8 @@ return [
                     'theme.js',
                 ],
             ],
+            'dest_path' => 'assets/js',
+            'dependencies' => [],
             'configuration' => [
                 'handle' => 'theme-script',
                 'enqueue' => true,
@@ -105,14 +113,17 @@ return [
             ],
         ],
 
-        [
-            'id' => 'navigation',
+        'navigation' => [
             'type' => 'script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
                     'navigation.js',
                 ],
+            ],
+            'dest_path' => 'assets/js',
+            'dependencies' => [
+                'theme',
             ],
             'configuration' => [
                 'handle' => 'theme-navigation',
@@ -126,14 +137,17 @@ return [
             ],
         ],
 
-        [
-            'id' => 'editor',
+        'editor' => [
             'type' => 'script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
                     'editor.js',
                 ],
+            ],
+            'dest_path' => 'assets/js',
+            'dependencies' => [
+                'theme',
             ],
             'configuration' => [
                 'handle' => 'theme-editor',
@@ -148,14 +162,17 @@ return [
             ],
         ],
 
-        [
-            'id' => 'elementor',
+        'elementor' => [
             'type' => 'script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
                     'elementor.js',
                 ],
+            ],
+            'dest_path' => 'assets/js',
+            'dependencies' => [
+                'theme',
             ],
             'configuration' => [
                 'handle' => 'theme-elementor',
@@ -180,8 +197,7 @@ return [
 
     'fonts' => [
 
-        [
-            'id' => 'primary',
+        'primary' => [
             'type' => 'font',
             'resource' => [
                 'path' => 'assets/fonts',
@@ -190,6 +206,8 @@ return [
                     'primary.woff',
                 ],
             ],
+            'dest_path' => 'assets/fonts',
+            'dependencies' => [],
             'configuration' => [
                 'family' => 'Theme Primary',
                 'weight' => '400',
@@ -197,8 +215,7 @@ return [
             ],
         ],
 
-        [
-            'id' => 'primary-bold',
+        'primary-bold' => [
             'type' => 'font',
             'resource' => [
                 'path' => 'assets/fonts',
@@ -206,6 +223,10 @@ return [
                     'primary-bold.woff2',
                     'primary-bold.woff',
                 ],
+            ],
+            'dest_path' => 'assets/fonts',
+            'dependencies' => [
+                'primary',
             ],
             'configuration' => [
                 'family' => 'Theme Primary',
@@ -224,8 +245,7 @@ return [
 
     'images' => [
 
-        [
-            'id' => 'logo',
+        'logo' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -233,13 +253,14 @@ return [
                     'logo.svg',
                 ],
             ],
+            'dest_path' => 'assets/images',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'logo',
             ],
         ],
 
-        [
-            'id' => 'logo-light',
+        'logo-light' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -247,14 +268,17 @@ return [
                     'logo-light.svg',
                 ],
             ],
+            'dest_path' => 'assets/images',
+            'dependencies' => [
+                'logo',
+            ],
             'configuration' => [
                 'usage' => 'logo',
                 'variant' => 'light',
             ],
         ],
 
-        [
-            'id' => 'favicon',
+        'favicon' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -262,13 +286,14 @@ return [
                     'favicon.ico',
                 ],
             ],
+            'dest_path' => '',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'favicon',
             ],
         ],
 
-        [
-            'id' => 'site-icon',
+        'site-icon' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -276,13 +301,14 @@ return [
                     'site-icon.png',
                 ],
             ],
+            'dest_path' => 'assets/images',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'site-icon',
             ],
         ],
 
-        [
-            'id' => 'theme-preview',
+        'theme-preview' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -290,13 +316,14 @@ return [
                     'screenshot.png',
                 ],
             ],
+            'dest_path' => '',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'theme-preview',
             ],
         ],
 
-        [
-            'id' => 'icon',
+        'icon' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -304,13 +331,14 @@ return [
                     'icon.svg',
                 ],
             ],
+            'dest_path' => 'assets/images',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'icon',
             ],
         ],
 
-        [
-            'id' => 'background',
+        'background' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images',
@@ -318,13 +346,14 @@ return [
                     'background.jpg',
                 ],
             ],
+            'dest_path' => 'assets/images',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'background',
             ],
         ],
 
-        [
-            'id' => 'demo',
+        'demo' => [
             'type' => 'image',
             'resource' => [
                 'path' => 'assets/images/demo',
@@ -334,6 +363,8 @@ return [
                     'post.jpg',
                 ],
             ],
+            'dest_path' => 'assets/images/demo',
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'demo-content',
             ],
