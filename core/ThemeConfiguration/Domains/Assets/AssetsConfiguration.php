@@ -12,25 +12,34 @@ final readonly class AssetsConfiguration implements
     private AssetCollection $assets;
 
     /**
-     * @param array<string, array<string, mixed>> $assets
+     * @param array<string, array<string, array<string, mixed>>> $assets
      */
     public function __construct(array $assets)
     {
         $collection = [];
 
-        foreach ($assets as $id => $asset) {
-            $collection[] = $this->createAsset($id, $asset);
+        foreach ($assets as $definitions) {
+            foreach ($definitions as $id => $asset) {
+                $collection[] = $this->createAsset(
+                    id: $id,
+                    asset: $asset,
+                );
+            }
         }
 
         $this->assets = new AssetCollection($collection);
     }
 
+    /**
+     * @param array<string, mixed> $asset
+     */
     private function createAsset(
         string $id,
         array $asset,
     ): Asset {
         return new Asset(
             id: $id,
+            name: (string) ($asset['name'] ?? ''),
             type: new AssetType(
                 (string) ($asset['type'] ?? ''),
             ),
@@ -38,7 +47,6 @@ final readonly class AssetsConfiguration implements
                 $asset['resource'] ?? null,
             ),
             destPath: (string) ($asset['dest_path'] ?? ''),
-            name: (string) ($asset['name'] ?? ''),
             dependencies: array_values(
                 $asset['dependencies'] ?? [],
             ),

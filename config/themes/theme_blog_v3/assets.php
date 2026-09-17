@@ -14,6 +14,7 @@ return [
 
         'theme' => [
             'type' => 'style',
+            'name' => 'Theme Styles',
             'resource' => [
                 'path' => 'assets/css',
                 'files' => [
@@ -35,6 +36,7 @@ return [
 
         'editor' => [
             'type' => 'style',
+            'name' => 'Editor Styles',
             'resource' => [
                 'path' => 'assets/css',
                 'files' => [
@@ -59,6 +61,7 @@ return [
 
         'elementor' => [
             'type' => 'style',
+            'name' => 'Elementor Styles',
             'resource' => [
                 'path' => 'assets/css',
                 'files' => [
@@ -93,6 +96,7 @@ return [
 
         'theme' => [
             'type' => 'script',
+            'name' => 'Theme Script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
@@ -115,6 +119,7 @@ return [
 
         'navigation' => [
             'type' => 'script',
+            'name' => 'Navigation Script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
@@ -139,6 +144,7 @@ return [
 
         'editor' => [
             'type' => 'script',
+            'name' => 'Editor Script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
@@ -164,6 +170,7 @@ return [
 
         'elementor' => [
             'type' => 'script',
+            'name' => 'Elementor Script',
             'resource' => [
                 'path' => 'assets/js',
                 'files' => [
@@ -199,6 +206,7 @@ return [
 
         'primary' => [
             'type' => 'font',
+            'name' => 'Primary Font',
             'resource' => [
                 'path' => 'assets/fonts',
                 'files' => [
@@ -217,6 +225,7 @@ return [
 
         'primary-bold' => [
             'type' => 'font',
+            'name' => 'Primary Bold Font',
             'resource' => [
                 'path' => 'assets/fonts',
                 'files' => [
@@ -247,6 +256,7 @@ return [
 
         'logo' => [
             'type' => 'image',
+            'name' => 'Logo',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -262,6 +272,7 @@ return [
 
         'logo-light' => [
             'type' => 'image',
+            'name' => 'Light Logo',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -280,6 +291,7 @@ return [
 
         'favicon' => [
             'type' => 'image',
+            'name' => 'Favicon',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -295,6 +307,7 @@ return [
 
         'site-icon' => [
             'type' => 'image',
+            'name' => 'Site Icon',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -310,6 +323,7 @@ return [
 
         'theme-preview' => [
             'type' => 'image',
+            'name' => 'Theme Preview',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -325,6 +339,7 @@ return [
 
         'icon' => [
             'type' => 'image',
+            'name' => 'Theme Icon',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -340,6 +355,7 @@ return [
 
         'background' => [
             'type' => 'image',
+            'name' => 'Background Image',
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
@@ -355,6 +371,7 @@ return [
 
         'demo' => [
             'type' => 'image',
+            'name' => 'Demo Images',
             'resource' => [
                 'path' => 'assets/images/demo',
                 'files' => [

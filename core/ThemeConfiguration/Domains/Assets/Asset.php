@@ -12,10 +12,10 @@ final readonly class Asset
      */
     public function __construct(
         private string $id,
+        private string $name,
         private AssetType $type,
         private Resource $resource,
         private string $destPath,
-        private string $name = '',
         private array $dependencies = [],
         private array $configuration = [],
     ) {
