@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeIR\Domains\Assets;
 
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\ValueObjects\AssetType;
+use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
 
 final readonly class Asset
 {
@@ -20,6 +21,7 @@ final readonly class Asset
         private string $destPath,
         private array $dependencies = [],
         private array $configuration = [],
+        private ?FunctionDefinition $function = null,
     ) {
     }
 
@@ -62,5 +64,10 @@ final readonly class Asset
     public function configuration(): array
     {
         return $this->configuration;
+    }
+
+    public function function(): ?FunctionDefinition
+    {
+        return $this->function;
     }
 }

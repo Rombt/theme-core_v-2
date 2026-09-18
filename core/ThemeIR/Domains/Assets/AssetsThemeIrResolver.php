@@ -10,8 +10,10 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Assets\Asset as ComponentAsset;
 use Rombt\ThemeCore\ThemeComponents\Domains\Assets\AssetsComponent;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
 use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrResolverInterface;
-use Rombt\ThemeCore\ThemeIR\IrId;
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\ValueObjects\AssetType;
+use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
+use Rombt\ThemeCore\ThemeIR\IrId;
+use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource as FunctionResource;
 
 final readonly class AssetsThemeIrResolver implements ThemeIrResolverInterface
 {
@@ -83,6 +85,25 @@ final readonly class AssetsThemeIrResolver implements ThemeIrResolverInterface
             destPath: $asset->destPath(),
             dependencies: $asset->dependencies(),
             configuration: $asset->configuration(),
+            function: $asset->function() !== null
+                ? new FunctionDefinition(
+                    enabled: $asset->function()->enabled(),
+                    resource: new FunctionResource(
+                        $this->buildFunctionResource($asset),
+                    ),
+                    order: $asset->function()->order(),
+                )
+                : null,
+        );
+    }
+
+    private function buildFunctionResource(
+        ComponentAsset $asset,
+    ): string {
+        return sprintf(
+            'assets/%s/%s',
+            $asset->type()->value,
+            $asset->id(),
         );
     }
 }
