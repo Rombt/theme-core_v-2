@@ -10,6 +10,9 @@ use Rombt\ThemeCore\ThemeConfiguration\Contracts\DomainValidatorInterface;
 
 final readonly class AssetsValidator implements DomainValidatorInterface
 {
+    private const int MIN_FUNCTION_ORDER = 0;
+    private const int MAX_FUNCTION_ORDER = 100;
+
     public function validate(ConfigurationDomain $domain): void
     {
         $configuration = $domain->configuration();
@@ -46,19 +49,19 @@ final readonly class AssetsValidator implements DomainValidatorInterface
 
             $ids[$id] = true;
 
-            if ($asset->destPath() === '') {
+            if ($asset->type() === '') {
                 throw new RuntimeException(
                     sprintf(
-                        'Asset "%s" must have a destination path.',
+                        'Asset "%s" must have a type.',
                         $id,
                     ),
                 );
             }
 
-            if ($asset->resource()->path() === '') {
+            if ($asset->entry() === '') {
                 throw new RuntimeException(
                     sprintf(
-                        'Asset "%s" must have a resource path.',
+                        'Asset "%s" must have an entry.',
                         $id,
                     ),
                 );
@@ -68,11 +71,33 @@ final readonly class AssetsValidator implements DomainValidatorInterface
                 if ($dependency === '') {
                     throw new RuntimeException(
                         sprintf(
-                            'Asset "%s" contains an empty dependency.',
+                            'Dependency for asset "%s" must not be empty.',
                             $id,
                         ),
                     );
                 }
+            }
+
+            $function = $asset->function();
+
+            if ($function === null) {
+                continue;
+            }
+
+            $order = $function->order();
+
+            if (
+                $order < self::MIN_FUNCTION_ORDER
+                || $order > self::MAX_FUNCTION_ORDER
+            ) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Function order for asset "%s" must be between %d and %d.',
+                        $id,
+                        self::MIN_FUNCTION_ORDER,
+                        self::MAX_FUNCTION_ORDER,
+                    ),
+                );
             }
         }
     }

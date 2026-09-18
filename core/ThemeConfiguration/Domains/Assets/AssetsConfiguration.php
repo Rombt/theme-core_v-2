@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Assets;
 
 use Rombt\ThemeCore\ThemeConfiguration\Contracts\ConfigurationDomainInterface;
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\Definitions\FunctionDefinition;
 
 final readonly class AssetsConfiguration implements
     ConfigurationDomainInterface
@@ -53,6 +54,25 @@ final readonly class AssetsConfiguration implements
             configuration: is_array($asset['configuration'] ?? null)
                 ? $asset['configuration']
                 : [],
+            function: $this->createFunctionDefinition(
+                $asset['function'] ?? null,
+            ),
+        );
+    }
+
+    /**
+     * @param mixed $function
+     */
+    private function createFunctionDefinition(
+        mixed $function,
+    ): ?FunctionDefinition {
+        if (!is_array($function)) {
+            return null;
+        }
+
+        return new FunctionDefinition(
+            enabled: (bool) ($function['enabled'] ?? false),
+            order: (int) ($function['order'] ?? 0),
         );
     }
 
@@ -106,6 +126,7 @@ final readonly class AssetsConfiguration implements
                 'name' => $asset->name(),
                 'dependencies' => $asset->dependencies(),
                 'configuration' => $asset->configuration(),
+                'function' => $asset->function()?->toArray(),
             ];
         }
 

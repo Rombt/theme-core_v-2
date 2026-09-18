@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeConfiguration\Domains\Assets;
 
+use Rombt\ThemeCore\ThemeConfiguration\Domains\Assets\Definitions\FunctionDefinition;
+
 final readonly class Asset
 {
     /**
@@ -18,12 +20,18 @@ final readonly class Asset
         private string $destPath,
         private array $dependencies = [],
         private array $configuration = [],
+        private ?FunctionDefinition $function = null,
     ) {
     }
 
     public function id(): string
     {
         return $this->id;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
     }
 
     public function type(): AssetType
@@ -41,11 +49,6 @@ final readonly class Asset
         return $this->destPath;
     }
 
-    public function name(): string
-    {
-        return $this->name;
-    }
-
     /**
      * @return array<int, string>
      */
@@ -60,5 +63,15 @@ final readonly class Asset
     public function configuration(): array
     {
         return $this->configuration;
+    }
+
+    public function function(): ?FunctionDefinition
+    {
+        return $this->function;
+    }
+
+    public function hasFunction(): bool
+    {
+        return $this->function !== null;
     }
 }
