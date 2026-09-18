@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIR\Concepts\Functions\ValueObjects;
+namespace Rombt\ThemeCore\ThemeIR\Domains\Functions\ValueObjects;
 
 final readonly class FunctionType
 {

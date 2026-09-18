@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates;
+namespace Rombt\ThemeCore\ThemeIR\Domains\Templates;
 
 use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
 use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateNodeType;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\ValueObjects\TemplateNodeType;
 
 final readonly class TemplateNode
 {

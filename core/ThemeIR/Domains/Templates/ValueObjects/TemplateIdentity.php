@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects;
+namespace Rombt\ThemeCore\ThemeIR\Domains\Templates\ValueObjects;
 
-final readonly class TemplateNodeType
+final readonly class TemplateIdentity
 {
     public function __construct(
         private string $value,

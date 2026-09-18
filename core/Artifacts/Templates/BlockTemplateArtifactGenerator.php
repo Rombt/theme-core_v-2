@@ -11,11 +11,11 @@ use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplatesInterface;
 use Rombt\ThemeCore\ThemeIR\ThemeIR;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\ValueObjects\TemplateIdentity;
 
 final readonly class BlockTemplateArtifactGenerator implements ArtifactGeneratorInterface
 {

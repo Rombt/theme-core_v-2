@@ -10,8 +10,8 @@ use Rombt\ThemeCore\Artifacts\ArtifactType;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactCollectionInterface;
 use Rombt\ThemeCore\Artifacts\Contracts\ArtifactGeneratorInterface;
 use Rombt\ThemeCore\Artifacts\Functions\Contracts\FunctionsContentRendererInterface;
-// use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionsInterface;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionsInterface;
+// use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionsInterface;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionsInterface;
 use Rombt\ThemeCore\ThemeIR\ThemeIR;
 
 final readonly class BlockFunctionsArtifactGenerator implements ArtifactGeneratorInterface

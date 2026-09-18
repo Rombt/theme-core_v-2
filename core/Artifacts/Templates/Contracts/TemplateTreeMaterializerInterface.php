@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\Artifacts\Templates\Contracts;
 
 use Rombt\ThemeCore\Artifacts\Templates\TemplateMaterializationResult;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\Template;
 
 interface TemplateTreeMaterializerInterface
 {

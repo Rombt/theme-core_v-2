@@ -8,7 +8,7 @@ use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateNodeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeMaterializerInterface;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\Template;
 use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final readonly class ClassicTemplateTreeMaterializer implements TemplateTreeMaterializerInterface

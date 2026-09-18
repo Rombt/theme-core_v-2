@@ -16,10 +16,10 @@ use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateNode;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplatesInterface;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplateNode;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplatesInterface;
 use Rombt\ThemeCore\ThemeIR\ThemeIR;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\ValueObjects\TemplateIdentity;
 use Rombt\ThemeCore\Contracts\Logging\LoggerInterface;
 
 final readonly class ClassicTemplateArtifactGenerator implements ArtifactGeneratorInterface

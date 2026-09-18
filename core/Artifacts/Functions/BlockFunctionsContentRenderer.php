@@ -11,8 +11,8 @@ use Rombt\ThemeCore\Artifacts\Functions\Contracts\FunctionsContentRendererInterf
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionsInterface;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionsInterface;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\Resource;
 
 final readonly class BlockFunctionsContentRenderer implements FunctionsContentRendererInterface
 {

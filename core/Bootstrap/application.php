@@ -102,7 +102,7 @@ use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsConfiguration;
 use Rombt\ThemeCore\ThemeConfiguration\Domains\Functions\FunctionsValidator;
 use Rombt\ThemeCore\ThemeComponents\Domains\Functions\FunctionsComponentBuilder;
 use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionsThemeIrResolver;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionRequirementCollector;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\FunctionRequirementCollector;
 use Rombt\ThemeCore\Artifacts\Functions\BlockFunctionsArtifactGenerator;
 use Rombt\ThemeCore\Artifacts\Functions\BlockFunctionsContentRenderer;
 use Rombt\ThemeCore\Artifacts\Functions\ClassicFunctionsArtifactGenerator;

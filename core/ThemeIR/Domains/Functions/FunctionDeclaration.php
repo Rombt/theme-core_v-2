@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIR\Concepts\Functions;
+namespace Rombt\ThemeCore\ThemeIR\Domains\Functions;
 
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\ValueObjects\FunctionType;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\ValueObjects\FunctionType;
 
 final readonly class FunctionDeclaration
 {

@@ -13,7 +13,7 @@ use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrResolverInterface;
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\ValueObjects\AssetType;
 use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
 use Rombt\ThemeCore\ThemeIR\IrId;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource as FunctionResource;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\Resource as FunctionResource;
 
 final readonly class AssetsThemeIrResolver implements ThemeIrResolverInterface
 {

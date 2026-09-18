@@ -10,15 +10,15 @@ use Rombt\ThemeCore\ThemeComponents\Contracts\ThemeComponentInterface;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponent;
 use Rombt\ThemeCore\ThemeComponents\Domains\Nodes\NodesComponent;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentCollection;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\NodeFunctionDefinitionCollection;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateCollection;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\TemplateTreeBuilder;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Templates;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\ValueObjects\TemplateIdentity;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\NodeFunctionDefinitionCollection;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplateCollection;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\TemplateTreeBuilder;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\Templates;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\ValueObjects\TemplateIdentity;
 use Rombt\ThemeCore\ThemeIR\Contracts\ThemeIrResolverInterface;
 use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\Resource;
 use Rombt\ThemeCore\ThemeIR\IrId;
 
 final readonly class TemplatesThemeIrResolver implements ThemeIrResolverInterface

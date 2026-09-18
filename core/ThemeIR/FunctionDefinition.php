@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\ThemeIR;
 
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
+use Rombt\ThemeCore\ThemeIR\Domains\Functions\Resource;
 
 final readonly class FunctionDefinition
 {

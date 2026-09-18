@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rombt\ThemeCore\ThemeIR\Concepts\Templates;
+namespace Rombt\ThemeCore\ThemeIR\Domains\Templates;
 
 use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
 

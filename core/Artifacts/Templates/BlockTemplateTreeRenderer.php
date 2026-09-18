@@ -6,7 +6,7 @@ namespace Rombt\ThemeCore\Artifacts\Templates;
 
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeMaterializerInterface;
 use Rombt\ThemeCore\Artifacts\Templates\Contracts\TemplateTreeRendererInterface;
-use Rombt\ThemeCore\ThemeIR\Concepts\Templates\Template;
+use Rombt\ThemeCore\ThemeIR\Domains\Templates\Template;
 
 final readonly class BlockTemplateTreeRenderer implements TemplateTreeRendererInterface
 {
