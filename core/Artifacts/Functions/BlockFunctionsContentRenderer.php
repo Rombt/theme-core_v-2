@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Functions;
 
+use LogicException;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Functions\Contracts\FunctionsContentRendererInterface;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticContext;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticLevel;
 use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
-// use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Functions;
-use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
-use Rombt\ThemeCore\ThemeIR\ThemeIR;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionsInterface;
+use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
 
 final readonly class BlockFunctionsContentRenderer implements FunctionsContentRendererInterface
 {
@@ -60,20 +59,27 @@ final readonly class BlockFunctionsContentRenderer implements FunctionsContentRe
         foreach ($items as $item) {
             $content = $this->readResource(
                 $item['resource'],
+                $item['resourceType'],
             );
 
             if ($content === null || trim($content) === '') {
                 continue;
             }
 
-            $contents[] = trim($content);
+            $content = $this->normalizeResourceContent($content);
+
+            if ($content === '') {
+                continue;
+            }
+
+            $contents[] = $content;
         }
 
         if ($contents === []) {
-            return "<?php\n\ndeclare(strict_types=1);\n";
+            return "<?php\n\n";
         }
 
-        return "<?php\n\ndeclare(strict_types=1);\n\n"
+        return "<?php\n\n"
             . implode("\n\n", $contents)
             . "\n";
     }
@@ -81,6 +87,7 @@ final readonly class BlockFunctionsContentRenderer implements FunctionsContentRe
     /**
      * @return array<int, array{
      *     resource: Resource,
+     *     resourceType: string,
      *     order: int,
      *     sequence: int
      * }>
@@ -99,30 +106,45 @@ final readonly class BlockFunctionsContentRenderer implements FunctionsContentRe
             }
 
             $items[] = [
-            'resource' => $resource,
-            'order' => (int) ($configuration['order'] ?? 0),
-            'sequence' => $sequence++,
+                'resource' => $resource,
+                'resourceType' => 'functions',
+                'order' => (int) ($configuration['order'] ?? 0),
+                'sequence' => $sequence++,
             ];
         }
 
         foreach ($functions->requirements() as $requirement) {
+            $resource = $requirement->resource();
+
             $items[] = [
-            'resource' => $requirement->resource(),
-            'order' => $requirement->order(),
-            'sequence' => $sequence++,
+                'resource' => $resource,
+                'resourceType' => $this->resolveRequirementResourceType($resource),
+                'order' => $requirement->order(),
+                'sequence' => $sequence++,
             ];
         }
 
         return $items;
     }
 
-    private function readResource(Resource $resource): ?string
+    private function resolveRequirementResourceType(Resource $resource): string
     {
+        if (str_starts_with($resource->value(), 'assets/')) {
+            return 'assets';
+        }
+
+        return 'components';
+    }
+
+    private function readResource(
+        Resource $resource,
+        string $resourceType,
+    ): ?string {
         $resourceId = $resource->value();
 
-        $path = $this->resourcePath(
+        $path = $this->resolveResourcePath(
             $resourceId,
-            'function.block.html',
+            $resourceType,
         );
 
         if (!is_file($path)) {
@@ -132,9 +154,10 @@ final readonly class BlockFunctionsContentRenderer implements FunctionsContentRe
                     $path,
                 ),
                 [
-                'resource' => $resourceId,
-                'architecture' => 'block',
-                'path' => $path,
+                    'resource' => $resourceId,
+                    'resourceType' => $resourceType,
+                    'architecture' => 'block',
+                    'path' => $path,
                 ],
             );
 
@@ -150,9 +173,10 @@ final readonly class BlockFunctionsContentRenderer implements FunctionsContentRe
                     $path,
                 ),
                 [
-                'resource' => $resourceId,
-                'architecture' => 'block',
-                'path' => $path,
+                    'resource' => $resourceId,
+                    'resourceType' => $resourceType,
+                    'architecture' => 'block',
+                    'path' => $path,
                 ],
             );
 
@@ -162,20 +186,72 @@ final readonly class BlockFunctionsContentRenderer implements FunctionsContentRe
         return $content;
     }
 
-    private function resourcePath(
+    private function resolveResourcePath(
         string $resourceId,
-        string $filename,
+        string $resourceType,
     ): string {
-        return rtrim(
-            $this->resourcePackage,
-            '/\\',
-        )
+        return match ($resourceType) {
+            'functions' => $this->functionsResourcePath($resourceId),
+            'components' => $this->componentResourcePath($resourceId),
+            'assets' => $this->assetResourcePath($resourceId),
+            default => throw new LogicException(
+                sprintf(
+                    'Unknown function resource type "%s".',
+                    $resourceType,
+                ),
+            ),
+        };
+    }
+
+    private function functionsResourcePath(string $resourceId): string
+    {
+        return
+            rtrim($this->resourcePackage, '/\\')
+            . DIRECTORY_SEPARATOR
+            . 'functions'
+            . DIRECTORY_SEPARATOR
+            . $resourceId
+            . DIRECTORY_SEPARATOR
+            . $resourceId . '.block.html';
+    }
+
+    private function componentResourcePath(string $resourceId): string
+    {
+        return
+            rtrim($this->resourcePackage, '/\\')
             . DIRECTORY_SEPARATOR
             . 'components'
             . DIRECTORY_SEPARATOR
             . $resourceId
             . DIRECTORY_SEPARATOR
-            . $filename;
+            . 'function.block.html';
+    }
+
+    private function assetResourcePath(string $resourceId): string
+    {
+        return
+            rtrim($this->resourcePackage, '/\\')
+            . DIRECTORY_SEPARATOR
+            . $resourceId
+            . DIRECTORY_SEPARATOR
+            . 'block'
+            . DIRECTORY_SEPARATOR
+            . 'function.block.php';
+    }
+
+    private function normalizeResourceContent(string $content): string
+    {
+        $content = trim($content);
+
+        if ($content === '') {
+            return '';
+        }
+
+        if (str_starts_with($content, '<?php')) {
+            $content = substr($content, 5);
+        }
+
+        return trim($content);
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rombt\ThemeCore\Artifacts\Functions;
 
+use LogicException;
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\Functions\Contracts\FunctionsContentRendererInterface;
@@ -13,7 +14,6 @@ use Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionDeclaration;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionRequirement;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\Resource;
-use Rombt\ThemeCore\ThemeIR\ThemeIR;
 use Rombt\ThemeCore\ThemeIR\Concepts\Functions\FunctionsInterface;
 
 final readonly class ClassicFunctionsContentRenderer implements FunctionsContentRendererInterface
@@ -41,16 +41,13 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
     public function render(FunctionsInterface $functions): string
     {
-        // $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
-
         $items = $this->collectItems($functions);
 
         usort(
             $items,
             static fn(array $a, array $b): int =>
-            $a['order'] <=> $b['order'],
+                $a['order'] <=> $b['order'],
         );
-
 
         $contents = [];
 
@@ -72,17 +69,17 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
         }
 
         return "<?php\n\n"
-        . implode("\n\n", $contents)
-        . "\n";
+            . implode("\n\n", $contents)
+            . "\n";
     }
 
     /**
-    * @return array<int, array{
-    *     resource: Resource,
-    *     resourceType: string,
-    *     order: int
-    * }>
-    */
+     * @return array<int, array{
+     *     resource: Resource,
+     *     resourceType: string,
+     *     order: int
+     * }>
+     */
     private function collectItems(FunctionsInterface $functions): array
     {
         $items = [];
@@ -96,31 +93,44 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
             }
 
             $items[] = [
-            'resource' => $resource,
-            'resourceType' => 'functions',
-            'order' => (int) ($configuration['order'] ?? 0),
+                'resource' => $resource,
+                'resourceType' => 'functions',
+                'order' => (int) ($configuration['order'] ?? 0),
             ];
         }
 
         foreach ($functions->requirements() as $requirement) {
+            $resource = $requirement->resource();
+
             $items[] = [
-            'resource' => $requirement->resource(),
-            'resourceType' => 'components',
-            'order' => $requirement->order(),
+                'resource' => $resource,
+                'resourceType' => $this->resolveRequirementResourceType($resource),
+                'order' => $requirement->order(),
             ];
         }
 
         return $items;
     }
 
-
-    private function readResource(Resource $resource, string $resourceType): ?string
+    private function resolveRequirementResourceType(Resource $resource): string
     {
-        // $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
+        if (str_starts_with($resource->value(), 'assets/')) {
+            return 'assets';
+        }
 
+        return 'components';
+    }
+
+    private function readResource(
+        Resource $resource,
+        string $resourceType,
+    ): ?string {
         $resourceId = $resource->value();
 
-        $path = $this->resolveResourcePath($resource, $resourceType);
+        $path = $this->resolveResourcePath(
+            $resource,
+            $resourceType,
+        );
 
         if (!is_file($path)) {
             $this->diagnose(
@@ -170,8 +180,12 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
         return match ($resourceType) {
             'functions' => $this->functionsResourcePath($resourceId),
             'components' => $this->componentResourcePath($resourceId),
+            'assets' => $this->assetResourcePath($resourceId),
             default => throw new LogicException(
-                sprintf('Unknown function resource type "%s".', $resourceType),
+                sprintf(
+                    'Unknown function resource type "%s".',
+                    $resourceType,
+                ),
             ),
         };
     }
@@ -200,6 +214,18 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
             . 'function.classic.php';
     }
 
+    private function assetResourcePath(string $resourceId): string
+    {
+        return
+            rtrim($this->resourcePackage, '/\\')
+            . DIRECTORY_SEPARATOR
+            . $resourceId
+            . DIRECTORY_SEPARATOR
+            . 'classic'
+            . DIRECTORY_SEPARATOR
+            . 'function.classic.php';
+    }
+
     private function normalizeResourceContent(string $content): string
     {
         $content = trim($content);
@@ -214,7 +240,6 @@ final readonly class ClassicFunctionsContentRenderer implements FunctionsContent
 
         return trim($content);
     }
-
 
     /**
      * @param array<string, mixed> $metadata
