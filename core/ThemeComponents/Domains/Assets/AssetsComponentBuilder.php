@@ -63,6 +63,7 @@ final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInte
             destPath: $asset->destPath(),
             dependencies: $asset->dependencies(),
             configuration: $asset->configuration(),
+            function: $asset->function(),
         );
     }
 }
