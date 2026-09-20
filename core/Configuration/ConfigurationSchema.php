@@ -68,14 +68,20 @@ final class ConfigurationSchema
             'paths' => [
                 'required' => true,
                 'fields' => [
-                    'build' => [
-                        'type' => 'string',
-                        'default' => 'build',
-                    ],
-                    'cache' => [
-                        'type' => 'string',
-                        'default' => '.cache',
-                    ],
+                'output' => [
+                    'type' => 'output',
+                    'default' => [
+                        'relative' => 'build',
+                        ],
+                ],
+                'bases' => [
+                    'type' => 'array',
+                    'default' => [],
+                ],
+                'cache' => [
+                    'type' => 'string',
+                    'default' => '.cache',
+                ],
                 ],
             ],
 

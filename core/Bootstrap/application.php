@@ -253,7 +253,7 @@ $runtimeKernel = new RuntimeKernel(
     ),
 );
 
-$buildRoot       = $configuration->get('paths.build');
+$buildRoot       = $configuration->get('paths.output');
 $resourcePackage = $configuration->get('theme.resource_package');
 
 

@@ -92,7 +92,91 @@ final class ConfigurationValidator
                         )
                     );
                 }
+
+                if ($type === 'array' && !is_array($value)) {
+                    throw new InvalidConfigurationException(
+                        sprintf(
+                            'Configuration field [%s.%s] must be array.',
+                            $section,
+                            $field,
+                        )
+                    );
+                }
+
+                if ($type === 'output') {
+                    $this->validateOutput(
+                        $section,
+                        $field,
+                        $value,
+                    );
+                }
             }
+        }
+    }
+
+/**
+ * @param mixed $value
+ */
+    private function validateOutput(
+        string $section,
+        string $field,
+        mixed $value,
+    ): void {
+        if (!is_array($value)) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'Configuration field [%s.%s] must be array.',
+                    $section,
+                    $field,
+                )
+            );
+        }
+
+        $types = ['relative', 'absolute', 'base'];
+
+        $defined = array_intersect(
+            array_keys($value),
+            $types,
+        );
+
+        if (count($defined) !== 1) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'Configuration field [%s.%s] must define exactly one of: relative, absolute, base.',
+                    $section,
+                    $field,
+                )
+            );
+        }
+
+        $type = $defined[0];
+
+        if (!is_string($value[$type])) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'Configuration field [%s.%s.%s] must be string.',
+                    $section,
+                    $field,
+                    $type,
+                )
+            );
+        }
+
+        if ($type !== 'base') {
+            return;
+        }
+
+        if (
+            !array_key_exists('path', $value)
+            || !is_string($value['path'])
+        ) {
+            throw new InvalidConfigurationException(
+                sprintf(
+                    'Configuration field [%s.%s.path] must be string.',
+                    $section,
+                    $field,
+                )
+            );
         }
     }
 }

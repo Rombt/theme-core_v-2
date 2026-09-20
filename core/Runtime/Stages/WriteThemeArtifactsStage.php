@@ -30,7 +30,7 @@ final class WriteThemeArtifactsStage implements StageInterface
         $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
         try {
-            $buildPath = (string) $this->configuration->get('paths.build');
+            $buildPath = (string) $this->configuration->get('paths.output');
 
             if ($buildPath === '') {
                 throw new RuntimeException(
