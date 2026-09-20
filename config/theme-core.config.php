@@ -29,8 +29,8 @@ return [
 
     'theme' => [
         'packages_path' => 'config/themes',
-        'package' => 'theme_blog',
-        'resource_package' => 'config\themes\theme_blog\resources',
+        'package' => 'theme_blog_v_1',
+        'resource_package' => 'config\themes\theme_blog_v_1\resources',
     ],
 
     'php_parser' => [
