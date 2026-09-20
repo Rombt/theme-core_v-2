@@ -207,11 +207,11 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                 continue;
             }
 
-            $content = str_replace(
-                $placeholder,
-                $result->content(),
+            $content = preg_replace_callback(
+                '/@slot_' . preg_quote((string) $slot, '/') . '(?!\d)/',
+                static fn (): string => $result->content(),
                 $content,
-            );
+            ) ?? $content;
         }
 
         return $this->removeUnresolvedSlots($content);

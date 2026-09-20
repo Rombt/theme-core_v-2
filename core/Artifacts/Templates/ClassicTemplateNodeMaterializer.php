@@ -196,12 +196,12 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         return $children;
     }
 
-    /**
-     * @param array<int, array{
-     *     node: TemplateNode,
-     *     result: TemplateMaterializationResult
-     * }> $children
-     */
+/**
+ * @param array<int, array{
+ *     node: TemplateNode,
+ *     result: TemplateMaterializationResult
+ * }> $children
+ */
     private function materializeSlots(
         string $content,
         array $children,
@@ -222,21 +222,18 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
                     DiagnosticLevel::ERROR,
                     'Template child cannot be materialized because no slot is assigned.',
                     [
-                        'template' => $templateIdentity,
-                        'parent' => $parent,
-                        'child' => $child,
-                        'slot' => null,
-                        'architecture' => 'classic',
+                    'template' => $templateIdentity,
+                    'parent' => $parent,
+                    'child' => $child,
+                    'slot' => null,
+                    'architecture' => 'classic',
                     ],
                 );
 
                 continue;
             }
 
-            $placeholder = sprintf(
-                '@slot_%d',
-                $slot,
-            );
+            $placeholder = '@slot_' . $slot;
 
             if (!str_contains($content, $placeholder)) {
                 $this->diagnose(
@@ -246,22 +243,22 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
                         $placeholder,
                     ),
                     [
-                        'template' => $templateIdentity,
-                        'parent' => $parent,
-                        'child' => $child,
-                        'slot' => $slot,
-                        'architecture' => 'classic',
+                    'template' => $templateIdentity,
+                    'parent' => $parent,
+                    'child' => $child,
+                    'slot' => $slot,
+                    'architecture' => 'classic',
                     ],
                 );
 
                 continue;
             }
 
-            $content = str_replace(
-                $placeholder,
-                $result->content(),
+            $content = preg_replace_callback(
+                '/@slot_' . preg_quote((string) $slot, '/') . '(?!\d)/',
+                static fn (): string => $result->content(),
                 $content,
-            );
+            ) ?? $content;
         }
 
         $this->diagnoseUnusedSlots(
