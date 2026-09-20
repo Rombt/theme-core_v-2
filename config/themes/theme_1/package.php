@@ -1,6 +1,0 @@
-<?php
-
-return [
-    'name' => 'Theme 1',
-    'version' => '1.0.0',
-];
