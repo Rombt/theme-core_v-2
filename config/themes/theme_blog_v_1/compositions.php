@@ -2,10 +2,10 @@
 
 return [
 
-    'page' => [
+    'index' => [
         'type' => 'page',
-        'rendering' => 'template-part',
-        'resource' => 'page',
+        'rendering' => 'template',
+        'resource' => 'index',
 
         'children' => [
             [
@@ -16,27 +16,27 @@ return [
             [
                 'id' => 'footer',
                 'composition' => 'footer',
-                'slot' => 3,
+                'slot' => 10,
             ],
         ],
     ],
 
     'header' => [
         'type' => 'section',
-        'rendering' => 'template-part',
+        'rendering' => 'header',
         'resource' => 'header',
 
         'children' => [
-            [
-                'id' => 'site-title',
-                'node' => 'site-title',
-                'slot' => 1,
-            ],
-            [
-                'id' => 'primary-navigation',
-                'node' => 'primary-navigation',
-                'slot' => 2,
-            ],
+            // [
+            //     'id' => 'site-title',
+            //     'node' => 'site-title',
+            //     'slot' => 1,
+            // ],
+            // [
+            //     'id' => 'primary-navigation',
+            //     'node' => 'primary-navigation',
+            //     'slot' => 2,
+            // ],
         ],
     ],
 
@@ -44,21 +44,21 @@ return [
 
     'footer' => [
         'type' => 'section',
-        'rendering' => 'template-part',
+        'rendering' => 'footer',
         'resource' => 'footer',
 
-        'children' => [
-            [
-                'id' => 'footer-navigation',
-                'node' => 'footer-navigation',
-                'slot' => 1,
-            ],
-            [
-                'id' => 'copyright',
-                'node' => 'copyright',
-                'slot' => 2,
-            ],
-        ],
+        // 'children' => [
+        //     [
+        //         'id' => 'footer-navigation',
+        //         'node' => 'footer-navigation',
+        //         'slot' => 1,
+        //     ],
+        //     [
+        //         'id' => 'copyright',
+        //         'node' => 'copyright',
+        //         'slot' => 2,
+        //     ],
+        // ],
     ],
 
 ];
