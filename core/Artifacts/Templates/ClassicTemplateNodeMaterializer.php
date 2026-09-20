@@ -115,7 +115,7 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
 
             case 'footer':
                 return new TemplateMaterializationResult(
-                    '<?php get_footer();' . "\n",
+                    '<?php get_footer(); ?>' . "\n",
                 );
 
             case 'sidebar':
