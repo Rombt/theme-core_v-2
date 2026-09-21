@@ -1,0 +1,222 @@
+THEME-CORE V-2
+DESIGN SYSTEM
+VARIABLE NAMING CONVENTION
+
+(v1.0.0)
+
+Status: Design Decision
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Данный документ фиксирует соглашение об именовании
+        CSS Custom Properties, используемых Design System.
+
+    Цель соглашения:
+
+        - обеспечить единообразное именование переменных;
+        - явно определять принадлежность переменной
+            к определённому разделу Design System;
+        - обеспечить предсказуемое масштабирование
+            количества переменных;
+        - упростить использование переменных
+            в генерируемых CSS-артефактах.
+
+==================================================
+2. GENERAL NAMING STRUCTURE
+==================================================
+
+    Для переменных Design System принимается
+        трёхуровневая структура:
+
+        --ds-{category}-{subject}-{property}
+
+    Где:
+
+        ds
+            обязательный префикс Design System;
+
+        category
+            раздел Design System, к которому относится
+            переменная;
+
+        subject
+            объект или область, к которой относится
+            переменная;
+
+        property
+            конкретное свойство или характеристика.
+
+==================================================
+3. DESIGN SYSTEM PREFIX
+==================================================
+
+    Все переменные Design System должны начинаться
+        с префикса:
+
+        --ds-
+
+    Примеры:
+
+        --ds-layout-page-max-width
+        --ds-color-primary
+        --ds-appearance-page-background
+
+    Префикс обеспечивает отличие переменных
+        Design System от:
+
+        - переменных конкретных компонентов;
+        - переменных сторонних библиотек;
+        - переменных WordPress;
+        - произвольных CSS Custom Properties.
+
+==================================================
+4. CATEGORY
+==================================================
+
+    Второй уровень имени определяет раздел
+        Design System.
+
+    Используются следующие категории:
+
+        layout
+        typography
+        color
+        spacing
+        sizing
+        appearance
+        responsive
+        component
+
+    Примеры:
+
+        --ds-layout-page-max-width
+        --ds-typography-body-font-size
+        --ds-color-primary
+        --ds-spacing-section-gap
+        --ds-sizing-header-height
+        --ds-appearance-page-background
+        --ds-responsive-mobile-breakpoint
+
+==================================================
+5. SUBJECT
+==================================================
+
+    Subject определяет объект, область или контекст,
+        к которому относится переменная.
+
+    Например:
+
+        page
+        content
+        section
+        block
+        heading
+        body
+        button
+        header
+
+    Примеры:
+
+        --ds-layout-page-max-width
+        --ds-layout-content-max-width
+        --ds-typography-heading-font-size
+        --ds-sizing-header-height
+
+==================================================
+6. PROPERTY
+==================================================
+
+    Property определяет конкретную характеристику
+        объекта.
+
+    Имя property должно отражать фактическое
+        назначение значения.
+
+    Например:
+
+        max-width
+        min-width
+        width
+        height
+        background
+        border
+        font-size
+        line-height
+        gap
+        padding
+
+    Примеры:
+
+        --ds-layout-page-max-width
+        --ds-appearance-page-background
+        --ds-appearance-page-border
+        --ds-typography-body-font-size
+
+==================================================
+7. NAMING EXAMPLES
+==================================================
+
+    Layout:
+
+        --ds-layout-page-max-width
+        --ds-layout-content-max-width
+
+    Typography:
+
+        --ds-typography-body-font-size
+        --ds-typography-heading-line-height
+
+    Color:
+
+        --ds-color-primary
+        --ds-color-secondary
+
+    Spacing:
+
+        --ds-spacing-section-gap
+        --ds-spacing-content-padding
+
+    Sizing:
+
+        --ds-sizing-header-height
+        --ds-sizing-button-height
+
+    Appearance:
+
+        --ds-appearance-page-background
+        --ds-appearance-page-border
+        --ds-appearance-button-radius
+
+==================================================
+8. NAMING PRINCIPLE
+==================================================
+
+    Имя переменной должно описывать её семантическое
+        назначение, а не конкретное текущее значение.
+
+    Например:
+
+        --ds-layout-page-max-width: 1440px;
+
+    является корректным именованием.
+
+    Имя:
+
+        --ds-layout-page-1440
+
+    не принимается, поскольку содержит конкретное
+        значение вместо семантического назначения.
+
+==================================================
+9. RESULT
+==================================================
+
+    В Design System принимается соглашение:
+
+        --ds-{category}-{subject}-{property}
+
+    Данная схема является стандартом именования
+        CSS Custom Properties Design System
+        в theme-core v-2.
