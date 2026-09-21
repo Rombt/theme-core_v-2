@@ -1,0 +1,22 @@
+Design System
+│
+├── Design Tokens
+│   ├── Colors
+│   ├── Typography
+│   ├── Spacing
+│   ├── Sizes
+│   ├── Borders
+│   └── Effects
+│
+├── Layout Rules
+│   ├── Containers
+│   ├── Grid
+│   ├── Breakpoints
+│   └── Alignment
+│
+└── UI Components
+    ├── Buttons
+    ├── Forms
+    ├── Cards
+    ├── Navigation
+    └── ...
