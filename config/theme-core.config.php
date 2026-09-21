@@ -16,11 +16,10 @@ return [
 
         'output' => [
 
+            'absolute' => 'F:\web\local.wp\wp-content\themes',   // работа
+            // 'absolute' => 'D:\web\multisite\wp-content\themes',   // дом
 
             // 'relative' => 'build/themes',
-            // 'absolute' => 'C:/local.wp/wp-content/themes',   // работа
-            'absolute' => 'D:\web\multisite\wp-content\themes',   // дом
-
             // 'base' => 'wordpress',
             // 'path' => 'wp-content/themes',
 

@@ -15,7 +15,7 @@ return [
             'type' => 'style',
             'name' => 'Theme Styles',
             'resource' => [
-                'path' => 'assets/css',
+                'path' => 'assets/css',     //?? как это работает?
                 'files' => [
                     'style.css',
                 ],
@@ -30,6 +30,28 @@ return [
             'function' => [
                 'enabled' => true,
                 'order' => 30,
+            ],
+        ],
+
+        'design-system' => [
+            'type' => 'style',
+            'name' => 'Design system',
+            'resource' => [
+                'path' => 'assets/css',     //?? как это работает?
+                'files' => [
+                    'design-system.css',
+                ],
+            ],
+            'dest_path' => 'assets/css',
+            'dependencies' => [],
+            'configuration' => [
+                'handle' => 'design-system',
+                'enqueue' => true,
+                'minify' => true,
+            ],
+            'function' => [
+                'enabled' => true,
+                'order' => 25,
             ],
         ],
 

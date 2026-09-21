@@ -1,25 +1,32 @@
+/* main.css */
+
+@import url("design-system.css");
+
+
+
+
 .page-wrapper {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--ds-layout-page-max-width);
   min-height: 100dvh;
   margin-inline: auto;
 
   display: flex;
   flex-direction: column;
 
-  border: 2px solid #0515fd;
+  outline: var(--ds-appearance-page-border); /* на время разработки */
 }
 
 .page-wrapper > .site-header {
   margin-bottom: auto;
 
   height: 200px;
-  border: 1px solid #fd5405;
+  outline: var(--ds-appearance-section-border); /* на время разработки */
 }
 
 .page-wrapper > .site-footer {
   margin-top: auto;
 
   height: 200px;
-  border: 1px solid #fd5405;
+  outline: var(--ds-appearance-section-border); /* на время разработки */
 }
