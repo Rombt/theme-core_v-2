@@ -413,18 +413,13 @@ $result = $runtimeKernel->execute($pipeline);
 
 if ($result->getError() !== null) {
     $error = $result->getError();
+    $errorOutput = getenv('TEMPLIX_BUILD_PROTOCOL') === '1'
+        ? STDERR
+        : STDOUT;
 
-    echo 'Build Error: ';
-    echo $error->getMessage();
-    echo PHP_EOL;
-
-    echo 'File: ';
-    echo $error->getFile();
-    echo PHP_EOL;
-
-    echo 'Line: ';
-    echo $error->getLine();
-    echo PHP_EOL;
+    fwrite($errorOutput, 'Build Error: ' . $error->getMessage() . PHP_EOL);
+    fwrite($errorOutput, 'File: ' . $error->getFile() . PHP_EOL);
+    fwrite($errorOutput, 'Line: ' . $error->getLine() . PHP_EOL);
 }
 
 /*
@@ -467,7 +462,9 @@ if ($result->getError() !== null) {
 
     $writer = new CompositeWriter(
         array(
-            new ConsoleWriter(),
+            new ConsoleWriter(
+                toStderr: getenv('TEMPLIX_BUILD_PROTOCOL') === '1',
+            ),
             new FilesystemWriter($diagnosticsFilePath),
         )
     );

@@ -8,8 +8,18 @@ use Rombt\ThemeCore\Contracts\Logging\LogWriterInterface;
 
 final class ConsoleWriter implements LogWriterInterface
 {
+    public function __construct(
+        private readonly bool $toStderr = false,
+    ) {
+    }
+
     public function write(string $payload): void
     {
-        echo $payload . PHP_EOL;
+        fwrite(
+            $this->toStderr && getenv('TEMPLIX_BUILD_PROTOCOL') === '1'
+                ? STDERR
+                : STDOUT,
+            $payload . PHP_EOL,
+        );
     }
 }
