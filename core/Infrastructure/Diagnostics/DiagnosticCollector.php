@@ -44,9 +44,7 @@ final class DiagnosticCollector
         DiagnosticEntry $entry
     ): void {
         $this->entries[] = $entry;
-        $this->incrementSeverity(
-            $entry->level()
-        );
+        $this->incrementSeverity($entry->level());
     }
 
     /**

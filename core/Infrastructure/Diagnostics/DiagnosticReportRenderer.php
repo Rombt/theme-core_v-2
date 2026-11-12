@@ -7,18 +7,17 @@ namespace Rombt\ThemeCore\Infrastructure\Diagnostics;
 final class DiagnosticReportRenderer
 {
     public function render(
-        DiagnosticReport $report
+        DiagnosticReport $report,
     ): string {
-
-        $lines = [];
-
-        $lines[] = '';
-        $lines[] = '==================================================';
-        $lines[] = sprintf(
-            'DIAGNOSTIC REPORT (%s)',
-            $report->createdAt()->format('Y-m-d H:i:s')
-        );
-        $lines[] = '==================================================';
+        $lines = [
+            '',
+            '==================================================',
+            sprintf(
+                'DIAGNOSTIC REPORT (%s)',
+                $report->createdAt()->format('Y-m-d H:i:s'),
+            ),
+            '==================================================',
+        ];
 
         foreach ($report->sections() as $section => $data) {
             $lines[] = '';
@@ -28,7 +27,7 @@ final class DiagnosticReportRenderer
                 $lines[] = sprintf(
                     '  %s: %s',
                     $key,
-                    $this->stringify($value)
+                    $this->stringify($value),
                 );
             }
         }
@@ -40,15 +39,14 @@ final class DiagnosticReportRenderer
             $lines[] = '  No diagnostic entries.';
         } else {
             foreach ($report->entries() as $entry) {
-                $lines[] = '';
                 $lines[] = sprintf(
-                    '[%s] %s',
+                    '  [%s] %s',
                     strtoupper($entry->level()->value),
-                    $entry->timestamp()->format('Y-m-d H:i:s.u')
+                    $entry->timestamp()->format(DATE_ATOM),
                 );
-                $lines[] = '  Message: ' . $entry->message();
-                $lines[] = '  Context: ' . $this->stringify($entry->context()->all());
-                $lines[] = '  Metadata: ' . $this->stringify($entry->metadata());
+                $lines[] = '    Message: ' . $entry->message();
+                $lines[] = '    Context: ' . $this->stringify($entry->context()->all());
+                $lines[] = '    Metadata: ' . $this->stringify($entry->metadata());
             }
         }
 
@@ -59,16 +57,15 @@ final class DiagnosticReportRenderer
             $lines[] = sprintf(
                 '  %s: %d',
                 strtoupper($level),
-                $count
+                $count,
             );
         }
 
         return implode(PHP_EOL, $lines) . PHP_EOL;
     }
 
-    private function stringify(
-        mixed $value
-    ): string {
+    private function stringify(mixed $value): string
+    {
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }
@@ -79,7 +76,7 @@ final class DiagnosticReportRenderer
 
         return json_encode(
             $value,
-            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES,
         ) ?: '[complex]';
     }
 }

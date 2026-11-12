@@ -130,8 +130,8 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
             DiagnosticLevel::ERROR,
             'Template node does not contain a resource.',
             [
-                'template' => $templateIdentity,
-                'node' => $node,
+                'template' => TemplateDiagnosticData::templateIdentity($templateIdentity),
+                'node' => TemplateDiagnosticData::node($node),
                 'resource' => null,
             ],
         );
@@ -174,9 +174,9 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                     DiagnosticLevel::ERROR,
                     'Template child cannot be materialized because no slot is assigned.',
                     [
-                        'template' => $templateIdentity,
-                        'parent' => $parent,
-                        'child' => $child,
+                        'template' => TemplateDiagnosticData::templateIdentity($templateIdentity),
+                        'parent' => TemplateDiagnosticData::node($parent),
+                        'child' => TemplateDiagnosticData::node($child),
                         'slot' => null,
                     ],
                 );
@@ -197,9 +197,9 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                         $placeholder,
                     ),
                     [
-                        'template' => $templateIdentity,
-                        'parent' => $parent,
-                        'child' => $child,
+                        'template' => TemplateDiagnosticData::templateIdentity($templateIdentity),
+                        'parent' => TemplateDiagnosticData::node($parent),
+                        'child' => TemplateDiagnosticData::node($child),
                         'slot' => $slot,
                     ],
                 );
@@ -240,8 +240,8 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                     $path,
                 ),
                 [
-                    'template' => $templateIdentity,
-                    'node' => $node,
+                    'template' => TemplateDiagnosticData::templateIdentity($templateIdentity),
+                    'node' => TemplateDiagnosticData::node($node),
                     'resource' => $resource->value(),
                     'path' => $path,
                 ],
@@ -260,8 +260,8 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
                     $path,
                 ),
                 [
-                    'template' => $templateIdentity,
-                    'node' => $node,
+                    'template' => TemplateDiagnosticData::templateIdentity($templateIdentity),
+                    'node' => TemplateDiagnosticData::node($node),
                     'resource' => $resource->value(),
                     'path' => $path,
                 ],

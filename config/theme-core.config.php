@@ -28,10 +28,10 @@ return [
 
     'theme' => [
         'packages_path' => 'config/themes',
-        'package' => 'theme_blog_v_1',
-        'resource_package' => 'config\themes\theme_blog_v_1\resources',
-        // 'package' => 'theme_blog_v_0',
-        // 'resource_package' => 'config\themes\theme_blog_v_0\resources',
+        // 'package' => 'theme_blog_v_1',
+        // 'resource_package' => 'config\themes\theme_blog_v_1\resources',
+        'package' => 'theme_blog_v_0',
+        'resource_package' => 'config\themes\theme_blog_v_0\resources',
     ],
 
     'php_parser' => [
