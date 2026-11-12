@@ -26,11 +26,11 @@ final class BuildThemeComponentsStage implements StageInterface
             // !! log !!
             $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
-            $logger->dump('BuildThemeComponentsStage    $app = ');
-            $logger->dump($app);
+            // $logger->dump('BuildThemeComponentsStage    $app = ');
+            // $logger->dump($app);
 
-            $logger->dump('BuildThemeComponentsStage    $context->session()->package() = ');
-            $logger->dump($context->session()->package());
+            // $logger->dump('BuildThemeComponentsStage    $context->session()->package() = ');
+            // $logger->dump($context->session()->package());
 
             $components = $this->builder->build($context->session()->package());
             $context->session()->setResource(SessionKeys::THEME_COMPONENTS, $components);

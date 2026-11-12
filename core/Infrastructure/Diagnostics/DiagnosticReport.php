@@ -12,11 +12,13 @@ final class DiagnosticReport
      * @param array<string, array<string, mixed>> $sections
      * @param array<string, int> $severities
      * @param array<string, mixed> $metadata
+     * @param list<DiagnosticEntry> $entries
      */
     public function __construct(
         private readonly array $sections,
         private readonly array $severities,
         private readonly array $metadata,
+        private readonly array $entries = [],
     ) {
 
         $this->createdAt = new \DateTimeImmutable();
@@ -53,6 +55,14 @@ final class DiagnosticReport
     public function metadata(): array
     {
         return $this->metadata;
+    }
+
+    /**
+     * @return list<DiagnosticEntry>
+     */
+    public function entries(): array
+    {
+        return $this->entries;
     }
 
     public function createdAt(): \DateTimeImmutable

@@ -42,6 +42,11 @@ ctx.logger?.info('shortSku = ' + shortSku); //!!--!!
 console.error('imageProcessing = ', imageProcessing);
 process.exit(1);
 
+для smarty
+<script>
+    console.log({$product|json_encode nofilter});
+</script>
+
 в VSCode ctrl+shift+p
 Developer: Reload Window
 Intelephense: Clear Cache
@@ -51,8 +56,8 @@ use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 // !! log !!
 $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
-$logger->dump('$context->session() = ');
-$logger->dump($context->session());
+// $logger->dump('$context->session() = ');
+// $logger->dump($context->session());
 
 
 ======   GPT   ========
@@ -192,6 +197,11 @@ _info\AI-CONTEXT
 обнови его е в соответствии с принятыми решениями и дай ссылку на скачивание
 
 Ты постоянно должен помнить что наша цель это раеализация проекта в коде и нужно избегать излишнего формализма
+
+Обнови соответствующие файлы в библиотеке. Заархивируй изменённые тобой файлы, дай ссылку на скачивание архива.
+
+С заметкой согласен, сохрани её в библиотеке. Новые понятия добавь в список запланированных заметок.
+
 
 ======   Для настройки GPT добавить это в поле "Пользовательские инструкции"   ========
 ======   здесь 1614 символов максимально допустимое 1759

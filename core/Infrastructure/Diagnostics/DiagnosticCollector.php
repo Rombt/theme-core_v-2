@@ -12,6 +12,11 @@ final class DiagnosticCollector
     private array $sections = [];
 
     /**
+     * @var list<DiagnosticEntry>
+     */
+    private array $entries = [];
+
+    /**
      * @var array<string, int>
      */
     private array $severities = [];
@@ -38,9 +43,18 @@ final class DiagnosticCollector
     public function record(
         DiagnosticEntry $entry
     ): void {
+        $this->entries[] = $entry;
         $this->incrementSeverity(
             $entry->level()
         );
+    }
+
+    /**
+     * @return list<DiagnosticEntry>
+     */
+    public function entries(): array
+    {
+        return $this->entries;
     }
 
     public function incrementSeverity(

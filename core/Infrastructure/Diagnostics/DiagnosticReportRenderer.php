@@ -19,7 +19,6 @@ final class DiagnosticReportRenderer
             $report->createdAt()->format('Y-m-d H:i:s')
         );
         $lines[] = '==================================================';
-        ;
 
         foreach ($report->sections() as $section => $data) {
             $lines[] = '';
@@ -31,6 +30,25 @@ final class DiagnosticReportRenderer
                     $key,
                     $this->stringify($value)
                 );
+            }
+        }
+
+        $lines[] = '';
+        $lines[] = 'Entries';
+
+        if ($report->entries() === []) {
+            $lines[] = '  No diagnostic entries.';
+        } else {
+            foreach ($report->entries() as $entry) {
+                $lines[] = '';
+                $lines[] = sprintf(
+                    '[%s] %s',
+                    strtoupper($entry->level()->value),
+                    $entry->timestamp()->format('Y-m-d H:i:s.u')
+                );
+                $lines[] = '  Message: ' . $entry->message();
+                $lines[] = '  Context: ' . $this->stringify($entry->context()->all());
+                $lines[] = '  Metadata: ' . $this->stringify($entry->metadata());
             }
         }
 
@@ -61,7 +79,7 @@ final class DiagnosticReportRenderer
 
         return json_encode(
             $value,
-            JSON_UNESCAPED_UNICODE
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         ) ?: '[complex]';
     }
 }

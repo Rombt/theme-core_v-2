@@ -34,7 +34,7 @@ final readonly class ClassicFunctionsArtifactGenerator implements ArtifactGenera
 
 
         $logger = $this->app->getContext()->get(ApplicationContextKeys::LOGGER);
-        // $logger->dump('ClassicFunctionsArtifactGenerator    $source = ');
+        // // $logger->dump('ClassicFunctionsArtifactGenerator    $source = ');
 
 
         if (!$source instanceof ThemeIR) {
@@ -62,7 +62,7 @@ final readonly class ClassicFunctionsArtifactGenerator implements ArtifactGenera
             );
         }
 
-        // $logger->dump('ClassicFunctionsArtifactGenerator    $artifacts = ');
-        // $logger->dump($artifacts);
+        // // $logger->dump('ClassicFunctionsArtifactGenerator    $artifacts = ');
+        // // $logger->dump($artifacts);
     }
 }

@@ -26,8 +26,8 @@ final readonly class BuildThemeIrStage implements StageInterface
 
             // !! log !!
             $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
-            $logger->dump('BuildThemeIrStage    $components = ');
-            $logger->dump($components);
+            // $logger->dump('BuildThemeIrStage    $components = ');
+            // $logger->dump($components);
 
             $themeIr = $this->builder->build($components);
 

@@ -20,6 +20,7 @@ final class DiagnosticReportBuilder
             sections: $sections,
             severities: $collector->severities(),
             metadata: $collector->metadata(),
+            entries: $collector->entries(),
         );
     }
 }
