@@ -5,65 +5,57 @@ declare(strict_types=1);
 namespace Tests\Integration\Composition;
 
 use PHPUnit\Framework\TestCase;
+use Rombt\ThemeCore\Application\Application;
+use Rombt\ThemeCore\Bootstrap\BootstrapRegistry;
+use Rombt\ThemeCore\Bootstrap\BootstrapperFactory;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\CompositionBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\CreateApplicationContextBuilderBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\CreateDiagnosticsBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\CreateLoggerBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\FinalizeApplicationContextBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\LoadConfigurationBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Bootstrappers\SetInternalEncodingBootstrapper;
+use Rombt\ThemeCore\Bootstrap\Kernel;
+use Rombt\ThemeCore\Bootstrap\KernelContext;
 use Rombt\ThemeCore\Composition\Assembler\RuntimeAssembler;
-use Rombt\ThemeCore\Composition\Contracts\ServiceFactoryInterface;
-use Rombt\ThemeCore\Composition\Contracts\LifecycleManagerInterface;
-use Rombt\ThemeCore\Composition\Definitions\ServiceDefinition;
-use Rombt\ThemeCore\Composition\Definitions\ServiceLifecycle;
-use Rombt\ThemeCore\Composition\Graph\DependencyGraphBuilder;
-use Rombt\ThemeCore\Composition\Graph\TopologicalSorter;
-use Rombt\ThemeCore\Composition\Registry\ServiceRegistry;
-use Rombt\ThemeCore\Composition\Resolution\DependencyResolver;
-use Rombt\ThemeCore\Composition\Resolution\ResolutionContext;
-use Rombt\ThemeCore\Composition\Resolution\ServiceComposer;
 use Rombt\ThemeCore\Composition\Contracts\ServiceComposerInterface;
 use Rombt\ThemeCore\Composition\Runtime\CompositionRuntime;
-use Tests\Support\Fakes\DummyService;
-use Tests\Support\Fakes\DummyServiceFactory;
-use Tests\Support\Fakes\DummyLifecycleManager;
+use Rombt\ThemeCore\ThemeConfiguration\ThemePackageRegistryProvider;
 
 final class RuntimeAssemblerTest extends TestCase
 {
     public function testRuntimeIsAssembledSuccessfully(): void
     {
-        $registry = new ServiceRegistry();
+        $app = new Application();
+        $registry = new BootstrapRegistry();
 
-        $registry->register(
-            new ServiceDefinition(
-                identifier: DummyService::class,
-                class: DummyService::class,
-                lifecycle: ServiceLifecycle::LAZY,
-                dependencies: []
-            )
+        $registry->register(CreateApplicationContextBuilderBootstrapper::class);
+        $registry->register(SetInternalEncodingBootstrapper::class);
+        $registry->register(LoadConfigurationBootstrapper::class);
+        $registry->register(CreateDiagnosticsBootstrapper::class);
+        $registry->register(CreateLoggerBootstrapper::class);
+        $registry->register(CompositionBootstrapper::class);
+        $registry->register(FinalizeApplicationContextBootstrapper::class);
+
+        $kernel = new Kernel(
+            $app,
+            $registry,
+            new BootstrapperFactory(),
+            new KernelContext(),
+            dirname(__DIR__, 3),
         );
 
-        $graph = (new DependencyGraphBuilder())->build($registry);
+        $kernel->bootstrap();
 
-        $composer = new ServiceComposer(
-            registry: $registry,
-            resolver: new DependencyResolver($graph),
-            factory: new DummyServiceFactory(),
-            lifecycleManager: new DummyLifecycleManager(),
-            context: new ResolutionContext(),
+        $runtime = (new RuntimeAssembler($app))->assemble(
+            $kernel->context()->getServiceDefinitions()
         );
 
-        $assembler = new RuntimeAssembler();
-
-        $runtime = $assembler->assemble($registry->all());
-
+        self::assertInstanceOf(CompositionRuntime::class, $runtime);
+        self::assertInstanceOf(ServiceComposerInterface::class, $runtime->services());
         self::assertInstanceOf(
-            CompositionRuntime::class,
-            $runtime
-        );
-
-        self::assertInstanceOf(
-            ServiceComposerInterface::class,
-            $runtime->services()
-        );
-
-        self::assertInstanceOf(
-            DummyService::class,
-            $runtime->services()->get(DummyService::class)
+            ThemePackageRegistryProvider::class,
+            $runtime->services()->get(ThemePackageRegistryProvider::class)
         );
     }
 }

@@ -20,6 +20,12 @@ final class FakeLogger implements LoggerInterface
         $this->entries[] = $entry;
     }
 
+    public function dump(
+        mixed $value,
+    ): void {
+        // Intentionally empty: this fake logger does not output debug values.
+    }
+
     /**
      * @return DiagnosticEntry[]
      */

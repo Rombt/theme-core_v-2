@@ -69,6 +69,7 @@ final readonly class AssetsThemeIrResolver implements ThemeIrResolverInterface
         foreach ($asset->resource()->files() as $file) {
             $files[] = new ResourceFile(
                 path: $file->path(),
+                destPath: $file->destPath(),
             );
         }
 

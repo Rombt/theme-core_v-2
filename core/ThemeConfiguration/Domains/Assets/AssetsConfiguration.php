@@ -88,6 +88,17 @@ final readonly class AssetsConfiguration implements
         $files = [];
 
         foreach ($resource['files'] ?? [] as $file) {
+            if (is_array($file)) {
+                $files[] = new ResourceFile(
+                    path: (string) ($file['path'] ?? ''),
+                    destPath: isset($file['dest_path'])
+                        ? (string) $file['dest_path']
+                        : null,
+                );
+
+                continue;
+            }
+
             $files[] = new ResourceFile(
                 path: (string) $file,
             );
@@ -117,8 +128,16 @@ final readonly class AssetsConfiguration implements
                 'resource' => [
                     'path' => $asset->resource()->path(),
                     'files' => array_map(
-                        static fn(ResourceFile $file): string
-                            => $file->path(),
+                        static function (ResourceFile $file): string|array {
+                            if ($file->destPath() === null) {
+                                return $file->path();
+                            }
+
+                            return [
+                                'path' => $file->path(),
+                                'dest_path' => $file->destPath(),
+                            ];
+                        },
                         $asset->resource()->files(),
                     ),
                 ],

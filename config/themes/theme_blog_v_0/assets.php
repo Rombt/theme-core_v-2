@@ -21,7 +21,7 @@ return [
                     'style.css',
                 ],
             ],
-            'dest_path' => 'assets/css',
+            'dest_path' => 'assets/css/style.css',
             'dependencies' => [],
             'configuration' => [
                 'handle' => 'theme-style',
@@ -43,7 +43,7 @@ return [
                     'editor.css',
                 ],
             ],
-            'dest_path' => 'assets/css',
+            'dest_path' => 'assets/css/editor.css',
             'dependencies' => [
                 'theme',
             ],
@@ -68,7 +68,7 @@ return [
                     'elementor.css',
                 ],
             ],
-            'dest_path' => 'assets/css',
+            'dest_path' => 'assets/css/elementor.css',
             'dependencies' => [
                 'theme',
             ],
@@ -103,7 +103,7 @@ return [
                     'theme.js',
                 ],
             ],
-            'dest_path' => 'assets/js',
+            'dest_path' => 'assets/js/theme.js',
             'dependencies' => [],
             'configuration' => [
                 'handle' => 'theme-script',
@@ -126,7 +126,7 @@ return [
                     'navigation.js',
                 ],
             ],
-            'dest_path' => 'assets/js',
+            'dest_path' => 'assets/js/navigation.js',
             'dependencies' => [
                 'theme',
             ],
@@ -151,7 +151,7 @@ return [
                     'editor.js',
                 ],
             ],
-            'dest_path' => 'assets/js',
+            'dest_path' => 'assets/js/editor.js',
             'dependencies' => [
                 'theme',
             ],
@@ -177,7 +177,7 @@ return [
                     'elementor.js',
                 ],
             ],
-            'dest_path' => 'assets/js',
+            'dest_path' => 'assets/js/elementor.js',
             'dependencies' => [
                 'theme',
             ],
@@ -213,7 +213,7 @@ return [
                     'Audiowide-Regular.ttf',
                 ],
             ],
-            'dest_path' => 'assets/fonts',
+            'dest_path' => 'assets/fonts/Audiowide-Regular.ttf',
             'dependencies' => [],
             'configuration' => [
                 'family' => 'Theme Primary',
@@ -231,7 +231,7 @@ return [
                     'DynaPuff-VariableFont_wdth,wght.ttf',
                 ],
             ],
-            'dest_path' => 'assets/fonts',
+            'dest_path' => 'assets/fonts/DynaPuff-VariableFont_wdth,wght.ttf',
             'dependencies' => [
                 'primary',
             ],
@@ -261,7 +261,7 @@ return [
                     'logo.svg',
                 ],
             ],
-            'dest_path' => 'assets/images',
+            'dest_path' => 'assets/images/logo.svg',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'logo',
@@ -277,7 +277,7 @@ return [
                     'logo-light.svg',
                 ],
             ],
-            'dest_path' => 'assets/images',
+            'dest_path' => 'assets/images/logo-light.svg',
             'dependencies' => [
                 'logo',
             ],
@@ -296,7 +296,7 @@ return [
                     'favicon.ico',
                 ],
             ],
-            'dest_path' => '',
+            'dest_path' => 'favicon.ico',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'favicon',
@@ -312,7 +312,7 @@ return [
                     'site-icon.png',
                 ],
             ],
-            'dest_path' => 'assets/images',
+            'dest_path' => 'assets/images/site-icon.png',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'site-icon',
@@ -328,7 +328,7 @@ return [
                     'screenshot.png',
                 ],
             ],
-            'dest_path' => '',
+            'dest_path' => 'screenshot.png',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'theme-preview',
@@ -344,7 +344,7 @@ return [
                     'icon.svg',
                 ],
             ],
-            'dest_path' => 'assets/images',
+            'dest_path' => 'assets/images/icon.svg',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'icon',
@@ -357,11 +357,17 @@ return [
             'resource' => [
                 'path' => 'assets/images',
                 'files' => [
-                    'background.webp',
-                    'background.jpeg',
+                    [
+                        'path' => 'background.webp',
+                        'dest_path' => 'assets/images/background.webp',
+                    ],
+                    [
+                        'path' => 'background.jpeg',
+                        'dest_path' => 'assets/images/background.jpeg',
+                    ],
                 ],
             ],
-            'dest_path' => 'assets/images',
+            'dest_path' => '',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'background',
@@ -374,14 +380,29 @@ return [
             'resource' => [
                 'path' => 'assets/images/demo',
                 'files' => [
-                    'hero.avif',
-                    'hero.jpg',
-                    'about.jpg',
-                    'post.webp',
-                    'post.jpg',
+                    [
+                        'path' => 'hero.avif',
+                        'dest_path' => 'assets/images/demo/hero.avif',
+                    ],
+                    [
+                        'path' => 'hero.jpg',
+                        'dest_path' => 'assets/images/demo/hero.jpg',
+                    ],
+                    [
+                        'path' => 'about.jpg',
+                        'dest_path' => 'assets/images/demo/about.jpg',
+                    ],
+                    [
+                        'path' => 'post.webp',
+                        'dest_path' => 'assets/images/demo/post.webp',
+                    ],
+                    [
+                        'path' => 'post.jpg',
+                        'dest_path' => 'assets/images/demo/post.jpg',
+                    ],
                 ],
             ],
-            'dest_path' => 'assets/images/demo',
+            'dest_path' => '',
             'dependencies' => [],
             'configuration' => [
                 'usage' => 'demo-content',

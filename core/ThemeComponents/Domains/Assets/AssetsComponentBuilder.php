@@ -47,6 +47,7 @@ final readonly class AssetsComponentBuilder implements ThemeComponentBuilderInte
         foreach ($asset->resource()->files() as $file) {
             $files[] = new AssetResourceFile(
                 path: $file->path(),
+                destPath: $file->destPath(),
             );
         }
 

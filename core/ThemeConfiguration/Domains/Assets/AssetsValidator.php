@@ -33,38 +33,83 @@ final readonly class AssetsValidator implements DomainValidatorInterface
             $id = $asset->id();
 
             if ($id === '') {
-                throw new RuntimeException(
-                    'Asset ID must not be empty.',
-                );
+                throw new RuntimeException('Asset ID must not be empty.');
             }
 
             if (isset($ids[$id])) {
                 throw new RuntimeException(
-                    sprintf(
-                        'Duplicate asset ID "%s".',
-                        $id,
-                    ),
+                    sprintf('Duplicate asset ID "%s".', $id),
                 );
             }
 
             $ids[$id] = true;
 
-            if ($asset->type() === '') {
+            if ($asset->type()->value() === '') {
+                throw new RuntimeException(
+                    sprintf('Asset "%s" must have a type.', $id),
+                );
+            }
+
+            if ($asset->resource()->path() === '') {
+                throw new RuntimeException(
+                    sprintf('Asset "%s" must have a resource path.', $id),
+                );
+            }
+
+            $files = $asset->resource()->files();
+            if ($files === []) {
+                throw new RuntimeException(
+                    sprintf('Asset "%s" must contain at least one resource file.', $id),
+                );
+            }
+
+            $multipleFiles = count($files) > 1;
+
+            if ($multipleFiles && $asset->destPath() !== '') {
                 throw new RuntimeException(
                     sprintf(
-                        'Asset "%s" must have a type.',
+                        'Multi-file asset "%s" must define dest_path on each resource file, not on the asset.',
                         $id,
                     ),
                 );
             }
 
-            if ($asset->entry() === '') {
-                throw new RuntimeException(
-                    sprintf(
-                        'Asset "%s" must have an entry.',
-                        $id,
-                    ),
-                );
+            $destinations = [];
+
+            foreach ($files as $file) {
+                if ($file->path() === '') {
+                    throw new RuntimeException(
+                        sprintf('Resource file path for asset "%s" must not be empty.', $id),
+                    );
+                }
+
+                $fileDestination = $file->destPath();
+                $assetDestination = $asset->destPath();
+
+                if (!$multipleFiles && $fileDestination !== null && $assetDestination !== '') {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Asset "%s" must define destination either on the asset or on its resource file, not both.',
+                            $id,
+                        ),
+                    );
+                }
+
+                $destination = $fileDestination ?? $assetDestination;
+                $this->validateDestinationPath($id, $file->path(), $destination);
+
+                $normalizedDestination = strtolower($destination);
+                if (isset($destinations[$normalizedDestination])) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Asset "%s" contains duplicate destination path "%s".',
+                            $id,
+                            $destination,
+                        ),
+                    );
+                }
+
+                $destinations[$normalizedDestination] = true;
             }
 
             foreach ($asset->dependencies() as $dependency) {
@@ -99,6 +144,35 @@ final readonly class AssetsValidator implements DomainValidatorInterface
                     ),
                 );
             }
+        }
+    }
+
+    private function validateDestinationPath(
+        string $assetId,
+        string $sourcePath,
+        string $destination,
+    ): void {
+        $segments = explode('/', $destination);
+
+        if (
+            $destination === ''
+            || trim($destination) !== $destination
+            || str_contains($destination, "\0")
+            || str_contains($destination, '\\')
+            || str_starts_with($destination, '/')
+            || preg_match('/^[A-Za-z]:/', $destination) === 1
+            || in_array('', $segments, true)
+            || in_array('.', $segments, true)
+            || in_array('..', $segments, true)
+        ) {
+            throw new RuntimeException(
+                sprintf(
+                    'Asset "%s" resource file "%s" must have a valid relative POSIX destination path; got "%s".',
+                    $assetId,
+                    $sourcePath,
+                    $destination,
+                ),
+            );
         }
     }
 }
