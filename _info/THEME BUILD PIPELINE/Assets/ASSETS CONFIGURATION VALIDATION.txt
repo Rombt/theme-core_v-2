@@ -1,0 +1,38 @@
+ASSETS CONFIGURATION VALIDATION
+
+PackageLoader invokes the validator registered for each domain immediately after
+constructing its ConfigurationDomain. AssetsValidator therefore validates the
+complete Assets domain during package loading, before later build stages consume it.
+It is a pure validation step: it does not read, create, modify, or delete files and
+does not resolve dependencies.
+
+Validated rules
+
+- Asset IDs must not be blank and must be unique within the Assets domain.
+- Asset type values must be one of: style, script, font, image. ThemeConfiguration
+  wraps the string in an AssetType value object (not a PHP enum); read it through
+  value(). The list mirrors the downstream ThemeComponents and ThemeIR enums.
+- Every asset must declare at least one resource file.
+- Every resource file must have a non-blank source path.
+- A single-file asset may define its destination either on the asset or on its
+  resource file, but not both.
+- A multi-file asset must define dest_path on every resource file and must not
+  define an asset-level dest_path.
+- Destination paths must be non-blank relative POSIX paths. Absolute paths,
+  Windows drive paths, backslashes, NUL bytes, empty path segments, "." and
+  ".." segments are rejected.
+- Destination collisions are rejected across the complete Assets domain. The
+  comparison is case-insensitive to keep output ownership deterministic on
+  Windows.
+- FunctionDefinition order must be in the inclusive range 0..100.
+
+Validation boundaries
+
+- Resource.path semantics belong to resource resolution and are not repeated
+  here. This validator checks the presence and structure of resource files
+  required to define output destinations.
+- Asset dependencies are validated and resolved by ThemeIR Resolution. This
+  validator does not re-check dependency IDs, self-dependencies, cycles,
+  duplicate dependencies, or dependency type compatibility.
+- WordPress handles are generated in a later build stage, not by this validator.
+- Shared Assets behavior for Classic/Block contexts remains deferred.

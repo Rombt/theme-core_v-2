@@ -13,6 +13,14 @@ final readonly class AssetsValidator implements DomainValidatorInterface
     private const int MIN_FUNCTION_ORDER = 0;
     private const int MAX_FUNCTION_ORDER = 100;
 
+    /**
+     * These values must stay aligned with the AssetType enums in ThemeComponents
+     * and ThemeIR. ThemeConfiguration intentionally has no dependency on either layer.
+     *
+     * @var list<string>
+     */
+    private const array SUPPORTED_ASSET_TYPES = ['style', 'script', 'font', 'image'];
+
     public function validate(ConfigurationDomain $domain): void
     {
         $configuration = $domain->configuration();
@@ -27,45 +35,58 @@ final readonly class AssetsValidator implements DomainValidatorInterface
             );
         }
 
-        $ids = [];
+        $assetIds = [];
+        $destinations = [];
 
         foreach ($configuration->assets() as $asset) {
             $id = $asset->id();
 
-            if ($id === '') {
+            if (trim($id) === '') {
                 throw new RuntimeException('Asset ID must not be empty.');
             }
 
-            if (isset($ids[$id])) {
+            if (isset($assetIds[$id])) {
                 throw new RuntimeException(
                     sprintf('Duplicate asset ID "%s".', $id),
                 );
             }
 
-            $ids[$id] = true;
+            $assetIds[$id] = true;
 
-            if ($asset->type()->value() === '') {
+            $type = $asset->type()->value();
+
+            if (trim($type) === '') {
                 throw new RuntimeException(
                     sprintf('Asset "%s" must have a type.', $id),
                 );
             }
 
-            if ($asset->resource()->path() === '') {
+            if (!in_array($type, self::SUPPORTED_ASSET_TYPES, true)) {
                 throw new RuntimeException(
-                    sprintf('Asset "%s" must have a resource path.', $id),
+                    sprintf(
+                        'Asset "%s" has unsupported type "%s". Supported types: %s.',
+                        $id,
+                        $type,
+                        implode(', ', self::SUPPORTED_ASSET_TYPES),
+                    ),
                 );
             }
 
             $files = $asset->resource()->files();
+
             if ($files === []) {
                 throw new RuntimeException(
-                    sprintf('Asset "%s" must contain at least one resource file.', $id),
+                    sprintf(
+                        'Asset "%s" must contain at least one resource file.',
+                        $id,
+                    ),
                 );
             }
 
             $multipleFiles = count($files) > 1;
+            $assetDestination = $asset->destPath();
 
-            if ($multipleFiles && $asset->destPath() !== '') {
+            if ($multipleFiles && $assetDestination !== '') {
                 throw new RuntimeException(
                     sprintf(
                         'Multi-file asset "%s" must define dest_path on each resource file, not on the asset.',
@@ -74,19 +95,25 @@ final readonly class AssetsValidator implements DomainValidatorInterface
                 );
             }
 
-            $destinations = [];
-
             foreach ($files as $file) {
-                if ($file->path() === '') {
+                $sourcePath = $file->path();
+
+                if (trim($sourcePath) === '') {
                     throw new RuntimeException(
-                        sprintf('Resource file path for asset "%s" must not be empty.', $id),
+                        sprintf(
+                            'Resource file path for asset "%s" must not be empty.',
+                            $id,
+                        ),
                     );
                 }
 
                 $fileDestination = $file->destPath();
-                $assetDestination = $asset->destPath();
 
-                if (!$multipleFiles && $fileDestination !== null && $assetDestination !== '') {
+                if (
+                    !$multipleFiles
+                    && $fileDestination !== null
+                    && $assetDestination !== ''
+                ) {
                     throw new RuntimeException(
                         sprintf(
                             'Asset "%s" must define destination either on the asset or on its resource file, not both.',
@@ -96,31 +123,24 @@ final readonly class AssetsValidator implements DomainValidatorInterface
                 }
 
                 $destination = $fileDestination ?? $assetDestination;
-                $this->validateDestinationPath($id, $file->path(), $destination);
+                $this->validateDestinationPath($id, $sourcePath, $destination);
 
-                $normalizedDestination = strtolower($destination);
-                if (isset($destinations[$normalizedDestination])) {
+                // Destination collisions are checked across the entire Assets domain.
+                // Case-insensitive comparison keeps builds deterministic on Windows.
+                $destinationKey = strtolower($destination);
+
+                if (isset($destinations[$destinationKey])) {
                     throw new RuntimeException(
                         sprintf(
-                            'Asset "%s" contains duplicate destination path "%s".',
-                            $id,
+                            'Duplicate asset destination path "%s" (assets "%s" and "%s").',
                             $destination,
-                        ),
-                    );
-                }
-
-                $destinations[$normalizedDestination] = true;
-            }
-
-            foreach ($asset->dependencies() as $dependency) {
-                if ($dependency === '') {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Dependency for asset "%s" must not be empty.',
+                            $destinations[$destinationKey],
                             $id,
                         ),
                     );
                 }
+
+                $destinations[$destinationKey] = $id;
             }
 
             $function = $asset->function();
@@ -155,7 +175,7 @@ final readonly class AssetsValidator implements DomainValidatorInterface
         $segments = explode('/', $destination);
 
         if (
-            $destination === ''
+            trim($destination) === ''
             || trim($destination) !== $destination
             || str_contains($destination, "\0")
             || str_contains($destination, '\\')

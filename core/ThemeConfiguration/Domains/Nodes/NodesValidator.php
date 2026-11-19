@@ -50,7 +50,7 @@ final readonly class NodesValidator implements DomainValidatorInterface
 
             $ids[$id] = true;
 
-            $function = $node->function();
+            $function = $node->functionDefinition();
 
             if (!$function instanceof FunctionDefinition) {
                 continue;

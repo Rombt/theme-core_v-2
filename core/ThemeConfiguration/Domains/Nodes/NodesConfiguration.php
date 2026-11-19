@@ -93,7 +93,7 @@ final readonly class NodesConfiguration implements ConfigurationDomainInterface
                 'capabilities' => $node->capabilities(),
                 'metadata' => $node->metadata(),
                 'rendering' => $node->rendering(),
-                'function' => $node->function()?->toArray(),
+                'function' => $node->functionDefinition()?->toArray(),
             ];
         }
 

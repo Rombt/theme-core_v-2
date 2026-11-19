@@ -162,6 +162,9 @@ $configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
 /** @var \Rombt\ThemeCore\Contracts\Logging\LoggerInterface $logger */
 $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 
+/** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
+$diagnostics = $app->getContext()->get(ApplicationContextKeys::DIAGNOSTICS);
+
 
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
@@ -296,7 +299,7 @@ $pipeline = new Pipeline(
                         new TemplatesThemeIRResolver(),
 
                         new DesignSystemsThemeIRResolver(),
-                        new AssetsThemeIRResolver(),
+                        new AssetsThemeIRResolver($diagnostics),
                         new IntegrationsThemeIRResolver(),
                     ),
                     finalResolvers: array(
@@ -443,11 +446,6 @@ if ($result->getError() !== null) {
             ),
             timestamp: new DateTimeImmutable(),
         )
-    );
-
-    /** @var \Rombt\ThemeCore\Infrastructure\Diagnostics\DiagnosticsService $diagnostics */
-    $diagnostics = $app->getContext()->get(
-        ApplicationContextKeys::DIAGNOSTICS
     );
 
     $diagnosticsFilePath = $configuration->get(

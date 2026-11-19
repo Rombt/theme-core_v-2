@@ -12,7 +12,7 @@ return [
 
     'styles' => [
 
-        'theme' => [
+        'theme-style' => [
             'type' => 'style',
             'name' => 'Theme Styles',
             'resource' => [
@@ -34,7 +34,7 @@ return [
             ],
         ],
 
-        'editor' => [
+        'editor-style' => [
             'type' => 'style',
             'name' => 'Editor Styles',
             'resource' => [
@@ -45,7 +45,7 @@ return [
             ],
             'dest_path' => 'assets/css/editor.css',
             'dependencies' => [
-                'theme',
+                'theme-style',
             ],
             'configuration' => [
                 'handle' => 'theme-editor',
@@ -59,7 +59,7 @@ return [
             ],
         ],
 
-        'elementor' => [
+        'elementor-style' => [
             'type' => 'style',
             'name' => 'Elementor Styles',
             'resource' => [
@@ -70,7 +70,7 @@ return [
             ],
             'dest_path' => 'assets/css/elementor.css',
             'dependencies' => [
-                'theme',
+                'theme-style',
             ],
             'configuration' => [
                 'handle' => 'theme-elementor',
@@ -94,7 +94,7 @@ return [
 
     'scripts' => [
 
-        'theme' => [
+        'theme-script' => [
             'type' => 'script',
             'name' => 'Theme Script',
             'resource' => [
@@ -128,7 +128,7 @@ return [
             ],
             'dest_path' => 'assets/js/navigation.js',
             'dependencies' => [
-                'theme',
+                'theme-script',
             ],
             'configuration' => [
                 'handle' => 'theme-navigation',
@@ -142,7 +142,7 @@ return [
             ],
         ],
 
-        'editor' => [
+        'editor-script' => [
             'type' => 'script',
             'name' => 'Editor Script',
             'resource' => [
@@ -153,7 +153,7 @@ return [
             ],
             'dest_path' => 'assets/js/editor.js',
             'dependencies' => [
-                'theme',
+                'theme-script',
             ],
             'configuration' => [
                 'handle' => 'theme-editor',
@@ -168,7 +168,7 @@ return [
             ],
         ],
 
-        'elementor' => [
+        'elementor-script' => [
             'type' => 'script',
             'name' => 'Elementor Script',
             'resource' => [
@@ -179,7 +179,7 @@ return [
             ],
             'dest_path' => 'assets/js/elementor.js',
             'dependencies' => [
-                'theme',
+                'theme-script',
             ],
             'configuration' => [
                 'handle' => 'theme-elementor',
@@ -232,9 +232,7 @@ return [
                 ],
             ],
             'dest_path' => 'assets/fonts/DynaPuff-VariableFont_wdth,wght.ttf',
-            'dependencies' => [
-                'primary',
-            ],
+            'dependencies' => [],
             'configuration' => [
                 'family' => 'Theme Primary',
                 'weight' => '700',
@@ -278,9 +276,7 @@ return [
                 ],
             ],
             'dest_path' => 'assets/images/logo-light.svg',
-            'dependencies' => [
-                'logo',
-            ],
+            'dependencies' => [],
             'configuration' => [
                 'usage' => 'logo',
                 'variant' => 'light',

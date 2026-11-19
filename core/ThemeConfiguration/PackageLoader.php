@@ -66,9 +66,13 @@ final class PackageLoader implements PackageLoaderInterface
             );
         }
 
-        return new ConfigurationDomain(
+        $domain = new ConfigurationDomain(
             id: $registration->id(),
             configuration: new ($registration->domainClass())($data),
         );
+
+        $registration->validator()->validate($domain);
+
+        return $domain;
     }
 }
