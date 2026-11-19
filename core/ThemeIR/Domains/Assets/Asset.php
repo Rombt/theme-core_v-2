@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Rombt\ThemeCore\ThemeIR\Domains\Assets;
 
 use Rombt\ThemeCore\ThemeIR\Domains\Assets\ValueObjects\AssetType;
+use Rombt\ThemeCore\ThemeIR\Domains\Assets\ValueObjects\ResolvedAssetDependency;
 use Rombt\ThemeCore\ThemeIR\FunctionDefinition;
 
 final readonly class Asset
 {
     /**
-     * @param list<string> $dependencies
+     * @param list<ResolvedAssetDependency> $dependencies
      * @param array<string, mixed> $configuration
      */
     public function __construct(
@@ -51,7 +52,7 @@ final readonly class Asset
     }
 
     /**
-     * @return list<string>
+     * @return list<ResolvedAssetDependency>
      */
     public function dependencies(): array
     {

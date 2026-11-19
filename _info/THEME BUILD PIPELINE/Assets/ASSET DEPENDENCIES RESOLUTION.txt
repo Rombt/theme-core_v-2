@@ -1,0 +1,29 @@
+THEME CORE V2 — ASSET DEPENDENCIES RESOLUTION
+
+Purpose
+
+Asset dependencies are declared in Theme Components as asset IDs. The Assets Theme IR Resolver validates and resolves these declarations before producing Assets IR.
+
+Resolution rules
+
+1. Every dependency ID must identify exactly one declared asset.
+2. An asset cannot depend on itself.
+3. Dependency cycles are rejected. The error includes the detected cycle path.
+4. Duplicate asset IDs are rejected because references would be ambiguous.
+5. Duplicate dependency IDs within one asset are ignored after their first occurrence. The original order is preserved and a WARNING diagnostic is recorded.
+6. Only these dependency type pairs are supported:
+   - Script → Script
+   - Style → Style
+7. All other type pairs are rejected, including Script → Style, Style → Script, Script → Image and Style → Font.
+
+Theme IR representation
+
+Theme Components retain their declarative list of dependency IDs. Theme IR contains only resolved dependency value objects. Each resolved dependency contains the existing target asset ID and its asset type; it does not retain an unchecked declaration string as the dependency representation.
+
+Resolution validates that every target exists and that the relationship is type-compatible. WordPress handles and registration order remain responsibilities of the later WordPress integration / artifact-generation layer.
+
+Failure behavior
+
+Invalid references, self-dependencies, cycles, duplicate asset IDs and incompatible type pairs throw AssetDependencyResolutionException. These are fatal Assets Resolution errors and prevent Assets IR from being produced.
+
+Duplicate dependency declarations are non-fatal. They are normalized to the first occurrence and reported through DiagnosticsService at WARNING level.

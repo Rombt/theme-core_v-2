@@ -260,7 +260,9 @@ final class FullLifecycleTest extends TestCase
                                 new TemplatesThemeIRResolver(),
 
                                 new DesignSystemsThemeIRResolver(),
-                                new AssetsThemeIRResolver(),
+                                new AssetsThemeIRResolver(
+                                    $app->getContext()->get(ApplicationContextKeys::DIAGNOSTICS),
+                                ),
                                 new IntegrationsThemeIRResolver(),
                             ),
                             finalResolvers: array(
