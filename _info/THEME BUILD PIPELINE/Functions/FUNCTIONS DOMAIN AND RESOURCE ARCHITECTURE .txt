@@ -316,3 +316,39 @@ Functions проектируется и реализуется на основе
 
     Детальная структура деклараций домена `functions`, состав его типов
         и формат Resources являются отдельным следующим этапом проектирования.
+
+==================================================
+13. ASSET FRONTEND REQUIREMENTS
+==================================================
+
+    CSS и JavaScript Assets могут требовать PHP runtime
+        functionality для подключения в WordPress.
+
+    В таком случае Asset декларирует существующий
+        Function Requirement через механизм Assets Domain.
+
+    Assets Domain не генерирует enqueue-код самостоятельно
+        и не вводит отдельный механизм подключения.
+
+    Function Requirement поступает в общий механизм
+        Functions Domain и обрабатывается по тем же
+        архитектурным правилам, что и требования
+        остальных доменов.
+
+    Подготовка CSS/JS-файлов (компиляция, bundling,
+        минификация и оптимизация) не относится
+        к Functions Domain. Functions отвечает только
+        за PHP runtime functionality, необходимую
+        для использования готового Asset.
+
+    Таким образом:
+
+        готовый CSS/JS Asset
+            ↓
+        optional Function Requirement
+            ↓
+        Functions ThemeIR
+            ↓
+        Resource implementation
+            ↓
+        functions.php

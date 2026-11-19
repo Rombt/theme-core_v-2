@@ -1,0 +1,282 @@
+THEME CORE V2
+RESOURCE ASSETS AND FRONTEND BUILD ARCHITECTURE
+ARCHITECTURE DECISION
+(v1.0.0)
+
+Status: Architecture Decision
+
+==================================================
+1. PURPOSE
+==================================================
+
+    Документ фиксирует архитектурное решение
+        о взаимодействии Resource, внешнего frontend
+        build-инструмента, Assets Domain и Theme Core v2.
+
+    Решение определяет границы ответственности
+        при подготовке и использовании CSS/JavaScript
+        в результирующей WordPress Theme.
+
+    Документ не определяет конкретную реализацию
+        внешнего build-инструмента, его конфигурацию
+        или правила обнаружения исходных файлов.
+
+==================================================
+2. CORE ARCHITECTURAL DECISION
+==================================================
+
+    Classic и Block Theme используют одни и те же
+        итоговые CSS и JavaScript Assets.
+
+    Отдельные frontend bundles для Classic и Block
+        не вводятся только на основании различия
+        архитектур представления.
+
+    Каждый Resource может предоставлять исходники
+        frontend-стилей и frontend-скриптов.
+
+    Исходники принадлежат Resource, а не Node
+        или Composition. Один Resource может
+        использоваться несколькими Node и Composition.
+
+    Подготовка готовых CSS/JS-файлов выполняется
+        внешним build-инструментом.
+
+    Theme Core v2 работает с готовыми Assets
+        и не обрабатывает исходные SCSS/JS.
+
+==================================================
+3. RESOURCE RESPONSIBILITY
+==================================================
+
+    Resource может содержать:
+
+        - архитектурное представление Classic;
+        - архитектурное представление Block;
+        - исходники frontend-стилей;
+        - исходники frontend-скриптов.
+
+    Архитектурные представления и frontend-исходники
+        являются разными видами содержимого Resource.
+
+    Classic/Block representations используются
+        Artifacts Layer для получения представления
+        соответствующей архитектуры.
+
+    Frontend source files используются внешним
+        build-инструментом и не материализуются
+        Theme Core v2 как готовые Assets напрямую.
+
+    Конкретные имена исходных файлов, их расположение
+        и правила обнаружения определяются отдельно
+        на стороне build-инструмента.
+
+==================================================
+4. EXTERNAL FRONTEND BUILD
+==================================================
+
+    Внешний build-инструмент отвечает за подготовку
+        готовых frontend Assets.
+
+    Его обязанности включают:
+
+        - обнаружение исходников;
+        - компиляцию SCSS;
+        - обработку JavaScript;
+        - объединение исходников компонентов
+          в общие CSS и JavaScript bundles;
+        - создание дополнительных независимых
+          CSS/JS-файлов;
+        - минификацию и другую build-обработку;
+        - размещение результатов в выходной директории темы.
+
+    Внешний build-инструмент не является частью
+        Theme Core v2 и не требует от Theme Core v2
+        знания о структуре исходников.
+
+==================================================
+5. COMMON AND ADDITIONAL ASSETS
+==================================================
+
+    По умолчанию исходники используемых компонентов
+        объединяются в общие frontend Assets:
+
+        theme.css
+        theme.js
+
+    Помимо общих файлов могут существовать
+        дополнительные независимые CSS/JS Assets.
+
+    Их количество не ограничивается данной моделью.
+        Например:
+
+        theme.css
+        theme.js
+        editor.css
+        editor.js
+        additional.css
+        additional.js
+
+    Дополнительный Asset может собираться независимо
+        от общих bundles.
+
+    Порядок исходников внутри каждого bundle
+        определяется внешним build-инструментом.
+
+    Общие и дополнительные файлы являются обычными
+        Assets и используют единую модель Assets Domain.
+
+==================================================
+6. ASSETS DOMAIN RESPONSIBILITY
+==================================================
+
+    Assets Domain описывает готовые Assets,
+        предназначенные для результирующей темы.
+
+    Для каждого готового файла используется
+        существующая декларативная модель Asset.
+        Конкретный состав её полей определяется
+        принятыми решениями Assets Domain.
+
+    Assets Domain не описывает исходные файлы,
+        состав bundle или правила frontend build.
+
+    Assets Domain не выполняет:
+
+        - поиск исходников;
+        - компиляцию;
+        - bundling;
+        - минификацию;
+        - оптимизацию.
+
+    Отдельный домен для frontend bundles
+        не вводится.
+
+==================================================
+7. THEME CORE V2 RESPONSIBILITY
+==================================================
+
+    Theme Core v2 получает декларации готовых Assets
+        и выполняет существующий pipeline:
+
+        assets.php
+            ↓
+        Assets Resolution
+            ↓
+        Assets ThemeIR
+            ↓
+        Artifact Generation
+            ↓
+        Artifact Collection
+            ↓
+        Artifact Writing
+            ↓
+        готовые файлы в WordPress Theme
+
+    Theme Core v2 не читает и не компилирует
+        исходные SCSS/JavaScript для frontend bundles.
+
+    Theme Core v2 обеспечивает обработку и
+        материализацию готовых Assets согласно
+        их декларациям и существующим архитектурным
+        механизмам.
+
+==================================================
+8. FUNCTION REQUIREMENTS AND ASSET DEPENDENCIES
+==================================================
+
+    CSS/JS Asset может требовать PHP runtime
+        functionality для подключения в WordPress.
+
+    В таком случае Asset использует существующий
+        механизм Function Requirement.
+
+    Assets Domain только декларирует требование.
+
+    Functions Domain обрабатывает Function Requirement
+        и совместно с Resource Architecture формирует
+        соответствующий `functions.php`.
+
+    Assets Domain не создаёт отдельный механизм enqueue.
+
+    Зависимости между готовыми логическими Assets
+        задаются через `dependencies[]` в модели Assets.
+        Они описывают отношения между Assets, а не порядок
+        исходников внутри frontend bundle.
+
+    Function Requirement и его `order` относятся
+        к порядку PHP-функциональности и не заменяют
+        зависимости между Assets.
+
+==================================================
+9. RESPONSIBILITY SUMMARY
+==================================================
+
+    Resource
+        Предоставляет исходники CSS/JavaScript
+        и архитектурные представления.
+
+    External build tool
+        Обнаруживает и обрабатывает исходники,
+        формирует общие и дополнительные готовые Assets.
+
+    Assets Domain
+        Декларирует готовые Assets, их свойства
+        и логические зависимости.
+
+    Functions Domain
+        Обрабатывает PHP runtime requirements,
+        необходимые для использования Assets.
+
+    Theme Core v2 Artifacts / Materialization
+        Обеспечивает генерацию и материализацию
+        готовых Assets в результирующей теме.
+
+==================================================
+10. ARCHITECTURAL FLOW
+==================================================
+
+    Resource frontend sources
+        ↓
+    External build tool
+        ↓
+    ready CSS / JavaScript files
+        ↓
+    Assets declarations
+        ↓
+    Assets Resolution
+        ↓
+    Assets ThemeIR
+        ↓
+    Artifact Generation
+        ↓
+    Artifact Writing
+        ↓
+    WordPress Theme
+
+    При необходимости подключения через WordPress:
+
+    Asset declaration
+        ↓
+    Function Requirement
+        ↓
+    Functions ThemeIR
+        ↓
+    Resource implementation
+        ↓
+    functions.php
+
+==================================================
+11. FINAL PRINCIPLE
+==================================================
+
+    Resource предоставляет исходники.
+    Внешний build-инструмент формирует готовые CSS/JS Assets.
+    Assets Domain описывает эти готовые файлы.
+    Theme Core v2 обеспечивает их генерацию
+        и материализацию, а Functions Domain —
+        необходимую PHP runtime functionality.
+
+    Эта модель едина для Classic и Block
+        и не связывает Theme Core v2
+        с конкретным frontend build-инструментом.
