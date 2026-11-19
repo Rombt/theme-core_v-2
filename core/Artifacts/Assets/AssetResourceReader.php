@@ -69,14 +69,18 @@ final readonly class AssetResourceReader implements AssetResourceReaderInterface
             '/\\',
         )
             . DIRECTORY_SEPARATOR
-            . 'assets'
-            . DIRECTORY_SEPARATOR
-            . $asset->type()->value
-            . DIRECTORY_SEPARATOR
-            . $asset->id()
+            . str_replace(
+                ['/', '\\'],
+                DIRECTORY_SEPARATOR,
+                trim($asset->resource()->path(), '/\\'),
+            )
             . DIRECTORY_SEPARATOR
             . $this->architecture
             . DIRECTORY_SEPARATOR
-            . ltrim($file->path(), '/\\');
+            . str_replace(
+                ['/', '\\'],
+                DIRECTORY_SEPARATOR,
+                ltrim($file->path(), '/\\'),
+            );
     }
 }

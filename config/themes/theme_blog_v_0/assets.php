@@ -16,7 +16,7 @@ return [
             'type' => 'style',
             'name' => 'Theme Styles',
             'resource' => [
-                'path' => 'assets/css',
+                'path' => 'assets/style/theme',
                 'files' => [
                     'style.css',
                 ],
@@ -38,7 +38,7 @@ return [
             'type' => 'style',
             'name' => 'Editor Styles',
             'resource' => [
-                'path' => 'assets/css',
+                'path' => 'assets/style/editor',
                 'files' => [
                     'editor.css',
                 ],
@@ -63,7 +63,7 @@ return [
             'type' => 'style',
             'name' => 'Elementor Styles',
             'resource' => [
-                'path' => 'assets/css',
+                'path' => 'assets/style/elementor',
                 'files' => [
                     'elementor.css',
                 ],
@@ -98,7 +98,7 @@ return [
             'type' => 'script',
             'name' => 'Theme Script',
             'resource' => [
-                'path' => 'assets/js',
+                'path' => 'assets/script/theme',
                 'files' => [
                     'theme.js',
                 ],
@@ -121,7 +121,7 @@ return [
             'type' => 'script',
             'name' => 'Navigation Script',
             'resource' => [
-                'path' => 'assets/js',
+                'path' => 'assets/script/navigation',
                 'files' => [
                     'navigation.js',
                 ],
@@ -146,7 +146,7 @@ return [
             'type' => 'script',
             'name' => 'Editor Script',
             'resource' => [
-                'path' => 'assets/js',
+                'path' => 'assets/script/editor',
                 'files' => [
                     'editor.js',
                 ],
@@ -172,7 +172,7 @@ return [
             'type' => 'script',
             'name' => 'Elementor Script',
             'resource' => [
-                'path' => 'assets/js',
+                'path' => 'assets/script/elementor',
                 'files' => [
                     'elementor.js',
                 ],
@@ -208,7 +208,7 @@ return [
             'type' => 'font',
             'name' => 'Primary Font',
             'resource' => [
-                'path' => 'assets/fonts',
+                'path' => 'assets/font/primary',
                 'files' => [
                     'Audiowide-Regular.ttf',
                 ],
@@ -226,7 +226,7 @@ return [
             'type' => 'font',
             'name' => 'Primary Bold Font',
             'resource' => [
-                'path' => 'assets/fonts',
+                'path' => 'assets/font/primary-bold',
                 'files' => [
                     'DynaPuff-VariableFont_wdth,wght.ttf',
                 ],
@@ -256,7 +256,7 @@ return [
             'type' => 'image',
             'name' => 'Logo',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/logo',
                 'files' => [
                     'logo.svg',
                 ],
@@ -272,7 +272,7 @@ return [
             'type' => 'image',
             'name' => 'Light Logo',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/logo-light',
                 'files' => [
                     'logo-light.svg',
                 ],
@@ -291,7 +291,7 @@ return [
             'type' => 'image',
             'name' => 'Favicon',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/favicon',
                 'files' => [
                     'favicon.ico',
                 ],
@@ -307,7 +307,7 @@ return [
             'type' => 'image',
             'name' => 'Site Icon',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/site-icon',
                 'files' => [
                     'site-icon.png',
                 ],
@@ -323,7 +323,7 @@ return [
             'type' => 'image',
             'name' => 'Theme Preview',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/theme-preview',
                 'files' => [
                     'screenshot.png',
                 ],
@@ -339,7 +339,7 @@ return [
             'type' => 'image',
             'name' => 'Theme Icon',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/icon',
                 'files' => [
                     'icon.svg',
                 ],
@@ -355,7 +355,7 @@ return [
             'type' => 'image',
             'name' => 'Background Image',
             'resource' => [
-                'path' => 'assets/images',
+                'path' => 'assets/image/background',
                 'files' => [
                     [
                         'path' => 'background.webp',
@@ -378,7 +378,7 @@ return [
             'type' => 'image',
             'name' => 'Demo Images',
             'resource' => [
-                'path' => 'assets/images/demo',
+                'path' => 'assets/image/demo',
                 'files' => [
                     [
                         'path' => 'hero.avif',

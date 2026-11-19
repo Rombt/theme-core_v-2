@@ -1,0 +1,61 @@
+THEME CORE V2
+ASSET RESOURCE PATH RESOLUTION
+
+Status: Implementation Decision
+
+1. PURPOSE
+
+This note fixes the physical path resolution rule used when
+AssetArtifactGenerator reads an Asset Resource file.
+
+2. PATH MODEL
+
+The configured `theme.resource_package` is the root of the resource
+package (the directory containing `resources/assets`, `resources/components`,
+and other resource domains).
+
+`Asset.resource.path` identifies the Asset directory relative to that root.
+`Asset.resource.files[].path` identifies a file relative to the Asset's
+architecture-specific directory.
+
+The target architecture is inserted between those two paths.
+
+Resolved source path:
+
+    theme.resource_package
+        / Resource.path
+        / architecture (`classic` or `block`)
+        / ResourceFile.path
+
+Example:
+
+    resources/
+      assets/style/theme/
+        classic/style.css
+        block/style.css
+
+Declaration values:
+
+    Resource.path      = assets/style/theme
+    architecture       = classic
+    ResourceFile.path  = style.css
+
+Resolved path:
+
+    resources/assets/style/theme/classic/style.css
+
+3. RESPONSIBILITIES
+
+- `Resource.path` is authoritative for the Asset's source directory.
+- `ResourceFile.path` is relative to the selected architecture directory.
+- The Artifacts layer supplies the target architecture.
+- Asset type and Asset ID identify the logical Asset; they are not
+  independently used to reconstruct the physical source path.
+- `dest_path` continues to determine the output path in the built theme
+  and is not involved in source path resolution.
+
+4. IMPLEMENTATION CONSEQUENCE
+
+AssetResourceReader must resolve the source file using the composition
+above. It must not ignore `Resource.path` and synthesize
+`assets/<type>/<asset-id>/<architecture>/<file>` on its own.
