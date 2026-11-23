@@ -1,0 +1,13 @@
+@use "variables" as vars;
+
+// Адаптивное CSS-свойство — источник
+@mixin adaptive-prop($property, $max_val, $min_val) {
+  $addSize: $max_val - $min_val;
+  $maxWidth: vars.$width_main_wrapper_ - vars.$width_min_viewport_;
+
+  #{$property}: calc(#{$min_val}px + #{$addSize} * ((100vw - #{vars.$width_min_viewport_}px) / #{$maxWidth}));
+
+  @media (min-width: #{vars.$width_main_wrapper_}px) {
+    #{$property}: #{$max_val}px;
+  }
+}

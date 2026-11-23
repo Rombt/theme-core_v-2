@@ -1,0 +1,48 @@
+@use "variables" as vars;
+
+.welcome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  padding: 48px 24px;
+  background: #f5f6f8;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  text-align: center;
+
+  &__content {
+  }
+
+  &__version {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #e5e7eb;
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__title {
+    margin: 0 0 16px;
+    color: #111827;
+    font-size: 32px;
+    line-height: 1.2;
+  }
+
+  &__description {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+
+.welcome > svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 24px auto 0;
+}

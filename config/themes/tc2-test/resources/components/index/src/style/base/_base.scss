@@ -1,0 +1,216 @@
+@use "smart-grid" as *;
+@use "variables" as *;
+@use "mixins" as *;
+
+
+/*
+*   Basic styles for blocks intended for use in every project
+*/
+
+/* ограничивающий контейнер для всей страницы
+   нужен для организации вертикальных отношений между основными блоками
+*/
+.rmbt-page-wrap {
+  max-width: $width_main_wrapper;
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  row-gap: $margin_bottom_section;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  row-gap: $margin_bottom_section;
+
+  min-height: 100px;  /* для отладки */
+}
+
+/* центрующий контейнер контентной ширины */
+.rmbt-container {
+  @include wrapper();
+}
+
+/* центрующий контейнер фоновой ширины */
+.rmbt-full-width {
+  max-width: $width_main_wrapper;
+  @include wrapper-full();
+
+  // margin: 0 auto; //?
+}
+
+.debug-grid {
+  z-index: 100;
+  pointer-events: none;
+  @include debug(#b2bdfa1a, 1px rgba(6, 235, 197, 0.5) solid);
+}
+
+.wrap-img {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
+  img,
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+.wrap-img-a {
+  position: relative;
+  overflow: hidden;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    // height: 100%;
+    height: auto; // тестировать
+    object-fit: contain;
+    object-position: center;
+  }
+}
+
+.rmbt-close-window {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 20px;
+  height: 20px;
+
+  &:after,
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+    left: 0;
+    top: 50%;
+  }
+
+  &:after {
+    transform: rotate(45deg);
+  }
+
+  &:before {
+    transform: rotate(-45deg);
+  }
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    transition: all 0.5s ease-out;
+  }
+}
+
+.rmbt-menu-horizontal {
+  width: 100%;
+  height: 70px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  ul,
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  > ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+
+    li {
+      position: relative;
+      width: max-content;
+      margin: 5px 0;
+      cursor: pointer;
+
+      ul {
+        position: absolute;
+        left: 20px;
+        top: 100%;
+        padding: 10px;
+        z-index: 2;
+
+        height: 0;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+body.rmbt-lock {
+  overflow: hidden;
+}
+
+.svg-footer-icons {
+  box-sizing: border-box;
+  color: #000;
+  // background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  @include adaptive-prop(width, 62, 42);
+  @include adaptive-prop(height, 62, 42);
+  flex-shrink: 0;
+}
+
+.svg-header-icons {
+  box-sizing: border-box;
+  color: #a41c35;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1px solid #a41c35;
+  outline: 2px solid #a41c35;
+  outline-offset: -2px;
+  @include adaptive-prop(width, 62, 42);
+  @include adaptive-prop(height, 62, 42);
+  flex-shrink: 0;
+}
+
+/*
+for display results work function in the process of development
+*/
+
+.test-block {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  z-index: 9999;
+  min-width: 300px;
+  width: max-content;
+  max-width: 90vw;
+  background-color: #fff;
+  border: 5px double #0515fd;
+  padding: 25px 20px;
+  font-size: 18px;
+  height: 90vh;
+  overflow: auto;
+}

@@ -30,8 +30,10 @@ return [
         'packages_path' => 'config/themes',
         // 'package' => 'theme_blog_v_1',
         // 'resource_package' => 'config\themes\theme_blog_v_1\resources',
-        'package' => 'theme_blog_v_0',
-        'resource_package' => 'config\themes\theme_blog_v_0\resources',
+        // 'package' => 'theme_blog_v_0',
+        // 'resource_package' => 'config\themes\theme_blog_v_0\resources',
+        'package' => 'tc2-test',
+        'resource_package' => 'config\themes\tc2-test\resources',
     ],
 
     'php_parser' => [
