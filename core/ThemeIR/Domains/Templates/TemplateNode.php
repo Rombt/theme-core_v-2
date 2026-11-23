@@ -23,6 +23,7 @@ final readonly class TemplateNode
         private Rendering $rendering,
         private ?int $slot,
         private array $children = [],
+        private bool $resourceSkipped = false,
     ) {
     }
 
@@ -64,6 +65,11 @@ final readonly class TemplateNode
     public function slot(): ?int
     {
         return $this->slot;
+    }
+
+    public function resourceSkipped(): bool
+    {
+        return $this->resourceSkipped;
     }
 
     /**

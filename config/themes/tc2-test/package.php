@@ -10,8 +10,10 @@ return [
     'version' => '1.0.0',
     'author' => 'Temforge',
     'text_domain' => 'tc2-test',
-    // Theme architectures supported by this package.
-    'architectures' => ['classic'],
+    'build' => [
+        'strict' => false,
+        'architectures' => ['classic'],
+    ],
     'domains' => [
         'nodes' => 'nodes.php',
         'compositions' => 'compositions.php',

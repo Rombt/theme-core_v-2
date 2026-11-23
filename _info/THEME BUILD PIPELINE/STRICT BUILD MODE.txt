@@ -1,0 +1,96 @@
+THEME CORE V2 — STRICT BUILD MODE
+
+Status: Implementation Decision
+
+1. PURPOSE
+
+The build mode controls how Theme Core handles unavailable file-backed
+resources while preparing Theme Components. The setting applies uniformly
+to Assets, Composition and Node template resources, and standalone Function
+resources.
+
+2. PACKAGE CONFIGURATION
+
+The canonical configuration is declared in package.php:
+
+    return [
+        'build' => [
+            'strict' => true,
+            'architectures' => ['classic'],
+        ],
+    ];
+
+`build.strict` must be boolean. When omitted, it defaults to `true`.
+`build.architectures` contains exactly one supported architecture:
+`classic` or `block`.
+
+For compatibility with existing packages, the legacy top-level
+`architectures` declaration is still accepted when `build.architectures`
+is absent. New and updated packages must use `build.architectures`.
+
+The build mode is package-owned. There is no CLI override.
+
+3. RESOURCE PREPARATION BOUNDARY
+
+File availability is checked during Theme Components preparation, after
+configuration domains have been loaded, validated and mapped to Theme
+Components, and before Resolution constructs Theme IR.
+
+The preparation step checks the physical files consumed by the selected
+architecture. It does not compile files and does not read their contents.
+
+Covered resource forms:
+
+- Asset files: Resource.path / architecture / ResourceFile.path.
+- Asset enqueue functions: assets / type / asset ID / architecture /
+  function.<architecture> implementation.
+- Node and Composition template resources: components / resource ID /
+  classic.php or block.html.
+- Node function resources: components / resource ID /
+  function.classic.php or function.block.html.
+- Standalone Functions resources: functions / resource ID /
+  resource ID plus the architecture-specific extension.
+
+4. STRICT MODE
+
+When `build.strict` is true, the first unavailable required file produces
+an ERROR diagnostic and stops the build before Theme IR resolution.
+
+A path is considered unavailable when its expected file is not a regular
+file. Errors while reading an existing file, invalid configuration,
+validation errors and compilation/processing errors remain errors; soft
+mode does not convert them into warnings.
+
+5. SOFT MODE
+
+When `build.strict` is false, an unavailable resource is excluded from the
+prepared Theme Components collection and a WARNING diagnostic is recorded.
+
+- One warning is recorded per unavailable logical resource.
+- For an Asset, the warning contains all missing files declared by that Asset.
+- If an Asset is excluded, every Asset that depends on it is also excluded,
+  transitively. Each dependent Asset receives its own warning identifying
+  the excluded dependency.
+- If an Asset is excluded, its Function Requirement is not created and no
+  PHP enqueue implementation for that Asset is generated.
+- If a Node or Composition template resource is unavailable, its structural
+  declaration remains available to the model, but the unavailable resource
+  is marked as skipped and materializers emit no content for it.
+- If a Node function or standalone Function implementation is unavailable,
+  the corresponding function declaration/requirement is omitted.
+
+The build continues with the remaining prepared resources.
+
+6. BUILD RESULT
+
+A build with no warnings retains the existing status `success`.
+A build that completes with one or more warnings has status
+`completed_with_warnings`.
+A build containing an Error remains `failed`.
+
+7. RESPONSIBILITY BOUNDARIES
+
+Theme Components preparation owns file availability checks and exclusion.
+Theme IR resolvers receive only the prepared component collection.
+Artifact generators remain responsible for reading and transforming the
+resources they receive. They do not implement a second soft-mode policy.

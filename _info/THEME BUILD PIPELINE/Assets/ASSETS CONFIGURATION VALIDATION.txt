@@ -36,3 +36,12 @@ Validation boundaries
   duplicate dependencies, or dependency type compatibility.
 - WordPress handles are generated in a later build stage, not by this validator.
 - Shared Assets behavior for Classic/Block contexts remains deferred.
+
+
+File availability is intentionally handled separately from structural
+configuration validation. After Theme Components are built, the shared
+resource-preparation pass checks each Asset's resolved source files for the
+selected architecture. `build.strict` determines whether a missing file is a
+fatal Error (default) or a Warning that excludes the whole Asset. In soft mode,
+dependent Assets are also excluded transitively. This pass does not turn file
+read errors, invalid declarations or dependency-model errors into warnings.

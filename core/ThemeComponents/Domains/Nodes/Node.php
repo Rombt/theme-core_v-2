@@ -24,6 +24,7 @@ final readonly class Node
         private array $metadata = [],
         private ?FunctionDefinition $function = null,
         private ?Rendering $rendering = null,
+        private bool $resourceSkipped = false,
     ) {
     }
 
@@ -86,5 +87,10 @@ final readonly class Node
     public function rendering(): ?Rendering
     {
         return $this->rendering;
+    }
+
+    public function resourceSkipped(): bool
+    {
+        return $this->resourceSkipped;
     }
 }

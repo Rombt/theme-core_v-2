@@ -19,16 +19,16 @@ return [
     'theme_uri'   => 'https://github.com/your-username/blog-theme',
     'text_domain' => 'blog-theme',
 
-    // Theme architectures supported by this package.
-    'architectures' => ['classic'],
+    // Build settings. strict defaults to true when omitted.
+    'build' => [
+        'strict' => true,
+        'architectures' => ['classic'],
+    ],
 
     // Theme Specification
     'domains' => [
         'nodes'          => 'nodes.php',
         'compositions'   => 'compositions.php',
-
-
-        /* === пока пустые === */
         'design-systems' => 'design-system.php',
         'assets'         => 'assets.php',
         'integrations'   => 'integrations.php',

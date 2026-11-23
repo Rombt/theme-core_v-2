@@ -14,7 +14,11 @@ enum ThemeArchitecture: string
 
     public static function fromPackage(ThemePackageInterface $package): self
     {
-        $architectures = $package->configuration()['architectures'] ?? null;
+        $configuration = $package->configuration();
+        $build = $configuration['build'] ?? [];
+        $architectures = is_array($build)
+            ? ($build['architectures'] ?? $configuration['architectures'] ?? null)
+            : null;
 
         if (!is_array($architectures) || !array_is_list($architectures) || count($architectures) !== 1) {
             throw new RuntimeException(sprintf(

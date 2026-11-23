@@ -59,3 +59,13 @@ Resolved path:
 AssetResourceReader must resolve the source file using the composition
 above. It must not ignore `Resource.path` and synthesize
 `assets/<type>/<asset-id>/<architecture>/<file>` on its own.
+
+
+5. AVAILABILITY CHECK
+
+The Theme Components preparation step resolves the same path before Theme IR
+construction and checks that it is a regular file. When `build.strict` is true
+(the default), an unavailable file stops the build. In soft mode, the entire
+Asset is excluded if any declared file is unavailable; all missing file paths
+are grouped in one warning for that Asset. Existing-file read failures remain
+fatal and are not treated as missing files.

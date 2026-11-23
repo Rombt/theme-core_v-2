@@ -95,7 +95,7 @@ PHP);
                 public function configuration(): array
                 {
                     return [
-                        'architectures' => ['gutenberg'],
+                        'build' => ['architectures' => ['gutenberg']],
                         'domains' => ['assets' => basename($this->path)],
                     ];
                 }
@@ -122,7 +122,7 @@ PHP);
                 public function path(): string { return dirname($this->path); }
                 public function configuration(): array
                 {
-                    return ['architectures' => ['classic', 'block'], 'domains' => []];
+                    return ['build' => ['architectures' => ['classic', 'block']], 'domains' => []];
                 }
             };
 
@@ -143,11 +143,37 @@ PHP);
                 public function __construct(private readonly string $path) {}
                 public function id(): PackageId { return new PackageId('missing-architecture-package'); }
                 public function path(): string { return dirname($this->path); }
-                public function configuration(): array { return ['domains' => []]; }
+                public function configuration(): array { return ['build' => ['architectures' => ['classic']], 'domains' => []]; }
             };
 
             $this->expectException(RuntimeException::class);
             $this->expectExceptionMessage('must declare exactly one supported architecture');
+            $this->loader()->load($package);
+        } finally {
+            unlink($packagePath);
+        }
+    }
+
+    public function testRejectsNonBooleanBuildStrictSetting(): void
+    {
+        $packagePath = $this->createPackageFile('<?php return [];');
+
+        try {
+            $package = new class($packagePath) implements ThemePackageInterface {
+                public function __construct(private readonly string $path) {}
+                public function id(): PackageId { return new PackageId('invalid-strict-package'); }
+                public function path(): string { return dirname($this->path); }
+                public function configuration(): array
+                {
+                    return [
+                        'build' => ['strict' => 'false', 'architectures' => ['classic']],
+                        'domains' => [],
+                    ];
+                }
+            };
+
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('Theme package field [build.strict] must be bool.');
             $this->loader()->load($package);
         } finally {
             unlink($packagePath);
@@ -187,7 +213,7 @@ PHP);
             public function configuration(): array
             {
                 return [
-                    'architectures' => ['classic'],
+                    'build' => ['architectures' => ['classic']],
                     'domains' => ['assets' => basename($this->domainFile)],
                 ];
             }

@@ -19,6 +19,17 @@ final class PackageLoader implements PackageLoaderInterface
     public function load(
         ThemePackageInterface $package,
     ): ThemeConfigurationPackage {
+        $configuration = $package->configuration();
+        $build = $configuration['build'] ?? [];
+
+        if (!is_array($build)) {
+            throw new \RuntimeException('Theme package field [build] must be an array.');
+        }
+
+        if (array_key_exists('strict', $build) && !is_bool($build['strict'])) {
+            throw new \RuntimeException('Theme package field [build.strict] must be bool.');
+        }
+
         ThemeArchitecture::fromPackage($package);
 
         $domains = $this->loadDomains(

@@ -92,6 +92,7 @@ final readonly class TemplateTreeBuilder
             ),
             rendering: $node->rendering(),
             slot: $compositionNode->slot(),
+            resourceSkipped: $node->resourceSkipped(),
         );
     }
 
@@ -129,6 +130,7 @@ final readonly class TemplateTreeBuilder
             rendering: $composition->rendering(),
             slot: $compositionNode->slot(),
             children: $this->buildNodes($children),
+            resourceSkipped: $composition->resourceSkipped(),
         );
     }
 
@@ -151,6 +153,7 @@ final readonly class TemplateTreeBuilder
             children: $this->buildNodes(
                 $composition->defaultChildren(),
             ),
+            resourceSkipped: $composition->resourceSkipped(),
         );
     }
 }

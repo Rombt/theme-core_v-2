@@ -23,6 +23,18 @@ final class ThemeComponentCollection implements IteratorAggregate
         $this->components[] = $component;
     }
 
+    public function replace(ThemeComponent $component): void
+    {
+        foreach ($this->components as $index => $existing) {
+            if ($existing->id()->equals($component->id())) {
+                $this->components[$index] = $component;
+                return;
+            }
+        }
+
+        $this->components[] = $component;
+    }
+
     /**
      * @return ThemeComponent[]
      */

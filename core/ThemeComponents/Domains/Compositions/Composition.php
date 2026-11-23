@@ -9,12 +9,13 @@ use Rombt\ThemeCore\ThemeComponents\Domains\Rendering\Rendering;
 final class Composition
 {
     private CompositionNodeCollection $defaultChildren;
+    private bool $resourceSkipped = false;
 
 
     public function __construct(
         private readonly string $id,
         private readonly CompositionType $type,
-        private readonly ?string $resource,
+        private ?string $resource,
         private readonly ?Rendering $rendering,
     ) {
         $this->defaultChildren = new CompositionNodeCollection();
@@ -28,6 +29,17 @@ final class Composition
     public function resource(): ?string
     {
         return $this->resource;
+    }
+
+    public function resourceSkipped(): bool
+    {
+        return $this->resourceSkipped;
+    }
+
+    public function markResourceSkipped(): void
+    {
+        $this->resource = null;
+        $this->resourceSkipped = true;
     }
 
     public function rendering(): ?Rendering

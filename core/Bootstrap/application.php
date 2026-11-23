@@ -71,6 +71,7 @@ use Rombt\ThemeCore\Runtime\Stages\BuildThemeComponentsStage;
 use Rombt\ThemeCore\ThemeConfiguration\SelectedPackageProvider;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\ThemeComponentBuilderRegistry;
+use Rombt\ThemeCore\ThemeComponents\Preparation\ThemeComponentResourcePreparer;
 use Rombt\ThemeCore\ThemeComponents\Domains\Assets\AssetsComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\Compositions\CompositionsComponentBuilder;
 use Rombt\ThemeCore\ThemeComponents\Domains\Templates\TemplatesComponentBuilder;
@@ -320,6 +321,7 @@ $pipeline = new Pipeline(
                     )
                 ),
             ),
+            new ThemeComponentResourcePreparer(),
         ),
 
         new BuildThemeIRStage(

@@ -137,3 +137,13 @@ THEME IR
 
     Одновременное существование обеих сущностей является архитектурно оправданным
         и соответствует принятой модели компиляции ThemeCore.
+
+
+LOADING PREPARATION BOUNDARY
+
+ThemeComponentCollection is completed during Loading. Before it is passed
+to Resolution, the build pipeline performs shared file-resource preparation.
+This pass checks resources for the selected architecture and, in soft mode,
+removes unavailable resources or marks unavailable template resources as
+skipped. Resolution therefore receives a prepared declarative collection
+and does not need to implement filesystem availability policy.

@@ -313,3 +313,22 @@ Status: Architecture Decision
     Architecture-independent generators, such as the shared
         Style CSS generator, remain enabled. Resources belonging
         only to the other architecture are not read.
+
+
+==================================================
+12. FILE RESOURCE AVAILABILITY
+==================================================
+
+Before Assets Resolution, Theme Components preparation checks all file-backed
+resources required by the selected architecture. This includes declared Asset
+files and their optional enqueue implementations. The same preparation boundary
+also checks Node/Composition template resources and Functions resources.
+
+The package-level `build.strict` setting controls missing-file behavior. The
+default is strict (`true`): missing files stop the build. Soft mode (`false`)
+excludes the unavailable resource and records a warning. Assets depending on
+an excluded Asset are excluded transitively, and their Function Requirements
+are not generated.
+
+The availability pass is not an asset compiler or content reader. Existing-file
+read failures and all configuration/processing errors remain errors.

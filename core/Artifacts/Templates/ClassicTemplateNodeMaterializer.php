@@ -48,6 +48,10 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
+        if ($node->resourceSkipped()) {
+            return new TemplateMaterializationResult('');
+        }
+
         return $this->materializeChild(
             $node,
             $templateIdentity,
@@ -58,6 +62,10 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
+        if ($node->resourceSkipped()) {
+            return new TemplateMaterializationResult('');
+        }
+
         $resource = $node->resource();
 
         if ($resource === null) {
@@ -101,6 +109,10 @@ final readonly class ClassicTemplateNodeMaterializer implements TemplateNodeMate
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
+        if ($node->resourceSkipped()) {
+            return new TemplateMaterializationResult('');
+        }
+
         switch ($node->rendering()->value) {
             case 'inline':
                 return $this->materializeResourceNode(

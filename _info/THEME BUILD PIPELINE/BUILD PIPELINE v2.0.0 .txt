@@ -269,3 +269,32 @@ Status: Architectural Foundation
 
     Ни одна стадия Pipeline не должна
         нарушать установленную архитектурную границу.
+
+
+==================================================
+13. FILE RESOURCE PREPARATION AND BUILD MODE
+==================================================
+
+Theme Components preparation includes a file-resource availability pass.
+It runs after domain loading, validation and component mapping, and before
+Resolution builds Theme IR.
+
+The pass is shared by Assets, Composition and Node template resources,
+Node function resources and standalone Function resources. It checks only
+that expected files are regular files; it does not read or compile them.
+
+The package setting `build.strict` controls the behavior:
+
+- `true` (default): an unavailable file produces an Error and stops the build.
+- `false`: the affected resource is excluded, a Warning is recorded, and
+  the build continues with the remaining resources.
+
+In soft mode, excluded Assets cause transitive exclusion of dependent Assets.
+Their Function Requirements are omitted, so no enqueue PHP is generated for
+missing Assets. Missing Node/Composition resources are marked as skipped so
+materializers do not emit content or a secondary missing-resource Error.
+
+A completed build with warnings has status `completed_with_warnings`; a build
+without warnings retains the existing `success` status.
+Errors unrelated to file absence remain fatal in both modes. See
+`STRICT BUILD MODE.txt` for the complete policy.

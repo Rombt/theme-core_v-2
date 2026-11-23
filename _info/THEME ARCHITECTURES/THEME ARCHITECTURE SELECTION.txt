@@ -3,13 +3,18 @@ THEME ARCHITECTURE SELECTION
 
 1. PACKAGE CAPABILITIES AND BUILD ARCHITECTURE
 
-Each configuration package declares its supported architecture in package.php:
+Each configuration package declares its build architecture inside the `build`
+section of package.php:
 
-    'architectures' => ['classic'],
+    'build' => [
+        'architectures' => ['classic'],
+    ],
 
 or:
 
-    'architectures' => ['block'],
+    'build' => [
+        'architectures' => ['block'],
+    ],
 
 For the current build model, a package must declare exactly one architecture.
 The supported identifiers are classic and block. A missing declaration, an
@@ -43,7 +48,25 @@ to the other architecture are not read.
 4. EXAMPLES
 
 Classic package:
-    'architectures' => ['classic']
+    'build' => ['architectures' => ['classic']]
 
 Block package:
-    'architectures' => ['block']
+    'build' => ['architectures' => ['block']]
+
+
+5. BUILD MODE
+
+The same `build` section contains the resource availability policy:
+
+    'build' => [
+        'strict' => true,
+        'architectures' => ['classic'],
+    ],
+
+`strict` defaults to true. In soft mode (`false`), missing file-backed
+resources are excluded with warnings before Theme IR Resolution. See
+`STRICT BUILD MODE.txt` in THEME BUILD PIPELINE.
+
+For backward compatibility, the legacy top-level `architectures` key is still
+read when `build.architectures` is absent. New package declarations must use
+`build.architectures`.

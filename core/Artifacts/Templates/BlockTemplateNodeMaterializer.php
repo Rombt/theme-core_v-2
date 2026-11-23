@@ -42,6 +42,10 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         TemplateIdentity $templateIdentity,
         bool $isRoot = false,
     ): TemplateMaterializationResult {
+        if ($node->resourceSkipped()) {
+            return new TemplateMaterializationResult('');
+        }
+
         if ($this->isTemplatePartReference($node)) {
             return $this->materializeTemplatePartReference($node);
         }
@@ -63,6 +67,10 @@ final readonly class BlockTemplateNodeMaterializer implements TemplateNodeMateri
         TemplateNode $node,
         TemplateIdentity $templateIdentity,
     ): TemplateMaterializationResult {
+        if ($node->resourceSkipped()) {
+            return new TemplateMaterializationResult('');
+        }
+
         return $this->materializeResourceNode(
             $node,
             $templateIdentity,

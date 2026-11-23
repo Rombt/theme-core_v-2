@@ -58,7 +58,7 @@ final class SelectedPackageProviderTest extends TestCase
             public function __construct(private readonly array $architectures) {}
             public function id(): PackageId { return new PackageId('test-package'); }
             public function path(): string { return sys_get_temp_dir(); }
-            public function configuration(): array { return ['architectures' => $this->architectures]; }
+            public function configuration(): array { return ['build' => ['architectures' => $this->architectures]]; }
         };
 
         $selector = $this->createMock(PackageSelectorInterface::class);

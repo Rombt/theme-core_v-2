@@ -27,3 +27,14 @@ Failure behavior
 Invalid references, self-dependencies, cycles, duplicate asset IDs and incompatible type pairs throw AssetDependencyResolutionException. These are fatal Assets Resolution errors and prevent Assets IR from being produced.
 
 Duplicate dependency declarations are non-fatal. They are normalized to the first occurrence and reported through DiagnosticsService at WARNING level.
+
+
+Soft build interaction
+
+Before Assets Theme IR Resolution, resource preparation checks Asset source
+files. In soft mode, an Asset with one or more missing source files is excluded
+from Theme Components. All Assets that depend on an excluded Asset are also
+excluded transitively. Each dependent Asset receives a separate WARNING that
+identifies the dependency that caused its exclusion. The remaining dependency
+graph is then passed to the existing resolver, which continues to enforce
+unknown references, cycles, duplicate IDs and type compatibility.
