@@ -280,3 +280,36 @@ Status: Architecture Decision
     Эта модель едина для Classic и Block
         и не связывает Theme Core v2
         с конкретным frontend build-инструментом.
+
+
+==================================================
+8. THEME ARCHITECTURE DECLARATION AND RESOLUTION
+==================================================
+
+    Each configuration package declares exactly one architecture
+        in package.php:
+
+        'architectures' => ['classic'],
+
+    or:
+
+        'architectures' => ['block'],
+
+    The project configuration selects the package only. It does not
+        contain a theme.architecture setting. Theme Core resolves
+        the build architecture from the selected package metadata.
+
+    A missing declaration, an empty list, multiple architectures,
+        or an unsupported identifier is rejected before package
+        domain files are loaded.
+
+    Artifact generation is architecture-specific. The build
+        instantiates only the declared architecture's generators:
+
+        - Classic: Classic templates, Classic Assets,
+          Classic Functions;
+        - Block: Block templates, Block Assets, Block Functions.
+
+    Architecture-independent generators, such as the shared
+        Style CSS generator, remain enabled. Resources belonging
+        only to the other architecture are not read.

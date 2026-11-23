@@ -72,6 +72,88 @@ PHP);
         }
     }
 
+    public function testRejectsUnsupportedPackageArchitectureBeforeLoadingDomains(): void
+    {
+        $packagePath = $this->createPackageFile('<?php return [];');
+
+        try {
+            $package = new class($packagePath) implements ThemePackageInterface {
+                public function __construct(private readonly string $path)
+                {
+                }
+
+                public function id(): PackageId
+                {
+                    return new PackageId('invalid-package');
+                }
+
+                public function path(): string
+                {
+                    return dirname($this->path);
+                }
+
+                public function configuration(): array
+                {
+                    return [
+                        'architectures' => ['gutenberg'],
+                        'domains' => ['assets' => basename($this->path)],
+                    ];
+                }
+            };
+
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('declares an unsupported architecture "gutenberg"');
+
+            $this->loader()->load($package);
+        } finally {
+            unlink($packagePath);
+        }
+    }
+
+
+    public function testRejectsPackageDeclaringMultipleArchitectures(): void
+    {
+        $packagePath = $this->createPackageFile('<?php return [];');
+
+        try {
+            $package = new class($packagePath) implements ThemePackageInterface {
+                public function __construct(private readonly string $path) {}
+                public function id(): PackageId { return new PackageId('multi-architecture-package'); }
+                public function path(): string { return dirname($this->path); }
+                public function configuration(): array
+                {
+                    return ['architectures' => ['classic', 'block'], 'domains' => []];
+                }
+            };
+
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('must declare exactly one supported architecture');
+            $this->loader()->load($package);
+        } finally {
+            unlink($packagePath);
+        }
+    }
+
+    public function testRejectsPackageWithoutArchitectureDeclaration(): void
+    {
+        $packagePath = $this->createPackageFile('<?php return [];');
+
+        try {
+            $package = new class($packagePath) implements ThemePackageInterface {
+                public function __construct(private readonly string $path) {}
+                public function id(): PackageId { return new PackageId('missing-architecture-package'); }
+                public function path(): string { return dirname($this->path); }
+                public function configuration(): array { return ['domains' => []]; }
+            };
+
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('must declare exactly one supported architecture');
+            $this->loader()->load($package);
+        } finally {
+            unlink($packagePath);
+        }
+    }
+
     private function loader(): PackageLoader
     {
         $registration = new DomainRegistration(
@@ -104,7 +186,10 @@ PHP);
 
             public function configuration(): array
             {
-                return ['domains' => ['assets' => basename($this->domainFile)]];
+                return [
+                    'architectures' => ['classic'],
+                    'domains' => ['assets' => basename($this->domainFile)],
+                ];
             }
         };
     }

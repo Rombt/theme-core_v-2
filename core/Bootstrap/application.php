@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 use Rombt\ThemeCore\Application\Application;
 use Rombt\ThemeCore\Application\Contracts\ApplicationContextKeys;
 use Rombt\ThemeCore\Artifacts\ArtifactCollectionFactory;
@@ -166,6 +167,69 @@ $logger = $app->getContext()->get(ApplicationContextKeys::LOGGER);
 $diagnostics = $app->getContext()->get(ApplicationContextKeys::DIAGNOSTICS);
 
 
+$packageProvider = new SelectedPackageProvider(
+    $configuration,
+    new RegistryPackageSelector($compositionRuntime->packageRegistry()),
+    new PackageLoader(
+        new DomainRegistry(
+            array(
+                'templates' => new DomainRegistration(
+                    id: new DomainId('templates'),
+                    domainClass: TemplatesConfiguration::class,
+                    validator: new TemplatesValidator(),
+                ),
+                'entities' => new DomainRegistration(
+                    id: new DomainId('entities'),
+                    domainClass: EntitiesConfiguration::class,
+                    validator: new EntitiesValidator(),
+                ),
+                'compositions' => new DomainRegistration(
+                    id: new DomainId('compositions'),
+                    domainClass: CompositionsConfiguration::class,
+                    validator: new CompositionsValidator(),
+                ),
+                'queries' => new DomainRegistration(
+                    id: new DomainId('queries'),
+                    domainClass: QueriesConfiguration::class,
+                    validator: new QueriesValidator(),
+                ),
+                'workflows' => new DomainRegistration(
+                    id: new DomainId('workflows'),
+                    domainClass: WorkflowsConfiguration::class,
+                    validator: new WorkflowsValidator(),
+                ),
+                'design-systems' => new DomainRegistration(
+                    id: new DomainId('design-systems'),
+                    domainClass: DesignSystemsConfiguration::class,
+                    validator: new DesignSystemsValidator(),
+                ),
+                'assets' => new DomainRegistration(
+                    id: new DomainId('assets'),
+                    domainClass: AssetsConfiguration::class,
+                    validator: new AssetsValidator(),
+                ),
+                'integrations' => new DomainRegistration(
+                    id: new DomainId('integrations'),
+                    domainClass: IntegrationsConfiguration::class,
+                    validator: new IntegrationsValidator(),
+                ),
+                'nodes' => new DomainRegistration(
+                    id: new DomainId('nodes'),
+                    domainClass: NodesConfiguration::class,
+                    validator: new NodesValidator(),
+                ),
+                'functions' => new DomainRegistration(
+                    id: new DomainId('functions'),
+                    domainClass: FunctionsConfiguration::class,
+                    validator: new FunctionsValidator(),
+                ),
+            ),
+        ),
+    ),
+);
+
+$architecture = $packageProvider->architecture()->value;
+
 $runtimeKernel = new RuntimeKernel(
     new BuildRunner(
         new BuildSessionFactory(
@@ -177,97 +241,65 @@ $runtimeKernel = new RuntimeKernel(
             new PipelineExecutor(),
         ),
         $compositionRuntime,
-        new SelectedPackageProvider(
-            $configuration,
-            new RegistryPackageSelector(
-                $compositionRuntime->packageRegistry(),
-            ),
-            new PackageLoader(
-                new DomainRegistry(
-                    array(
-
-                        // !! здесь добавлять домены которые может обрабатывать приложение
-
-                        'templates'      => new DomainRegistration(
-                            id: new DomainId('templates'),
-                            domainClass: TemplatesConfiguration::class,
-                            validator: new TemplatesValidator(),
-                        ),
-
-                        'entities'       => new DomainRegistration(
-                            id: new DomainId('entities'),
-                            domainClass: EntitiesConfiguration::class,
-                            validator: new EntitiesValidator(),
-                        ),
-
-                        'compositions'   => new DomainRegistration(
-                            id: new DomainId('compositions'),
-                            domainClass: CompositionsConfiguration::class,
-                            validator: new CompositionsValidator(),
-                        ),
-
-                        'queries'        => new DomainRegistration(
-                            id: new DomainId('queries'),
-                            domainClass: QueriesConfiguration::class,
-                            validator: new QueriesValidator(),
-                        ),
-
-                        'workflows'      => new DomainRegistration(
-                            id: new DomainId('workflows'),
-                            domainClass: WorkflowsConfiguration::class,
-                            validator: new WorkflowsValidator(),
-                        ),
-
-                        'design-systems' => new DomainRegistration(
-                            id: new DomainId('design-systems'),
-                            domainClass: DesignSystemsConfiguration::class,
-                            validator: new DesignSystemsValidator(),
-                        ),
-
-                        'assets'         => new DomainRegistration(
-                            id: new DomainId('assets'),
-                            domainClass: AssetsConfiguration::class,
-                            validator: new AssetsValidator(),
-                        ),
-
-                        'integrations'   => new DomainRegistration(
-                            id: new DomainId('integrations'),
-                            domainClass: IntegrationsConfiguration::class,
-                            validator: new IntegrationsValidator(),
-                        ),
-
-                        'nodes'          => new DomainRegistration(
-                            id: new DomainId('nodes'),
-                            domainClass: NodesConfiguration::class,
-                            validator: new NodesValidator(),
-                        ),
-
-                        'functions'      => new DomainRegistration(
-                            id: new DomainId('functions'),
-                            domainClass: FunctionsConfiguration::class,
-                            validator: new FunctionsValidator(),
-                        ),
-
-                    )
-                ),
-            ),
-        ),
+        $packageProvider,
         $app,
     ),
 );
 
 $buildRoot       = $configuration->get('paths.output');
 $resourcePackage = $configuration->get('theme.resource_package');
+if ($architecture === 'classic') {
+    $classicTemplatePathResolver = new ClassicTemplatePathResolver();
+    $classicNodeMaterializer = new ClassicTemplateNodeMaterializer(
+        $classicTemplatePathResolver,
+        $app,
+    );
 
+    $architectureGenerators = [
+        new ClassicTemplateArtifactGenerator(
+            new ClassicTemplateTreeRenderer(
+                new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
+                new PhpParserContentNormalizer($configuration),
+            ),
+            $classicNodeMaterializer,
+            $classicTemplatePathResolver,
+            $app,
+        ),
+        new AssetArtifactGenerator(
+            new AssetResourceReader($app, 'classic'),
+            new AssetContentRenderer(),
+            new AssetPathResolver(),
+            'classic',
+        ),
+        new ClassicFunctionsArtifactGenerator(
+            new ClassicFunctionsContentRenderer($app),
+            new FunctionsPathResolver(),
+            $app,
+        ),
+    ];
+} else {
+    $blockNodeMaterializer = new BlockTemplateNodeMaterializer($app);
 
-
-$classicTemplatePathResolver = new ClassicTemplatePathResolver();
-$classicNodeMaterializer     = new ClassicTemplateNodeMaterializer(
-    $classicTemplatePathResolver,
-    $app
-);
-
-$blockNodeMaterializer = new BlockTemplateNodeMaterializer($app);
+    $architectureGenerators = [
+        new BlockTemplateArtifactGenerator(
+            new BlockTemplateTreeRenderer(
+                new BlockTemplateTreeMaterializer($blockNodeMaterializer),
+            ),
+            $blockNodeMaterializer,
+            new BlockTemplatePathResolver(),
+        ),
+        new AssetArtifactGenerator(
+            new AssetResourceReader($app, 'block'),
+            new AssetContentRenderer(),
+            new AssetPathResolver(),
+            'block',
+        ),
+        new BlockFunctionsArtifactGenerator(
+            new BlockFunctionsContentRenderer($app),
+            new FunctionsPathResolver(),
+        ),
+    ];
+}
 
 $pipeline = new Pipeline(
     array(
@@ -314,68 +346,15 @@ $pipeline = new Pipeline(
         new GenerateIrArtifactsStage(
             new ThemeArtifactGenerator(
                 ( new ArtifactGeneratorRegistryFactory() )->create(
-                    array(
-                        new ClassicTemplateArtifactGenerator(
-                            new ClassicTemplateTreeRenderer(
-                                new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
-                                new PhpParserContentNormalizer($configuration),
-                            ),
-                            $classicNodeMaterializer,
-                            $classicTemplatePathResolver,
-                            $app,
-                        ),
-
-                        new BlockTemplateArtifactGenerator(
-                            new BlockTemplateTreeRenderer(
-                                new BlockTemplateTreeMaterializer(
-                                    $blockNodeMaterializer,
-                                ),
-                            ),
-                            $blockNodeMaterializer,
-                            new BlockTemplatePathResolver(),
-                        ),
-
-                        new StyleCssArtifactGenerator(
-                            new StyleCssContentRenderer(),
-                            new StyleCssPathResolver(),
-                            $app
-                        ),
-
-                        new AssetArtifactGenerator(
-                            new AssetResourceReader(
-                                $app,
-                                'classic',
-                            ),
-                            new AssetContentRenderer(),
-                            new AssetPathResolver(),
-                            'classic',
-                        ),
-
-                        new AssetArtifactGenerator(
-                            new AssetResourceReader(
-                                $app,
-                                'block',
-                            ),
-                            new AssetContentRenderer(),
-                            new AssetPathResolver(),
-                            'block',
-                        ),
-
-                        new ClassicFunctionsArtifactGenerator(
-                            new ClassicFunctionsContentRenderer(
+                    array_merge(
+                        [
+                            new StyleCssArtifactGenerator(
+                                new StyleCssContentRenderer(),
+                                new StyleCssPathResolver(),
                                 $app,
                             ),
-                            new FunctionsPathResolver(),
-                            $app,
-                        ),
-
-                        new BlockFunctionsArtifactGenerator(
-                            new BlockFunctionsContentRenderer(
-                                $app,
-                            ),
-                            new FunctionsPathResolver(),
-                        ),
-
+                        ],
+                        $architectureGenerators,
                     ),
                 ),
                 $app

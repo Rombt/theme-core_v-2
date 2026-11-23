@@ -1,0 +1,49 @@
+THEME CORE V2
+THEME ARCHITECTURE SELECTION
+
+1. PACKAGE CAPABILITIES AND BUILD ARCHITECTURE
+
+Each configuration package declares its supported architecture in package.php:
+
+    'architectures' => ['classic'],
+
+or:
+
+    'architectures' => ['block'],
+
+For the current build model, a package must declare exactly one architecture.
+The supported identifiers are classic and block. A missing declaration, an
+empty list, multiple values, or an unknown value is rejected during package
+loading, before its domain files are loaded.
+
+2. PROJECT CONFIGURATION
+
+The project configuration selects the package, but does not select its
+architecture:
+
+    'theme' => [
+        'packages_path' => 'config/themes',
+        'package' => 'my-theme',
+        'resource_package' => 'config/themes/my-theme/resources',
+    ],
+
+Theme Core resolves the build architecture from the selected package's
+package.php metadata. There is no theme.architecture configuration field.
+
+3. GENERATOR REGISTRATION
+
+Only generators for the package's declared architecture are instantiated:
+
+- Classic: Classic template, Asset, and Functions generators;
+- Block: Block template, Asset, and Functions generators.
+
+Shared architecture-neutral generators continue to run. Resources belonging
+to the other architecture are not read.
+
+4. EXAMPLES
+
+Classic package:
+    'architectures' => ['classic']
+
+Block package:
+    'architectures' => ['block']

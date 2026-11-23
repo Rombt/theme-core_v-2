@@ -18,7 +18,7 @@ final readonly class SelectedPackageProvider implements SelectedPackageProviderI
     ) {
     }
 
-    public function provide(): ThemeConfigurationPackage
+    public function architecture(): ThemeArchitecture
     {
         $packageId = new PackageId(
             (string) $this->configuration->get('theme.package'),
@@ -26,6 +26,18 @@ final readonly class SelectedPackageProvider implements SelectedPackageProviderI
 
         $selected = $this->selector->select($packageId);
 
-        return $this->loader->load($selected->registration());
+        return ThemeArchitecture::fromPackage($selected->registration());
+    }
+
+    public function provide(): ThemeConfigurationPackage
+    {
+        $packageId = new PackageId(
+            (string) $this->configuration->get('theme.package'),
+        );
+
+        $selected = $this->selector->select($packageId);
+        $package = $selected->registration();
+
+        return $this->loader->load($package);
     }
 }

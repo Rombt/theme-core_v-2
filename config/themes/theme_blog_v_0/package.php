@@ -21,6 +21,9 @@ return [
     'theme_uri'   => 'https://github.com/your-username/blog-theme',
     'text_domain' => 'blog-theme',
 
+    // Supported theme architectures.
+    'architectures' => ['classic'],
+
     // Theme Specification
 
     'domains' => [

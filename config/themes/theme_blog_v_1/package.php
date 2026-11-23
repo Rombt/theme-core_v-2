@@ -19,8 +19,10 @@ return [
     'theme_uri'   => 'https://github.com/your-username/blog-theme',
     'text_domain' => 'blog-theme',
 
-    // Theme Specification
+    // Theme architectures supported by this package.
+    'architectures' => ['classic'],
 
+    // Theme Specification
     'domains' => [
         'nodes'          => 'nodes.php',
         'compositions'   => 'compositions.php',

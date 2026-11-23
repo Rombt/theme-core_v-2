@@ -19,6 +19,8 @@ final class PackageLoader implements PackageLoaderInterface
     public function load(
         ThemePackageInterface $package,
     ): ThemeConfigurationPackage {
+        ThemeArchitecture::fromPackage($package);
+
         $domains = $this->loadDomains(
             $package->path(),
             $package->configuration()['domains'] ?? [],

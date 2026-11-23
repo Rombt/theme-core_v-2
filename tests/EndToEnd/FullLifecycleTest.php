@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 namespace Tests\EndToEnd;
 
 use PHPUnit\Framework\TestCase;
@@ -148,7 +149,6 @@ final class FullLifecycleTest extends TestCase
         $definitions = $kernel->context()->getServiceDefinitions();
         $compositionRuntime = (new RuntimeAssembler($app))->assemble($definitions);
         $configuration = $app->getContext()->get(ApplicationContextKeys::CONFIGURATION);
-
         $packageProvider = new SelectedPackageProvider(
             $configuration,
             new RegistryPackageSelector($compositionRuntime->packageRegistry()),
@@ -207,6 +207,7 @@ final class FullLifecycleTest extends TestCase
                 ]),
             ),
         );
+        $architecture = $packageProvider->architecture()->value;
 
         $runtimeKernel = new RuntimeKernel(
             new BuildRunner(
@@ -222,13 +223,58 @@ final class FullLifecycleTest extends TestCase
             ),
         );
 
-        $classicTemplatePathResolver = new ClassicTemplatePathResolver();
-        $classicNodeMaterializer     = new ClassicTemplateNodeMaterializer(
-            $classicTemplatePathResolver,
-            $app
-        );
+        if ($architecture === 'classic') {
+            $classicTemplatePathResolver = new ClassicTemplatePathResolver();
+            $classicNodeMaterializer = new ClassicTemplateNodeMaterializer(
+                $classicTemplatePathResolver,
+                $app,
+            );
 
-        $blockNodeMaterializer = new BlockTemplateNodeMaterializer($app);
+            $architectureGenerators = [
+                new ClassicTemplateArtifactGenerator(
+                    new ClassicTemplateTreeRenderer(
+                        new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
+                        new PhpParserContentNormalizer($configuration),
+                    ),
+                    $classicNodeMaterializer,
+                    $classicTemplatePathResolver,
+                    $app,
+                ),
+                new AssetArtifactGenerator(
+                    new AssetResourceReader($app, 'classic'),
+                    new AssetContentRenderer(),
+                    new AssetPathResolver(),
+                    'classic',
+                ),
+                new ClassicFunctionsArtifactGenerator(
+                    new ClassicFunctionsContentRenderer($app),
+                    new FunctionsPathResolver(),
+                    $app,
+                ),
+            ];
+        } else {
+            $blockNodeMaterializer = new BlockTemplateNodeMaterializer($app);
+
+            $architectureGenerators = [
+                new BlockTemplateArtifactGenerator(
+                    new BlockTemplateTreeRenderer(
+                        new BlockTemplateTreeMaterializer($blockNodeMaterializer),
+                    ),
+                    $blockNodeMaterializer,
+                    new BlockTemplatePathResolver(),
+                ),
+                new AssetArtifactGenerator(
+                    new AssetResourceReader($app, 'block'),
+                    new AssetContentRenderer(),
+                    new AssetPathResolver(),
+                    'block',
+                ),
+                new BlockFunctionsArtifactGenerator(
+                    new BlockFunctionsContentRenderer($app),
+                    new FunctionsPathResolver(),
+                ),
+            ];
+        }
 
         $pipeline = new Pipeline(
             array(
@@ -277,68 +323,15 @@ final class FullLifecycleTest extends TestCase
                 new GenerateIrArtifactsStage(
                     new ThemeArtifactGenerator(
                         ( new ArtifactGeneratorRegistryFactory() )->create(
-                            array(
-                                new ClassicTemplateArtifactGenerator(
-                                    new ClassicTemplateTreeRenderer(
-                                        new ClassicTemplateTreeMaterializer($classicNodeMaterializer, $app),
-                                        new PhpParserContentNormalizer($configuration),
-                                    ),
-                                    $classicNodeMaterializer,
-                                    $classicTemplatePathResolver,
-                                    $app,
-                                ),
-
-                                new BlockTemplateArtifactGenerator(
-                                    new BlockTemplateTreeRenderer(
-                                        new BlockTemplateTreeMaterializer(
-                                            $blockNodeMaterializer,
-                                        ),
-                                    ),
-                                    $blockNodeMaterializer,
-                                    new BlockTemplatePathResolver(),
-                                ),
-
-                                new StyleCssArtifactGenerator(
-                                    new StyleCssContentRenderer(),
-                                    new StyleCssPathResolver(),
-                                    $app
-                                ),
-
-                                new AssetArtifactGenerator(
-                                    new AssetResourceReader(
-                                        $app,
-                                        'classic',
-                                    ),
-                                    new AssetContentRenderer(),
-                                    new AssetPathResolver(),
-                                    'classic',
-                                ),
-
-                                new AssetArtifactGenerator(
-                                    new AssetResourceReader(
-                                        $app,
-                                        'block',
-                                    ),
-                                    new AssetContentRenderer(),
-                                    new AssetPathResolver(),
-                                    'block',
-                                ),
-
-                                new ClassicFunctionsArtifactGenerator(
-                                    new ClassicFunctionsContentRenderer(
+                            array_merge(
+                                [
+                                    new StyleCssArtifactGenerator(
+                                        new StyleCssContentRenderer(),
+                                        new StyleCssPathResolver(),
                                         $app,
                                     ),
-                                    new FunctionsPathResolver(),
-                                    $app,
-                                ),
-
-                                new BlockFunctionsArtifactGenerator(
-                                    new BlockFunctionsContentRenderer(
-                                        $app,
-                                    ),
-                                    new FunctionsPathResolver(),
-                                ),
-
+                                ],
+                                $architectureGenerators,
                             ),
                         ),
                         $app
